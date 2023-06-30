@@ -1,0 +1,19 @@
+﻿Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Connect-A-PIC", "Connect-A-PIC.csproj", "{F70BE6F8-112E-45CB-9C51-09A8AD75C15A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+	Debug|Any CPU = Debug|Any CPU
+	ExportDebug|Any CPU = ExportDebug|Any CPU
+	ExportRelease|Any CPU = ExportRelease|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F70BE6F8-112E-45CB-9C51-09A8AD75C15A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F70BE6F8-112E-45CB-9C51-09A8AD75C15A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F70BE6F8-112E-45CB-9C51-09A8AD75C15A}.ExportDebug|Any CPU.ActiveCfg = ExportDebug|Any CPU
+		{F70BE6F8-112E-45CB-9C51-09A8AD75C15A}.ExportDebug|Any CPU.Build.0 = ExportDebug|Any CPU
+		{F70BE6F8-112E-45CB-9C51-09A8AD75C15A}.ExportRelease|Any CPU.ActiveCfg = ExportRelease|Any CPU
+		{F70BE6F8-112E-45CB-9C51-09A8AD75C15A}.ExportRelease|Any CPU.Build.0 = ExportRelease|Any CPU
+	EndGlobalSection
+EndGlobal

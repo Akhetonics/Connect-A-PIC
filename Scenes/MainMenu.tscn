@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://dyo6pjkr7nbrd"]
+
+[ext_resource type="Script" path="res://Scenes/MainMenu.cs" id="1_h3qyc"]
+
+[node name="MainMenu" type="Node2D"]
+script = ExtResource("1_h3qyc")
+
+[node name="NewEditor" type="Button" parent="."]
+offset_left = 345.0
+offset_top = 116.0
+offset_right = 583.0
+offset_bottom = 190.0
+text = "Start New Editor"
+
+[connection signal="pressed" from="NewEditor" to="." method="_on_new_editor_pressed"]
