@@ -1,6 +1,8 @@
 using MathNet.Numerics.LinearAlgebra;
 using System.Numerics;
 using System.Collections.Generic;
+using System;
+using System.Linq;
 
 public class SMatrix
 {
@@ -23,7 +25,7 @@ public class SMatrix
         this.PortsReference = ports;
     }
 
-    public void setValues(Dictionary<Tuple<ComponentPort, ComponentPort>, Complex> transfers)
+    public void setValues(Dictionary<Tuple<ComponentPort, ComponentPort>, Complex> transfers, bool reset = false)
     {
         if (transfers == null || this.PortsReference == null)
         {
@@ -31,8 +33,10 @@ public class SMatrix
         }
 
         // Reset matrix
-        this.SMat = Matrix<Complex>.Build.Dense(this._size, this._size);
-
+        if (reset == true)
+        {
+            this.SMat = Matrix<Complex>.Build.Dense(this._size, this._size);
+        }
 
         foreach(Tuple<ComponentPort, ComponentPort> relation in transfers.Keys)
         {
@@ -45,6 +49,42 @@ public class SMatrix
                 this.SMat[row, col] = transfers[relation];
             }
         }
+    }
+
+    public Dictionary<Tuple<ComponentPort, ComponentPort>, Complex> getValues()
+    {
+        Dictionary<Tuple<ComponentPort, ComponentPort>, Complex> transfers = new Dictionary<Tuple<ComponentPort, ComponentPort>, Complex>();
+        for (int i=0; i < this._size; i++)
+        {
+            for (int j=0; j < this._size; j++)
+            {
+                if (this.SMat[i, j] != 0)
+                {
+                    transfers[new Tuple<ComponentPort, ComponentPort>(this.PortsReference[j], this.PortsReference[i])] = this.SMat[i, j];
+                }
+            }
+        }   
+        return transfers;
+    }
+
+    public static SMatrix createSystemSMatrix(List<SMatrix> matrices)
+    {
+        List<ComponentPort> portsReference = matrices.SelectMany(x => x.PortsReference).Distinct().ToList();
+        SMatrix sysMat = new SMatrix(portsReference);
+
+        foreach(SMatrix matrix in matrices)
+        {
+            Dictionary<Tuple<ComponentPort, ComponentPort>, Complex> transfers = matrix.getValues();
+            sysMat.setValues(transfers);
+        }
+ 
+        return sysMat;
+    }
+
+    // Takes this matrix to the power n and sets it permanently to that value.
+    public void setToPower(int n)
+    {
+        this.SMat = this.SMat.Power(n);    
     }
 
     public override string ToString()

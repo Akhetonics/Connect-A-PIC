@@ -7,4 +7,5 @@ Exports/
 Scenes/obj/
 Scenes/bin/
 Scenes/Program.cs
+Scenes/Tests.cs
 Scenes/Scenes.csproj

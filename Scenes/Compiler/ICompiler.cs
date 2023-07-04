@@ -1,4 +1,4 @@
 interface ICompiler 
 {
-    string compile(ComponentGraph graph);
+    string compile(ComponentGrid grid);
 }

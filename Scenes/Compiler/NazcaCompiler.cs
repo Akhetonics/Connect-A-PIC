@@ -1,6 +1,6 @@
 public class NazcaCompiler : ICompiler 
 {
-    public string compile(ComponentGraph graph)
+    public string compile(ComponentGrid grid)
     {
         // TODO:
         return "";
