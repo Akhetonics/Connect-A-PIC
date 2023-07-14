@@ -1,14 +1,16 @@
-<Project Sdk="Godot.NET.Sdk/4.1.0">
+<Project Sdk="Godot.NET.Sdk/4.0.3">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <EnableDynamicLoading>true</EnableDynamicLoading>
     <RootNamespace>ConnectAPIC</RootNamespace>
   </PropertyGroup>
+
   <ItemGroup>
-    <Compile Remove="Scenes\Program.cs" />
-    <Compile Remove="Scenes\Tests.cs" />
-    <Compile Remove="Scenes\Scenes.csproj" />
+      <Compile Remove="Scenes\Program.cs" />
+      <Compile Remove="Scenes\Tests.cs" />
+      <Compile Remove="Scenes\Scenes.csproj" />
   </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
   </ItemGroup>

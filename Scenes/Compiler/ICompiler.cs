@@ -1,4 +1,9 @@
-interface ICompiler 
+using ConnectAPIC.Scenes.Component;
+
+namespace Compiler
 {
-    string compile(ComponentGrid grid);
+    interface ICompiler
+    {
+        string compile(ComponentGrid grid);
+    }
 }

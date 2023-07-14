@@ -1,8 +1,14 @@
-public class NazcaCompiler : ICompiler 
+using ConnectAPIC.Scenes.Component;
+
+namespace Compiler
 {
-    public string compile(ComponentGrid grid)
+
+    public class NazcaCompiler : ICompiler
     {
-        // TODO:
-        return "";
+        public string compile(ComponentGrid grid)
+        {
+            // TODO:
+            return "";
+        }
     }
 }
