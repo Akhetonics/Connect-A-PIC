@@ -10,27 +10,27 @@ namespace TransferFunction
 	public class SMatrix
 	{
 		public Matrix<Complex> SMat;
-		public readonly List<ConnectionPort>? PortsReference;
-		private readonly int _size;
+		public readonly List<Pin>? PinReference;
+		private readonly int size;
 
-		public SMatrix(List<ConnectionPort> ports)
+		public SMatrix(List<Pin> ports)
 		{
 			if (ports != null && ports.Count > 0)
 			{
-				this._size = ports.Count;
+				this.size = ports.Count;
 			}
 			else
 			{
-				this._size = 1;
+				this.size = 1;
 			}
 
-			this.SMat = Matrix<Complex>.Build.Dense(this._size, this._size);
-			this.PortsReference = ports;
+			this.SMat = Matrix<Complex>.Build.Dense(this.size, this.size);
+			this.PinReference = ports;
 		}
 
-		public void setValues(Dictionary<Tuple<ConnectionPort, ConnectionPort>, Complex> transfers, bool reset = false)
+		public void setValues(Dictionary<Tuple<Pin, Pin>, Complex> transfers, bool reset = false)
 		{
-			if (transfers == null || this.PortsReference == null)
+			if (transfers == null || this.PinReference == null)
 			{
 				return;
 			}
@@ -38,32 +38,32 @@ namespace TransferFunction
 			// Reset matrix
 			if (reset == true)
 			{
-				this.SMat = Matrix<Complex>.Build.Dense(this._size, this._size);
+				this.SMat = Matrix<Complex>.Build.Dense(this.size, this.size);
 			}
 			
 			foreach (var relation in transfers.Keys)
 			{
-				if (PortsReference.Contains(relation.Item1) && PortsReference.Contains(relation.Item2))
+				if (PinReference.Contains(relation.Item1) && PinReference.Contains(relation.Item2))
 				{
 					// TODO: These might need to be switched?
-					int row = PortsReference.IndexOf(relation.Item2);
-					int col = PortsReference.IndexOf(relation.Item1);
+					int row = PinReference.IndexOf(relation.Item2);
+					int col = PinReference.IndexOf(relation.Item1);
 
 					this.SMat[row, col] = transfers[relation];
 				}
 			}
 		}
 
-		public Dictionary<Tuple<ConnectionPort, ConnectionPort>, Complex> getValues()
+		public Dictionary<Tuple<Pin, Pin>, Complex> getValues()
 		{
-			var transfers = new Dictionary<Tuple<ConnectionPort, ConnectionPort>, Complex>();
-			for (int i = 0; i < this._size; i++)
+			var transfers = new Dictionary<Tuple<Pin, Pin>, Complex>();
+			for (int i = 0; i < this.size; i++)
 			{
-				for (int j = 0; j < this._size; j++)
+				for (int j = 0; j < this.size; j++)
 				{
 					if (this.SMat[i, j] != 0)
 					{
-						transfers[new Tuple<ConnectionPort, ConnectionPort>(this.PortsReference[j], this.PortsReference[i])] = this.SMat[i, j];
+						transfers[new Tuple<Pin, Pin>(this.PinReference[j], this.PinReference[i])] = this.SMat[i, j];
 					}
 				}
 			}
@@ -72,7 +72,7 @@ namespace TransferFunction
 
 		public static SMatrix createSystemSMatrix(List<SMatrix> matrices)
 		{
-			var portsReference = matrices.SelectMany(x => x.PortsReference).Distinct().ToList();
+			var portsReference = matrices.SelectMany(x => x.PinReference).Distinct().ToList();
 			SMatrix sysMat = new SMatrix(portsReference);
 
 			foreach (SMatrix matrix in matrices)

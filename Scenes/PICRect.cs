@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public partial class PICRect : ColorRect
+public partial class PICRect : TextureRect
 {
 	// Called when the node enters the scene tree for the first time.
 	public override void _Ready()
@@ -11,6 +11,7 @@ public partial class PICRect : ColorRect
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)
 	{
+
 	}
 	
 	public override bool _CanDropData(Vector2 position, Variant data)
@@ -26,8 +27,8 @@ public partial class PICRect : ColorRect
 	public override void _DropData(Vector2 position, Variant data)
 	{
 		GD.Print("Dropping");
-		this.Color = new Color(255, 0, 0);
-	}
+		this.Texture = new ImageTexture();
+    }
 	
 	public override Variant _GetDragData(Vector2 position)
 	{

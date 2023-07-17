@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://cu6wqy6xwjfo1"]
+[gd_scene load_steps=4 format=3 uid="uid://cu6wqy6xwjfo1"]
 
 [ext_resource type="Script" path="res://Scenes/PICGrid.cs" id="1_h1f0x"]
 [ext_resource type="Script" path="res://Scenes/PICRect.cs" id="2_fv7ql"]
+[ext_resource type="Texture2D" uid="uid://cjiupx6m53yfn" path="res://icon.svg" id="2_mb102"]
 
 [node name="PICEditor" type="Node2D"]
 
@@ -11,15 +12,21 @@ offset_top = 45.0
 offset_right = 596.0
 offset_bottom = 521.0
 
-[node name="PICGrid" type="GridContainer" parent="PICArea"]
-layout_mode = 0
+[node name="DesignGrid" type="GridContainer" parent="PICArea"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.121
+anchor_bottom = 0.134
+offset_right = 0.232998
+offset_bottom = 0.216
 columns = 6
 script = ExtResource("1_h1f0x")
 
-[node name="PICRect" type="ColorRect" parent="PICArea/PICGrid"]
+[node name="Tile" type="TextureRect" parent="PICArea/DesignGrid"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
-color = Color(0.815686, 0.560784, 0.517647, 1)
+texture = ExtResource("2_mb102")
+expand_mode = 3
 script = ExtResource("2_fv7ql")
 
 [node name="PICComponentsArea" type="Panel" parent="."]
@@ -39,8 +46,9 @@ offset_bottom = 224.0
 layout_mode = 2
 columns = 4
 
-[node name="PICRect" type="ColorRect" parent="PICComponentsArea/ScrollContainer/PICComponentsGrid"]
+[node name="Straight" type="TextureRect" parent="PICComponentsArea/ScrollContainer/PICComponentsGrid"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
-color = Color(0.815686, 0.560784, 0.517647, 1)
+texture = ExtResource("2_mb102")
+expand_mode = 3
 script = ExtResource("2_fv7ql")

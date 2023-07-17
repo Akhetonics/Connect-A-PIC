@@ -1,19 +1,56 @@
+using ConnectAPIC.Scenes.Component;
 using Godot;
 using System;
 
 public partial class PICGrid : GridContainer
 {
-	// Called when the node enters the scene tree for the first time.
-	public override void _Ready()
+	public static int MaxTileCount { get; private set; }
+    public override void _Ready()
 	{
-		for (int i=0; i < 36 - 1; i++)
-		{
-			this.AddChild(this.GetNode("PICRect").Duplicate());
-		}
+        MaxTileCount = this.Columns * this.Columns;
+		RemoveAllTiles();
+        CreateEmptyField();
 	}
 
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
+	public void CreateEmptyField()
+    {
+		var nodes = this.GetNode("*");
+		var defaultTile = this.GetNode("PICRect");
+        for (int i = 0; i <= MaxTileCount; i++)
+        {
+            this.AddChild(defaultTile.Duplicate());
+        }
+    }
+
+    private void RemoveAllTiles()
+    {
+        foreach (Node n in this.FindChildren("*"))
+        {
+            this.RemoveChild(n);
+        }
+    }
+    public void Save (string Path)
 	{
+
+	}
+	public void Export(string Path)
+	{
+
+	}
+
+	public void ConnectAdjacentComponents()
+	{
+
+	}
+	private void ConnectComponentToAdjacentComponents (ComponentBase component) { 
+	}
+
+	public void CanComponentBePlaced(int gridX, int gridY, ComponentBase component)
+	{
+
+	}
+	public void UpdateGlobalLightDistribution()
+	{
+
 	}
 }
