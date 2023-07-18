@@ -7,9 +7,19 @@ using System.Collections.Generic;
 public partial class Tile : TextureRect
 {
     public ComponentBase Component;
-    private Dictionary<RectangleSide, Pin> Pins;
-    private DiscreteRotation rotation;
+    protected Dictionary<RectangleSide, Pin> Pins;
+    protected DiscreteRotation rotation;
+    protected int GridX;
+    protected int GridY;
 
+    /// <summary>
+    /// Register the Tile when it gets created
+    /// </summary>
+    public void RegisterGridXY(int X, int Y)
+    {
+        GridX = X;
+        GridY = Y;
+    }
     public void InitializePins(Pin right, Pin up, Pin left, Pin down)
     {
         Pins.Add(RectangleSide.Right, right);
@@ -60,7 +70,17 @@ public partial class Tile : TextureRect
         // or you can add Components which would be instantiated if they fit in here. 
         // we really need the gameManager to do that properly.
 		GD.Print("Dropping");
-		this.Texture = (data.Obj as TextureRect).Texture;
+        if(data.Obj is Tile tile)
+        {
+            this.Texture = tile.Texture;
+        } else if (data.Obj is ComponentBase component)
+        {
+            if (GameManager.Instance.Grid.CanComponentBePlaced(GridX, GridY, component))
+            {
+                GameManager.Instance.Grid.AddComponent(GridX, GridY, component);
+            }
+        }
+        
     }
 	
 	public override Variant _GetDragData(Vector2 position)

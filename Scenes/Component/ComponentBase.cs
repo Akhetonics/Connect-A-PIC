@@ -1,10 +1,11 @@
 using ConnectAPIC.Scenes.Tiles;
+using Godot;
 using Godot.Collections;
 using System.Collections.Generic;
 
 namespace ConnectAPIC.Scenes.Component
 {
-    public class ComponentBase
+    public partial class ComponentBase : GodotObject
     {
         public int WidthInTiles { get; private set; }
         public int HeightInTiles { get; private set; }

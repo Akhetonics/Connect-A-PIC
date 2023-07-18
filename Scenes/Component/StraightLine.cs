@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace ConnectAPIC.Scenes.Component
 {
-    public class StraightLine : ComponentBase
+    public partial class StraightLine : ComponentBase
     {
         public StraightLine(int WidthInTiles, int HeightInTiles, Tile[,] subTiles) : base(WidthInTiles, HeightInTiles, subTiles)
         {

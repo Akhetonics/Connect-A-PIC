@@ -86,8 +86,11 @@ public partial class Grid : GridContainer
         {
             for (int j = 0; j < componentBlueprint.HeightInTiles; j++)
             {
-                Tiles[x + i, y + j].Component = item;
-                Tiles[x + i, y + j].Texture = componentBlueprint.GetSubTileAt(i, j).Texture;
+                int gridX = x + i;
+                int gridY = y + i;
+                Tiles[gridX, gridY].Component = item;
+                Tiles[gridX, gridY].RegisterGridXY(gridX, gridY);
+                Tiles[gridX, gridY].Texture = componentBlueprint.GetSubTileAt(i, j).Texture;
             }
         }
     }
@@ -127,9 +130,9 @@ public partial class Grid : GridContainer
 	private void ConnectComponentToAdjacentComponents (ComponentBase component) { 
 	}
 
-	public void CanComponentBePlaced(int gridX, int gridY, ComponentBase component)
+	public bool CanComponentBePlaced(int gridX, int gridY, ComponentBase component)
 	{
-
+        return ! IsColliding(gridX, gridY, component.WidthInTiles, component.HeightInTiles);
 	}
 	public void UpdateGlobalLightDistribution()
 	{
