@@ -4,6 +4,6 @@ namespace ConnectAPIC.Scenes.Compiler
 {
     interface IExporter
     {
-        string Export(Grid grid);
+        string Export(Tile[,] Tiles);
     }
 }

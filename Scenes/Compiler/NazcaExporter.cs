@@ -9,7 +9,7 @@ namespace ConnectAPIC.Scenes.Compiler
         {
             this.path = path;
         }
-        public string Export(Grid grid)
+        public string Export(Tile[,] tiles)
         {
             // TODO:
             return "";

@@ -1,8 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://cu6wqy6xwjfo1"]
+[gd_scene load_steps=5 format=3 uid="uid://cu6wqy6xwjfo1"]
 
-[ext_resource type="Script" path="res://Scenes/PICGrid.cs" id="1_h1f0x"]
-[ext_resource type="Script" path="res://Scenes/PICRect.cs" id="2_fv7ql"]
+[ext_resource type="Script" path="res://Scenes/Grid.cs" id="1_2pqex"]
+[ext_resource type="Texture2D" uid="uid://dm0sl0jrwrfx6" path="res://Scenes/Tiles/EmptyGround.png" id="2_ddx4u"]
 [ext_resource type="Texture2D" uid="uid://cjiupx6m53yfn" path="res://icon.svg" id="2_mb102"]
+[ext_resource type="Script" path="res://Scenes/Tiles/Tile.cs" id="3_anirx"]
 
 [node name="PICEditor" type="Node2D"]
 
@@ -12,7 +13,7 @@ offset_top = 45.0
 offset_right = 596.0
 offset_bottom = 521.0
 
-[node name="DesignGrid" type="GridContainer" parent="PICArea"]
+[node name="Grid" type="GridContainer" parent="PICArea"]
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 0.121
@@ -20,14 +21,17 @@ anchor_bottom = 0.134
 offset_right = 0.232998
 offset_bottom = 0.216
 columns = 6
-script = ExtResource("1_h1f0x")
+script = ExtResource("1_2pqex")
 
-[node name="Tile" type="TextureRect" parent="PICArea/DesignGrid"]
+[node name="TileTemplate" type="TextureRect" parent="PICArea"]
+visible = false
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
-texture = ExtResource("2_mb102")
+offset_right = 64.0
+offset_bottom = 64.0
+texture = ExtResource("2_ddx4u")
 expand_mode = 3
-script = ExtResource("2_fv7ql")
+script = ExtResource("3_anirx")
 
 [node name="PICComponentsArea" type="Panel" parent="."]
 offset_left = 659.0
@@ -51,4 +55,4 @@ custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 texture = ExtResource("2_mb102")
 expand_mode = 3
-script = ExtResource("2_fv7ql")
+script = ExtResource("3_anirx")
