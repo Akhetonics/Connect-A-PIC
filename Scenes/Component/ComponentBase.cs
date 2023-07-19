@@ -1,22 +1,31 @@
 using ConnectAPIC.Scenes.Tiles;
 using Godot;
 using Godot.Collections;
+using System;
 using System.Collections.Generic;
 
 namespace ConnectAPIC.Scenes.Component
 {
-    public partial class ComponentBase : GodotObject
+    public abstract partial class ComponentBase : Node
     {
-        public int WidthInTiles { get; private set; }
-        public int HeightInTiles { get; private set; }
-        public Tile[,] SubTiles;
-        public DiscreteRotation Rotation;
-        
-        public ComponentBase(int widthInTiles, int heightInTiles, Tile[,] subTiles)
+        public int WidthInTiles => SubTiles.GetLength(0);
+        public int HeightInTiles => SubTiles.GetLength(1);
+        public Tile[,] SubTiles { get; protected set; }
+
+        public override void _Ready()
         {
-            this.WidthInTiles = widthInTiles;
-            this.HeightInTiles = heightInTiles;
-            this.SubTiles = subTiles;
+            base._Ready();
+            SubTiles = new Tile[1, 1];
+        }
+        public DiscreteRotation DiscreteRotation { get; private set; }
+
+        public void RotateBy90()
+        {
+            SubTiles.RotateCounterClockwise();
+            foreach (Tile tile in SubTiles)
+            {
+                tile.RotateBy90();
+            }
         }
         public Tile GetSubTileAt(int offsetX, int offsetY)
         {

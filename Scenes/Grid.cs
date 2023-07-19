@@ -80,7 +80,7 @@ public partial class Grid : GridContainer
             return;
         }
 
-        ComponentBase item = new ComponentBase(componentBlueprint.WidthInTiles, componentBlueprint.HeightInTiles, componentBlueprint.SubTiles);
+        ComponentBase item = componentBlueprint.Duplicate() as ComponentBase;// new ComponentBase(componentBlueprint.WidthInTiles, componentBlueprint.HeightInTiles, componentBlueprint.SubTiles);
 
         for (int i = 0; i < componentBlueprint.WidthInTiles; i++)
         {
@@ -89,7 +89,7 @@ public partial class Grid : GridContainer
                 int gridX = x + i;
                 int gridY = y + i;
                 Tiles[gridX, gridY].Component = item;
-                Tiles[gridX, gridY].RegisterGridXY(gridX, gridY);
+                Tiles[gridX, gridY].RegisterMainGridXY(gridX, gridY);
                 Tiles[gridX, gridY].Texture = componentBlueprint.GetSubTileAt(i, j).Texture;
             }
         }

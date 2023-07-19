@@ -3,10 +3,10 @@
 [ext_resource type="Script" path="res://Scenes/GameManager.cs" id="1_1g8p6"]
 [ext_resource type="Script" path="res://Scenes/Grid.cs" id="1_2pqex"]
 [ext_resource type="Texture2D" uid="uid://dm0sl0jrwrfx6" path="res://Scenes/Tiles/EmptyGround.png" id="2_ddx4u"]
-[ext_resource type="Texture2D" uid="uid://cjiupx6m53yfn" path="res://icon.svg" id="2_mb102"]
 [ext_resource type="Script" path="res://Scenes/Tiles/Tile.cs" id="3_anirx"]
 [ext_resource type="Script" path="res://Scenes/Tiles/TemplateTile.cs" id="6_ly1br"]
-[ext_resource type="Script" path="res://Scenes/Component/StraightLine.cs" id="7_4vaax"]
+[ext_resource type="Script" path="res://Scenes/Component/StraightWaveGuide.cs" id="7_tohqs"]
+[ext_resource type="Texture2D" uid="uid://obrjry10rd00" path="res://Scenes/Tiles/StraightComponent.png" id="8_gfj5w"]
 
 [node name="PICEditor" type="Node2D"]
 
@@ -58,10 +58,10 @@ offset_bottom = 224.0
 layout_mode = 2
 columns = 4
 
-[node name="Straight" type="TextureRect" parent="GameManager/PICComponentsArea/ScrollContainer/PICComponentsGrid"]
+[node name="StraightComponentTemplate" type="TextureRect" parent="GameManager/PICComponentsArea/ScrollContainer/PICComponentsGrid"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
-texture = ExtResource("2_mb102")
+texture = ExtResource("8_gfj5w")
 expand_mode = 3
 script = ExtResource("6_ly1br")
 componentTemplatePath = NodePath("../../../../../ComponentTemplates/StraightWaveGuide")
@@ -69,4 +69,5 @@ componentTemplatePath = NodePath("../../../../../ComponentTemplates/StraightWave
 [node name="ComponentTemplates" type="Node" parent="."]
 
 [node name="StraightWaveGuide" type="Node" parent="ComponentTemplates"]
-script = ExtResource("7_4vaax")
+script = ExtResource("7_tohqs")
+Texture = ExtResource("8_gfj5w")

@@ -15,13 +15,14 @@ public partial class Tile : TextureRect
     /// <summary>
     /// Register the Tile when it gets created
     /// </summary>
-    public void RegisterGridXY(int X, int Y)
+    public void RegisterMainGridXY(int X, int Y)
     {
         GridX = X;
         GridY = Y;
     }
     public void InitializePins(Pin right, Pin up, Pin left, Pin down)
     {
+        Pins = new Dictionary<RectangleSide, Pin>();
         Pins.Add(RectangleSide.Right, right);
         Pins.Add(RectangleSide.Up, up);
         Pins.Add(RectangleSide.Left, left);
@@ -56,11 +57,20 @@ public partial class Tile : TextureRect
 	
 	public override bool _CanDropData(Vector2 position, Variant data)
 	{
-		GD.Print("Over DropZone");
-		var cpb = new ColorPickerButton();
-		cpb.Color = new Color(255, 0, 0);
-		cpb.Size = new Vector2(50, 50);
-		this.SetDragPreview(cpb);
+		// extract all tiles from the component that is about to be dropped here at position and SetDragPreview them
+        if (data.Obj is ComponentBase component)
+        {
+            
+            for ( int x = 0; x < component.WidthInTiles; x++){
+                for ( int y = 0; y < component.HeightInTiles; y++)
+                {
+                    var previewtile = component.GetSubTileAt(x, y).Duplicate() as Tile;
+                    previewtile.Position = new Vector2(position.X + x * 64, position.Y + y * 64);
+                    this.SetDragPreview(previewtile);
+                }
+            }
+        }
+        
 		return true;
 	}
 	
@@ -87,6 +97,6 @@ public partial class Tile : TextureRect
 	{
 		// TEMP: Remove
 		GD.Print("start dragging");
-		return this;
+		return this.Component;
 	}
 }
