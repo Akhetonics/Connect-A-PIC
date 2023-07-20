@@ -30,5 +30,9 @@ namespace ConnectAPIC.Scenes.Component
         {
             return Name;
         }
+        public Pin Duplicate()
+        {
+            return new Pin(Name, this.MatterType);
+        }
     }
 }

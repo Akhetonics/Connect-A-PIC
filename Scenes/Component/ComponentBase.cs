@@ -10,7 +10,10 @@ namespace ConnectAPIC.Scenes.Component
     {
         public int WidthInTiles => SubTiles.GetLength(0);
         public int HeightInTiles => SubTiles.GetLength(1);
-        public Tile[,] SubTiles { get; protected set; }
+        public bool IsPlacedInGrid { get; protected set; } = false;
+        public int GridXMainTile { get; protected set; }
+        public int GridYMainTile { get; protected set; }
+        public virtual Tile[,] SubTiles { get; protected set; }
 
         public override void _Ready()
         {
@@ -19,6 +22,18 @@ namespace ConnectAPIC.Scenes.Component
         }
         public DiscreteRotation DiscreteRotation { get; private set; }
 
+        public void RegisterPositionInGrid(int gridX , int gridY)
+        {
+            IsPlacedInGrid = true;
+            this.GridXMainTile = gridX;
+            this.GridYMainTile = gridY;
+        }
+        public void ClearGridData()
+        {
+            IsPlacedInGrid = false;
+            this.GridXMainTile = -1;
+            this.GridYMainTile = -1;
+        }
         public void RotateBy90()
         {
             SubTiles.RotateCounterClockwise();
@@ -35,6 +50,19 @@ namespace ConnectAPIC.Scenes.Component
             }
             // Todo also take Rotation into consideration
             return SubTiles[offsetX, offsetY];
+        }
+        public ComponentBase Duplicate()
+        {
+            var item = base.Duplicate() as ComponentBase;
+            item.SubTiles = new Tile[SubTiles.GetLength(0),SubTiles.GetLength(1)];
+            for(int x = 0; x < SubTiles.GetLength(0); x++)
+            {
+                for (int y = 0; y < SubTiles.GetLength(0); y++)
+                {
+                    item.SubTiles[x,y] = SubTiles[x, y].Duplicate();
+                }
+            }
+            return item;
         }
     }
 }

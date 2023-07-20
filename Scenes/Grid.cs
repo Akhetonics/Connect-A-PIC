@@ -6,28 +6,41 @@ using System;
 public partial class Grid : GridContainer
 {
     public Tile[,] Tiles { get; private set; }
+    public Tile defaultTile;
     public static int MaxTileCount { get; private set; }
     public override void _Ready()
 	{
+        defaultTile = this.GetParent().GetNode<Tile>("TileTemplate");
         MaxTileCount = Columns * Columns;
-        Tiles= new Tile[Columns, Columns];
+        Tiles = new Tile[Columns, Columns];
         RemoveAllTiles();
         CreateEmptyField();
 	}
 
 	public void CreateEmptyField()
     {
-		var defaultTile = this.GetParent().GetNode<Tile>("TileTemplate");
+		
         if (defaultTile == null) throw new ArgumentException("TileTemplate is not set in PICArea. Please tell the developer to fix that.");
         for (int i = 0; i < MaxTileCount; i++)
         {
-			var newTile = defaultTile.Duplicate() as Tile;
+            int GridX = i % this.Columns;
+            int GridY = i / this.Columns;
+            var newTile = defaultTile.Duplicate() as Tile;
+            newTile._Ready();
             newTile.Visible = true;
+            newTile.RegisterMainGridXY(GridX, GridY);
             this.AddChild(newTile);
-            Tiles[i % this.Columns, i / this.Columns] = newTile;
+            Tiles[GridX, GridY] = newTile;
         }
     }
 	
+    public void ClearTileAt(Tile tile , int GridX, int GridY)
+    {
+        var defaultTile = this.GetParent().GetNode<Tile>("TileTemplate");
+        tile.Visible = true;
+        tile.Texture = defaultTile.Texture;
+        tile.RegisterMainGridXY(GridX, GridY);
+    }
     private void RemoveAllTiles()
     {
 		var i = 0;
@@ -73,23 +86,23 @@ public partial class Grid : GridContainer
         return Tiles[x, y].Component;
     }
 
-    public void AddComponent(int x, int y, ComponentBase componentBlueprint)
+    public void InstantiateComponentFromBlueprint(int x, int y, ComponentBase componentBlueprint)
     {
         if (IsColliding(x, y, componentBlueprint.WidthInTiles, componentBlueprint.HeightInTiles))
         {
             return;
         }
 
-        ComponentBase item = componentBlueprint.Duplicate() as ComponentBase;// new ComponentBase(componentBlueprint.WidthInTiles, componentBlueprint.HeightInTiles, componentBlueprint.SubTiles);
-
-        for (int i = 0; i < componentBlueprint.WidthInTiles; i++)
+        ComponentBase item = componentBlueprint.Duplicate();
+        item._Ready();
+        item.RegisterPositionInGrid(x, y);
+        for (int i = 0; i < item.WidthInTiles; i++)
         {
-            for (int j = 0; j < componentBlueprint.HeightInTiles; j++)
+            for (int j = 0; j < item.HeightInTiles; j++)
             {
                 int gridX = x + i;
                 int gridY = y + i;
                 Tiles[gridX, gridY].Component = item;
-                Tiles[gridX, gridY].RegisterMainGridXY(gridX, gridY);
                 Tiles[gridX, gridY].Texture = componentBlueprint.GetSubTileAt(i, j).Texture;
             }
         }
@@ -98,19 +111,20 @@ public partial class Grid : GridContainer
     public void RemoveComponentAt(int x, int y)
     {
         ComponentBase item = getComponentAt(x, y);
-
         if (item == null)
         {
             return;
         }
-
+        x = item.GridXMainTile;
+        y = item.GridYMainTile;
         for (int i = 0; i < item.WidthInTiles; i++)
         {
             for (int j = 0; j < item.HeightInTiles; j++)
             {
-                Tiles[x + i, y + j] = null;
+                Tiles[x + i, y + j].ResetToDefault(defaultTile.Texture);
             }
         }
+        item.ClearGridData();
     }
 
     public void Save (string Path)
