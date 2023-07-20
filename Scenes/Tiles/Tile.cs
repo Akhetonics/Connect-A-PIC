@@ -32,16 +32,18 @@ public partial class Tile : TextureRect
     }
     public void InitializePins(Pin right, Pin up, Pin left, Pin down)
     {
-        Pins = new Dictionary<RectangleSide, Pin>();
-        Pins.Add(RectangleSide.Right, right);
-        Pins.Add(RectangleSide.Up, up);
-        Pins.Add(RectangleSide.Left, left);
-        Pins.Add(RectangleSide.Down, down);
+        Pins = new Dictionary<RectangleSide, Pin>
+        {
+            { RectangleSide.Right, right },
+            { RectangleSide.Up, up },
+            { RectangleSide.Left, left },
+            { RectangleSide.Down, down }
+        };
     }
     public void RotateBy90()
     {
         if (this.Component== null) return;
-        this.rotation =(DiscreteRotation)(((int)(rotation + 1) % (int)(DiscreteRotation.R270)));
+        this.rotation =(DiscreteRotation)((int)(rotation + 1) % (int)(DiscreteRotation.R270));
         RotationDegrees = (int)rotation * 90;
         // switch all pins around, so that they all go one to the left as with the rotation
         (Pins[RectangleSide.Right], Pins[RectangleSide.Up]) = (Pins[RectangleSide.Up], Pins[RectangleSide.Right]);
@@ -126,5 +128,21 @@ public partial class Tile : TextureRect
             }
         }
         return copy;
+    }
+    public override void _Input(InputEvent inputEvent)
+    {
+        base._Input(inputEvent);
+        if(inputEvent is InputEventMouseButton mouseEvent )
+        {
+            if( mouseEvent.ButtonIndex == MouseButton.Middle && mouseEvent.Pressed)
+            {
+                // delete element here
+            }
+            if (mouseEvent.ButtonIndex == MouseButton.Right && mouseEvent.Pressed)
+            {
+                // rotate Element here
+            }
+        }
+
     }
 }

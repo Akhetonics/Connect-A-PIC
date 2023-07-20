@@ -76,7 +76,7 @@ public partial class Grid : GridContainer
     {
         return x >= 0 && y >= 0 && x + width <= Columns && y + height <= Columns;
     }
-    public ComponentBase getComponentAt(int x, int y)
+    public ComponentBase GetComponentAt(int x, int y)
     {
         if (IsInGrid(x, y, 1, 1) == false)
         {
@@ -110,7 +110,7 @@ public partial class Grid : GridContainer
 
     public void RemoveComponentAt(int x, int y)
     {
-        ComponentBase item = getComponentAt(x, y);
+        ComponentBase item = GetComponentAt(x, y);
         if (item == null)
         {
             return;
