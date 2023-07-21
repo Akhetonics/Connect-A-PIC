@@ -5,7 +5,7 @@ public partial class GameManager : Node
 {
 	[Export] public NodePath GridPath { get; set; }
 	public Grid Grid { get; set; }
-	private static GameManager instance;
+    private static GameManager instance;
 	public static GameManager Instance
 	{
 		get { return instance; }
@@ -26,5 +26,5 @@ public partial class GameManager : Node
 			Grid = GetNodeOrNull(GridPath) as Grid;
 			if (GridPath == null) throw new ArgumentNullException($"GridPath should be attached and of type >{Grid.GetType().Name}<");
 		}
-	}
+    }
 }

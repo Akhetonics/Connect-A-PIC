@@ -6,20 +6,28 @@ using System.Collections.Generic;
 
 public partial class Tile : TextureRect
 {
-    public ComponentBase Component;
+    public ComponentBase Component { get; set; }
+    public delegate void TileEventHandler(Tile tile);
+    public delegate void ComponentEventHandler(Tile tile, ComponentBase component);
+    public event TileEventHandler OnDeletionRequested;
+    public event TileEventHandler OnRotationRequested;
+    public event ComponentEventHandler OnMoveComponentRequested;
+    public event ComponentEventHandler OnCreateNewComponentRequested;
     protected Dictionary<RectangleSide, Pin> Pins;
-    protected DiscreteRotation rotation;
-    protected int GridX;
-    protected int GridY;
+    public DiscreteRotation Rotation90Based { get; private set; }
+    public int GridX { get; private set; }
+    public int GridY { get; private set; }
 
     public override void _Ready()
     {
         Pins = new Dictionary<RectangleSide, Pin>();
+        PivotOffset = Size / 2;
     }
+    
     /// <summary>
     /// Register the Tile when it gets created
     /// </summary>
-    public void RegisterMainGridXY(int X, int Y)
+    public void SetPositionInGrid (int X, int Y)
     {
         GridX = X;
         GridY = Y;
@@ -28,6 +36,11 @@ public partial class Tile : TextureRect
     {
         Pins = new Dictionary<RectangleSide, Pin>();
         Texture = baseTexture;
+        Visible = true;
+        while (Rotation90Based != DiscreteRotation.R0)
+        {
+            RotateBy90();
+        }
         Component = null;
     }
     public void InitializePins(Pin right, Pin up, Pin left, Pin down)
@@ -42,105 +55,94 @@ public partial class Tile : TextureRect
     }
     public void RotateBy90()
     {
-        if (this.Component== null) return;
-        this.rotation =(DiscreteRotation)((int)(rotation + 1) % (int)(DiscreteRotation.R270));
-        RotationDegrees = (int)rotation * 90;
+        this.Rotation90Based = (DiscreteRotation)((int)(Rotation90Based + 1) % (int)(DiscreteRotation.R270+1));
+        RotationDegrees = (int)Rotation90Based * 90;
         // switch all pins around, so that they all go one to the left as with the rotation
-        (Pins[RectangleSide.Right], Pins[RectangleSide.Up]) = (Pins[RectangleSide.Up], Pins[RectangleSide.Right]);
-        (Pins[RectangleSide.Right], Pins[RectangleSide.Left]) = (Pins[RectangleSide.Left], Pins[RectangleSide.Right]);
-        (Pins[RectangleSide.Right], Pins[RectangleSide.Down]) = (Pins[RectangleSide.Down], Pins[RectangleSide.Right]);
+        if (Pins != null && Pins.Count >= 4)
+        {
+            (Pins[RectangleSide.Right], Pins[RectangleSide.Down]) = (Pins[RectangleSide.Down], Pins[RectangleSide.Right]);
+            (Pins[RectangleSide.Right], Pins[RectangleSide.Left]) = (Pins[RectangleSide.Left], Pins[RectangleSide.Right]);
+            (Pins[RectangleSide.Right], Pins[RectangleSide.Up]) = (Pins[RectangleSide.Up], Pins[RectangleSide.Right]);
+        }
     }
-    
+
     public Pin GetPinAt(RectangleSide side) // takes rotation into account
     {
         return Pins.GetValueOrDefault(side);
     }
 
-	public override bool _CanDropData(Vector2 position, Variant data)
-	{
-		// extract all tiles from the component that is about to be dropped here at position and SetDragPreview them
+    public override bool _CanDropData(Vector2 position, Variant data)
+    {
+        // extract all tiles from the component that is about to be dropped here at position and SetDragPreview them
         if (data.Obj is ComponentBase component)
         {
-            
-            for ( int x = 0; x < component.WidthInTiles; x++){
-                for ( int y = 0; y < component.HeightInTiles; y++)
-                {
-                    var previewtile = component.GetSubTileAt(x, y).Duplicate() as Tile;
-                    previewtile.Position = new Vector2(position.X + x * 64, position.Y + y * 64);
-                    this.SetDragPreview(previewtile);
-                }
+            ShowMultiTileDragPreview(position, component);
+        }
+
+        return true;
+    }
+    protected void ShowMultiTileDragPreview(Vector2 position, ComponentBase component)
+    {
+        var previewGrid = new GridContainer();
+        previewGrid.Columns = component.WidthInTiles;
+        for (int x = 0; x < component.WidthInTiles; x++)
+        {
+            for (int y = 0; y < component.HeightInTiles; y++)
+            {
+                var previewtile = component.GetSubTileAt(x, y).Duplicate() as Tile;
+                previewGrid.AddChild(previewtile);
             }
         }
-        
-		return true;
-	}
-	
-	public override void _DropData(Vector2 position, Variant data)
-	{
-		GD.Print("Dropping");
-        if(data.Obj is Tile tile)
+        this.SetDragPreview(previewGrid);
+    }
+    public override void _DropData(Vector2 position, Variant data)
+    {
+        if (data.Obj is ComponentBase component)
         {
-            this.Texture = tile.Texture;
-        } else if (data.Obj is ComponentBase component)
-        {
-            if(component.IsPlacedInGrid == false)
+            if (component.IsPlacedInGrid == false)
             {
-                CreateNewComponent(component);
+                OnCreateNewComponentRequested?.Invoke(this, component);
             }
             else
             {
-                MoveExistingComponent(component);
+                OnMoveComponentRequested?.Invoke(this, component);
             }
-        }
-        
-    }
-
-    private void CreateNewComponent(ComponentBase componentBlueprint)
-    {
-        if (GameManager.Instance.Grid.CanComponentBePlaced(GridX, GridY, componentBlueprint))
-        {
-            GameManager.Instance.Grid.InstantiateComponentFromBlueprint(GridX, GridY, componentBlueprint);
-        }
-    }
-
-    private void MoveExistingComponent(ComponentBase component)
-    {
-        if (GameManager.Instance.Grid.CanComponentBePlaced(GridX, GridY, component))
-        {
-            GameManager.Instance.Grid.RemoveComponentAt(component.GridXMainTile, component.GridYMainTile);
-            GameManager.Instance.Grid.InstantiateComponentFromBlueprint(GridX, GridY, component);
         }
     }
 
     public override Variant _GetDragData(Vector2 position)
-	{
-		return this.Component;
-	}
+    {
+        return this.Component;
+    }
     public Tile Duplicate()
     {
         var copy = base.Duplicate() as Tile;
         copy.Pins = new Dictionary<RectangleSide, Pin>();
-        if(Pins != null)
+        if (Pins != null)
         {
             foreach (var kvp in Pins)
             {
-                copy.Pins.Add(kvp.Key, (Pin)kvp.Value.Duplicate());
+                copy.Pins.Add(kvp.Key, kvp.Value.Duplicate());
             }
         }
         return copy;
     }
-    public override void _Input(InputEvent inputEvent)
+    public override void _GuiInput(InputEvent inputEvent)
     {
-        base._Input(inputEvent);
-        if(inputEvent is InputEventMouseButton mouseEvent )
+        base._GuiInput(inputEvent);
+        if (inputEvent is InputEventMouseButton mouseEvent)
         {
-            if( mouseEvent.ButtonIndex == MouseButton.Middle && mouseEvent.Pressed)
+            if (mouseEvent.Position.X < 0 || mouseEvent.Position.Y < 0 || mouseEvent.Position.X > Size.X || mouseEvent.Position.Y > Size.Y)
             {
-                // delete element here
+                return;
+            }
+            if (mouseEvent.ButtonIndex == MouseButton.Middle && mouseEvent.Pressed)
+            {
+                OnDeletionRequested?.Invoke(this);
             }
             if (mouseEvent.ButtonIndex == MouseButton.Right && mouseEvent.Pressed)
             {
-                // rotate Element here
+                OnRotationRequested?.Invoke(this);
             }
         }
 
