@@ -37,11 +37,16 @@ public partial class Tile : TextureRect
         Pins = new Dictionary<RectangleSide, Pin>();
         Texture = baseTexture;
         Visible = true;
-        while (Rotation90Based != DiscreteRotation.R0)
+        SetRotation90Based(DiscreteRotation.R0);
+        Component = null;
+    }
+    public void SetRotation90Based(DiscreteRotation rotation90)
+    {
+        int rotationIntervals = ((int)rotation90 - (int)Rotation90Based) % ((int)DiscreteRotation.R270+1);
+        for(int i = 0; i < rotationIntervals; i++)
         {
             RotateBy90();
         }
-        Component = null;
     }
     public void InitializePins(Pin right, Pin up, Pin left, Pin down)
     {
@@ -117,6 +122,8 @@ public partial class Tile : TextureRect
     public Tile Duplicate()
     {
         var copy = base.Duplicate() as Tile;
+        copy.Rotation90Based = Rotation90Based;
+        copy.RotationDegrees = RotationDegrees;
         copy.Pins = new Dictionary<RectangleSide, Pin>();
         if (Pins != null)
         {

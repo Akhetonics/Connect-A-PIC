@@ -19,16 +19,16 @@ namespace ConnectAPIC.Scenes.Component
             SubTiles[0, 0] = new Tile();
             SubTiles[0, 0].Texture = Texture;
             SubTiles[0, 0].InitializePins(
-                new Pin("b0", MatterType.Light), 
                 new Pin("", MatterType.None), 
+                new Pin("b0", MatterType.Light), 
                 new Pin("a0", MatterType.Light), 
                 new Pin("", MatterType.None));
             SubTiles[1, 0] = new Tile();
             SubTiles[1, 0].Texture = Texture;
             SubTiles[1, 0].InitializePins(
-                new Pin("b0", MatterType.Light),
+                new Pin("b1", MatterType.Light),
+                new Pin("a1", MatterType.Light),
                 new Pin("", MatterType.None),
-                new Pin("a0", MatterType.Light),
                 new Pin("", MatterType.None));
         }
     }

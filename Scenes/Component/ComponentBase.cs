@@ -36,7 +36,7 @@ namespace ConnectAPIC.Scenes.Component
         }
         public void RotateBy90()
         {
-            SubTiles.RotateClockwise();
+            SubTiles = SubTiles.RotateClockwise();
 
             foreach (Tile tile in SubTiles)
             {

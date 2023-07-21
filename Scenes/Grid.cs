@@ -2,6 +2,7 @@ using ConnectAPIC.Scenes.Component;
 using ConnectAPIC.Scenes.Tiles;
 using Godot;
 using System;
+using System.ComponentModel;
 
 public partial class Grid : GridContainer
 {
@@ -31,10 +32,22 @@ public partial class Grid : GridContainer
             this.AddChild(newTile);
             Tiles[gridX, gridY] = newTile;
             Tiles[gridX, gridY].OnDeletionRequested += Grid_OnDeletionRequested;
-            Tiles[gridX, gridY].OnRotationRequested += (Tile tile) => tile.Component?.RotateBy90();
+            Tiles[gridX, gridY].OnRotationRequested += Grid_OnRotationRequested; ;
             Tiles[gridX, gridY].OnCreateNewComponentRequested += Grid_OnCreateNewComponent;
             Tiles[gridX, gridY].OnMoveComponentRequested += Grid_OnMoveExistingComponent;
         }
+    }
+
+    private void Grid_OnRotationRequested(Tile tile)
+    {
+        if (tile == null || tile.Component == null) return;
+        
+        var rotatedComponent = tile.Component.Duplicate();
+        int x = tile.Component.GridXMainTile;
+        int y = tile.Component.GridYMainTile;
+        rotatedComponent.RotateBy90();
+        RemoveComponentAt(tile.GridX, tile.GridY);
+        PlaceExistingComponent(x, y, rotatedComponent);
     }
 
     private void RemoveAllTiles()
@@ -82,15 +95,13 @@ public partial class Grid : GridContainer
         return Tiles[x, y].Component;
     }
 
-    public void InstantiateComponentFromBlueprint(int x, int y, Type componentType)
+    public void PlaceExistingComponent(int x , int y , ComponentBase item)
     {
-        ComponentBase item = ComponentFactory.Instance.CreateComponent(componentType);
         if (IsColliding(x, y, item.WidthInTiles, item.HeightInTiles))
         {
             item.QueueFree();
             return;
         }
-        item._Ready();
         item.RegisterPositionInGrid(x, y);
         for (int i = 0; i < item.WidthInTiles; i++)
         {
@@ -100,11 +111,23 @@ public partial class Grid : GridContainer
                 int gridY = y + j;
                 Tiles[gridX, gridY].ResetToDefault(defaultTile.Texture);
                 Tiles[gridX, gridY].Component = item;
+                Tiles[gridX, gridY].SetRotation90Based (item.GetSubTileAt(i, j).Rotation90Based);
                 Tiles[gridX, gridY].Texture = item.GetSubTileAt(i, j).Texture;
                 item.RegisterTileAsSubtile(Tiles[gridX, gridY], i, j);
             }
         }
     }
+    public void CreateAndPlaceComponent(int x, int y, Type componentType)
+    {
+        ComponentBase item = ComponentFactory.Instance.CreateComponent(componentType);
+        if (IsColliding(x, y, item.WidthInTiles, item.HeightInTiles))
+        {
+            item.QueueFree();
+            return;
+        }
+        PlaceExistingComponent(x, y, item);
+    }
+    
     private void Grid_OnDeletionRequested(Tile tile)
     {
         if (tile.Component != null)
@@ -114,7 +137,7 @@ public partial class Grid : GridContainer
     {
         if (CanComponentBePlaced(tile.GridX, tile.GridY, componentBlueprint))
         {
-            InstantiateComponentFromBlueprint(tile.GridX, tile.GridY, componentBlueprint.GetType());
+            CreateAndPlaceComponent(tile.GridX, tile.GridY, componentBlueprint.GetType());
         }
     }
 
@@ -123,7 +146,7 @@ public partial class Grid : GridContainer
         if (CanComponentBePlaced(tile.GridX, tile.GridY, component))
         {
             RemoveComponentAt(component.GridXMainTile, component.GridYMainTile);
-            InstantiateComponentFromBlueprint(tile.GridX, tile.GridY, component.GetType());
+            CreateAndPlaceComponent(tile.GridX, tile.GridY, component.GetType());
         }
     }
 

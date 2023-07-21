@@ -46,7 +46,9 @@ namespace ConnectAPIC.Scenes.Component
             {
                 if (T == component.GetType())
                 {
-                    return component.Duplicate();
+                    var item = component.Duplicate();
+                    item._Ready();
+                    return item;
                 }
             }
             return null;
