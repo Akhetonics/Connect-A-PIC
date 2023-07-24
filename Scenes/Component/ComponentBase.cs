@@ -14,13 +14,26 @@ namespace ConnectAPIC.Scenes.Component
         public int GridXMainTile { get; protected set; }
         public int GridYMainTile { get; protected set; }
         public virtual Tile[,] SubTiles { get; protected set; }
-
+        public DiscreteRotation _discreteRotation;
+        public DiscreteRotation Rotation90
+        {
+            get => _discreteRotation;
+            set
+            {
+                int rotationIntervals = _discreteRotation.CalculateCyclesTillTargetRotation(value);
+                for (int i = 0; i < rotationIntervals; i++)
+                {
+                    RotateBy90();
+                }
+            }
+        }
         public override void _Ready()
         {
             base._Ready();
             SubTiles = new Tile[1, 1];
+            _discreteRotation = DiscreteRotation.R0;
         }
-        public DiscreteRotation DiscreteRotation { get; private set; }
+       
 
         public void RegisterPositionInGrid(int gridX , int gridY)
         {
@@ -37,10 +50,10 @@ namespace ConnectAPIC.Scenes.Component
         public void RotateBy90()
         {
             SubTiles = SubTiles.RotateClockwise();
-
+            _discreteRotation = _discreteRotation.RotateBy90();
             foreach (Tile tile in SubTiles)
             {
-                tile.RotateBy90();
+                tile.Rotation90 = _discreteRotation;
             }
         }
         public Tile GetSubTileAt(int offsetX, int offsetY)
@@ -49,17 +62,7 @@ namespace ConnectAPIC.Scenes.Component
             {
                 return null;
             }
-            // Todo also take Rotation into consideration
             return SubTiles[offsetX, offsetY];
-        }
-        public void RegisterTileAsSubtile(Tile tile , int offsetX, int offsetY)
-        {
-            if (offsetX < 0 || offsetY < 0 || offsetX >= WidthInTiles || offsetY >= HeightInTiles)
-            {
-                return;
-            }
-            // Todo also take Rotation into consideration
-            SubTiles[offsetX, offsetY] = tile;
         }
         public ComponentBase Duplicate()
         {
@@ -72,6 +75,7 @@ namespace ConnectAPIC.Scenes.Component
                     item.SubTiles[x,y] = SubTiles[x, y].Duplicate();
                 }
             }
+            item.Rotation90 = this.Rotation90;
             return item;
         }
     }

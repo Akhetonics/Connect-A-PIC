@@ -38,24 +38,12 @@ public partial class Grid : GridContainer
         }
     }
 
-    private void Grid_OnRotationRequested(Tile tile)
-    {
-        if (tile == null || tile.Component == null) return;
-        
-        var rotatedComponent = tile.Component.Duplicate();
-        int x = tile.Component.GridXMainTile;
-        int y = tile.Component.GridYMainTile;
-        rotatedComponent.RotateBy90();
-        RemoveComponentAt(tile.GridX, tile.GridY);
-        PlaceExistingComponent(x, y, rotatedComponent);
-    }
-
     private void RemoveAllTiles()
     {
 		var i = 0;
         foreach (Node n in this.FindChildren("*"))
         {
-			RemoveComponentAt(i % this.Columns, i / this.Columns); 
+			UnregisterComponentAt(i % this.Columns, i / this.Columns); 
             this.RemoveChild(n);
 			i++;
         }
@@ -68,11 +56,11 @@ public partial class Grid : GridContainer
             return true;
         }
 
-        for (int i = x; i < x + sizeX - 1; i++)
+        for (int i = x; i < x + sizeX; i++)
         {
-            for (int j = y; j < y + sizeY - 1; j++)
+            for (int j = y; j < y + sizeY; j++)
             {
-                if (Tiles[i, j] != null)
+                if (Tiles[i, j]?.Component != null)
                 {
                     return true;
                 }
@@ -99,8 +87,7 @@ public partial class Grid : GridContainer
     {
         if (IsColliding(x, y, item.WidthInTiles, item.HeightInTiles))
         {
-            item.QueueFree();
-            return;
+            throw new ComponentCannotBePlacedException(item);
         }
         item.RegisterPositionInGrid(x, y);
         for (int i = 0; i < item.WidthInTiles; i++)
@@ -111,29 +98,49 @@ public partial class Grid : GridContainer
                 int gridY = y + j;
                 Tiles[gridX, gridY].ResetToDefault(defaultTile.Texture);
                 Tiles[gridX, gridY].Component = item;
-                Tiles[gridX, gridY].SetRotation90Based (item.GetSubTileAt(i, j).Rotation90Based);
                 Tiles[gridX, gridY].Texture = item.GetSubTileAt(i, j).Texture;
-                item.RegisterTileAsSubtile(Tiles[gridX, gridY], i, j);
+                Tiles[gridX, gridY].Rotation90 = item.Rotation90;
             }
         }
     }
-    public void CreateAndPlaceComponent(int x, int y, Type componentType)
+    public ComponentBase CreateAndPlaceComponent(int x, int y, Type componentType)
     {
         ComponentBase item = ComponentFactory.Instance.CreateComponent(componentType);
         if (IsColliding(x, y, item.WidthInTiles, item.HeightInTiles))
         {
             item.QueueFree();
-            return;
+            return null;
         }
         PlaceExistingComponent(x, y, item);
+        return item;
     }
-    
+
+    private void Grid_OnRotationRequested(Tile tile)
+    {
+        if (tile == null || tile.Component == null) return;
+
+        var rotatedComponent = tile.Component;
+        int x = tile.Component.GridXMainTile;
+        int y = tile.Component.GridYMainTile;
+        UnregisterComponentAt(tile.GridX, tile.GridY);
+        rotatedComponent.RotateBy90();
+        try
+        {
+            PlaceExistingComponent(x, y, rotatedComponent);
+        }
+        catch (ComponentCannotBePlacedException)
+        {
+            rotatedComponent.Rotation90 = rotatedComponent.Rotation90 - 1;
+            PlaceExistingComponent(x, y, rotatedComponent);
+        }
+
+    }
     private void Grid_OnDeletionRequested(Tile tile)
     {
         if (tile.Component != null)
-            RemoveComponentAt(tile.Component.GridXMainTile, tile.Component.GridYMainTile);
+            UnregisterComponentAt(tile.Component.GridXMainTile, tile.Component.GridYMainTile);
     }
-    private void Grid_OnCreateNewComponent(Tile tile, ComponentBase componentBlueprint)
+    private void Grid_OnCreateNewComponent(TileDraggable tile, ComponentBase componentBlueprint)
     {
         if (CanComponentBePlaced(tile.GridX, tile.GridY, componentBlueprint))
         {
@@ -141,16 +148,21 @@ public partial class Grid : GridContainer
         }
     }
 
-    private void Grid_OnMoveExistingComponent(Tile tile, ComponentBase component)
+    private void Grid_OnMoveExistingComponent(TileDraggable tile, ComponentBase component)
     {
-        if (CanComponentBePlaced(tile.GridX, tile.GridY, component))
+        int oldMainGridx = component.GridXMainTile;
+        int oldMainGridy = component.GridYMainTile;
+        UnregisterComponentAt(component.GridXMainTile, component.GridYMainTile); // to avoid blocking itself from moving only one tile into its own subtiles
+        try
         {
-            RemoveComponentAt(component.GridXMainTile, component.GridYMainTile);
-            CreateAndPlaceComponent(tile.GridX, tile.GridY, component.GetType());
+            PlaceExistingComponent(tile.GridX, tile.GridY, component);
+        } catch (ComponentCannotBePlacedException)
+        {
+            PlaceExistingComponent(oldMainGridx, oldMainGridy, component);
         }
     }
 
-    public void RemoveComponentAt(int x, int y)
+    public void UnregisterComponentAt(int x, int y)
     {
         ComponentBase item = GetComponentAt(x, y);
         if (item == null)
@@ -178,14 +190,6 @@ public partial class Grid : GridContainer
 	{
 
 	}
-
-	public void ConnectAdjacentComponents()
-	{
-
-	}
-	private void ConnectComponentToAdjacentComponents (ComponentBase component) { 
-	}
-
 	public bool CanComponentBePlaced(int gridX, int gridY, ComponentBase component)
 	{
         return ! IsColliding(gridX, gridY, component.WidthInTiles, component.HeightInTiles);

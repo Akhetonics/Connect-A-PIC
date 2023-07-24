@@ -1,7 +1,6 @@
 using Godot;
 using Godot.Collections;
 using System;
-
 public static class ArrayExtensions
 {
     public static T[,] RotateCounterClockwise<T>(this T[,] array)

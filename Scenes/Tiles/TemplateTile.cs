@@ -4,7 +4,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public partial class TemplateTile : Tile
+public partial class TemplateTile : TileDraggable
 {
     [Export] public NodePath componentTemplatePath;
     public ComponentBase componentTemplate;
@@ -15,27 +15,6 @@ public partial class TemplateTile : Tile
         Node node = GetNodeOrNull(componentTemplatePath); // not sure what is wrong here but it cannot convert the node to straightline.
         componentTemplate =  (StraightWaveGuide)node;
         if (componentTemplate == null) throw new ArgumentNullException(nameof(componentTemplate));
-    }
-    public override bool _CanDropData(Vector2 position, Variant data)
-	{
-        if (data.Obj is ComponentBase component)
-        {
-            ShowMultiTileDragPreview(position, component);
-        }
-        return true;
-	}
-
-    private void ShowMultiTileDragPreview(Vector2 position, ComponentBase component)
-    {
-        for (int x = 0; x < component.WidthInTiles; x++)
-        {
-            for (int y = 0; y < component.HeightInTiles; y++)
-            {
-                var previewtile = component.GetSubTileAt(x, y).Duplicate() as Tile;
-                previewtile.Position = new Vector2(position.X + x * 64, position.Y + y * 64);
-                SetDragPreview(previewtile);
-            }
-        }
     }
 
     public override void _DropData(Vector2 position, Variant data)
