@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using ConnectAPIC.Scenes.Component;
-
 namespace TransferFunction
 {
 	public class SMatrix

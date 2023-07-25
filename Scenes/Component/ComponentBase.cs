@@ -3,6 +3,7 @@ using Godot;
 using Godot.Collections;
 using System;
 using System.Collections.Generic;
+using Tiles;
 
 namespace ConnectAPIC.Scenes.Component
 {

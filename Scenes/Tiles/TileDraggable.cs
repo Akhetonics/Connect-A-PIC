@@ -1,10 +1,5 @@
 ﻿using ConnectAPIC.Scenes.Component;
 using Godot;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ConnectAPIC.Scenes.Tiles
 {
@@ -36,9 +31,8 @@ namespace ConnectAPIC.Scenes.Tiles
         }
         protected void ShowMultiTileDragPreview(Vector2 position, ComponentBase component)
         {
-            var previewGrid = new GridContainer(); 
+            var previewGrid = new GridContainer();
             previewGrid.PivotOffset = previewGrid.Size / 2f;
-            var newComponent = component.Duplicate();
             var oldRotation = component.Rotation90;
             component.Rotation90 = DiscreteRotation.R0;
             previewGrid.Columns = component.WidthInTiles;
@@ -47,13 +41,14 @@ namespace ConnectAPIC.Scenes.Tiles
                 for (int x = 0; x < component.WidthInTiles; x++)
                 {
                     var subTile = component.GetSubTileAt(x, y);
-                    var previewtile = subTile.Duplicate();
+                    var previewtile = subTile?.Duplicate();
                     previewtile._Ready();
-                    //previewtile.Rotation90= subTile.Rotation90;// all this rotation mess has to be done because it seems that previewTile cannot be rotated within the grid directly (??)
+                    previewtile.Visible = true;
+                    previewtile.Rotation90 = subTile.Rotation90;// all this rotation mess has to be done because it seems that previewTile cannot be rotated within the grid directly (??)
                     previewGrid.AddChild(previewtile);
                 }
             }
-            previewGrid.RotationDegrees = (float)oldRotation *90f;
+            previewGrid.RotationDegrees = (float)oldRotation * 90f;
             component.Rotation90 = oldRotation;
             this.SetDragPreview(previewGrid);
         }

@@ -3,15 +3,27 @@ using ConnectAPIC.Scenes.Tiles;
 using Godot;
 using System;
 using System.ComponentModel;
+using Tiles;
 
 public partial class Grid : GridContainer
 {
     public Tile[,] Tiles { get; private set; }
-    public Tile defaultTile;
+    [Export] public NodePath DefaultTilePath;
+    private Tile _defaultTile;
+    public Tile DefaultTile
+    {
+        get
+        {
+            if (_defaultTile == null)
+            {
+                _defaultTile = this.GetNodeOrNull<Tile>(DefaultTilePath);
+            }
+            return _defaultTile;
+        }
+    }
     public static int MaxTileCount { get; private set; }
     public override void _Ready()
 	{
-        defaultTile = this.GetParent().GetNode<Tile>("TileTemplate");
         MaxTileCount = Columns * Columns;
         Tiles = new Tile[Columns, Columns];
         RemoveAllTiles();
@@ -20,19 +32,20 @@ public partial class Grid : GridContainer
 
 	public void CreateEmptyField()
     {
-        if (defaultTile == null) throw new ArgumentException("TileTemplate is not set in PICArea. Please tell the developer to fix that.");
+        if (DefaultTile == null) throw new ArgumentException("TileTemplate is not set in PICArea. Please tell the developer to fix that.");
         for (int i = 0; i < MaxTileCount; i++)
         {
             int gridX = i % this.Columns;
             int gridY = i / this.Columns;
-            var newTile = defaultTile.Duplicate();
+            DefaultTile._Ready();
+            var newTile = DefaultTile.Duplicate();
             newTile._Ready();
             newTile.Visible = true;
             newTile.SetPositionInGrid(gridX, gridY);
             this.AddChild(newTile);
             Tiles[gridX, gridY] = newTile;
             Tiles[gridX, gridY].OnDeletionRequested += Grid_OnDeletionRequested;
-            Tiles[gridX, gridY].OnRotationRequested += Grid_OnRotationRequested; ;
+            Tiles[gridX, gridY].OnRotationRequested += Grid_OnRotationRequested;
             Tiles[gridX, gridY].OnCreateNewComponentRequested += Grid_OnCreateNewComponent;
             Tiles[gridX, gridY].OnMoveComponentRequested += Grid_OnMoveExistingComponent;
         }
@@ -96,9 +109,14 @@ public partial class Grid : GridContainer
             {
                 int gridX = x + i;
                 int gridY = y + j;
-                Tiles[gridX, gridY].ResetToDefault(defaultTile.Texture);
+                Tile subTile = item.GetSubTileAt(i, j).Duplicate();
+                Tiles[gridX, gridY].ResetToDefault(DefaultTile.Texture);
                 Tiles[gridX, gridY].Component = item;
-                Tiles[gridX, gridY].Texture = item.GetSubTileAt(i, j).Texture;
+                Tiles[gridX, gridY].Texture = subTile.Texture;
+                Tiles[gridX, gridY].InitializePin(RectangleSide.Right, subTile.GetPinAt(RectangleSide.Right));
+                Tiles[gridX, gridY].InitializePin(RectangleSide.Up, subTile.GetPinAt(RectangleSide.Up));
+                Tiles[gridX, gridY].InitializePin(RectangleSide.Down, subTile.GetPinAt(RectangleSide.Down));
+                Tiles[gridX, gridY].InitializePin(RectangleSide.Left, subTile.GetPinAt(RectangleSide.Left));
                 Tiles[gridX, gridY].Rotation90 = item.Rotation90;
             }
         }
@@ -175,7 +193,7 @@ public partial class Grid : GridContainer
         {
             for (int j = 0; j < item.HeightInTiles; j++)
             {
-                Tiles[x + i, y + j].ResetToDefault(defaultTile.Texture);
+                Tiles[x + i, y + j].ResetToDefault(DefaultTile.Texture);
             }
         }
         item.ClearGridData();

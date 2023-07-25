@@ -1,38 +1,48 @@
+using ConnectAPIC.Scenes.Component;
+using Godot;
+
 namespace ConnectAPIC.Scenes.Component
 {
-    public class Pin
+    public partial class Pin : TextureRect
     {
-        public string Name { get; private set; } // the nazca name like b0, a0, a1
-        public MatterType MatterType;
-        public Pin Connection;
-        public Pin(string name, MatterType matterType)
+        [Export] public new string Name { get; set; } // the nazca name like b0, a0, a1
+        [Export] private MatterType _matterType;
+        public MatterType MatterType { get => _matterType; set => SetMatterType(value); }
+        public override void _Ready()
         {
-            // Name should be unique to the component
-            this.MatterType = matterType;
-            Name = name;
+            base._Ready();
+            SetMatterType(this.MatterType);
         }
-        public void Connect(Pin otherPin)
+        public void SetMatterType(MatterType newMatterType)
         {
-            this.Connection = otherPin;
-            otherPin.Connection = this;
-        }
-        public void Disconnect(){
-            if (this.Connection == null) return;
-            var oldConnection = this.Connection;
-            this.Connection = null;
-            if (oldConnection.Connection != null)
+            _matterType = newMatterType;
+            Visible = true;
+            switch (newMatterType)
             {
-                oldConnection.Disconnect();
+                case MatterType.Electricity:
+                    Texture = GD.Load<Texture2D>("res://Scenes/Tiles/PinElectric.png");
+                    break;
+                case MatterType.Light:
+                    Texture = GD.Load<Texture2D>("res://Scenes/Tiles/PinLight.png");
+                    break;
+                case MatterType.None:
+                    Texture = null;
+                    this.Visible = false;
+                    break;
+                default:
+                    Texture = null;
+                    this.Visible = false;
+                    break;
             }
         }
-        
+        public void Reset()
+        {
+            MatterType = MatterType.None;
+            Name = "";
+        }
         public override string ToString()
         {
             return Name;
-        }
-        public Pin Duplicate()
-        {
-            return new Pin(Name, this.MatterType);
         }
     }
 }
