@@ -19,16 +19,17 @@ namespace ConnectAPIC.Scenes.Component
             SubTiles = new Tile[2,1];
             SubTiles[0, 0] = defaultTile.Duplicate();
             SubTiles[0, 0].Texture = Texture;
-            SubTiles[0, 0].InitializePin(RectangleSide.Right, "", MatterType.None);
-            SubTiles[0, 0].InitializePin(RectangleSide.Up, "a0", MatterType.Light);
-            SubTiles[0, 0].InitializePin(RectangleSide.Left, "a1", MatterType.Electricity);
-            SubTiles[0, 0].InitializePin(RectangleSide.Down, "", MatterType.None);
+            SubTiles[0, 0].Rotation90= DiscreteRotation.R0;
+            SubTiles[0, 0].InitializePin(RectangleSide.Right, "Right", MatterType.None);
+            SubTiles[0, 0].InitializePin(RectangleSide.Up, "Up", MatterType.Light);
+            SubTiles[0, 0].InitializePin(RectangleSide.Left, "Left", MatterType.Electricity);
+            SubTiles[0, 0].InitializePin(RectangleSide.Down, "Down", MatterType.None);
             SubTiles[1, 0] = defaultTile.Duplicate();
             SubTiles[1, 0].Texture = Texture;
-            SubTiles[1, 0].InitializePin(RectangleSide.Right, "", MatterType.None);
-            SubTiles[1, 0].InitializePin(RectangleSide.Up, "b0", MatterType.Light);
-            SubTiles[1, 0].InitializePin(RectangleSide.Left, "b1", MatterType.Electricity);
-            SubTiles[1, 0].InitializePin(RectangleSide.Down, "", MatterType.None);
+            SubTiles[1, 0].InitializePin(RectangleSide.Right, "1", MatterType.None);
+            SubTiles[1, 0].InitializePin(RectangleSide.Up, "2", MatterType.Light);
+            SubTiles[1, 0].InitializePin(RectangleSide.Left, "3", MatterType.Electricity);
+            SubTiles[1, 0].InitializePin(RectangleSide.Down, "4", MatterType.None);
         }
     }
 }

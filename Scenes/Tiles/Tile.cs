@@ -1,8 +1,11 @@
 using ConnectAPIC.Scenes.Component;
 using ConnectAPIC.Scenes.Tiles;
 using Godot;
+using Godot.NativeInterop;
 using System;
 using System.Collections.Generic;
+using System.Net.NetworkInformation;
+
 namespace Tiles
 {
 
@@ -23,16 +26,12 @@ namespace Tiles
             get => _discreteRotation;
             set
             {
-                int rotationIntervals = _discreteRotation.CalculateCyclesTillTargetRotation(value);
                 _discreteRotation = value;
                 RotationDegrees = (int)Rotation90 * 90;
-                for (int i = 0; i < rotationIntervals; i++)
-                {
-                    RotatePinsBy90();
-                }
             }
         }
-
+        public new float RotationDegrees { get => base.RotationDegrees; protected set => base.RotationDegrees = value; }
+        public new float Rotation { get => base.Rotation; protected set => base.Rotation = value; }
 
         public override void _Ready()
         {
@@ -63,28 +62,20 @@ namespace Tiles
 
         public void InitializePin(RectangleSide side, string name, MatterType matterType)
         {
+            side = side.RotateRectangleSide(Rotation90);
             Pins[side].MatterType = matterType;
             Pins[side].Name = name;
         }
+        
         public void InitializePin(RectangleSide side, Pin pin)
         {
-            Pins[side].MatterType = pin.MatterType;
-            Pins[side].Name = pin.Name;
-        }
-        private void RotatePinsBy90()
-        {
-            // switch all pins around, so that they all go one to the left as with the rotation
-            if (Pins != null && Pins.Count == 4)
-            {
-                (Pins[RectangleSide.Right], Pins[RectangleSide.Down]) = (Pins[RectangleSide.Down], Pins[RectangleSide.Right]);
-                (Pins[RectangleSide.Right], Pins[RectangleSide.Left]) = (Pins[RectangleSide.Left], Pins[RectangleSide.Right]);
-                (Pins[RectangleSide.Right], Pins[RectangleSide.Up]) = (Pins[RectangleSide.Up], Pins[RectangleSide.Right]);
-            }
+            this.InitializePin(side, pin.Name, pin.MatterType);
         }
 
         public Pin GetPinAt(RectangleSide side) // takes rotation into account
         {
-            return Pins.GetValueOrDefault(side);
+            side = side.RotateRectangleSide(Rotation90);
+            return Pins[side];
         }
 
         public override void _GuiInput(InputEvent inputEvent)

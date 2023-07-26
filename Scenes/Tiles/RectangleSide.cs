@@ -9,8 +9,8 @@ namespace ConnectAPIC.Scenes.Tiles
     public enum RectangleSide // has to have the same order as TurnableDegrees so that we can use the enum value as an index
     {
         Right,
-        Up,
-        Left,
         Down,
+        Left,
+        Up,
     }
 }

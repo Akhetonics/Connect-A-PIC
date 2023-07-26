@@ -113,11 +113,11 @@ public partial class Grid : GridContainer
                 Tiles[gridX, gridY].ResetToDefault(DefaultTile.Texture);
                 Tiles[gridX, gridY].Component = item;
                 Tiles[gridX, gridY].Texture = subTile.Texture;
+                Tiles[gridX, gridY].Rotation90 = item.Rotation90;
                 Tiles[gridX, gridY].InitializePin(RectangleSide.Right, subTile.GetPinAt(RectangleSide.Right));
                 Tiles[gridX, gridY].InitializePin(RectangleSide.Up, subTile.GetPinAt(RectangleSide.Up));
                 Tiles[gridX, gridY].InitializePin(RectangleSide.Down, subTile.GetPinAt(RectangleSide.Down));
                 Tiles[gridX, gridY].InitializePin(RectangleSide.Left, subTile.GetPinAt(RectangleSide.Left));
-                Tiles[gridX, gridY].Rotation90 = item.Rotation90;
             }
         }
     }
