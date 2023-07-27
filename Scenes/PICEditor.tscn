@@ -1,11 +1,10 @@
-[gd_scene load_steps=11 format=3 uid="uid://cu6wqy6xwjfo1"]
+[gd_scene load_steps=10 format=3 uid="uid://cu6wqy6xwjfo1"]
 
 [ext_resource type="Script" path="res://Scenes/GameManager.cs" id="1_1g8p6"]
 [ext_resource type="Script" path="res://Scenes/Grid.cs" id="1_2pqex"]
 [ext_resource type="Texture2D" uid="uid://dm0sl0jrwrfx6" path="res://Scenes/Tiles/EmptyGround.png" id="2_ddx4u"]
 [ext_resource type="Script" path="res://Scenes/Tiles/Tile.cs" id="3_anirx"]
-[ext_resource type="Texture2D" path="res://Scenes/Tiles/PinLight.png" id="5_gtjq0"]
-[ext_resource type="Script" path="res://Scenes/Component/Pin.cs" id="6_an66a"]
+[ext_resource type="Texture2D" uid="uid://cd2busn0vvaoq" path="res://Scenes/Tiles/PinLight.png" id="5_gtjq0"]
 [ext_resource type="Script" path="res://Scenes/Tiles/TemplateTile.cs" id="6_ly1br"]
 [ext_resource type="Script" path="res://Scenes/Component/ComponentFactory.cs" id="7_mjow5"]
 [ext_resource type="Script" path="res://Scenes/Component/StraightWaveGuide.cs" id="7_tohqs"]
@@ -44,10 +43,9 @@ texture = ExtResource("2_ddx4u")
 expand_mode = 3
 script = ExtResource("3_anirx")
 PinLeftPath = NodePath("PinLeft")
-PinUpPath = NodePath("PinTop")
-TileDraggablePath = NodePath(".")
+PinUpPath = NodePath("PinUp")
 PinRightPath = NodePath("PinRight")
-PinDownPath = NodePath("PinBottom")
+PinDownPath = NodePath("PinDown")
 
 [node name="PinLeft" type="TextureRect" parent="GameManager/PICArea/DefaultTile"]
 layout_mode = 0
@@ -56,16 +54,14 @@ offset_right = 6.0
 offset_bottom = 35.0
 texture = ExtResource("5_gtjq0")
 stretch_mode = 2
-script = ExtResource("6_an66a")
 
-[node name="PinTop" type="TextureRect" parent="GameManager/PICArea/DefaultTile"]
+[node name="PinUp" type="TextureRect" parent="GameManager/PICArea/DefaultTile"]
 layout_mode = 0
 offset_left = 29.0
 offset_right = 35.0
 offset_bottom = 6.0
 texture = ExtResource("5_gtjq0")
 stretch_mode = 2
-script = ExtResource("6_an66a")
 
 [node name="PinRight" type="TextureRect" parent="GameManager/PICArea/DefaultTile"]
 layout_mode = 0
@@ -75,9 +71,8 @@ offset_right = 64.0
 offset_bottom = 35.0
 texture = ExtResource("5_gtjq0")
 stretch_mode = 2
-script = ExtResource("6_an66a")
 
-[node name="PinBottom" type="TextureRect" parent="GameManager/PICArea/DefaultTile"]
+[node name="PinDown" type="TextureRect" parent="GameManager/PICArea/DefaultTile"]
 layout_mode = 0
 offset_left = 29.0
 offset_top = 58.0
@@ -85,7 +80,6 @@ offset_right = 35.0
 offset_bottom = 64.0
 texture = ExtResource("5_gtjq0")
 stretch_mode = 2
-script = ExtResource("6_an66a")
 
 [node name="ComponentToolBox" type="Panel" parent="GameManager"]
 offset_left = 659.0

@@ -38,7 +38,7 @@ public partial class Grid : GridContainer
             int gridX = i % this.Columns;
             int gridY = i / this.Columns;
             DefaultTile._Ready();
-            var newTile = DefaultTile.Duplicate();
+            var newTile = (Tile)DefaultTile.Duplicate();
             newTile._Ready();
             newTile.Visible = true;
             newTile.SetPositionInGrid(gridX, gridY);
@@ -96,28 +96,24 @@ public partial class Grid : GridContainer
         return Tiles[x, y].Component;
     }
 
-    public void PlaceExistingComponent(int x , int y , ComponentBase item)
+    public void PlaceExistingComponent(int x , int y , ComponentBase component)
     {
-        if (IsColliding(x, y, item.WidthInTiles, item.HeightInTiles))
+        if (IsColliding(x, y, component.WidthInTiles, component.HeightInTiles))
         {
-            throw new ComponentCannotBePlacedException(item);
+            throw new ComponentCannotBePlacedException(component);
         }
-        item.RegisterPositionInGrid(x, y);
-        for (int i = 0; i < item.WidthInTiles; i++)
+        component.RegisterPositionInGrid(x, y);
+        for (int i = 0; i < component.WidthInTiles; i++)
         {
-            for (int j = 0; j < item.HeightInTiles; j++)
+            for (int j = 0; j < component.HeightInTiles; j++)
             {
                 int gridX = x + i;
                 int gridY = y + j;
-                Tile subTile = item.GetSubTileAt(i, j).Duplicate();
+                Part part = component.GetPartAt(i, j);
                 Tiles[gridX, gridY].ResetToDefault(DefaultTile.Texture);
-                Tiles[gridX, gridY].Component = item;
-                Tiles[gridX, gridY].Texture = subTile.Texture;
-                Tiles[gridX, gridY].Rotation90 = item.Rotation90;
-                Tiles[gridX, gridY].InitializePin(RectangleSide.Right, subTile.GetPinAt(RectangleSide.Right));
-                Tiles[gridX, gridY].InitializePin(RectangleSide.Up, subTile.GetPinAt(RectangleSide.Up));
-                Tiles[gridX, gridY].InitializePin(RectangleSide.Down, subTile.GetPinAt(RectangleSide.Down));
-                Tiles[gridX, gridY].InitializePin(RectangleSide.Left, subTile.GetPinAt(RectangleSide.Left));
+                Tiles[gridX, gridY].Component = component;
+                Tiles[gridX, gridY].Texture = part.Texture;
+                Tiles[gridX, gridY].Rotation90 = component.Rotation90;
             }
         }
     }
@@ -133,7 +129,7 @@ public partial class Grid : GridContainer
         return item;
     }
 
-    private void Grid_OnRotationRequested(Tile tile)
+    private void Grid_OnRotationRequested(TileBase tile)
     {
         if (tile == null || tile.Component == null) return;
 
@@ -153,12 +149,12 @@ public partial class Grid : GridContainer
         }
 
     }
-    private void Grid_OnDeletionRequested(Tile tile)
+    private void Grid_OnDeletionRequested(TileBase tile)
     {
         if (tile.Component != null)
             UnregisterComponentAt(tile.Component.GridXMainTile, tile.Component.GridYMainTile);
     }
-    private void Grid_OnCreateNewComponent(TileDraggable tile, ComponentBase componentBlueprint)
+    private void Grid_OnCreateNewComponent(TileBase tile, ComponentBase componentBlueprint)
     {
         if (CanComponentBePlaced(tile.GridX, tile.GridY, componentBlueprint))
         {
@@ -166,7 +162,7 @@ public partial class Grid : GridContainer
         }
     }
 
-    private void Grid_OnMoveExistingComponent(TileDraggable tile, ComponentBase component)
+    private void Grid_OnMoveExistingComponent(TileBase tile, ComponentBase component)
     {
         int oldMainGridx = component.GridXMainTile;
         int oldMainGridy = component.GridYMainTile;

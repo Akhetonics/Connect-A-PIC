@@ -3,18 +3,21 @@ using Godot;
 using Godot.Collections;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using Tiles;
+using TransferFunction;
 
 namespace ConnectAPIC.Scenes.Component
 {
     public abstract partial class ComponentBase : Node
 {
-        public int WidthInTiles => SubTiles.GetLength(0);
-        public int HeightInTiles => SubTiles.GetLength(1);
+        public int WidthInTiles => Parts.GetLength(0);
+        public int HeightInTiles => Parts.GetLength(1);
         public bool IsPlacedInGrid { get; protected set; } = false;
         public int GridXMainTile { get; protected set; }
         public int GridYMainTile { get; protected set; }
-        public virtual Tile[,] SubTiles { get; protected set; }
+        public virtual Part[,] Parts { get; protected set; }
+        public SMatrix Connections;
         public DiscreteRotation _discreteRotation;
         public DiscreteRotation Rotation90
         {
@@ -31,7 +34,7 @@ namespace ConnectAPIC.Scenes.Component
         public override void _Ready()
         {
             base._Ready();
-            SubTiles = new Tile[1, 1];
+            Parts = new Part[1, 1];
             _discreteRotation = DiscreteRotation.R0;
         }
        
@@ -50,30 +53,30 @@ namespace ConnectAPIC.Scenes.Component
         }
         public void RotateBy90()
         {
-            SubTiles = SubTiles.RotateClockwise();
+            Parts = Parts.RotateClockwise();
             _discreteRotation = _discreteRotation.RotateBy90();
-            foreach (Tile tile in SubTiles)
+            foreach (Part part in Parts)
             {
-                tile.Rotation90 = _discreteRotation;
+                part.Rotation90 = _discreteRotation;
             }
         }
-        public Tile GetSubTileAt(int offsetX, int offsetY)
+        public Part GetPartAt(int offsetX, int offsetY)
         {
             if (offsetX < 0 || offsetY < 0 || offsetX >= WidthInTiles || offsetY >= HeightInTiles)
             {
                 return null;
             }
-            return SubTiles[offsetX, offsetY];
+            return Parts[offsetX, offsetY];
         }
         public ComponentBase Duplicate()
         {
             var item = base.Duplicate() as ComponentBase;
-            item.SubTiles = new Tile[SubTiles.GetLength(0),SubTiles.GetLength(1)];
-            for(int x = 0; x < SubTiles.GetLength(0); x++)
+            item.Parts = new Part[Parts.GetLength(0),Parts.GetLength(1)];
+            for(int x = 0; x < Parts.GetLength(0); x++)
             {
-                for (int y = 0; y < SubTiles.GetLength(1); y++)
+                for (int y = 0; y < Parts.GetLength(1); y++)
                 {
-                    item.SubTiles[x,y] = SubTiles[x, y].Duplicate();
+                    item.Parts[x,y] = Parts[x, y].Duplicate();
                 }
             }
             item.Rotation90 = this.Rotation90;

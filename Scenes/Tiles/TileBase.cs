@@ -3,14 +3,34 @@ using Godot;
 
 namespace ConnectAPIC.Scenes.Tiles
 {
-    public abstract partial class TileDraggable : TextureRect
+    public abstract partial class TileBase : TextureRect
     {
-        public delegate void ComponentEventHandler(TileDraggable tile, ComponentBase component);
+        public delegate void ComponentEventHandler(TileBase tile, ComponentBase component);
         public event ComponentEventHandler OnMoveComponentRequested;
         public event ComponentEventHandler OnCreateNewComponentRequested;
+        public delegate void TileEventHandler(TileBase tile);
+        public event TileEventHandler OnDeletionRequested;
+        public event TileEventHandler OnRotationRequested;
         public ComponentBase Component { get; set; }
         public int GridX { get; private set; }
         public int GridY { get; private set; }
+        public DiscreteRotation _discreteRotation;
+        public DiscreteRotation Rotation90
+        {
+            get => _discreteRotation;
+            set
+            {
+                _discreteRotation = value;
+                RotationDegrees = (int)Rotation90 * 90;
+            }
+        }
+        public new float RotationDegrees { get => base.RotationDegrees; protected set => base.RotationDegrees = value; }
+        public new float Rotation { get => base.Rotation; protected set => base.Rotation = value; }
+
+        public override void _Ready()
+        {
+            PivotOffset = Size / 2;
+        }
         /// <summary>
         /// Register the Tile when it gets created
         /// </summary>
@@ -18,6 +38,26 @@ namespace ConnectAPIC.Scenes.Tiles
         {
             GridX = X;
             GridY = Y;
+        }
+        
+        public override void _GuiInput(InputEvent inputEvent)
+        {
+            base._GuiInput(inputEvent);
+            if (inputEvent is InputEventMouseButton mouseEvent)
+            {
+                if (mouseEvent.Position.X < 0 || mouseEvent.Position.Y < 0 || mouseEvent.Position.X > Size.X || mouseEvent.Position.Y > Size.Y)
+                {
+                    return;
+                }
+                if (mouseEvent.ButtonIndex == MouseButton.Middle && mouseEvent.Pressed)
+                {
+                    OnDeletionRequested?.Invoke(this);
+                }
+                if (mouseEvent.ButtonIndex == MouseButton.Right && mouseEvent.Pressed)
+                {
+                    OnRotationRequested?.Invoke(this);
+                }
+            }
         }
         public override bool _CanDropData(Vector2 position, Variant data)
         {
@@ -40,11 +80,10 @@ namespace ConnectAPIC.Scenes.Tiles
             {
                 for (int x = 0; x < component.WidthInTiles; x++)
                 {
-                    var subTile = component.GetSubTileAt(x, y);
+                    var subTile = component.GetPartAt(x, y);
                     var previewtile = subTile?.Duplicate();
                     previewtile._Ready();
                     previewtile.Visible = true;
-                    previewtile.Rotation90 = subTile.Rotation90;// all this rotation mess has to be done because it seems that previewTile cannot be rotated within the grid directly (??)
                     previewGrid.AddChild(previewtile);
                 }
             }
@@ -70,6 +109,22 @@ namespace ConnectAPIC.Scenes.Tiles
         public override Variant _GetDragData(Vector2 position)
         {
             return this.Component;
+        }
+        public void ResetToDefault(Texture2D baseTexture)
+        {
+            Texture = baseTexture;
+            PivotOffset = Size / 2;
+            Visible = true;
+            _discreteRotation = DiscreteRotation.R0;
+            RotationDegrees = (int)Rotation90 * 90;
+            Component = null;
+        }
+        public TileBase Duplicate()
+        {
+            var copy = base.Duplicate() as TileBase;
+            copy.Rotation90 = Rotation90;
+            copy.RotationDegrees = RotationDegrees;
+            return copy;
         }
     }
 }

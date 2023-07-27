@@ -12,11 +12,11 @@ namespace TransferFunction
 		public readonly List<Pin>? PinReference;
 		private readonly int size;
 
-		public SMatrix(List<Pin> ports)
+		public SMatrix(List<Pin> allPinsInGrid)
 		{
-			if (ports != null && ports.Count > 0)
+			if (allPinsInGrid != null && allPinsInGrid.Count > 0)
 			{
-				this.size = ports.Count;
+				this.size = allPinsInGrid.Count;
 			}
 			else
 			{
@@ -24,10 +24,10 @@ namespace TransferFunction
 			}
 
 			this.SMat = Matrix<Complex>.Build.Dense(this.size, this.size);
-			this.PinReference = ports;
+			this.PinReference = allPinsInGrid;
 		}
 
-		public void setValues(Dictionary<Tuple<Pin, Pin>, Complex> transfers, bool reset = false)
+		public void setValues(Dictionary<(Pin, Pin), Complex> transfers, bool reset = false)
 		{
 			if (transfers == null || this.PinReference == null)
 			{
@@ -53,16 +53,16 @@ namespace TransferFunction
 			}
 		}
 
-		public Dictionary<Tuple<Pin, Pin>, Complex> getValues()
+		public Dictionary<(Pin, Pin), Complex> getValues()
 		{
-			var transfers = new Dictionary<Tuple<Pin, Pin>, Complex>();
+			var transfers = new Dictionary<(Pin, Pin), Complex>();
 			for (int i = 0; i < this.size; i++)
 			{
 				for (int j = 0; j < this.size; j++)
 				{
 					if (this.SMat[i, j] != 0)
 					{
-						transfers[new Tuple<Pin, Pin>(this.PinReference[j], this.PinReference[i])] = this.SMat[i, j];
+						transfers[new (this.PinReference[j], this.PinReference[i])] = this.SMat[i, j];
 					}
 				}
 			}

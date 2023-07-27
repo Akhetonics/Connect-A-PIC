@@ -4,7 +4,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-public partial class TemplateTile : TileDraggable
+public partial class TemplateTile : TileBase
 {
     [Export] public NodePath componentTemplatePath;
     public ComponentBase componentTemplate;
