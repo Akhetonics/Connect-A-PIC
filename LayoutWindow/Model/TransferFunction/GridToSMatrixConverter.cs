@@ -12,17 +12,17 @@ namespace ConnectAPIC.Scenes.TransferFunction
 {
     public class GridToSMatrixConverter
     {
-        private readonly Grid Grid;
+        private readonly GridView Grid;
 
-        public GridToSMatrixConverter(Grid grid)
+        public GridToSMatrixConverter(GridView grid)
         {
             this.Grid = grid;
         }
 
         public Dictionary<(Pin, Pin), Complex> GetAllConnections()
         {
-            int gridWidth = Grid.Tiles.GetLength(0);
-            int gridHeight = Grid.Tiles.GetLength(1);
+            int gridWidth = Grid.TileViews.GetLength(0);
+            int gridHeight = Grid.TileViews.GetLength(1);
             Array allSides = Enum.GetValues(typeof(RectangleSide));
             Dictionary<(Pin, Pin), Complex> pin2pinLightDistribution = new();
 
@@ -43,7 +43,7 @@ namespace ConnectAPIC.Scenes.TransferFunction
         private void ConnectAllComponentBorderEdges(Dictionary<(Pin, Pin), Complex> pin2pinLightDistribution, int x, int y, RectangleSide side)
         {
             if (IsComponentBorderEdge(x, y, side) == false) return;
-            if (Grid.Tiles[x, y].Component == null) return;
+            if (Grid.TileViews[x, y].ComponentView == null) return;
             (int offsetx, int offsety) = GetOffsetByEdgeDirection(side);
             Pin currentPin = GetPin(x, y, side);
             if (IsInGrid(x + offsetx, y + offsety))
@@ -55,7 +55,7 @@ namespace ConnectAPIC.Scenes.TransferFunction
 
         private Pin GetPin(int x, int y, RectangleSide side)
         {
-            var component = Grid.Tiles[x, y].Component;
+            var component = Grid.TileViews[x, y].ComponentView;
             var partx = x - component.GridXMainTile;
             var party = y - component.GridXMainTile;
             var currentPin = component.GetPartAt(partx, party).GetPinAt(side);
@@ -64,7 +64,7 @@ namespace ConnectAPIC.Scenes.TransferFunction
 
         public bool IsInGrid(int gridx, int gridy)
         {
-            if (gridx < 0 || gridy < 0 || gridx > Grid.Tiles.GetLength(0) || gridy > Grid.Tiles.GetLength(1))
+            if (gridx < 0 || gridy < 0 || gridx > Grid.TileViews.GetLength(0) || gridy > Grid.TileViews.GetLength(1))
             {
                 return false;
             }
@@ -99,12 +99,12 @@ namespace ConnectAPIC.Scenes.TransferFunction
         private bool IsComponentBorderEdge(int gridx, int gridy, RectangleSide side)
         {
             (int offsetX, int offsetY) = GetOffsetByEdgeDirection(side);
-            var centeredComponent = Grid.Tiles[gridx, gridy].Component;
+            var centeredComponent = Grid.TileViews[gridx, gridy].ComponentView;
             if (IsInGrid(gridx + offsetX, gridy + offsetY) == false)
             {
                 return true;
             }
-            var offsetComponent = Grid.Tiles[gridx + offsetX, gridy + offsetY].Component;
+            var offsetComponent = Grid.TileViews[gridx + offsetX, gridy + offsetY].ComponentView;
             return centeredComponent != offsetComponent;
         }
     }

@@ -9,11 +9,10 @@ using TransferFunction;
 
 namespace ConnectAPIC.Scenes.Component
 {
-    public abstract partial class ComponentBase : Node
+    public abstract class ComponentBase
 {
         public int WidthInTiles => Parts.GetLength(0);
         public int HeightInTiles => Parts.GetLength(1);
-        public bool IsPlacedInGrid { get; protected set; } = false;
         public int GridXMainTile { get; protected set; }
         public int GridYMainTile { get; protected set; }
         public virtual Part[,] Parts { get; protected set; }
@@ -31,14 +30,12 @@ namespace ConnectAPIC.Scenes.Component
                 }
             }
         }
-        public override void _Ready()
+        public ComponentBase()
         {
-            base._Ready();
             Parts = new Part[1, 1];
             _discreteRotation = DiscreteRotation.R0;
         }
-       
-
+        
         public void RegisterPositionInGrid(int gridX , int gridY)
         {
             IsPlacedInGrid = true;
@@ -67,6 +64,22 @@ namespace ConnectAPIC.Scenes.Component
                 return null;
             }
             return Parts[offsetX, offsetY];
+        }
+        public Guid PinIdRight(int x, int y)
+        {
+            return Parts[x, y].GetPinAt(RectangleSide.Right).ID;
+        }
+        public Guid PinIdDown(int x, int y)
+        {
+            return Parts[x, y].GetPinAt(RectangleSide.Down).ID;
+        }
+        public Guid PinIdLeft(int x, int y)
+        {
+            return Parts[x, y].GetPinAt(RectangleSide.Left).ID;
+        }
+        public Guid PinIdUp(int x, int y)
+        {
+            return Parts[x, y].GetPinAt(RectangleSide.Up).ID;
         }
         public ComponentBase Duplicate()
         {

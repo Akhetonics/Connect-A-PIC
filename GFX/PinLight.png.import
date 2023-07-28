@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dm0sl0jrwrfx6"
-path="res://.godot/imported/EmptyGround.png-9c3af5bdbf2f33f050a68c76a16929e6.ctex"
+uid="uid://cd2busn0vvaoq"
+path="res://.godot/imported/PinLight.png-d207ffcc9b19afba8979e433de0febdc.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Scenes/Tiles/EmptyGround.png"
-dest_files=["res://.godot/imported/EmptyGround.png-9c3af5bdbf2f33f050a68c76a16929e6.ctex"]
+source_file="res://GFX/PinLight.png"
+dest_files=["res://.godot/imported/PinLight.png-d207ffcc9b19afba8979e433de0febdc.ctex"]
 
 [params]
 

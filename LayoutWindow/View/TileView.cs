@@ -1,29 +1,28 @@
-﻿using ConnectAPIC.Scenes.Component;
+using ConnectAPIC.LayoutWindow.View;
+using ConnectAPIC.Scenes.Component;
+using ConnectAPIC.Scenes.Tiles;
 using Godot;
+using Godot.NativeInterop;
+using System;
+using System.Collections.Generic;
+using System.Net.NetworkInformation;
 
-namespace ConnectAPIC.Scenes.Tiles
+namespace Tiles
 {
-    public abstract partial class TileBase : TextureRect
+
+    public partial class TileView : TextureRect
     {
-        public delegate void ComponentEventHandler(TileBase tile, ComponentBase component);
+        public delegate void ComponentEventHandler(TileView tile, ComponentBase component);
         public event ComponentEventHandler OnMoveComponentRequested;
         public event ComponentEventHandler OnCreateNewComponentRequested;
-        public delegate void TileEventHandler(TileBase tile);
+        public delegate void TileEventHandler(TileView tile);
         public event TileEventHandler OnDeletionRequested;
         public event TileEventHandler OnRotationRequested;
-        public ComponentBase Component { get; set; }
+        public IComponentView ComponentView { get; set; }
         public int GridX { get; private set; }
         public int GridY { get; private set; }
-        public DiscreteRotation _discreteRotation;
-        public DiscreteRotation Rotation90
-        {
-            get => _discreteRotation;
-            set
-            {
-                _discreteRotation = value;
-                RotationDegrees = (int)Rotation90 * 90;
-            }
-        }
+        public static int TilePixelSize { get; } = 64;
+       
         public new float RotationDegrees { get => base.RotationDegrees; protected set => base.RotationDegrees = value; }
         public new float Rotation { get => base.Rotation; protected set => base.Rotation = value; }
 
@@ -39,7 +38,7 @@ namespace ConnectAPIC.Scenes.Tiles
             GridX = X;
             GridY = Y;
         }
-        
+
         public override void _GuiInput(InputEvent inputEvent)
         {
             base._GuiInput(inputEvent);
@@ -80,13 +79,15 @@ namespace ConnectAPIC.Scenes.Tiles
             {
                 for (int x = 0; x < component.WidthInTiles; x++)
                 {
-                    var subTile = component.GetPartAt(x, y);
-                    var previewtile = subTile?.Duplicate();
+                    var componentPart = component.GetPartAt(x, y);
+                    var previewtile = new TextureRect();
                     previewtile._Ready();
+                    previewtile.Texture = componentPart?.Texture.Duplicate() as Texture2D;
                     previewtile.Visible = true;
                     previewGrid.AddChild(previewtile);
                 }
             }
+            var children = previewGrid.GetChildren();
             previewGrid.RotationDegrees = (float)oldRotation * 90f;
             component.Rotation90 = oldRotation;
             this.SetDragPreview(previewGrid);
@@ -108,7 +109,7 @@ namespace ConnectAPIC.Scenes.Tiles
 
         public override Variant _GetDragData(Vector2 position)
         {
-            return this.Component;
+            return this.ComponentView;
         }
         public void ResetToDefault(Texture2D baseTexture)
         {
@@ -117,14 +118,16 @@ namespace ConnectAPIC.Scenes.Tiles
             Visible = true;
             _discreteRotation = DiscreteRotation.R0;
             RotationDegrees = (int)Rotation90 * 90;
-            Component = null;
+            ComponentView = null;
         }
-        public TileBase Duplicate()
+        public TileView Duplicate()
         {
-            var copy = base.Duplicate() as TileBase;
+            var copy = base.Duplicate() as TileView;
             copy.Rotation90 = Rotation90;
             copy.RotationDegrees = RotationDegrees;
             return copy;
         }
+
+
     }
 }

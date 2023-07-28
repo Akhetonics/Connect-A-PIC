@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cd2busn0vvaoq"
-path="res://.godot/imported/PinLight.png-7ff142f3b0fe5a929e2a8328b26b517d.ctex"
+uid="uid://emq4du4tlo3h"
+path="res://.godot/imported/PinElectric.png-4f23c5634dbf7caf7beb8998421a16f1.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Scenes/Tiles/PinLight.png"
-dest_files=["res://.godot/imported/PinLight.png-7ff142f3b0fe5a929e2a8328b26b517d.ctex"]
+source_file="res://GFX/PinElectric.png"
+dest_files=["res://.godot/imported/PinElectric.png-4f23c5634dbf7caf7beb8998421a16f1.ctex"]
 
 [params]
 

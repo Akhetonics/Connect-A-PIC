@@ -3,8 +3,9 @@ using ConnectAPIC.Scenes.Tiles;
 using Godot;
 using System;
 using System.Collections.Generic;
+using Tiles;
 
-public partial class TemplateTile : TileBase
+public partial class TemplateTileView : Tile
 {
     [Export] public NodePath componentTemplatePath;
     public ComponentBase componentTemplate;
@@ -13,7 +14,7 @@ public partial class TemplateTile : TileBase
         base._Ready();
         if (string.IsNullOrEmpty(componentTemplatePath)) throw new ArgumentNullException(nameof(componentTemplatePath));
         Node node = GetNodeOrNull(componentTemplatePath); // not sure what is wrong here but it cannot convert the node to straightline.
-        componentTemplate =  (StraightWaveGuide)node;
+        componentTemplate =  (ComponentBase)node;
         if (componentTemplate == null) throw new ArgumentNullException(nameof(componentTemplate));
     }
 

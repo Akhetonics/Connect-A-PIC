@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://emq4du4tlo3h"
-path="res://.godot/imported/PinElectric.png-efb8f8e30e5fda0aa2cb660f198de1af.ctex"
+uid="uid://dm0sl0jrwrfx6"
+path="res://.godot/imported/EmptyGround.png-07b790a0cff1930737066a581a52410d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Scenes/Tiles/PinElectric.png"
-dest_files=["res://.godot/imported/PinElectric.png-efb8f8e30e5fda0aa2cb660f198de1af.ctex"]
+source_file="res://GFX/EmptyGround.png"
+dest_files=["res://.godot/imported/EmptyGround.png-07b790a0cff1930737066a581a52410d.ctex"]
 
 [params]
 

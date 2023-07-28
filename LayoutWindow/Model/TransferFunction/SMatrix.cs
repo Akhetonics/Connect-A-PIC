@@ -9,10 +9,10 @@ namespace TransferFunction
 	public class SMatrix
 	{
 		public Matrix<Complex> SMat;
-		public readonly List<Pin>? PinReference;
+		public readonly List<Guid>? PinReference;
 		private readonly int size;
 
-		public SMatrix(List<Pin> allPinsInGrid)
+		public SMatrix(List<Guid> allPinsInGrid)
 		{
 			if (allPinsInGrid != null && allPinsInGrid.Count > 0)
 			{
@@ -27,7 +27,7 @@ namespace TransferFunction
 			this.PinReference = allPinsInGrid;
 		}
 
-		public void setValues(Dictionary<(Pin, Pin), Complex> transfers, bool reset = false)
+		public void setValues(Dictionary<(Guid, Guid), Complex> transfers, bool reset = false)
 		{
 			if (transfers == null || this.PinReference == null)
 			{
@@ -53,9 +53,9 @@ namespace TransferFunction
 			}
 		}
 
-		public Dictionary<(Pin, Pin), Complex> getValues()
+		public Dictionary<(Guid, Guid), Complex> getValues()
 		{
-			var transfers = new Dictionary<(Pin, Pin), Complex>();
+			var transfers = new Dictionary<(Guid, Guid), Complex>();
 			for (int i = 0; i < this.size; i++)
 			{
 				for (int j = 0; j < this.size; j++)
