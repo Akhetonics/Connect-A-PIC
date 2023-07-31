@@ -20,6 +20,6 @@ namespace Tiles
             GridX = X;
             GridY = Y;
         }
-
+        
     }
 }

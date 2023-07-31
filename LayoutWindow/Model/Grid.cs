@@ -4,20 +4,21 @@ using Godot;
 using System;
 using Tiles;
 
-public class Grid 
+public class Grid
 {
     public delegate void OnGridCreatedHandler(Tile[,] Tiles);
-    public delegate void OnComponentPlacedOnTileHandler(ComponentBase component , int x , int y);
-    public delegate void OnComponentRemovedFromTileHandler(ComponentBase component, int x, int y);
+    public delegate void OnComponentChangedEventHandler(ComponentBase component, int x, int y);
     public event OnGridCreatedHandler OnGridCreated;
-    public event OnComponentPlacedOnTileHandler OnComponentPlacedOnTile;
-    public event OnComponentRemovedFromTileHandler OnComponentRemoved;
-    
+    public event OnComponentChangedEventHandler OnComponentPlacedOnTile;
+    public event OnComponentChangedEventHandler OnComponentRemoved;
+    public event OnComponentChangedEventHandler OnComponentRotated;
+    public event OnComponentChangedEventHandler OnComponentMoved;
+
     public Tile[,] Tiles { get; private set; }
     public int Width { get; private set; }
-    public int Height{ get; private set; }
-    
-    public Grid(int width, int height )
+    public int Height { get; private set; }
+
+    public Grid(int width, int height)
     {
         Width = width;
         Height = height;
@@ -27,7 +28,7 @@ public class Grid
         Tiles = new Tile[Width, Height];
         for (int x = 0; x < Width; x++)
         {
-            for(int y = 0; y < Height; y++)
+            for (int y = 0; y < Height; y++)
             {
                 Tiles[x, y] = new Tile(x, y);
             }
@@ -55,6 +56,31 @@ public class Grid
 
         return false;
     }
+
+    public bool TryRotateComponentBy90(int tileX, int tileY)
+    {
+        ComponentBase component = GetComponentAt(tileX, tileY);
+        if (component == null) return false;
+        var tile = Tiles[tileX, tileY];
+        if (tile == null || tile.Component == null) return false;
+
+        var rotatedComponent = tile.Component;
+        int x = tile.Component.GridXMainTile;
+        int y = tile.Component.GridYMainTile;
+        UnregisterComponentAt(tile.GridX, tile.GridY);
+        rotatedComponent.RotateBy90();
+        try
+        {
+            PlaceComponent(x, y, rotatedComponent);
+        }
+        catch (ComponentCannotBePlacedException)
+        {
+            rotatedComponent.Rotation90 = rotatedComponent.Rotation90 - 1;
+            PlaceComponent(x, y, rotatedComponent);
+        }
+        OnComponentRotated?.Invoke(rotatedComponent, tileX, tileY);
+        return true;
+    }
     public bool IsInGrid(int x, int y, int width, int height)
     {
         return x >= 0 && y >= 0 && x + width <= this.Width && y + height <= this.Height;
@@ -68,7 +94,7 @@ public class Grid
         return Tiles[x, y].Component;
     }
 
-    public void PlaceExistingComponent(int x, int y, ComponentBase component)
+    public void PlaceComponent(int x, int y, ComponentBase component)
     {
         if (IsColliding(x, y, component.WidthInTiles, component.HeightInTiles))
         {
@@ -84,15 +110,12 @@ public class Grid
                 Tiles[gridX, gridY].Component = component;
             }
         }
-        OnComponentPlacedOnTile?.Invoke(component,x,y);
+        OnComponentPlacedOnTile?.Invoke(component, x, y);
     }
     public void UnregisterComponentAt(int x, int y)
     {
         ComponentBase item = GetComponentAt(x, y);
-        if (item == null)
-        {
-            return;
-        }
+        if (item == null) return;
         x = item.GridXMainTile;
         y = item.GridYMainTile;
         for (int i = 0; i < item.WidthInTiles; i++)
@@ -105,63 +128,15 @@ public class Grid
         OnComponentRemoved?.Invoke(item, x, y);
         item.ClearGridData();
     }
-    public ComponentBase CreateAndPlaceComponent(int x, int y, Type componentType)
+    public ComponentBase PlaceComponentByType(int x, int y, Type componentType)
     {
         ComponentBase item = ComponentFactory.Instance.CreateComponent(componentType);
         if (IsColliding(x, y, item.WidthInTiles, item.HeightInTiles))
         {
             return null;
         }
-        PlaceExistingComponent(x, y, item);
+        PlaceComponent(x, y, item);
         return item;
-    }
-
-    private void Grid_OnRotationRequested(Tile tile)
-    {
-        if (tile == null || tile.Component == null) return;
-
-        var rotatedComponent = tile.Component;
-        int x = tile.Component.GridXMainTile;
-        int y = tile.Component.GridYMainTile;
-        UnregisterComponentAt(tile.GridX, tile.GridY);
-        rotatedComponent.RotateBy90();
-        try
-        {
-            PlaceExistingComponent(x, y, rotatedComponent);
-        }
-        catch (ComponentCannotBePlacedException)
-        {
-            rotatedComponent.Rotation90 = rotatedComponent.Rotation90 - 1;
-            PlaceExistingComponent(x, y, rotatedComponent);
-        }
-
-    }
-    private void Grid_OnDeletionRequested(Tile tile)
-    {
-        if (tile.Component != null)
-            UnregisterComponentAt(tile.Component.GridXMainTile, tile.Component.GridYMainTile);
-    }
-    private void Grid_OnCreateNewComponent(Tile tile, ComponentBase componentBlueprint)
-    {
-        if (CanComponentBePlaced(tile.GridX, tile.GridY, componentBlueprint))
-        {
-            CreateAndPlaceComponent(tile.GridX, tile.GridY, componentBlueprint.GetType());
-        }
-    }
-
-    private void Grid_OnMoveExistingComponent(Tile tile, ComponentBase component)
-    {
-        int oldMainGridx = component.GridXMainTile;
-        int oldMainGridy = component.GridYMainTile;
-        UnregisterComponentAt(component.GridXMainTile, component.GridYMainTile); // to avoid blocking itself from moving only one tile into its own subtiles
-        try
-        {
-            PlaceExistingComponent(tile.GridX, tile.GridY, component);
-        }
-        catch (ComponentCannotBePlacedException)
-        {
-            PlaceExistingComponent(oldMainGridx, oldMainGridy, component);
-        }
     }
 
     public bool CanComponentBePlaced(int gridX, int gridY, ComponentBase component)

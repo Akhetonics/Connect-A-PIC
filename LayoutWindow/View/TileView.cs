@@ -22,9 +22,6 @@ namespace Tiles
         public int GridX { get; private set; }
         public int GridY { get; private set; }
         public static int TilePixelSize { get; } = 64;
-       
-        public new float RotationDegrees { get => base.RotationDegrees; protected set => base.RotationDegrees = value; }
-        public new float Rotation { get => base.Rotation; protected set => base.Rotation = value; }
 
         public override void _Ready()
         {

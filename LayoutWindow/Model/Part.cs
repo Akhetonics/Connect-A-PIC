@@ -27,10 +27,10 @@ namespace Tiles
         {
             Pins = new List<Pin>
             {
-                new Pin("", pinTemplate.Duplicate() as TextureRect, RectangleSide.Left),
-                new Pin("", pinTemplate.Duplicate() as TextureRect, RectangleSide.Up),
-                new Pin("", pinTemplate.Duplicate() as TextureRect, RectangleSide.Right),
-                new Pin("", pinTemplate.Duplicate() as TextureRect, RectangleSide.Down),
+                new Pin("", MatterType.None, RectangleSide.Left),
+                new Pin("", MatterType.None, RectangleSide.Up),
+                new Pin("", MatterType.None, RectangleSide.Right),
+                new Pin("", MatterType.None, RectangleSide.Down),
             };
         }
         public void InitializePin(RectangleSide side, string name, MatterType matterType)

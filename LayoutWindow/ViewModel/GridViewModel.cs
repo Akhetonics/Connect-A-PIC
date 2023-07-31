@@ -13,6 +13,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
     {
         public Grid Grid { get; set; }
         public GridView GridView { get; set; }
+        public static int MaxTileCount { get; private set; }
         public GridViewModel(GridView gridView)
         {
             this.Grid = new Grid(12,12);
@@ -28,136 +29,32 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         {
             this.GridView = gridview;
             this.Grid = grid;
-            Grid.GridView = width * height;
-            TileViews = new TileView[Columns, Columns];
-            RemoveAllTiles();
-            CreateEmptyField();
-        }
-        public void CreateEmptyField()
-        {
-            if (DefaultTile == null) throw new ArgumentException("TileTemplate is not set in PICArea. Please tell the developer to fix that.");
-            for (int i = 0; i < MaxTileCount; i++)
-            {
-                int gridX = i % this.Columns;
-                int gridY = i / this.Columns;
-                DefaultTile._Ready();
-                var newTile = (TileView)DefaultTile.Duplicate();
-                newTile._Ready();
-                newTile.Visible = true;
-                newTile.SetPositionInGrid(gridX, gridY);
-                this.AddChild(newTile);
-                TileViews[gridX, gridY] = newTile;
-                TileViews[gridX, gridY].OnDeletionRequested += Grid_OnDeletionRequested;
-                TileViews[gridX, gridY].OnRotationRequested += Grid_OnRotationRequested;
-                TileViews[gridX, gridY].OnCreateNewComponentRequested += Grid_OnCreateNewComponent;
-                TileViews[gridX, gridY].OnMoveComponentRequested += Grid_OnMoveExistingComponent;
-            }
+            this.GridView.OnNewTileDropped += Grid_OnCreateNewComponent;
+            this.GridView.OntileMiddleMouseClicked += tile=>Grid.UnregisterComponentAt(tile.GridX,tile.GridY);
+            this.GridView.OnExistingTileDropped+= Grid_OnMoveExistingComponent;
+            this.GridView.OnTileRightClicked += tile => Grid.TryRotateComponentBy90(tile.GridX, tile.GridY);
+            this.GridView.DeleteAllTiles();
+            this.GridView.CreateEmptyField(grid.Width, grid.Height);
+            this.Grid.OnGridCreated += Grid_OnGridCreated;
+            this.Grid.OnComponentPlacedOnTile += Grid_OnComponentPlacedOnTile;
+            this.Grid.OnComponentRemoved += Grid_OnComponentRemoved;
         }
 
-        private void RemoveAllTiles()
+        private void Grid_OnComponentRemoved(ComponentBase component, int x, int y)
         {
-            var i = 0;
-            foreach (Node n in this.FindChildren("*"))
-            {
-                UnregisterComponentAt(i % this.Columns, i / this.Columns);
-                this.RemoveChild(n);
-                i++;
-            }
+            throw new NotImplementedException();
         }
 
+        private void Grid_OnComponentPlacedOnTile(ComponentBase component, int x, int y)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void Grid_OnGridCreated(Tile[,] Tiles)
+        {
+            throw new NotImplementedException();
+        }
         
-        public bool IsInGrid(int x, int y, int width, int height)
-        {
-            return x >= 0 && y >= 0 && x + width <= Columns && y + height <= Columns;
-        }
-        public ComponentBase GetComponentAt(int x, int y)
-        {
-            if (IsInGrid(x, y, 1, 1) == false)
-            {
-                return null;
-            }
-
-            return TileViews[x, y].ComponentView;
-        }
-
-        public void PlaceExistingComponent(int x, int y, ComponentBase component)
-        {
-            if (IsColliding(x, y, component.WidthInTiles, component.HeightInTiles))
-            {
-                throw new ComponentCannotBePlacedException(component);
-            }
-            component.RegisterPositionInGrid(x, y);
-            for (int i = 0; i < component.WidthInTiles; i++)
-            {
-                for (int j = 0; j < component.HeightInTiles; j++)
-                {
-                    int gridX = x + i;
-                    int gridY = y + j;
-                    Part part = component.GetPartAt(i, j);
-                    TileViews[gridX, gridY].ResetToDefault(DefaultTile.Texture);
-                    TileViews[gridX, gridY].ComponentView = component;
-                    TileViews[gridX, gridY].Texture = part.Texture;
-                    TileViews[gridX, gridY].AddChild(part);
-                    TileViews[gridX, gridY].Rotation90 = component.Rotation90;
-                }
-            }
-        }
-        public void UnregisterComponentAt(int x, int y)
-        {
-            ComponentBase item = GetComponentAt(x, y);
-            if (item == null)
-            {
-                return;
-            }
-            x = item.GridXMainTile;
-            y = item.GridYMainTile;
-            for (int i = 0; i < item.WidthInTiles; i++)
-            {
-                for (int j = 0; j < item.HeightInTiles; j++)
-                {
-                    TileViews[x + i, y + j].RemoveChild(item.GetPartAt(i, j));
-                    TileViews[x + i, y + j].ResetToDefault(DefaultTile.Texture);
-                }
-            }
-            item.ClearGridData();
-        }
-        public ComponentBase CreateAndPlaceComponent(int x, int y, Type componentType)
-        {
-            ComponentBase item = ComponentFactory.Instance.CreateComponent(componentType);
-            if (IsColliding(x, y, item.WidthInTiles, item.HeightInTiles))
-            {
-                item.QueueFree();
-                return null;
-            }
-            PlaceExistingComponent(x, y, item);
-            return item;
-        }
-
-        private void Grid_OnRotationRequested(TileView tile)
-        {
-            if (tile == null || tile.ComponentView == null) return;
-
-            var rotatedComponent = tile.ComponentView;
-            int x = tile.ComponentView.GridXMainTile;
-            int y = tile.ComponentView.GridYMainTile;
-            UnregisterComponentAt(tile.GridX, tile.GridY);
-            rotatedComponent.RotateBy90();
-            try
-            {
-                PlaceExistingComponent(x, y, rotatedComponent);
-            }
-            catch (ComponentCannotBePlacedException)
-            {
-                rotatedComponent.Rotation90 = rotatedComponent.Rotation90 - 1;
-                PlaceExistingComponent(x, y, rotatedComponent);
-            }
-
-        }
-        private void Grid_OnDeletionRequested(TileView tile)
-        {
-            if (tile.ComponentView != null)
-                UnregisterComponentAt(tile.ComponentView.GridXMainTile, tile.ComponentView.GridYMainTile);
-        }
         private void Grid_OnCreateNewComponent(TileView tile, ComponentBase componentBlueprint)
         {
             if (CanComponentBePlaced(tile.GridX, tile.GridY, componentBlueprint))
