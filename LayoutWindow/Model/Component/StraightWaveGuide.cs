@@ -13,20 +13,18 @@ namespace ConnectAPIC.Scenes.Component
 {
     public partial class StraightWaveGuide : ComponentBase
     {
-        public override void _Ready()
+        
+        public StraightWaveGuide()
         {
-            base._Ready();
             var defaultTile = GameManager.Instance.Grid.DefaultTile;
             Parts = new Part[2, 1];
             Parts[0, 0] = new ();
-            Parts[0, 0].Texture = Texture;
             Parts[0, 0].Rotation90 = DiscreteRotation.R0;
             Parts[0, 0].InitializePin(RectangleSide.Right, "Right", MatterType.None);
             Parts[0, 0].InitializePin(RectangleSide.Up, "Up", MatterType.Light);
             Parts[0, 0].InitializePin(RectangleSide.Left, "Left", MatterType.Light);
             Parts[0, 0].InitializePin(RectangleSide.Down, "Down", MatterType.Light);
             Parts[1, 0] = new ();
-            Parts[1, 0].Texture = Texture;
             Parts[1, 0].InitializePin(RectangleSide.Right, "1", MatterType.Light);
             Parts[1, 0].InitializePin(RectangleSide.Up, "2", MatterType.Light);
             Parts[1, 0].InitializePin(RectangleSide.Left, "3", MatterType.None);

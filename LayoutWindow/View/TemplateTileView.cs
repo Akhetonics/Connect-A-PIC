@@ -1,3 +1,4 @@
+using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.Scenes.Component;
 using ConnectAPIC.Scenes.Tiles;
 using Godot;
@@ -5,16 +6,16 @@ using System;
 using System.Collections.Generic;
 using Tiles;
 
-public partial class TemplateTileView : Tile
+public partial class TemplateTileView : TileView
 {
     [Export] public NodePath componentTemplatePath;
-    public ComponentBase componentTemplate;
+    public ComponentBaseView componentTemplate;
     public override void _Ready()
     {
         base._Ready();
         if (string.IsNullOrEmpty(componentTemplatePath)) throw new ArgumentNullException(nameof(componentTemplatePath));
         Node node = GetNodeOrNull(componentTemplatePath); // not sure what is wrong here but it cannot convert the node to straightline.
-        componentTemplate =  (ComponentBase)node;
+        componentTemplate =  (ComponentBaseView)node;
         if (componentTemplate == null) throw new ArgumentNullException(nameof(componentTemplate));
     }
 

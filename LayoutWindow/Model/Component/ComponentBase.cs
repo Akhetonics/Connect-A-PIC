@@ -1,3 +1,4 @@
+using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.Scenes.Tiles;
 using Godot;
 using Godot.Collections;
@@ -11,8 +12,10 @@ namespace ConnectAPIC.Scenes.Component
 {
     public abstract class ComponentBase
 {
+        public ComponentBaseView ComponentView;
         public int WidthInTiles => Parts.GetLength(0);
         public int HeightInTiles => Parts.GetLength(1);
+        public bool IsPlacedInGrid { get; private set; }
         public int GridXMainTile { get; protected set; }
         public int GridYMainTile { get; protected set; }
         public virtual Part[,] Parts { get; protected set; }
@@ -80,20 +83,6 @@ namespace ConnectAPIC.Scenes.Component
         public Guid PinIdUp(int x, int y)
         {
             return Parts[x, y].GetPinAt(RectangleSide.Up).ID;
-        }
-        public ComponentBase Duplicate()
-        {
-            var item = base.Duplicate() as ComponentBase;
-            item.Parts = new Part[Parts.GetLength(0),Parts.GetLength(1)];
-            for(int x = 0; x < Parts.GetLength(0); x++)
-            {
-                for (int y = 0; y < Parts.GetLength(1); y++)
-                {
-                    item.Parts[x,y] = Parts[x, y].Duplicate();
-                }
-            }
-            item.Rotation90 = this.Rotation90;
-            return item;
         }
     }
 }

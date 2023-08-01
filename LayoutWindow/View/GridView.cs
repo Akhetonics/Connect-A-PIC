@@ -88,17 +88,17 @@ public partial class GridView : GridContainer
         TileViews[x, y].RotationDegrees = rotationDegrees;
     }
 
-    public void CreateComponentView(int x, int y, IComponentView componentView)
+    public void CreateComponentView(int x, int y, ComponentBaseView componentView)
     {
-        int width = componentView.WidthInTiles();
-        int height = componentView.HeightInTiles();
+        int width = componentView.WidthInTiles;
+        int height = componentView.HeightInTiles;
         for(int i = 0; i < width; i++)
         {
             for (int j = 0; j < height; j++)
             {
                 int gridX = x + i;
                 int gridY = y + j;
-                SetTileTexture(gridX, gridY, componentView.GetTexture(i, j), componentView.GetRotationDegrees()); 
+                SetTileTexture(gridX, gridY, componentView.GetTexture(i, j), componentView.RotationDegrees); 
             }
         }
     }

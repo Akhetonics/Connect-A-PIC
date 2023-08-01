@@ -1,3 +1,4 @@
+using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.Scenes.Component;
 using Godot;
 using System;
@@ -7,7 +8,7 @@ namespace ConnectAPIC.Scenes.Component
 {
     public partial class ComponentFactory : Node
     {
-        private List<ComponentBase> AllComponentBlueprints;
+        private List<ComponentBaseView> AllComponentBlueprints;
         private static ComponentFactory instance;
         public static ComponentFactory Instance
         {
@@ -28,21 +29,21 @@ namespace ConnectAPIC.Scenes.Component
             AllComponentBlueprints = GetAllComponentBaseNodes();
         }
 
-        public List<ComponentBase> GetAllComponentBaseNodes()
+        public List<ComponentBaseView> GetAllComponentBaseNodes()
         {
-            List<ComponentBase> resultList = new List<ComponentBase>();
+            List<ComponentBaseView> resultList = new ();
             foreach (Node child in GetChildren())
             {
-                if (child is ComponentBase componentBase)
+                if (child is ComponentBaseView componentBase)
                 {
                     resultList.Add(componentBase);
                 }
             }
             return resultList;
         }
-        public ComponentBase CreateComponent(Type T)
+        public ComponentBaseView CreateComponent(Type T)
         {
-            foreach (ComponentBase component in AllComponentBlueprints)
+            foreach (ComponentBaseView component in AllComponentBlueprints)
             {
                 if (T == component.GetType())
                 {

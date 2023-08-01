@@ -128,16 +128,16 @@ public class Grid
         OnComponentRemoved?.Invoke(item, x, y);
         item.ClearGridData();
     }
-    public ComponentBase PlaceComponentByType(int x, int y, Type componentType)
-    {
-        ComponentBase item = ComponentFactory.Instance.CreateComponent(componentType);
-        if (IsColliding(x, y, item.WidthInTiles, item.HeightInTiles))
-        {
-            return null;
-        }
-        PlaceComponent(x, y, item);
-        return item;
-    }
+    //public ComponentBase PlaceComponentByType(int x, int y, Type componentType)
+    //{
+    //    ComponentBase item = ComponentFactory.Instance.CreateComponent(componentType).;
+    //    if (IsColliding(x, y, item.WidthInTiles, item.HeightInTiles))
+    //    {
+    //        return null;
+    //    }
+    //    PlaceComponent(x, y, item);
+    //    return item;
+    //}
     public bool MoveComponent(int x , int y, ComponentBase component)
     {
         int oldMainGridx = component.GridXMainTile;

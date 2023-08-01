@@ -18,7 +18,7 @@ namespace Tiles
         public delegate void TileEventHandler(TileView tile);
         public event TileEventHandler OnDeletionRequested;
         public event TileEventHandler OnRotationRequested;
-        public IComponentView ComponentView { get; set; }
+        public ComponentBaseView ComponentView { get; set; }
         public int GridX { get; private set; }
         public int GridY { get; private set; }
         public static int TilePixelSize { get; } = 64;
@@ -79,7 +79,7 @@ namespace Tiles
                     var componentPart = component.GetPartAt(x, y);
                     var previewtile = new TextureRect();
                     previewtile._Ready();
-                    previewtile.Texture = componentPart?.Texture.Duplicate() as Texture2D;
+                    previewtile.Texture = component.ComponentView.GetTexture(x,y).Duplicate() as Texture2D;
                     previewtile.Visible = true;
                     previewGrid.AddChild(previewtile);
                 }
@@ -113,14 +113,12 @@ namespace Tiles
             Texture = baseTexture;
             PivotOffset = Size / 2;
             Visible = true;
-            _discreteRotation = DiscreteRotation.R0;
-            RotationDegrees = (int)Rotation90 * 90;
+            RotationDegrees = 0;
             ComponentView = null;
         }
         public TileView Duplicate()
         {
             var copy = base.Duplicate() as TileView;
-            copy.Rotation90 = Rotation90;
             copy.RotationDegrees = RotationDegrees;
             return copy;
         }
