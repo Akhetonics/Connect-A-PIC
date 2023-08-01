@@ -57,7 +57,7 @@ public class Grid
         return false;
     }
 
-    public bool TryRotateComponentBy90(int tileX, int tileY)
+    public bool RotateComponentBy90(int tileX, int tileY)
     {
         ComponentBase component = GetComponentAt(tileX, tileY);
         if (component == null) return false;
@@ -138,9 +138,21 @@ public class Grid
         PlaceComponent(x, y, item);
         return item;
     }
-
-    public bool CanComponentBePlaced(int gridX, int gridY, ComponentBase component)
+    public bool MoveComponent(int x , int y, ComponentBase component)
     {
-        return !IsColliding(gridX, gridY, component.WidthInTiles, component.HeightInTiles);
+        int oldMainGridx = component.GridXMainTile;
+        int oldMainGridy = component.GridYMainTile;
+        UnregisterComponentAt(component.GridXMainTile, component.GridYMainTile); // to avoid blocking itself from moving only one tile into its own subtiles
+        try
+        {
+            PlaceComponent(x, y, component);
+            OnComponentMoved?.Invoke(component, x, y);
+            return true;
+        }
+        catch (ComponentCannotBePlacedException)
+        {
+            PlaceComponent(oldMainGridx, oldMainGridy, component);
+        }
+        return false;
     }
 }

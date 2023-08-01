@@ -29,15 +29,26 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         {
             this.GridView = gridview;
             this.Grid = grid;
-            this.GridView.OnNewTileDropped += Grid_OnCreateNewComponent;
+            this.GridView.OnNewTileDropped += (tile, component) => Grid.PlaceComponent(tile.GridX,tile.GridY, component);
             this.GridView.OntileMiddleMouseClicked += tile=>Grid.UnregisterComponentAt(tile.GridX,tile.GridY);
-            this.GridView.OnExistingTileDropped+= Grid_OnMoveExistingComponent;
-            this.GridView.OnTileRightClicked += tile => Grid.TryRotateComponentBy90(tile.GridX, tile.GridY);
+            this.GridView.OnExistingTileDropped+= (tile, component) => Grid.MoveComponent(tile.GridX, tile.GridY, component);
+            this.GridView.OnTileRightClicked += tile => Grid.RotateComponentBy90(tile.GridX, tile.GridY);
             this.GridView.DeleteAllTiles();
             this.GridView.CreateEmptyField(grid.Width, grid.Height);
-            this.Grid.OnGridCreated += Grid_OnGridCreated;
             this.Grid.OnComponentPlacedOnTile += Grid_OnComponentPlacedOnTile;
             this.Grid.OnComponentRemoved += Grid_OnComponentRemoved;
+            this.Grid.OnComponentMoved += Grid_OnComponentMoved;
+            this.Grid.OnComponentRotated += Grid_OnComponentRotated;
+        }
+
+        private void Grid_OnComponentRotated(ComponentBase component, int x, int y)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void Grid_OnComponentMoved(ComponentBase component, int x, int y)
+        {
+            throw new NotImplementedException();
         }
 
         private void Grid_OnComponentRemoved(ComponentBase component, int x, int y)
@@ -47,36 +58,22 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
 
         private void Grid_OnComponentPlacedOnTile(ComponentBase component, int x, int y)
         {
-            throw new NotImplementedException();
-        }
-
-        private void Grid_OnGridCreated(Tile[,] Tiles)
-        {
-            throw new NotImplementedException();
+            int compWidth = component.WidthInTiles;
+            int compHeight = component.HeightInTiles;
+            for(int i = 0; i < compWidth; i++)
+            {
+                for (int j = 0; j < compWidth; j++)
+                {
+                    var part = component.GetPartAt(i, j);
+                    GridView.SetTileTexture(x, y, part.Texture, (int)part.Rotation90*90);
+                }
+            }
+            
         }
         
-        private void Grid_OnCreateNewComponent(TileView tile, ComponentBase componentBlueprint)
-        {
-            if (CanComponentBePlaced(tile.GridX, tile.GridY, componentBlueprint))
-            {
-                CreateAndPlaceComponent(tile.GridX, tile.GridY, componentBlueprint.GetType());
-            }
-        }
+        
 
-        private void Grid_OnMoveExistingComponent(TileView tile, ComponentBase component)
-        {
-            int oldMainGridx = component.GridXMainTile;
-            int oldMainGridy = component.GridYMainTile;
-            UnregisterComponentAt(component.GridXMainTile, component.GridYMainTile); // to avoid blocking itself from moving only one tile into its own subtiles
-            try
-            {
-                PlaceExistingComponent(tile.GridX, tile.GridY, component);
-            }
-            catch (ComponentCannotBePlacedException)
-            {
-                PlaceExistingComponent(oldMainGridx, oldMainGridy, component);
-            }
-        }
+        
 
         public void Save(string Path)
         {

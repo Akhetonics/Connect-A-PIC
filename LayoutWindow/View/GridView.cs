@@ -1,3 +1,4 @@
+using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.Scenes.Component;
 using ConnectAPIC.Scenes.Tiles;
 using Godot;
@@ -65,19 +66,39 @@ public partial class GridView : GridContainer
         return x >= 0 && y >= 0 && x + width <= Columns && y + height <= Columns;
     }
 
-    public void SetTilesTexture(int x, int y, TextureRect[,] textures)
+    public void SetTilesTexture(int x, int y, (Texture2D,float)[,] TextureAndRotationDegrees)
     {
-        for (int i = 0; i < textures.GetLength(0); i++)
+        for (int i = 0; i < TextureAndRotationDegrees.GetLength(0); i++)
         {
-            for (int j = 0; j < textures.GetLength(1); j++)
+            for (int j = 0; j < TextureAndRotationDegrees.GetLength(1); j++)
             {
                 int gridX = x + i;
                 int gridY = y + j;
-                if (IsInGrid(gridX, gridY, 1, 1) == false) continue;
-                TileViews[gridX, gridY].ResetToDefault(DefaultTile.Texture);
-                TileViews[gridX, gridY].AddChild(DefaultTile.Duplicate());
-                TileViews[gridX, gridY].Texture = textures[i,j].Texture;
-                TileViews[gridX, gridY].Rotation = textures[i,j].Rotation;
+                (Texture2D texture, float rotation) = TextureAndRotationDegrees[i, j];
+                SetTileTexture(gridX, gridY, texture, rotation);
+            }
+        }
+    }
+    public void SetTileTexture(int x , int y , Texture2D texture , float rotationDegrees)
+    {
+        if (IsInGrid(x, y, 1, 1) == false) return;
+        TileViews[x, y].ResetToDefault(DefaultTile.Texture);
+        TileViews[x, y].AddChild(DefaultTile.Duplicate());
+        TileViews[x, y].Texture = texture;
+        TileViews[x, y].RotationDegrees = rotationDegrees;
+    }
+
+    public void CreateComponentView(int x, int y, IComponentView componentView)
+    {
+        int width = componentView.WidthInTiles();
+        int height = componentView.HeightInTiles();
+        for(int i = 0; i < width; i++)
+        {
+            for (int j = 0; j < height; j++)
+            {
+                int gridX = x + i;
+                int gridY = y + j;
+                SetTileTexture(gridX, gridY, componentView.GetTexture(i, j), componentView.GetRotationDegrees()); 
             }
         }
     }
