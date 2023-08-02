@@ -16,7 +16,6 @@ namespace ConnectAPIC.Scenes.Component
         
         public StraightWaveGuide()
         {
-            var defaultTile = GameManager.Instance.Grid.DefaultTile;
             Parts = new Part[2, 1];
             Parts[0, 0] = new ();
             Parts[0, 0].Rotation90 = DiscreteRotation.R0;

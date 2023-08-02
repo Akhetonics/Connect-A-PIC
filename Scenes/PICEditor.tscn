@@ -5,15 +5,15 @@
 [ext_resource type="Texture2D" uid="uid://dm0sl0jrwrfx6" path="res://GFX/EmptyGround.png" id="2_ddx4u"]
 [ext_resource type="Script" path="res://LayoutWindow/View/TileView.cs" id="3_anirx"]
 [ext_resource type="Script" path="res://LayoutWindow/View/TemplateTileView.cs" id="6_ly1br"]
-[ext_resource type="Script" path="res://LayoutWindow/View/ComponentFactory.cs" id="7_mjow5"]
 [ext_resource type="Script" path="res://LayoutWindow/View/StraightWaveGuideView.cs" id="7_tohqs"]
 [ext_resource type="Texture2D" uid="uid://obrjry10rd00" path="res://GFX/StraightComponent.png" id="8_gfj5w"]
+[ext_resource type="Texture2D" uid="uid://dlui314yxvnfr" path="res://GFX/StraightComponent_Right.png" id="9_o74m0"]
 
 [node name="PICEditor" type="Node2D"]
 
 [node name="GameManager" type="Node" parent="."]
 script = ExtResource("1_1g8p6")
-GridPath = NodePath("PICArea/Grid")
+GridViewPath = NodePath("PICArea/Grid")
 
 [node name="PICArea" type="Panel" parent="GameManager"]
 offset_left = 69.0
@@ -65,11 +65,11 @@ layout_mode = 2
 texture = ExtResource("8_gfj5w")
 expand_mode = 3
 script = ExtResource("6_ly1br")
-componentTemplatePath = NodePath("../../../../../ComponentTemplates/StraightWaveGuide")
+componentTemplatePath = NodePath("../../../../../ComponentTemplates/StraightWaveGuideView")
 
 [node name="ComponentTemplates" type="Node" parent="."]
-script = ExtResource("7_mjow5")
 
-[node name="StraightWaveGuide" type="Node" parent="ComponentTemplates"]
+[node name="StraightWaveGuideView" type="Node" parent="ComponentTemplates"]
 script = ExtResource("7_tohqs")
-Texture = ExtResource("8_gfj5w")
+TextureLeft = ExtResource("8_gfj5w")
+TextureRight = ExtResource("9_o74m0")

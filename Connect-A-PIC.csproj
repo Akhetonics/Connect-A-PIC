@@ -9,13 +9,16 @@
   
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Tests\**" />
+    <EmbeddedResource Remove="Tests\**" />
+  </ItemGroup>
+  <ItemGroup>
     <Compile Remove="Scenes\Program.cs" />
     <Compile Remove="Scenes\Tests.cs" />
     <Compile Remove="Scenes\Scenes.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Scenes\" />
-    <Folder Include="Tests\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />

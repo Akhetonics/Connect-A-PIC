@@ -12,12 +12,13 @@ namespace ConnectAPIC.LayoutWindow.View
     {
         [Export] Texture2D TextureLeft;
         [Export] Texture2D TextureRight;
-        public Texture2D[,] textures = new Texture2D[2, 1];
+        public Texture2D[,] textures;
         
         public StraightWaveGuideView()
         {
+            textures = new Texture2D[2, 1];
             textures[0, 0] = TextureLeft;
-            textures[0, 1] = TextureRight;
+            textures[1, 0] = TextureRight;
         }
         public float GetRotationDegrees()
         {
@@ -34,16 +35,6 @@ namespace ConnectAPIC.LayoutWindow.View
         public int WidthInTiles() => textures.GetLength(0);
 
         public float SetRotationDegrees(float degrees)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Show(int x, int y)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Hide()
         {
             throw new NotImplementedException();
         }

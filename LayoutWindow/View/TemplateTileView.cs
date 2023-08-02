@@ -14,9 +14,9 @@ public partial class TemplateTileView : TileView
     {
         base._Ready();
         if (string.IsNullOrEmpty(componentTemplatePath)) throw new ArgumentNullException(nameof(componentTemplatePath));
-        Node node = GetNodeOrNull(componentTemplatePath); // not sure what is wrong here but it cannot convert the node to straightline.
+        Node node = GetNode<ComponentBaseView>(componentTemplatePath); // not sure what is wrong here but it cannot convert the node to straightline.
         componentTemplate =  (ComponentBaseView)node;
-        if (componentTemplate == null) throw new ArgumentNullException(nameof(componentTemplate));
+        if (componentTemplate == null) GD.PrintErr( new ArgumentNullException(nameof(componentTemplate)));
     }
 
     public override void _DropData(Vector2 position, Variant data)

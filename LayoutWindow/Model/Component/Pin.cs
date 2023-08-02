@@ -2,17 +2,33 @@ using ConnectAPIC.Scenes.Component;
 using ConnectAPIC.Scenes.Tiles;
 using Godot;
 using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using Tiles;
 
 namespace ConnectAPIC.Scenes.Component
 {
-    public class Pin 
+    public class Pin : INotifyPropertyChanged
     {
+        public event PropertyChangedEventHandler PropertyChanged;
         public string Name { get; set; } // the nazca name like b0, a0, a1}
-        public Guid ID { get; set; } 
-        public RectangleSide Side { get; private set; }
+        public Guid ID { get; set; }
+        private RectangleSide _side;
+        public RectangleSide Side {
+            get => _side;
+            private set {
+                _side = value;
+                NotifyPropertyChanged();
+            } 
+        }
         private MatterType _matterType;
-        public MatterType MatterType { get => _matterType; set => SetMatterType(value); }
+        public MatterType MatterType { 
+            get => _matterType; 
+            set {
+                SetMatterType(value); 
+                NotifyPropertyChanged(); 
+            } 
+        }
         public Pin(string Name, MatterType newMatterType, RectangleSide side) : this(Name, side)
         {
             this.MatterType = newMatterType;
@@ -23,10 +39,7 @@ namespace ConnectAPIC.Scenes.Component
             this.Name = Name;
             this.MatterType = MatterType.None;
             ID = Guid.NewGuid();
-            SetPinRelativePosition(side);
         }
-
-        
 
         public void SetMatterType(MatterType newMatterType)
         {
@@ -43,8 +56,12 @@ namespace ConnectAPIC.Scenes.Component
         }
         public Pin Duplicate()
         {
-            var duplicatedPin = new Pin(Name, Texture.Duplicate() as TextureRect,MatterType, Side);
+            var duplicatedPin = new Pin(Name,MatterType, Side);
             return duplicatedPin;
+        }
+        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

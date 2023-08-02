@@ -12,12 +12,12 @@ namespace Tiles
 
     public partial class TileView : TextureRect
     {
-        public delegate void ComponentEventHandler(TileView tile, ComponentBase component);
-        public event ComponentEventHandler OnMoveComponentRequested;
-        public event ComponentEventHandler OnCreateNewComponentRequested;
+        public delegate void ComponentEventHandler(TileView tile, ComponentBaseView component);
+        public event ComponentEventHandler OnExistingTileDropped;
+        public event ComponentEventHandler OnNewTileDropped;
         public delegate void TileEventHandler(TileView tile);
-        public event TileEventHandler OnDeletionRequested;
-        public event TileEventHandler OnRotationRequested;
+        public event TileEventHandler OnMiddleClicked;
+        public event TileEventHandler OnRightClicked;
         public ComponentBaseView ComponentView { get; set; }
         public int GridX { get; private set; }
         public int GridY { get; private set; }
@@ -47,59 +47,58 @@ namespace Tiles
                 }
                 if (mouseEvent.ButtonIndex == MouseButton.Middle && mouseEvent.Pressed)
                 {
-                    OnDeletionRequested?.Invoke(this);
+                    OnMiddleClicked?.Invoke(this);
                 }
                 if (mouseEvent.ButtonIndex == MouseButton.Right && mouseEvent.Pressed)
                 {
-                    OnRotationRequested?.Invoke(this);
+                    OnRightClicked?.Invoke(this);
                 }
             }
         }
         public override bool _CanDropData(Vector2 position, Variant data)
         {
             // extract all tiles from the component that is about to be dropped here at position and SetDragPreview them
-            if (data.Obj is ComponentBase component)
+            if (data.Obj is ComponentBaseView component)
             {
                 ShowMultiTileDragPreview(position, component);
             }
 
             return true;
         }
-        protected void ShowMultiTileDragPreview(Vector2 position, ComponentBase component)
+        protected void ShowMultiTileDragPreview(Vector2 position, ComponentBaseView component )
         {
             var previewGrid = new GridContainer();
             previewGrid.PivotOffset = previewGrid.Size / 2f;
-            var oldRotation = component.Rotation90;
-            component.Rotation90 = DiscreteRotation.R0;
+            var oldRotation = component.RotationDegrees;
+            component.RotationDegrees = 0;
             previewGrid.Columns = component.WidthInTiles;
             for (int y = 0; y < component.HeightInTiles; y++)
             {
                 for (int x = 0; x < component.WidthInTiles; x++)
                 {
-                    var componentPart = component.GetPartAt(x, y);
                     var previewtile = new TextureRect();
                     previewtile._Ready();
-                    previewtile.Texture = component.ComponentView.GetTexture(x,y).Duplicate() as Texture2D;
+                    previewtile.Texture = component.GetTexture(x,y).Duplicate() as Texture2D;
                     previewtile.Visible = true;
                     previewGrid.AddChild(previewtile);
                 }
             }
             var children = previewGrid.GetChildren();
-            previewGrid.RotationDegrees = (float)oldRotation * 90f;
-            component.Rotation90 = oldRotation;
+            previewGrid.RotationDegrees = oldRotation;
+            component.RotationDegrees = oldRotation;
             this.SetDragPreview(previewGrid);
         }
         public override void _DropData(Vector2 position, Variant data)
         {
-            if (data.Obj is ComponentBase component)
+            if (data.Obj is ComponentBaseView componentView)
             {
-                if (component.IsPlacedInGrid == false)
+                if (componentView.Visible == false)
                 {
-                    OnCreateNewComponentRequested?.Invoke(this, component);
+                    OnNewTileDropped?.Invoke(this, componentView);
                 }
                 else
                 {
-                    OnMoveComponentRequested?.Invoke(this, component);
+                    OnExistingTileDropped?.Invoke(this, componentView);
                 }
             }
         }

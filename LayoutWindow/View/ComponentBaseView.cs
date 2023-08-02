@@ -7,24 +7,37 @@ using System.Threading.Tasks;
 
 namespace ConnectAPIC.LayoutWindow.View
 {
-    public abstract partial class ComponentBaseView : Node2D
+    public abstract partial class ComponentBaseView : Node
     {
         public int WidthInTiles { get; set; }
         public int HeightInTiles { get; set; }
         public float RotationDegrees { get; set; }
-        public Texture2D[,] gridTextures = new Texture2D[2, 1];
-        
-        public Texture2D GetTexture(int x, int y)
+        public bool Visible{ get; set; }
+        private Texture2D[,] gridTextures;
+        public int GridX { get; set; }
+        public int GridY { get; set; }
+        protected ComponentBaseView()
         {
-            if (x < 0 || y < 0 || x >= gridTextures.GetLength(0) || y >= gridTextures.GetLength(1)) throw new ArgumentOutOfRangeException();
-            return gridTextures[x, y];
+            gridTextures = new Texture2D[2, 1];
         }
-        public void Show(int screenX , int screenY)
+        public Texture2D GetTexture(int gridX, int gridY)
         {
-            // if we want to show some actual things instead of the grid textures only.
-            base.Show();
+            if (gridX < 0 || gridX >= gridTextures.GetLength(0)) throw new ArgumentOutOfRangeException(nameof(gridX));
+            if (gridY < 0 || gridY >= gridTextures.GetLength(1)) throw new ArgumentOutOfRangeException(nameof(gridY));
+            return gridTextures[gridX, gridY];
         }
-        
+        public void Show(int gridX, int gridY)
+        {
+            this.GridX = gridX;
+            this.GridY = gridY;
+            Visible = true;
+        }
+
+        public void Hide()
+        {
+            Visible = false;
+        }
+
         public ComponentBaseView Duplicate()
         {
             var copy = base.Duplicate() as ComponentBaseView;

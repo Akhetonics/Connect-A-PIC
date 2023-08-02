@@ -4,10 +4,11 @@ using System;
 
 public partial class GameManager : Node
 {
-    [Export] public NodePath GridPath { get; set; }
-    public GridView Grid { get; set; }
+    [Export] public NodePath GridViewPath { get; set; }
+    public GridView GridView { get; set; }
+    public Grid Grid { get; set; }
     private static GameManager instance;
-    public GridViewModel GridMainViewModel;
+    public GridViewModel GridViewModel;
     public static GameManager Instance
     {
         get { return instance; }
@@ -18,12 +19,13 @@ public partial class GameManager : Node
         if (instance == null)
         {
             instance = this;
-            GridMainViewModel = new GridViewModel();
+            GridView = GetNode<GridView>(GridViewPath);
+            Grid = new Grid(GridView.Columns, GridView.Columns);
+            GridViewModel = new GridViewModel(GridView, Grid);
         }
         else
         {
             QueueFree(); // delete this object as there is already another GameManager in the scene
         }
-        Grid = GetNode<GridView>(GridPath);
     }
 }

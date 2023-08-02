@@ -1,7 +1,6 @@
 using ConnectAPIC.Scenes.Component;
-using ConnectAPIC.Scenes.Tiles;
-using Godot;
 using System;
+using System.ComponentModel;
 using Tiles;
 
 public class Grid
@@ -22,6 +21,7 @@ public class Grid
     {
         Width = width;
         Height = height;
+        CreateGrid();
     }
     public void CreateGrid()
     {
@@ -93,7 +93,16 @@ public class Grid
         }
         return Tiles[x, y].Component;
     }
-
+    public ComponentBase PlaceComponentByType(int x, int y, Type componentType)
+    {
+        ComponentBase component = ComponentFactory.Instance.CreateComponent(componentType);
+        if (IsColliding(x, y, component.WidthInTiles, component.HeightInTiles))
+        {
+            throw new ComponentCannotBePlacedException(component);
+        }
+        PlaceComponent(x, y, component);
+        return component;
+    }
     public void PlaceComponent(int x, int y, ComponentBase component)
     {
         if (IsColliding(x, y, component.WidthInTiles, component.HeightInTiles))
@@ -128,18 +137,9 @@ public class Grid
         OnComponentRemoved?.Invoke(item, x, y);
         item.ClearGridData();
     }
-    //public ComponentBase PlaceComponentByType(int x, int y, Type componentType)
-    //{
-    //    ComponentBase item = ComponentFactory.Instance.CreateComponent(componentType).;
-    //    if (IsColliding(x, y, item.WidthInTiles, item.HeightInTiles))
-    //    {
-    //        return null;
-    //    }
-    //    PlaceComponent(x, y, item);
-    //    return item;
-    //}
-    public bool MoveComponent(int x , int y, ComponentBase component)
+    public bool MoveComponent(int x , int y, int sourceX, int sourceY)
     {
+        ComponentBase component = GetComponentAt(sourceX, sourceY);
         int oldMainGridx = component.GridXMainTile;
         int oldMainGridy = component.GridYMainTile;
         UnregisterComponentAt(component.GridXMainTile, component.GridYMainTile); // to avoid blocking itself from moving only one tile into its own subtiles

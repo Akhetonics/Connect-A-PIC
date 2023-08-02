@@ -15,22 +15,28 @@ public partial class GridView : GridContainer
     public event TileView.TileEventHandler OnTileRightClicked;
     public event TileView.ComponentEventHandler OnNewTileDropped;
     public event TileView.ComponentEventHandler OnExistingTileDropped;
-    [Export] public NodePath DefaultTilePath;
-    private TileView _defaultTile;
     public int Width;
     public int Height;
-    public TileView DefaultTile
-    {
-        get
-        {
-            if (_defaultTile == null)
-            {
-                _defaultTile = this.GetNodeOrNull<TileView>(DefaultTilePath);
-            }
+    [Export] public NodePath DefaultTilePath;
+    private TileView _defaultTile;
+    public TileView DefaultTile {
+        get {
+            if (_defaultTile != null) return _defaultTile;
+            _defaultTile = this.GetNodeOrNull<TileView>(DefaultTilePath);
             return _defaultTile;
         }
     }
     public static int MaxTileCount { get; private set; }
+
+    public GridView()
+    {
+        TileViews = new TileView[Columns, Columns];
+        MaxTileCount = Columns * Columns;
+        if (string.IsNullOrEmpty(DefaultTilePath))
+        {
+            GD.PrintErr($"{nameof(DefaultTilePath)} is not assigned");
+        }
+    }
     public void CreateEmptyField(int width , int height)
     {
         Columns = width;
@@ -40,24 +46,21 @@ public partial class GridView : GridContainer
         {
             for (int gridY = 0; gridY < height; gridY++)
             {
-                TileViews[gridX, gridY] = new TileView();
-                TileViews[gridX, gridY].OnDeletionRequested += OntileMiddleMouseClicked;
-                TileViews[gridX, gridY].OnRotationRequested += OnTileRightClicked;
-                TileViews[gridX, gridY].OnCreateNewComponentRequested += OnNewTileDropped;
-                TileViews[gridX, gridY].OnMoveComponentRequested += OnExistingTileDropped;
+                TileViews[gridX, gridY] = DefaultTile.Duplicate();
+                TileViews[gridX, gridY].OnMiddleClicked += OntileMiddleMouseClicked;
+                TileViews[gridX, gridY].OnRightClicked += OnTileRightClicked;
+                TileViews[gridX, gridY].OnNewTileDropped += OnNewTileDropped;
+                TileViews[gridX, gridY].OnExistingTileDropped += OnExistingTileDropped;
+                this.AddChild(TileViews[gridX, gridY]);
             }
         }
     }
 
     public void DeleteAllTiles()
     {
-        var i = 0;
-
         foreach (TileView t in TileViews)
         {
-            ResetTilesAt(i % this.Columns, i / this.Columns, 1,1);
             this.RemoveChild(t);
-            i++;
         }
     }
 
@@ -109,7 +112,7 @@ public partial class GridView : GridContainer
             for (int j = 0; j < height; j++)
             {
                 if (IsInGrid(i+x, j+y, 1,1) == false) continue;
-                TileViews[x + i, y + j].ResetToDefault(_defaultTile.Texture);
+                TileViews[x + i, y + j].ResetToDefault(DefaultTile.Texture);
             }
         }
     }

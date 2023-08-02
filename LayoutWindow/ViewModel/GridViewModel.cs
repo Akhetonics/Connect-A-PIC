@@ -1,4 +1,5 @@
-﻿using ConnectAPIC.Scenes.Component;
+﻿using ConnectAPIC.LayoutWindow.View;
+using ConnectAPIC.Scenes.Component;
 using Godot;
 using System;
 using System.Collections.Generic;
@@ -12,20 +13,15 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
     public class GridViewModel
     {
         public Grid Grid { get; set; }
-        [Export] public GridView GridView { get; set; }
+        public GridView GridView { get; set; }
         public static int MaxTileCount { get; private set; }
-        public GridViewModel(GridView gridView)
-        {
-            this.GridView = gridView;
-            this.Grid = new Grid(gridView.Columns, gridView.Columns);
-        }
         public GridViewModel(GridView gridview, Grid grid )
         {
             this.GridView = gridview;
             this.Grid = grid;
-            this.GridView.OnNewTileDropped += (tile, component) => Grid.PlaceComponent(tile.GridX,tile.GridY, component);
-            this.GridView.OntileMiddleMouseClicked += tile=>Grid.UnregisterComponentAt(tile.GridX,tile.GridY);
-            this.GridView.OnExistingTileDropped+= (tile, component) => Grid.MoveComponent(tile.GridX, tile.GridY, component);
+            this.GridView.OnNewTileDropped += GridView_CreateNewComponent;
+            this.GridView.OntileMiddleMouseClicked += tile => Grid.UnregisterComponentAt(tile.GridX, tile.GridY);
+            this.GridView.OnExistingTileDropped += (tile, componentView) => Grid.MoveComponent(tile.GridX, tile.GridY, componentView.GridX,componentView.GridY);
             this.GridView.OnTileRightClicked += tile => Grid.RotateComponentBy90(tile.GridX, tile.GridY);
             this.GridView.DeleteAllTiles();
             this.GridView.CreateEmptyField(grid.Width, grid.Height);
@@ -33,23 +29,31 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             this.Grid.OnComponentRemoved += Grid_OnComponentRemoved;
         }
 
+        private void GridView_CreateNewComponent(TileView tile, ComponentBaseView componentView)
+        {
+            Type specificComponentToBePlaced = null;
+            if (componentView.GetType().IsAssignableFrom(typeof(StraightWaveGuideView)))
+            {
+                specificComponentToBePlaced = typeof(StraightWaveGuide);
+            }
+            Grid.PlaceComponentByType(tile.GridX, tile.GridY, specificComponentToBePlaced);
+        }
+
         private void Grid_OnComponentRemoved(ComponentBase component, int x, int y)
         {
-            component.ComponentView.Hide();
             GridView.ResetTilesAt(x, y, component.WidthInTiles, component.HeightInTiles);
         }
 
-        private void Grid_OnComponentPlacedOnTile(ComponentBase component, int x, int y)
+        private void Grid_OnComponentPlacedOnTile(ComponentBase component, int gridX, int gridY)
         {
-            component.ComponentView.Show(x, y);
+            component.ComponentView.Show(gridX, gridY);
             int compWidth = component.WidthInTiles;
             int compHeight = component.HeightInTiles;
             for(int i = 0; i < compWidth; i++)
             {
-                for (int j = 0; j < compWidth; j++)
+                for (int j = 0; j < compHeight; j++)
                 {
-                    var part = component.GetPartAt(i, j);
-                    GridView.SetTileTexture(i+x, j+y, component.ComponentView.GetTexture(i,j), (int)component.Rotation90*90);
+                    GridView.SetTileTexture(i+gridX, j+gridY, component.ComponentView.GetTexture(i,j), (int)component.Rotation90*90);
                 }
             }
         }
