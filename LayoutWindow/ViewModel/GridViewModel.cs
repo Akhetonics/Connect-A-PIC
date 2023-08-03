@@ -20,7 +20,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             this.GridView = gridview;
             this.Grid = grid;
             this.GridView.OnNewTileDropped += GridView_CreateNewComponent;
-            this.GridView.OntileMiddleMouseClicked += tile => Grid.UnregisterComponentAt(tile.GridX, tile.GridY);
+            this.GridView.OnTileMiddleMouseClicked += tile => Grid.UnregisterComponentAt(tile.GridX, tile.GridY);
             this.GridView.OnExistingTileDropped += (tile, componentView) => Grid.MoveComponent(tile.GridX, tile.GridY, componentView.GridX,componentView.GridY);
             this.GridView.OnTileRightClicked += tile => Grid.RotateComponentBy90(tile.GridX, tile.GridY);
             this.GridView.DeleteAllTiles();
@@ -46,14 +46,14 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
 
         private void Grid_OnComponentPlacedOnTile(ComponentBase component, int gridX, int gridY)
         {
-            component.ComponentView.Show(gridX, gridY);
             int compWidth = component.WidthInTiles;
             int compHeight = component.HeightInTiles;
+            var componentView = ComponentViewFactory.Instance.CreateComponentView(component.GetType());
             for(int i = 0; i < compWidth; i++)
             {
                 for (int j = 0; j < compHeight; j++)
                 {
-                    GridView.SetTileTexture(i+gridX, j+gridY, component.ComponentView.GetTexture(i,j), (int)component.Rotation90*90);
+                    GridView.SetTileTexture(i+gridX, j+gridY, componentView.GetTexture(i,j), (int)component.Rotation90*90);
                 }
             }
         }

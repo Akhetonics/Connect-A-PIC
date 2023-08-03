@@ -1,4 +1,5 @@
 using ConnectAPIC.LayoutWindow.View;
+using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.Scenes.Tiles;
 using Godot;
 using Godot.Collections;
@@ -12,7 +13,7 @@ namespace ConnectAPIC.Scenes.Component
 {
     public abstract class ComponentBase
 {
-        public ComponentBaseView ComponentView;
+        public ComponentBaseViewModel ComponentView;
         public int WidthInTiles => Parts.GetLength(0);
         public int HeightInTiles => Parts.GetLength(1);
         public bool IsPlacedInGrid { get; private set; }

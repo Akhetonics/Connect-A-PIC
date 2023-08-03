@@ -11,12 +11,12 @@ public partial class GridView : GridContainer
     public TileView[,] TileViews { get; private set; }
     public delegate void GridActionHandler(TileView tile);
     public delegate void GridActionComponentHandler(TileView tile);
-    public event TileView.TileEventHandler OntileMiddleMouseClicked;
+    public event TileView.TileEventHandler OnTileMiddleMouseClicked;
     public event TileView.TileEventHandler OnTileRightClicked;
     public event TileView.ComponentEventHandler OnNewTileDropped;
     public event TileView.ComponentEventHandler OnExistingTileDropped;
-    public int Width;
-    public int Height;
+    public int Width { get; private set; }
+    public int Height { get; private set; }
     [Export] public NodePath DefaultTilePath;
     private TileView _defaultTile;
     public TileView DefaultTile {
@@ -47,7 +47,7 @@ public partial class GridView : GridContainer
             for (int gridY = 0; gridY < height; gridY++)
             {
                 TileViews[gridX, gridY] = DefaultTile.Duplicate();
-                TileViews[gridX, gridY].OnMiddleClicked += OntileMiddleMouseClicked;
+                TileViews[gridX, gridY].OnMiddleClicked += TileView => OnTileMiddleMouseClicked(TileView);
                 TileViews[gridX, gridY].OnRightClicked += OnTileRightClicked;
                 TileViews[gridX, gridY].OnNewTileDropped += OnNewTileDropped;
                 TileViews[gridX, gridY].OnExistingTileDropped += OnExistingTileDropped;
@@ -69,39 +69,27 @@ public partial class GridView : GridContainer
         return x >= 0 && y >= 0 && x + width <= Columns && y + height <= Columns;
     }
 
-    public void SetTilesTexture(int x, int y, (Texture2D,float)[,] TextureAndRotationDegrees)
-    {
-        for (int i = 0; i < TextureAndRotationDegrees.GetLength(0); i++)
-        {
-            for (int j = 0; j < TextureAndRotationDegrees.GetLength(1); j++)
-            {
-                int gridX = x + i;
-                int gridY = y + j;
-                (Texture2D texture, float rotation) = TextureAndRotationDegrees[i, j];
-                SetTileTexture(gridX, gridY, texture, rotation);
-            }
-        }
-    }
     public void SetTileTexture(int x , int y , Texture2D texture , float rotationDegrees)
     {
-        if (IsInGrid(x, y, 1, 1) == false) return;
+        if (!IsInGrid(x, y, 1, 1)) return;
         TileViews[x, y].ResetToDefault(DefaultTile.Texture);
         TileViews[x, y].AddChild(DefaultTile.Duplicate());
         TileViews[x, y].Texture = texture;
         TileViews[x, y].RotationDegrees = rotationDegrees;
     }
 
-    public void CreateComponentView(int x, int y, ComponentBaseView componentView)
+    public void CreateComponentViewByType(int x, int y, Type componentViewType)
     {
-        int width = componentView.WidthInTiles;
-        int height = componentView.HeightInTiles;
+        var ComponentView = ComponentViewFactory.Instance.CreateComponentView(componentViewType);
+        int width = ComponentView.WidthInTiles;
+        int height = ComponentView.HeightInTiles;
         for(int i = 0; i < width; i++)
         {
             for (int j = 0; j < height; j++)
             {
                 int gridX = x + i;
                 int gridY = y + j;
-                SetTileTexture(gridX, gridY, componentView.GetTexture(i, j), componentView.RotationDegrees); 
+                SetTileTexture(gridX, gridY, ComponentView.GetTexture(i, j), ComponentView.RotationDegrees); 
             }
         }
     }
@@ -111,7 +99,7 @@ public partial class GridView : GridContainer
         {
             for (int j = 0; j < height; j++)
             {
-                if (IsInGrid(i+x, j+y, 1,1) == false) continue;
+                if (!IsInGrid(i + x, j + y, 1, 1)) continue;
                 TileViews[x + i, y + j].ResetToDefault(DefaultTile.Texture);
             }
         }

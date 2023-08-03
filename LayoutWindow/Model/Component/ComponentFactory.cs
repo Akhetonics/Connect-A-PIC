@@ -4,16 +4,17 @@ using Godot;
 using System;
 using System.Collections.Generic;
 
-namespace ConnectAPIC.Scenes.Component
+namespace ConnectAPIC.LayoutWindow.Model.Component
 {
-    public class ComponentFactory 
+    public class ComponentFactory
     {
         private static ComponentFactory instance;
         public static ComponentFactory Instance
         {
-            get {
+            get
+            {
                 instance ??= new ComponentFactory();
-                return instance; 
+                return instance;
             }
         }
         public ComponentBase CreateComponent(Type T)

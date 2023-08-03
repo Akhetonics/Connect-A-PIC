@@ -8,14 +8,11 @@ using System.Threading.Tasks;
 
 namespace ConnectAPIC.LayoutWindow.ViewModel
 {
-    public class StraightComponentViewModel
+    public class StraightWaveGuideViewModel : ComponentBaseViewModel
     {
-        public StraightWaveGuideView straightWaveGuideView;
-        public StraightWaveGuide straightWaveGuide;
-        public StraightComponentViewModel()
+        public StraightWaveGuideViewModel(ComponentBaseView componentView, ComponentBase component) : base(componentView, component)
         {
-            
+
         }
-        
     }
 }

@@ -3,7 +3,7 @@ using System;
 
 public class ComponentCannotBePlacedException : Exception
 {
-    public ComponentCannotBePlacedException(ComponentBase component)
+    public ComponentCannotBePlacedException(ComponentBase component) : base(component.ToString())
     {
         
     }

@@ -1,3 +1,4 @@
+using ConnectAPIC.LayoutWindow.Model.Component;
 using ConnectAPIC.Scenes.Component;
 using System;
 using System.ComponentModel;
