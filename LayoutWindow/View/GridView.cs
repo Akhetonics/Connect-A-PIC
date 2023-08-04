@@ -89,6 +89,7 @@ namespace ConnectAPIC.LayoutWindow.View
             ComponentView.Rotation90 = rotation;
             int width = ComponentView.WidthInTiles;
             int height = ComponentView.HeightInTiles;
+            ComponentView.Show(x, y);
             for (int i = 0; i < width; i++)
             {
                 for (int j = 0; j < height; j++)
@@ -96,6 +97,7 @@ namespace ConnectAPIC.LayoutWindow.View
                     int gridX = x + i;
                     int gridY = y + j;
                     SetTileTexture(gridX, gridY, ComponentView.GetTexture(i, j).Duplicate() as Texture2D, (float)ComponentView.Rotation90 * 90f);
+                    TileViews[gridX, gridY].ComponentView = ComponentView;
                 }
             }
         }
