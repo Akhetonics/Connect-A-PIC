@@ -2,12 +2,8 @@ using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.Scenes.Component;
 using ConnectAPIC.Scenes.Tiles;
 using Godot;
-using Godot.NativeInterop;
-using System;
-using System.Collections.Generic;
-using System.Net.NetworkInformation;
 
-namespace Tiles
+namespace ConnectAPIC.LayoutWindow.View
 {
 
     public partial class TileView : TextureRect
@@ -69,8 +65,8 @@ namespace Tiles
         {
             var previewGrid = new GridContainer();
             previewGrid.PivotOffset = previewGrid.Size / 2f;
-            var oldRotation = component.RotationDegrees;
-            component.RotationDegrees = 0;
+            var oldRotation = component.Rotation90;
+            component.Rotation90 = 0;
             previewGrid.Columns = component.WidthInTiles;
             for (int y = 0; y < component.HeightInTiles; y++)
             {
@@ -83,16 +79,15 @@ namespace Tiles
                     previewGrid.AddChild(previewtile);
                 }
             }
-            var children = previewGrid.GetChildren();
-            previewGrid.RotationDegrees = oldRotation;
-            component.RotationDegrees = oldRotation;
+            previewGrid.RotationDegrees = (int)oldRotation*90;
+            component.Rotation90 = oldRotation;
             this.SetDragPreview(previewGrid);
         }
-        public override void _DropData(Vector2 position, Variant data)
+        public override void _DropData(Vector2 atPosition, Variant data)
         {
             if (data.Obj is ComponentBaseView componentView)
             {
-                if (componentView.Visible == false)
+                if (!componentView.Visible)
                 {
                     OnNewTileDropped?.Invoke(this, componentView);
                 }

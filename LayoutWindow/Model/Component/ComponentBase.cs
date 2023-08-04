@@ -3,6 +3,7 @@ using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.Scenes.Tiles;
 using Godot;
 using Godot.Collections;
+using Model;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -13,15 +14,14 @@ namespace ConnectAPIC.Scenes.Component
 {
     public abstract class ComponentBase
 {
-        public ComponentBaseViewModel ComponentView;
         public int WidthInTiles => Parts.GetLength(0);
         public int HeightInTiles => Parts.GetLength(1);
         public bool IsPlacedInGrid { get; private set; }
         public int GridXMainTile { get; protected set; }
         public int GridYMainTile { get; protected set; }
         public virtual Part[,] Parts { get; protected set; }
-        public SMatrix Connections;
-        public DiscreteRotation _discreteRotation;
+        public SMatrix Connections { get; protected set; }
+        private DiscreteRotation _discreteRotation;
         public DiscreteRotation Rotation90
         {
             get => _discreteRotation;
@@ -34,7 +34,7 @@ namespace ConnectAPIC.Scenes.Component
                 }
             }
         }
-        public ComponentBase()
+        protected ComponentBase()
         {
             Parts = new Part[1, 1];
             _discreteRotation = DiscreteRotation.R0;

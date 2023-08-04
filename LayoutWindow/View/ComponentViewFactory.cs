@@ -1,10 +1,8 @@
-using ConnectAPIC.LayoutWindow.Model.Component;
-using ConnectAPIC.LayoutWindow.View;
 using Godot;
 using System;
 using System.Collections.Generic;
 
-namespace ConnectAPIC.Scenes.Component
+namespace ConnectAPIC.LayoutWindow.View
 {
     public partial class ComponentViewFactory : Node
     {
@@ -43,8 +41,8 @@ namespace ConnectAPIC.Scenes.Component
         }
         public ComponentBaseView CreateComponentView(Type ViewTypeListedInFactoryChildren)
         {
-            if (ViewTypeListedInFactoryChildren.IsAssignableFrom(typeof(ComponentBaseView))){
-                
+            if (! typeof(ComponentBaseView).IsAssignableFrom(ViewTypeListedInFactoryChildren)){
+                throw new ArgumentException($"Type is not of ComponentBaseView: {nameof(ViewTypeListedInFactoryChildren) + " " + ViewTypeListedInFactoryChildren.FullName}");
             }
             foreach (ComponentBaseView component in AllComponentViewBlueprints)
             {
@@ -55,7 +53,7 @@ namespace ConnectAPIC.Scenes.Component
                     return item;
                 }
             }
-            throw new ComponentTemplateMissingException(ViewTypeListedInFactoryChildren);
+            throw new ComponentTemplateMissingException(ViewTypeListedInFactoryChildren.FullName);
         }
     }
 }

@@ -10,33 +10,19 @@ namespace ConnectAPIC.LayoutWindow.View
 {
     public partial class StraightWaveGuideView : ComponentBaseView
     {
-        [Export] Texture2D TextureLeft;
-        [Export] Texture2D TextureRight;
-        public Texture2D[,] textures;
+        [Export] protected Texture2D TextureLeft;
+        [Export] protected Texture2D TextureRight;
         
         public StraightWaveGuideView()
         {
-            textures = new Texture2D[2, 1];
-            textures[0, 0] = TextureLeft;
-            textures[1, 0] = TextureRight;
+            Textures = new Texture2D[2, 1];
         }
-        public float GetRotationDegrees()
+        public override void _Ready()
         {
-            throw new NotImplementedException();
+            base._Ready();
+            Textures[0, 0] = TextureLeft;
+            Textures[1, 0] = TextureRight;
         }
-
-        public Texture2D GetTexture(int x, int y)
-        {
-            if (x < 0 || y < 0 || x >= textures.GetLength(0) || y >= textures.GetLength(1)) throw new ArgumentOutOfRangeException();
-            return textures[x, y];
-        }
-
-        public int HeightInTiles() => textures.GetLength(1);
-        public int WidthInTiles() => textures.GetLength(0);
-
-        public float SetRotationDegrees(float degrees)
-        {
-            throw new NotImplementedException();
-        }
+       
     }
 }

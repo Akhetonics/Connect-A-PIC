@@ -1,4 +1,6 @@
-﻿using Godot;
+﻿using ConnectAPIC.Scenes.Component;
+using Godot;
+using Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,23 +11,41 @@ namespace ConnectAPIC.LayoutWindow.View
 {
     public abstract partial class ComponentBaseView : Node
     {
-        public int WidthInTiles { get; set; }
-        public int HeightInTiles { get; set; }
-        public float RotationDegrees { get; set; }
+        public int WidthInTiles => Textures != null ? Textures.GetLength(0) : 0;
+        public int HeightInTiles => Textures != null ? Textures.GetLength(1) : 0;
+        private DiscreteRotation _discreteRotation;
+        public DiscreteRotation Rotation90
+        {
+            get => _discreteRotation;
+            set
+            {
+                int rotationIntervals = _discreteRotation.CalculateCyclesTillTargetRotation(value);
+                for (int i = 0; i < rotationIntervals; i++)
+                {
+                    RotateBy90();
+                }
+            }
+        }
+        public void RotateBy90()
+        {
+            Textures = Textures.RotateClockwise();
+            _discreteRotation = _discreteRotation.RotateBy90();
+        }
         public bool Visible{ get; set; }
-        private Texture2D[,] gridTextures;
+        protected Texture2D[,] Textures;
         public int GridX { get; set; }
         public int GridY { get; set; }
         protected ComponentBaseView()
         {
-            gridTextures = new Texture2D[2, 1];
+            Textures = new Texture2D[2, 1];
         }
-        public Texture2D GetTexture(int gridX, int gridY)
+        public Texture2D GetTexture(int x, int y)
         {
-            if (gridX < 0 || gridX >= gridTextures.GetLength(0)) throw new ArgumentOutOfRangeException(nameof(gridX));
-            if (gridY < 0 || gridY >= gridTextures.GetLength(1)) throw new ArgumentOutOfRangeException(nameof(gridY));
-            return gridTextures[gridX, gridY];
+            if (x < 0 || x >= Textures.GetLength(0)) throw new ArgumentOutOfRangeException($"{nameof(x)} with value {x} is not in range 0-{Textures.GetLength(0)}");
+            if (y < 0 || y >= Textures.GetLength(1)) throw new ArgumentOutOfRangeException($"{nameof(y)} with value {y} is not in range 0-{Textures.GetLength(1)}");
+            return Textures[x, y];
         }
+        
         public void Show(int gridX, int gridY)
         {
             this.GridX = gridX;
@@ -41,8 +61,16 @@ namespace ConnectAPIC.LayoutWindow.View
         public ComponentBaseView Duplicate()
         {
             var copy = base.Duplicate() as ComponentBaseView;
-            copy.RotationDegrees = RotationDegrees;
-            copy.gridTextures = gridTextures;
+            copy.Rotation90 = Rotation90;
+            copy.Textures = new Texture2D[Textures.GetLength(0), Textures.GetLength(1)];
+            for ( int i = 0; i < Textures.GetLength(0); i++)
+            {
+                for ( int j = 0; j < Textures.GetLength(1); j++)
+                {
+                    copy.Textures[i,j] = Textures[i, j].Duplicate() as Texture2D;
+                }
+            }
+            
             return copy;
         }
     }

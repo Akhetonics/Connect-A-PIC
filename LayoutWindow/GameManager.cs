@@ -1,31 +1,36 @@
+using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel;
 using Godot;
+using Model;
 using System;
 
-public partial class GameManager : Node
+namespace ConnectAPic.LayoutWindow
 {
-    [Export] public NodePath GridViewPath { get; set; }
-    public GridView GridView { get; set; }
-    public Grid Grid { get; set; }
-    private static GameManager instance;
-    public GridViewModel GridViewModel;
-    public static GameManager Instance
+    public partial class GameManager : Node
     {
-        get { return instance; }
-    }
-
-    public override void _Ready()
-    {
-        if (instance == null)
+        [Export] public NodePath GridViewPath { get; set; }
+        public GridView GridView { get; set; }
+        public Grid Grid { get; set; }
+        private static GameManager instance;
+        public GridViewModel GridViewModel;
+        public static GameManager Instance
         {
-            instance = this;
-            GridView = GetNode<GridView>(GridViewPath);
-            Grid = new Grid(GridView.Columns, GridView.Columns);
-            GridViewModel = new GridViewModel(GridView, Grid);
+            get { return instance; }
         }
-        else
+
+        public override void _Ready()
         {
-            QueueFree(); // delete this object as there is already another GameManager in the scene
+            if (instance == null)
+            {
+                instance = this;
+                GridView = GetNode<GridView>(GridViewPath);
+                Grid = new Grid(GridView.Columns, GridView.Columns);
+                GridViewModel = new GridViewModel(GridView, Grid);
+            }
+            else
+            {
+                QueueFree(); // delete this object as there is already another GameManager in the scene
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.Scenes.Component;
 using Godot;
+using Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,12 +32,12 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
 
         private void GridView_CreateNewComponent(TileView tile, ComponentBaseView componentView)
         {
-            Type specificComponentToBePlaced = null;
-            if (componentView.GetType().IsAssignableFrom(typeof(StraightWaveGuideView)))
+            Type componentType = null;
+            if (componentView is StraightWaveGuideView)
             {
-                specificComponentToBePlaced = typeof(StraightWaveGuide);
+                componentType = typeof(StraightWaveGuide);
             }
-            Grid.PlaceComponentByType(tile.GridX, tile.GridY, specificComponentToBePlaced);
+            Grid.PlaceComponentByType(tile.GridX, tile.GridY, componentType);
         }
 
         private void Grid_OnComponentRemoved(ComponentBase component, int x, int y)
@@ -46,16 +47,12 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
 
         private void Grid_OnComponentPlacedOnTile(ComponentBase component, int gridX, int gridY)
         {
-            int compWidth = component.WidthInTiles;
-            int compHeight = component.HeightInTiles;
-            var componentView = ComponentViewFactory.Instance.CreateComponentView(component.GetType());
-            for(int i = 0; i < compWidth; i++)
+            Type componentViewType = null;
+            if(component is StraightWaveGuide)
             {
-                for (int j = 0; j < compHeight; j++)
-                {
-                    GridView.SetTileTexture(i+gridX, j+gridY, componentView.GetTexture(i,j), (int)component.Rotation90*90);
-                }
+                componentViewType = typeof(StraightWaveGuideView);
             }
+            GridView.CreateComponentViewByType(gridX, gridY, component.Rotation90, componentViewType);
         }
         
         
