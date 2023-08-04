@@ -12,11 +12,14 @@ namespace ConnectAPIC.LayoutWindow.View
 {
     public partial class PinView : TextureRect
     {
-        public static int PinPixelSize = 6;
+        [Export] protected Texture2D ElectricityPinTexture { get; set; }
+        [Export] protected Texture2D LightPinTexture { get; set; }
+        public static readonly int PinPixelSize = 6;
 
         public override void _Ready()
         {
             base._Ready();
+            Visible = false;
         }
         public void SetPinRelativePosition(RectangleSide side)
         {
@@ -45,10 +48,10 @@ namespace ConnectAPIC.LayoutWindow.View
                 switch (newMatterType)
                 {
                     case MatterType.Electricity:
-                        Texture = GD.Load<Texture2D>("res://Scenes/Tiles/PinElectric.png");
+                        Texture = ElectricityPinTexture;
                         break;
                     case MatterType.Light:
-                        Texture = GD.Load<Texture2D>("res://Scenes/Tiles/PinLight.png");
+                        Texture = LightPinTexture;
                         break;
                     case MatterType.None:
                         Visible = false;
@@ -58,6 +61,14 @@ namespace ConnectAPIC.LayoutWindow.View
                         break;
                 }
             }
+        }
+        public PinView Duplicate()
+        {
+            var copy = base.Duplicate() as PinView;
+            copy.ElectricityPinTexture = ElectricityPinTexture;
+            copy.LightPinTexture = LightPinTexture;
+            copy._Ready();
+            return copy;
         }
     }
 }

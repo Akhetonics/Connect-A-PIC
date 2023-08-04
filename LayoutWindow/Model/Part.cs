@@ -14,15 +14,7 @@ namespace Model
     {
 
         protected List<Pin> Pins;
-        public DiscreteRotation _discreteRotation;
-        public DiscreteRotation Rotation90
-        {
-            get => _discreteRotation;
-            set
-            {
-                _discreteRotation = value;
-            }
-        }
+        public DiscreteRotation Rotation90 { get; set; }
         public Part()
         {
             Pins = new List<Pin>
@@ -36,7 +28,7 @@ namespace Model
         public void InitializePin(RectangleSide side, string name, MatterType matterType)
         {
             side = side.RotateRectangleSide(Rotation90);
-            var pin = Pins.Where(p => p.Side == side).FirstOrDefault();
+            var pin = Pins.Find(p => p.Side == side);
             pin.MatterType = matterType;
             pin.Name = name;
         }
@@ -46,23 +38,23 @@ namespace Model
             this.InitializePin(side, pin.Name, pin.MatterType);
         }
 
-        public Pin GetPinAt(RectangleSide side) // takes rotation into account
+        public Pin GetPinAt(RectangleSide side , bool CorrectRotation = true) // takes rotation into account
         {
-            side = side.RotateRectangleSide(Rotation90);
-            return Pins.Where(p => p.Side == side).FirstOrDefault();
+            if (CorrectRotation)
+                side = side.RotateRectangleSide(Rotation90);
+            return Pins.Find(p => p.Side == side);
         }
         
 
-        public new Part Duplicate()
+        public Part Duplicate()
         {
-            var copy = new Part();
-            copy.Pins = new List<Pin>();
-            if (this.Pins != null)
+            var copy = new Part
             {
-                foreach (var pin in Pins)
-                {
-                    copy.Pins.Add(pin.Duplicate());   
-                }
+                Pins = new List<Pin>()
+            };
+            foreach (var pin in Pins)
+            {
+                copy.Pins.Add(pin.Duplicate());   
             }
             return copy;
         }

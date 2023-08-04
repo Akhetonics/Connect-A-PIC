@@ -26,11 +26,6 @@ namespace ConnectAPIC.LayoutWindow.View
                 }
             }
         }
-        public void RotateBy90()
-        {
-            Textures = Textures.RotateClockwise();
-            _discreteRotation = _discreteRotation.RotateBy90();
-        }
         public bool Visible{ get; set; }
         protected Texture2D[,] Textures;
         public int GridX { get; set; }
@@ -38,6 +33,11 @@ namespace ConnectAPIC.LayoutWindow.View
         protected ComponentBaseView()
         {
             Textures = new Texture2D[2, 1];
+        }
+        public void RotateBy90()
+        {
+            Textures = Textures.RotateCounterClockwise();
+            _discreteRotation = _discreteRotation.RotateBy90();
         }
         public Texture2D GetTexture(int x, int y)
         {

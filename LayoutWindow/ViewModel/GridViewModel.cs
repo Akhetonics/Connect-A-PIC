@@ -1,5 +1,6 @@
 ﻿using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.Scenes.Component;
+using ConnectAPIC.Scenes.Tiles;
 using Godot;
 using Model;
 using System;
@@ -52,7 +53,9 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             {
                 componentViewType = typeof(StraightWaveGuideView);
             }
-            GridView.CreateComponentViewByType(gridX, gridY, component.Rotation90, componentViewType);
+            GridView.CreateComponentViewByType(gridX, gridY, component.Rotation90, componentViewType, component);
+            
+
         }
         
         

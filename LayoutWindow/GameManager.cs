@@ -11,8 +11,8 @@ namespace ConnectAPic.LayoutWindow
         [Export] public NodePath GridViewPath { get; set; }
         public GridView GridView { get; set; }
         public Grid Grid { get; set; }
-        private static GameManager instance;
-        public GridViewModel GridViewModel;
+        public static GameManager instance;
+        public GridViewModel GridViewModel { get; private set; }
         public static GameManager Instance
         {
             get { return instance; }

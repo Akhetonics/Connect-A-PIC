@@ -2,6 +2,7 @@ using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.Scenes.Component;
 using ConnectAPIC.Scenes.Tiles;
 using Godot;
+using System.Linq;
 
 namespace ConnectAPIC.LayoutWindow.View
 {
@@ -14,6 +15,10 @@ namespace ConnectAPIC.LayoutWindow.View
         public delegate void TileEventHandler(TileView tile);
         public event TileEventHandler OnMiddleClicked;
         public event TileEventHandler OnRightClicked;
+        [Export] public PinView PinRight { get; set; }
+        [Export] public PinView PinDown { get; set; }
+        [Export] public PinView PinLeft { get; set; }
+        [Export] public PinView PinUp { get; set; }
         public ComponentBaseView ComponentView { get; set; }
         public int GridX { get; private set; }
         public int GridY { get; private set; }
@@ -22,6 +27,7 @@ namespace ConnectAPIC.LayoutWindow.View
         public override void _Ready()
         {
             PivotOffset = Size / 2;
+            
         }
         /// <summary>
         /// Register the Tile when it gets created
@@ -30,6 +36,10 @@ namespace ConnectAPIC.LayoutWindow.View
         {
             GridX = X;
             GridY = Y;
+            PinRight.SetPinRelativePosition(RectangleSide.Right);
+            PinDown.SetPinRelativePosition(RectangleSide.Down);
+            PinLeft.SetPinRelativePosition(RectangleSide.Left);
+            PinUp.SetPinRelativePosition(RectangleSide.Up);
         }
 
         public override void _GuiInput(InputEvent inputEvent)
@@ -72,7 +82,7 @@ namespace ConnectAPIC.LayoutWindow.View
             {
                 for (int x = 0; x < component.WidthInTiles; x++)
                 {
-                    var previewtile = new TextureRect();
+                    var previewtile = this.Duplicate();
                     previewtile._Ready();
                     previewtile.Texture = component.GetTexture(x,y).Duplicate() as Texture2D;
                     previewtile.Visible = true;
@@ -109,11 +119,20 @@ namespace ConnectAPIC.LayoutWindow.View
             Visible = true;
             RotationDegrees = 0;
             ComponentView = null;
+            PinRight.SetMatterType(MatterType.None);
+            PinDown.SetMatterType(MatterType.None);
+            PinLeft.SetMatterType(MatterType.None);
+            PinUp.SetMatterType(MatterType.None);
         }
         public TileView Duplicate()
         {
             var copy = base.Duplicate() as TileView;
             copy.RotationDegrees = RotationDegrees;
+            var children = copy.GetChildren();
+            copy.PinRight = children.First(f=>f.Name == "PinRight") as PinView;
+            copy.PinDown= children.First(f => f.Name == "PinDown") as PinView;
+            copy.PinLeft= children.First(f => f.Name == "PinLeft") as PinView;
+            copy.PinUp = children.First(f => f.Name == "PinUp") as PinView;
             return copy;
         }
 

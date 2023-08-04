@@ -2,6 +2,7 @@ using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.Scenes.Component;
 using ConnectAPIC.Scenes.Tiles;
 using Godot;
+using Model;
 using System;
 using System.ComponentModel;
 using Tiles;
@@ -27,7 +28,7 @@ namespace ConnectAPIC.LayoutWindow.View
             get
             {
                 if (_defaultTile != null) return _defaultTile;
-                _defaultTile = this.GetNodeOrNull<TileView>(DefaultTilePath);
+                _defaultTile = this.GetNode<TileView>(DefaultTilePath);
                 return _defaultTile;
             }
         }
@@ -52,6 +53,7 @@ namespace ConnectAPIC.LayoutWindow.View
                 for (int gridx = 0; gridx < height; gridx++)
                 {
                     TileViews[gridx, gridy] = DefaultTile.Duplicate();
+                    TileViews[gridx, gridy].Visible = true;
                     TileViews[gridx, gridy].OnMiddleClicked += TileView => OnTileMiddleMouseClicked(TileView);
                     TileViews[gridx, gridy].OnRightClicked += OnTileRightClicked;
                     TileViews[gridx, gridy].OnNewTileDropped += OnNewTileDropped;
@@ -83,7 +85,7 @@ namespace ConnectAPIC.LayoutWindow.View
             TileViews[x, y].RotationDegrees = rotationDegrees;
         }
 
-        public void CreateComponentViewByType(int x, int y, DiscreteRotation rotation,  Type componentViewType)
+        public ComponentBaseView CreateComponentViewByType(int x, int y, DiscreteRotation rotation,  Type componentViewType, ComponentBase componentModel)
         {
             var ComponentView = ComponentViewFactory.Instance.CreateComponentView(componentViewType);
             ComponentView.Rotation90 = rotation;
@@ -98,8 +100,13 @@ namespace ConnectAPIC.LayoutWindow.View
                     int gridY = y + j;
                     SetTileTexture(gridX, gridY, ComponentView.GetTexture(i, j).Duplicate() as Texture2D, (float)ComponentView.Rotation90 * 90f);
                     TileViews[gridX, gridY].ComponentView = ComponentView;
+                    TileViews[gridX, gridY].PinRight.SetMatterType(componentModel.Parts[i, j].GetPinAt(RectangleSide.Right).MatterType);
+                    TileViews[gridX, gridY].PinDown.SetMatterType(componentModel.Parts[i, j].GetPinAt(RectangleSide.Down).MatterType);
+                    TileViews[gridX, gridY].PinLeft.SetMatterType(componentModel.Parts[i, j].GetPinAt(RectangleSide.Left).MatterType);
+                    TileViews[gridX, gridY].PinUp.SetMatterType(componentModel.Parts[i, j].GetPinAt(RectangleSide.Up).MatterType);
                 }
             }
+            return ComponentView;
         }
         public void ResetTilesAt(int x, int y, int width, int height)
         {

@@ -1,15 +1,17 @@
-[gd_scene load_steps=11 format=3 uid="uid://cu6wqy6xwjfo1"]
+[gd_scene load_steps=13 format=3 uid="uid://cu6wqy6xwjfo1"]
 
 [ext_resource type="Script" path="res://LayoutWindow/GameManager.cs" id="1_1g8p6"]
 [ext_resource type="Script" path="res://LayoutWindow/View/GridView.cs" id="1_2pqex"]
 [ext_resource type="Texture2D" uid="uid://dm0sl0jrwrfx6" path="res://GFX/EmptyGround.png" id="2_ddx4u"]
 [ext_resource type="Script" path="res://LayoutWindow/View/TileView.cs" id="3_anirx"]
+[ext_resource type="Texture2D" uid="uid://cd2busn0vvaoq" path="res://GFX/PinLight.png" id="5_lrhvy"]
+[ext_resource type="Script" path="res://LayoutWindow/View/PinView.cs" id="6_ay4pw"]
 [ext_resource type="Script" path="res://LayoutWindow/View/TemplateTileView.cs" id="6_ly1br"]
 [ext_resource type="Script" path="res://LayoutWindow/View/StraightWaveGuideView.cs" id="7_tohqs"]
+[ext_resource type="Texture2D" uid="uid://emq4du4tlo3h" path="res://GFX/PinElectric.png" id="7_uo1bp"]
 [ext_resource type="Script" path="res://LayoutWindow/View/ComponentViewFactory.cs" id="7_x7uef"]
 [ext_resource type="Texture2D" uid="uid://obrjry10rd00" path="res://GFX/StraightComponent.png" id="8_gfj5w"]
 [ext_resource type="Texture2D" uid="uid://dlui314yxvnfr" path="res://GFX/StraightComponent_Right.png" id="9_o74m0"]
-[ext_resource type="Script" path="res://LayoutWindow/ViewModel/ComponentBaseViewModel.cs" id="10_a2njl"]
 
 [node name="PICEditor" type="Node2D"]
 
@@ -35,7 +37,8 @@ columns = 6
 script = ExtResource("1_2pqex")
 DefaultTilePath = NodePath("../DefaultTile")
 
-[node name="DefaultTile" type="TextureRect" parent="GameManager/PICArea"]
+[node name="DefaultTile" type="TextureRect" parent="GameManager/PICArea" node_paths=PackedStringArray("PinRight", "PinDown", "PinLeft", "PinUp")]
+visible = false
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 offset_right = 64.0
@@ -43,6 +46,58 @@ offset_bottom = 64.0
 texture = ExtResource("2_ddx4u")
 expand_mode = 3
 script = ExtResource("3_anirx")
+PinRight = NodePath("PinRight")
+PinDown = NodePath("PinDown")
+PinLeft = NodePath("PinLeft")
+PinUp = NodePath("PinUp")
+
+[node name="PinRight" type="TextureRect" parent="GameManager/PICArea/DefaultTile"]
+layout_mode = 0
+offset_left = 46.0
+offset_top = 28.1282
+offset_right = 52.0
+offset_bottom = 34.1282
+texture = ExtResource("5_lrhvy")
+stretch_mode = 2
+script = ExtResource("6_ay4pw")
+ElectricityPinTexture = ExtResource("7_uo1bp")
+LightPinTexture = ExtResource("5_lrhvy")
+
+[node name="PinDown" type="TextureRect" parent="GameManager/PICArea/DefaultTile"]
+layout_mode = 0
+offset_left = 26.0
+offset_top = 40.1831
+offset_right = 32.0
+offset_bottom = 46.1831
+texture = ExtResource("5_lrhvy")
+stretch_mode = 2
+script = ExtResource("6_ay4pw")
+ElectricityPinTexture = ExtResource("7_uo1bp")
+LightPinTexture = ExtResource("5_lrhvy")
+
+[node name="PinLeft" type="TextureRect" parent="GameManager/PICArea/DefaultTile"]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 26.119
+offset_right = 18.0
+offset_bottom = 32.119
+texture = ExtResource("5_lrhvy")
+stretch_mode = 2
+script = ExtResource("6_ay4pw")
+ElectricityPinTexture = ExtResource("7_uo1bp")
+LightPinTexture = ExtResource("5_lrhvy")
+
+[node name="PinUp" type="TextureRect" parent="GameManager/PICArea/DefaultTile"]
+layout_mode = 0
+offset_left = 26.0
+offset_top = 14.0641
+offset_right = 32.0
+offset_bottom = 20.0641
+texture = ExtResource("5_lrhvy")
+stretch_mode = 2
+script = ExtResource("6_ay4pw")
+ElectricityPinTexture = ExtResource("7_uo1bp")
+LightPinTexture = ExtResource("5_lrhvy")
 
 [node name="ComponentToolBox" type="Panel" parent="GameManager"]
 offset_left = 659.0
@@ -61,13 +116,17 @@ offset_bottom = 224.0
 layout_mode = 2
 columns = 4
 
-[node name="StraightWaveGuideTemplate" type="TextureRect" parent="GameManager/ComponentToolBox/ScrollContainer/ToolBoxGrid"]
+[node name="StraightWaveGuideTemplate" type="TextureRect" parent="GameManager/ComponentToolBox/ScrollContainer/ToolBoxGrid" node_paths=PackedStringArray("PinRight", "PinDown", "PinLeft", "PinUp")]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 texture = ExtResource("8_gfj5w")
 expand_mode = 3
 script = ExtResource("6_ly1br")
 componentTemplatePath = NodePath("../../../../../ComponentTemplates/StraightWaveGuideView")
+PinRight = NodePath("")
+PinDown = NodePath("")
+PinLeft = NodePath("")
+PinUp = NodePath("")
 
 [node name="ComponentTemplates" type="Node" parent="."]
 script = ExtResource("7_x7uef")
@@ -76,6 +135,3 @@ script = ExtResource("7_x7uef")
 script = ExtResource("7_tohqs")
 TextureLeft = ExtResource("8_gfj5w")
 TextureRight = ExtResource("9_o74m0")
-
-[node name="StraightWaveGuideViewModel" type="Node" parent="ComponentTemplates/StraightWaveGuideView"]
-script = ExtResource("10_a2njl")
