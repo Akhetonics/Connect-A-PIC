@@ -16,7 +16,7 @@ public static class DiscreteRotationExtensions
         return (DiscreteRotation)((int)(currentRotation + 1) % (int)(DiscreteRotation.R270 + 1));
     }
 
-    public static RectangleSide RotateRectangleSide(this RectangleSide side, DiscreteRotation rotation)
+    public static RectangleSide RotateSideCounterClockwise(this RectangleSide side, DiscreteRotation rotation)
     {
         int sideCount = Enum.GetValues(typeof(RectangleSide)).Length;
         int rotationIndex = (int)rotation;
@@ -24,6 +24,15 @@ public static class DiscreteRotationExtensions
 
         int newSide = (sideCount - rotationIndex) % sideCount;
         newSide = (newSide +currentSide ) % sideCount;
+
+        return (RectangleSide)newSide;
+    }
+    public static RectangleSide RotateSideClockwise(this RectangleSide side, DiscreteRotation rotation)
+    {
+        int sideCount = Enum.GetValues(typeof(RectangleSide)).Length;
+        int rotationIndex = (int)rotation;
+
+        int newSide = (rotationIndex + (int) side) % sideCount;
 
         return (RectangleSide)newSide;
     }

@@ -5,6 +5,7 @@ using Godot;
 using Model;
 using System;
 using System.ComponentModel;
+using System.Drawing;
 using Tiles;
 
 namespace ConnectAPIC.LayoutWindow.View
@@ -100,10 +101,15 @@ namespace ConnectAPIC.LayoutWindow.View
                     int gridY = y + j;
                     SetTileTexture(gridX, gridY, ComponentView.GetTexture(i, j).Duplicate() as Texture2D, (float)ComponentView.Rotation90 * 90f);
                     TileViews[gridX, gridY].ComponentView = ComponentView;
-                    TileViews[gridX, gridY].PinRight.SetMatterType(componentModel.Parts[i, j].GetPinAt(RectangleSide.Right).MatterType);
-                    TileViews[gridX, gridY].PinDown.SetMatterType(componentModel.Parts[i, j].GetPinAt(RectangleSide.Down).MatterType);
-                    TileViews[gridX, gridY].PinLeft.SetMatterType(componentModel.Parts[i, j].GetPinAt(RectangleSide.Left).MatterType);
-                    TileViews[gridX, gridY].PinUp.SetMatterType(componentModel.Parts[i, j].GetPinAt(RectangleSide.Up).MatterType);
+                    var part = componentModel.Parts[i, j];
+                    var PinRightAbsoluteEdgePos = RectangleSide.Right.RotateSideCounterClockwise(part.Rotation90);
+                    var PinDownAbsoluteEdgePos = RectangleSide.Down.RotateSideCounterClockwise(part.Rotation90);
+                    var PinLeftAbsoluteEdgePos = RectangleSide.Left.RotateSideCounterClockwise(part.Rotation90);
+                    var PinUpAbsoluteEdgePos = RectangleSide.Up.RotateSideCounterClockwise(part.Rotation90);
+                    TileViews[gridX, gridY].PinRight.SetMatterType(part.GetPinAt(PinRightAbsoluteEdgePos).MatterType);
+                    TileViews[gridX, gridY].PinDown.SetMatterType(part.GetPinAt(PinDownAbsoluteEdgePos).MatterType);
+                    TileViews[gridX, gridY].PinLeft.SetMatterType(part.GetPinAt(PinLeftAbsoluteEdgePos).MatterType);
+                    TileViews[gridX, gridY].PinUp.SetMatterType(part.GetPinAt(PinUpAbsoluteEdgePos).MatterType);
                 }
             }
             return ComponentView;

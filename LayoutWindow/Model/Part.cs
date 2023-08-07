@@ -27,21 +27,22 @@ namespace Model
         }
         public void InitializePin(RectangleSide side, string name, MatterType matterType)
         {
-            side = side.RotateRectangleSide(Rotation90);
-            var pin = Pins.Find(p => p.Side == side);
+            var pin = GetPinAt(side);
             pin.MatterType = matterType;
             pin.Name = name;
         }
-        
-        public void InitializePin(RectangleSide side, Pin pin)
-        {
-            this.InitializePin(side, pin.Name, pin.MatterType);
-        }
 
-        public Pin GetPinAt(RectangleSide side , bool CorrectRotation = true) // takes rotation into account
+        /// <summary>
+        /// takes rotation into account so that "right" is the absolute "right" Pin on the screen
+        /// </summary>
+        /// <param name="side"></param>
+        /// <param name="absoluteOrientation"></param>
+        /// <returns></returns>
+        public Pin GetPinAt(RectangleSide side , bool absoluteOrientation = true) 
         {
-            if (CorrectRotation)
-                side = side.RotateRectangleSide(Rotation90);
+            if (absoluteOrientation)
+                side = side.RotateSideCounterClockwise(Rotation90);
+            
             return Pins.Find(p => p.Side == side);
         }
         
