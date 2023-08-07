@@ -1,4 +1,5 @@
 using ConnectAPIC.LayoutWindow.View;
+using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.Scenes.Component;
 using ConnectAPIC.Scenes.Tiles;
 using Godot;
@@ -9,39 +10,28 @@ namespace ConnectAPIC.LayoutWindow.View
 
     public partial class TileView : TextureRect
     {
-        public delegate void ComponentEventHandler(TileView tile, ComponentBaseView component);
-        public event ComponentEventHandler OnExistingTileDropped;
-        public event ComponentEventHandler OnNewTileDropped;
-        public delegate void TileEventHandler(TileView tile);
-        public event TileEventHandler OnMiddleClicked;
-        public event TileEventHandler OnRightClicked;
-        [Export] public PinView PinRight { get; set; }
-        [Export] public PinView PinDown { get; set; }
-        [Export] public PinView PinLeft { get; set; }
-        [Export] public PinView PinUp { get; set; }
-        public ComponentBaseView ComponentView { get; set; }
-        public int GridX { get; private set; }
-        public int GridY { get; private set; }
+        private PinView _PinRight;
+        private PinView _PinDown;
+        private PinView _PinLeft;
+        private PinView _PinUp;
+        [Export] public PinView PinRight { get => _PinRight; set { _PinRight = value; _PinRight.SetPinRelativePosition(RectangleSide.Right); } }
+        [Export] public PinView PinDown { get => _PinDown; set { _PinDown = value; _PinDown.SetPinRelativePosition(RectangleSide.Down); } }
+        [Export] public PinView PinLeft { get => _PinLeft; set { _PinLeft = value; _PinLeft.SetPinRelativePosition(RectangleSide.Left); } }
+        [Export] public PinView PinUp { get => _PinUp; set { _PinUp = value; _PinUp.SetPinRelativePosition(RectangleSide.Up); } }
+
+        public TileViewModel TileViewModel { get; set; }
         public static int TilePixelSize { get; } = 64;
 
         public override void _Ready()
         {
             PivotOffset = Size / 2;
-            
         }
-        /// <summary>
-        /// Register the Tile when it gets created
-        /// </summary>
-        public void SetPositionInGrid(int X, int Y)
+        
+        public void Initialize(TileViewModel viewModel)
         {
-            GridX = X;
-            GridY = Y;
-            PinRight.SetPinRelativePosition(RectangleSide.Right);
-            PinDown.SetPinRelativePosition(RectangleSide.Down);
-            PinLeft.SetPinRelativePosition(RectangleSide.Left);
-            PinUp.SetPinRelativePosition(RectangleSide.Up);
+            this.TileViewModel = viewModel;
         }
-
+        
         public override void _GuiInput(InputEvent inputEvent)
         {
             base._GuiInput(inputEvent);
@@ -53,11 +43,12 @@ namespace ConnectAPIC.LayoutWindow.View
                 }
                 if (mouseEvent.ButtonIndex == MouseButton.Middle && mouseEvent.Pressed)
                 {
-                    OnMiddleClicked?.Invoke(this);
+                    // call the Remove Component command on the ComponentViewModel
+                    TileViewModel.DeleteComponentCommand.Execute(null);
                 }
                 if (mouseEvent.ButtonIndex == MouseButton.Right && mouseEvent.Pressed)
                 {
-                    OnRightClicked?.Invoke(this);
+                    TileViewModel.RotateComponentCommand.Execute(null);
                 }
             }
         }
