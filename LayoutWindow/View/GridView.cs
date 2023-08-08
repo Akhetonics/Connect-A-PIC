@@ -1,4 +1,5 @@
 using ConnectAPIC.LayoutWindow.View;
+using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.Scenes.Component;
 using ConnectAPIC.Scenes.Tiles;
 using Godot;
@@ -18,6 +19,8 @@ namespace ConnectAPIC.LayoutWindow.View
         
         [Export] private NodePath DefaultTilePath;
         private TileView _defaultTile;
+        private readonly GridViewModel viewModel;
+
         public TileView DefaultTile
         {
             get
@@ -28,13 +31,14 @@ namespace ConnectAPIC.LayoutWindow.View
             }
         }
 
-        public GridView()
+        public GridView(GridViewModel viewModel)
         {
-            
             if (string.IsNullOrEmpty(DefaultTilePath))
             {
                 GD.PrintErr($"{nameof(DefaultTilePath)} is not assigned");
             }
+
+            this.viewModel = viewModel;
         }
 
         

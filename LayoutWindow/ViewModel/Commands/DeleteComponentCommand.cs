@@ -9,30 +9,40 @@ using System.Windows.Input;
 
 namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 {
-    public class DeleteComponentCommand : ICommand
+    public class DeleteComponentCommand :ICommand
     {
         private readonly Grid grid;
-        private readonly int gridX;
-        private readonly int gridY;
 
         public event EventHandler CanExecuteChanged;
         
-        public DeleteComponentCommand(Grid grid, int gridX , int gridY)
+        public DeleteComponentCommand(Grid grid)
         {
             this.grid = grid;
-            this.gridX = gridX;
-            this.gridY = gridY;
         }
         public bool CanExecute(object parameter)
         {
-            if( grid.GetComponentAt(gridX,gridY) != null)
+            if (parameter is DeleteComponentArgs deleteparams
+                && grid.GetComponentAt(deleteparams.gridX, deleteparams.gridY) != null)
                 return true;
             return false;
         }
 
         public void Execute(object parameter)
         {
-            grid.UnregisterComponentAt(gridX,gridY);
+            if (!CanExecute(parameter)) return;
+            var deleteparams = (DeleteComponentArgs)parameter;
+            grid.UnregisterComponentAt(deleteparams.gridX, deleteparams.gridY);
+        }
+    }
+    public class DeleteComponentArgs
+    {
+        public readonly int gridX;
+        public readonly int gridY;
+
+        public DeleteComponentArgs(int gridX, int gridY)
+        {
+            this.gridX = gridX;
+            this.gridY = gridY;
         }
     }
 }

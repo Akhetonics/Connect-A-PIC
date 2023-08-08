@@ -1,4 +1,5 @@
 ﻿using ConnectAPIC.LayoutWindow.View;
+using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scenes.Component;
 using ConnectAPIC.Scenes.Tiles;
 using Godot;
@@ -10,12 +11,16 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Tiles;
 
 namespace ConnectAPIC.LayoutWindow.ViewModel
 {
     public class GridViewModel :INotifyPropertyChanged
     {
+        public CreateComponentCommand CreateComponentCommand { get; set; }
+        public ICommand DeleteComponentCommand { get; set; }
+        public ICommand RotateComponentCommand { get; set; }
         public TileView[,] TileViews { get; private set; }
         public int Width { get => TileViews.GetLength(0); }
         public int Height { get => TileViews.GetLength(1); }
@@ -25,7 +30,9 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         public event PropertyChangedEventHandler PropertyChanged;
         public GridViewModel(GridView gridview, Grid grid )
         {
-            
+            CreateComponentCommand = new CreateComponentCommand(Grid);
+            DeleteComponentCommand = new DeleteComponentCommand(Grid);
+            RotateComponentCommand = new RotateComponentCommand(Grid, GridX, GridY);
             this.GridView = gridview;
             this.Grid = grid;
             this.GridView.OnNewTileDropped += GridView_CreateNewComponent;
@@ -43,7 +50,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             TileViews = new TileView[width, height];
         }
 
-        private void GridView_CreateNewComponent(TileView tile, ComponentBaseView componentView)
+        public void CreateNewComponent(TileView tile, ComponentBaseView componentView)
         {
             Type componentType = null;
             if (componentView is StraightWaveGuideView)

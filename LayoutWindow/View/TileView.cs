@@ -1,5 +1,6 @@
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel;
+using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scenes.Component;
 using ConnectAPIC.Scenes.Tiles;
 using Godot;
@@ -19,17 +20,24 @@ namespace ConnectAPIC.LayoutWindow.View
         [Export] public PinView PinLeft { get => _PinLeft; set { _PinLeft = value; _PinLeft.SetPinRelativePosition(RectangleSide.Left); } }
         [Export] public PinView PinUp { get => _PinUp; set { _PinUp = value; _PinUp.SetPinRelativePosition(RectangleSide.Up); } }
 
-        public TileViewModel TileViewModel { get; set; }
+        public GridViewModel ViewModel { get; set; }
         public static int TilePixelSize { get; } = 64;
+        public int GridX { get; private set; }
+        public int GridY { get; private set; }
+        public void SetPositionInGrid(int X, int Y)
+        {
+            GridX = X;
+            GridY = Y;
 
+        }
         public override void _Ready()
         {
             PivotOffset = Size / 2;
         }
         
-        public void Initialize(TileViewModel viewModel)
+        public void Initialize(GridViewModel viewModel)
         {
-            this.TileViewModel = viewModel;
+            this.ViewModel = viewModel;
         }
         
         public override void _GuiInput(InputEvent inputEvent)
@@ -44,11 +52,11 @@ namespace ConnectAPIC.LayoutWindow.View
                 if (mouseEvent.ButtonIndex == MouseButton.Middle && mouseEvent.Pressed)
                 {
                     // call the Remove Component command on the ComponentViewModel
-                    TileViewModel.DeleteComponentCommand.Execute(null);
+                    ViewModel.DeleteComponentCommand.Execute(new DeleteComponentArgs(GridX, GridY));
                 }
                 if (mouseEvent.ButtonIndex == MouseButton.Right && mouseEvent.Pressed)
                 {
-                    TileViewModel.RotateComponentCommand.Execute(null);
+                    ViewModel.RotateComponentCommand.Execute();
                 }
             }
         }
@@ -90,6 +98,7 @@ namespace ConnectAPIC.LayoutWindow.View
             {
                 if (!componentView.Visible)
                 {
+                    
                     OnNewTileDropped?.Invoke(this, componentView);
                 }
                 else

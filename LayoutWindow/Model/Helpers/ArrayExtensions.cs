@@ -3,8 +3,9 @@ using Godot.Collections;
 using System;
 public static class ArrayExtensions
 {
+    
     public static T[,] RotateCounterClockwise<T>(this T[,] array)
-    {
+    {        
         int rows = array.GetLength(0);
         int columns = array.GetLength(1);
         T[,] rotatedArray = new T[columns, rows];
