@@ -1,10 +1,12 @@
-﻿<Project Sdk="Godot.NET.Sdk/4.1.1">
+﻿<Project Sdk="Godot.NET.Sdk/4.1.0">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>ConnectAPIC</RootNamespace>
+     
     <StartAction>Program</StartAction>
     <StartProgram>C:\Program Files\Godot_v4.1\Godot_v4.1.exe</StartProgram>
     <StartArguments>--path C:\dev\Akhetonics\Connect-A-PIC\</StartArguments>
+  
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Tests\**" />
@@ -21,7 +23,7 @@
   <ItemGroup>
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
   </ItemGroup>
-  <ItemGroup>
+    <ItemGroup>
     <None Include="MathNet.Numerics.dll" />
     <ContentWithTargetPath Include="MathNet.Numerics.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

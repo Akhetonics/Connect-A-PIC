@@ -15,12 +15,13 @@ namespace ConnectAPIC.LayoutWindow.View
         private PinView _PinDown;
         private PinView _PinLeft;
         private PinView _PinUp;
-        [Export] public PinView PinRight { get => _PinRight; set { _PinRight = value; _PinRight.SetPinRelativePosition(RectangleSide.Right); } }
-        [Export] public PinView PinDown { get => _PinDown; set { _PinDown = value; _PinDown.SetPinRelativePosition(RectangleSide.Down); } }
-        [Export] public PinView PinLeft { get => _PinLeft; set { _PinLeft = value; _PinLeft.SetPinRelativePosition(RectangleSide.Left); } }
-        [Export] public PinView PinUp { get => _PinUp; set { _PinUp = value; _PinUp.SetPinRelativePosition(RectangleSide.Up); } }
+        [Export] public PinView PinRight { get => _PinRight; set { _PinRight = value; _PinRight?.SetPinRelativePosition(RectangleSide.Right); } }
+        [Export] public PinView PinDown { get => _PinDown; set { _PinDown = value; _PinDown?.SetPinRelativePosition(RectangleSide.Down); } }
+        [Export] public PinView PinLeft { get => _PinLeft; set { _PinLeft = value; _PinLeft?.SetPinRelativePosition(RectangleSide.Left); } }
+        [Export] public PinView PinUp { get => _PinUp; set { _PinUp = value; _PinUp?.SetPinRelativePosition(RectangleSide.Up); } }
 
-        public GridViewModel ViewModel { get; set; }
+        private GridViewModel ViewModel { get; set; }
+        public ComponentBaseView ComponentView { get; set; }
         public static int TilePixelSize { get; } = 64;
         public int GridX { get; private set; }
         public int GridY { get; private set; }
@@ -51,12 +52,19 @@ namespace ConnectAPIC.LayoutWindow.View
                 }
                 if (mouseEvent.ButtonIndex == MouseButton.Middle && mouseEvent.Pressed)
                 {
-                    // call the Remove Component command on the ComponentViewModel
                     ViewModel.DeleteComponentCommand.Execute(new DeleteComponentArgs(GridX, GridY));
                 }
                 if (mouseEvent.ButtonIndex == MouseButton.Right && mouseEvent.Pressed)
                 {
-                    ViewModel.RotateComponentCommand.Execute();
+                    var args = new RotateComponentArgs(GridX, GridY);
+                    if (ViewModel.RotateComponentCommand.CanExecute(args))
+                    {
+                        ViewModel.RotateComponentCommand.Execute(args);
+                    } else
+                    {
+                        // Error Animation
+                    }
+                    
                 }
             }
         }
@@ -98,12 +106,11 @@ namespace ConnectAPIC.LayoutWindow.View
             {
                 if (!componentView.Visible)
                 {
-                    
-                    OnNewTileDropped?.Invoke(this, componentView);
+                    ViewModel.CreateComponentCommand.Execute(new CreateComponentArgs(componentView.GetType(), GridX, GridY, componentView.Rotation90));
                 }
                 else
                 {
-                    OnExistingTileDropped?.Invoke(this, componentView);
+                    ViewModel.MoveComponentCommand.Execute(new MoveComponentArgs(componentView.GridX, componentView.GridY,GridX, GridY));
                 }
             }
         }

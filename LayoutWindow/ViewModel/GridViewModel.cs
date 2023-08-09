@@ -18,7 +18,8 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
 {
     public class GridViewModel :INotifyPropertyChanged
     {
-        public CreateComponentCommand CreateComponentCommand { get; set; }
+        public ICommand CreateComponentCommand { get; set; }
+        public ICommand MoveComponentCommand { get; set; }
         public ICommand DeleteComponentCommand { get; set; }
         public ICommand RotateComponentCommand { get; set; }
         public TileView[,] TileViews { get; private set; }
@@ -30,34 +31,16 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         public event PropertyChangedEventHandler PropertyChanged;
         public GridViewModel(GridView gridview, Grid grid )
         {
-            CreateComponentCommand = new CreateComponentCommand(Grid);
-            DeleteComponentCommand = new DeleteComponentCommand(Grid);
-            RotateComponentCommand = new RotateComponentCommand(Grid, GridX, GridY);
             this.GridView = gridview;
             this.Grid = grid;
-            this.GridView.OnNewTileDropped += GridView_CreateNewComponent;
-            this.GridView.OnTileMiddleMouseClicked += tile => Grid.UnregisterComponentAt(tile.GridX, tile.GridY);
-            this.GridView.OnExistingTileDropped += (tile, componentView) => Grid.MoveComponent(tile.GridX, tile.GridY, componentView.GridX,componentView.GridY);
-            this.GridView.OnTileRightClicked += tile => Grid.RotateComponentBy90(tile.GridX, tile.GridY);
-            DeleteAllTiles();
+            this.TileViews = new TileView[grid.Width, grid.Height];
+            CreateComponentCommand = new CreateComponentCommand(grid);
+            DeleteComponentCommand = new DeleteComponentCommand(grid);
+            RotateComponentCommand = new RotateComponentCommand(grid);
+            MoveComponentCommand = new MoveComponentCommand(grid);
             CreateEmptyField(grid.Width, grid.Height);
             this.Grid.OnComponentPlacedOnTile += Grid_OnComponentPlacedOnTile;
             this.Grid.OnComponentRemoved += Grid_OnComponentRemoved;
-        }
-
-        public void ResetAllTileViews(int width, int height)
-        {
-            TileViews = new TileView[width, height];
-        }
-
-        public void CreateNewComponent(TileView tile, ComponentBaseView componentView)
-        {
-            Type componentType = null;
-            if (componentView is StraightWaveGuideView)
-            {
-                componentType = typeof(StraightWaveGuide);
-            }
-            Grid.PlaceComponentByType(tile.GridX, tile.GridY, componentType);
         }
 
         private void Grid_OnComponentRemoved(ComponentBase component, int x, int y)
@@ -73,11 +56,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         }
         private void Grid_OnComponentPlacedOnTile(ComponentBase component, int gridX, int gridY)
         {
-            Type componentViewType = null;
-            if(component is StraightWaveGuide)
-            {
-                componentViewType = typeof(StraightWaveGuideView);
-            }
+            Type componentViewType = ComponentViewModelTypeConverter.ToView(component.GetType());
             CreateComponentViewByType(gridX, gridY, component.Rotation90, componentViewType, component);
         }
         public bool IsInGrid(int x, int y, int width, int height)
@@ -85,7 +64,6 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             return x >= 0 && y >= 0 && x + width <= this.Width && y + height <= this.Height;
         }
         
-
         public void DeleteAllTiles()
         {
             foreach (TileView t in TileViews)
@@ -96,6 +74,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         public void CreateEmptyField(int width, int height)
         {
             if (width <= 0 || height <= 0) return;
+            DeleteAllTiles();
             this.GridView.Columns = width;
             if (this.Width != width || this.Height != height)
             {
@@ -107,10 +86,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
                 {
                     TileViews[gridx, gridy] = GridView.DefaultTile.Duplicate();
                     TileViews[gridx, gridy].Visible = true;
-                    TileViews[gridx, gridy].OnMiddleClicked += TileView => Grid.UnregisterComponentAt(TileView.GridX, TileView.GridY);
-                    TileViews[gridx, gridy].OnRightClicked += tile => Grid.RotateComponentBy90(tile.GridX, tile.GridY);
-                    TileViews[gridx, gridy].OnNewTileDropped += GridView_CreateNewComponent;
-                    TileViews[gridx, gridy].OnExistingTileDropped += (tile, componentView) => Grid.MoveComponent(tile.GridX, tile.GridY, componentView.GridX, componentView.GridY); ;
+                    TileViews[gridx, gridy].Initialize(this);
                     TileViews[gridx, gridy].SetPositionInGrid(gridx, gridy);
                     GridView.AddChild(TileViews[gridx, gridy]);
                 }

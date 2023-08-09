@@ -16,10 +16,10 @@ namespace ConnectAPIC.LayoutWindow.View
     {
         public delegate void GridActionHandler(TileView tile);
         public delegate void GridActionComponentHandler(TileView tile);
-        
+
         [Export] private NodePath DefaultTilePath;
         private TileView _defaultTile;
-        private readonly GridViewModel viewModel;
+        private GridViewModel ViewModel;
 
         public TileView DefaultTile
         {
@@ -31,16 +31,17 @@ namespace ConnectAPIC.LayoutWindow.View
             }
         }
 
-        public GridView(GridViewModel viewModel)
+        public GridView()
         {
             if (string.IsNullOrEmpty(DefaultTilePath))
             {
                 GD.PrintErr($"{nameof(DefaultTilePath)} is not assigned");
             }
-
-            this.viewModel = viewModel;
+        }
+        public void Initialize(GridViewModel viewModel)
+        {
+            this.ViewModel = viewModel;
         }
 
-        
     }
 }

@@ -116,17 +116,13 @@ offset_bottom = 224.0
 layout_mode = 2
 columns = 4
 
-[node name="StraightWaveGuideTemplate" type="TextureRect" parent="GameManager/ComponentToolBox/ScrollContainer/ToolBoxGrid" node_paths=PackedStringArray("PinRight", "PinDown", "PinLeft", "PinUp")]
+[node name="StraightWaveGuideTemplate" type="TextureRect" parent="GameManager/ComponentToolBox/ScrollContainer/ToolBoxGrid"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 texture = ExtResource("8_gfj5w")
 expand_mode = 3
 script = ExtResource("6_ly1br")
 componentTemplatePath = NodePath("../../../../../ComponentTemplates/StraightWaveGuideView")
-PinRight = NodePath("")
-PinDown = NodePath("")
-PinLeft = NodePath("")
-PinUp = NodePath("")
 
 [node name="ComponentTemplates" type="Node" parent="."]
 script = ExtResource("7_x7uef")

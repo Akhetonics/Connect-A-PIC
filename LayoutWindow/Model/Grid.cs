@@ -1,4 +1,5 @@
 using ConnectAPIC.LayoutWindow.Model.Component;
+using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scenes.Component;
 using System;
 using System.ComponentModel;
@@ -59,7 +60,23 @@ namespace Model
 
             return false;
         }
-
+        public bool CanRotateComponentBy90(int Gridx, int Gridy)
+        {
+            var component = GetComponentAt(Gridx, Gridy);
+            if (component == null) return false;
+            int widthAfterRotation = component.HeightInTiles;
+            int heightAfterRotation = component.WidthInTiles;
+            for (int i = 0; i < widthAfterRotation; i++)
+            {
+                for (int j = 0; j < heightAfterRotation; j++)
+                {
+                    var componentAtTile = GetComponentAt(Gridx + i, Gridy + j);
+                    if (componentAtTile != component && componentAtTile != null)
+                        return false;
+                }
+            }
+            return true;
+        }
         public bool RotateComponentBy90(int tileX, int tileY)
         {
             ComponentBase component = GetComponentAt(tileX, tileY);
@@ -75,14 +92,15 @@ namespace Model
             try
             {
                 PlaceComponent(x, y, rotatedComponent);
+                OnComponentRotated?.Invoke(rotatedComponent, tileX, tileY);
+                return true;
             }
             catch (ComponentCannotBePlacedException)
             {
                 rotatedComponent.Rotation90 = rotatedComponent.Rotation90 - 1;
                 PlaceComponent(x, y, rotatedComponent);
+                return false;
             }
-            OnComponentRotated?.Invoke(rotatedComponent, tileX, tileY);
-            return true;
         }
         public bool IsInGrid(int x, int y, int width, int height)
         {
@@ -106,6 +124,7 @@ namespace Model
             PlaceComponent(x, y, component);
             return component;
         }
+
         public void PlaceComponent(int x, int y, ComponentBase component)
         {
             if (IsColliding(x, y, component.WidthInTiles, component.HeightInTiles))
@@ -140,6 +159,22 @@ namespace Model
             OnComponentRemoved?.Invoke(item, x, y);
             item.ClearGridData();
         }
+        public bool CanMoveComponent(int sourceX, int sourceY, int targetX, int targetY)
+        {
+            var comp = GetComponentAt(sourceX, sourceY);
+            if (comp == null) return false;
+            for (int i = 0; i < comp.WidthInTiles; i++)
+            {
+                for (int j = 0; j < comp.HeightInTiles; j++)
+                {
+                    var foundComp = GetComponentAt(targetX + i, targetY + j);
+                    if (foundComp != comp && foundComp != null)
+                        return false;
+                }
+            }
+            return true;
+        }
+
         public bool MoveComponent(int x, int y, int sourceX, int sourceY)
         {
             ComponentBase component = GetComponentAt(sourceX, sourceY);
