@@ -33,7 +33,7 @@ namespace ConnectAPIC.Scenes.Component
             Connections = new SMatrix(allPins);
             var connectionweights = new Dictionary<(Guid, Guid), Complex>
             {
-                { (Parts[0, 0].GetPinAt(RectangleSide.Right).ID, Parts[0, 0].GetPinAt(RectangleSide.Right).ID), new Complex(1, 0.2) }
+                { (Parts[0, 0].GetPinAt(RectangleSide.Right).ID, Parts[0, 0].GetPinAt(RectangleSide.Right).ID), new Complex(1, 0) }
             };
 
             Connections.setValues(connectionweights);
