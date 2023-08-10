@@ -10,18 +10,30 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
 {
     public static class ComponentViewModelTypeConverter
     {
+        private static readonly Dictionary<Type, Type> ModelViewTable = new()
+        {
+            { typeof(ComponentBase), typeof(ComponentBaseView) },
+            { typeof(StraightWaveGuide), typeof(StraightWaveGuideView) },
+            { typeof(GratingCoupler), typeof(GratingCouplerView) },
+        };
         public static Type ToModel(Type ComponentViewType) {
-            if (typeof(StraightWaveGuideView).IsAssignableFrom(ComponentViewType))
+            foreach (var modelView in ModelViewTable)
             {
-                return typeof(StraightWaveGuide);
+                if (modelView.Value == ComponentViewType)
+                {
+                    return modelView.Key;
+                }
             }
             return null;
         }
         public static Type ToView(Type ComponentType)
         {
-            if (ComponentType == typeof(StraightWaveGuide))
+            foreach (var modelView in ModelViewTable)
             {
-                return typeof(StraightWaveGuideView);
+                if (modelView.Key == ComponentType)
+                {
+                    return modelView.Value;
+                }
             }
             return null;
         }

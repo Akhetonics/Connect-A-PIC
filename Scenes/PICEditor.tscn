@@ -1,4 +1,4 @@
-[gd_scene load_steps=13 format=3 uid="uid://cu6wqy6xwjfo1"]
+[gd_scene load_steps=15 format=3 uid="uid://cu6wqy6xwjfo1"]
 
 [ext_resource type="Script" path="res://LayoutWindow/GameManager.cs" id="1_1g8p6"]
 [ext_resource type="Script" path="res://LayoutWindow/View/GridView.cs" id="1_2pqex"]
@@ -12,6 +12,8 @@
 [ext_resource type="Script" path="res://LayoutWindow/View/ComponentViewFactory.cs" id="7_x7uef"]
 [ext_resource type="Texture2D" uid="uid://obrjry10rd00" path="res://GFX/StraightComponent.png" id="8_gfj5w"]
 [ext_resource type="Texture2D" uid="uid://dlui314yxvnfr" path="res://GFX/StraightComponent_Right.png" id="9_o74m0"]
+[ext_resource type="Texture2D" uid="uid://b7fnv5qoysp51" path="res://GFX/GratingCoupler.png" id="10_m4std"]
+[ext_resource type="Script" path="res://LayoutWindow/View/GratingCouplerView.cs" id="14_bqkgg"]
 
 [node name="PICEditor" type="Node2D"]
 
@@ -124,6 +126,27 @@ expand_mode = 3
 script = ExtResource("6_ly1br")
 componentTemplatePath = NodePath("../../../../../ComponentTemplates/StraightWaveGuideView")
 
+[node name="GratingCouplerTemplate" type="TextureRect" parent="GameManager/ComponentToolBox/ScrollContainer/ToolBoxGrid" node_paths=PackedStringArray("PinRight")]
+custom_minimum_size = Vector2(64, 64)
+layout_mode = 2
+texture = ExtResource("10_m4std")
+expand_mode = 3
+script = ExtResource("6_ly1br")
+componentTemplatePath = NodePath("../../../../../ComponentTemplates/GratingCouplerView")
+PinRight = NodePath("PinRight")
+
+[node name="PinRight" type="TextureRect" parent="GameManager/ComponentToolBox/ScrollContainer/ToolBoxGrid/GratingCouplerTemplate"]
+layout_mode = 0
+offset_left = 58.0
+offset_top = 28.0
+offset_right = 64.0
+offset_bottom = 34.0
+texture = ExtResource("5_lrhvy")
+stretch_mode = 2
+script = ExtResource("6_ay4pw")
+ElectricityPinTexture = ExtResource("7_uo1bp")
+LightPinTexture = ExtResource("5_lrhvy")
+
 [node name="ComponentTemplates" type="Node" parent="."]
 script = ExtResource("7_x7uef")
 
@@ -131,3 +154,7 @@ script = ExtResource("7_x7uef")
 script = ExtResource("7_tohqs")
 TextureLeft = ExtResource("8_gfj5w")
 TextureRight = ExtResource("9_o74m0")
+
+[node name="GratingCouplerView" type="Node" parent="ComponentTemplates"]
+script = ExtResource("14_bqkgg")
+Texture = ExtResource("10_m4std")

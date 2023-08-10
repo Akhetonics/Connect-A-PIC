@@ -9,6 +9,8 @@
   <ItemGroup>
     <Compile Remove="Tests\**" />
     <EmbeddedResource Remove="Tests\**" />
+    <Compile Remove="UnitTests\**" />
+    <EmbeddedResource Remove="UnitTests\**" />
   </ItemGroup>
   <ItemGroup>
     <Compile Remove="Scenes\Program.cs" />
