@@ -1,12 +1,15 @@
 using ConnectAPIC.LayoutWindow.Model.Component;
+using ConnectAPIC.LayoutWindow.Model.ExternalPorts;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scenes.Component;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using Tiles;
 
 namespace Model
 {
+
     public class Grid
     {
         public delegate void OnGridCreatedHandler(Tile[,] Tiles);
@@ -17,14 +20,19 @@ namespace Model
         public event OnComponentChangedEventHandler OnComponentRotated;
         public event OnComponentChangedEventHandler OnComponentMoved;
 
+        public List<ExternalPort> ExternalPorts;
+
         public Tile[,] Tiles { get; private set; }
         public int Width { get; private set; }
         public int Height { get; private set; }
+        public const int MinHeight = 10;
 
-        public Grid(int width, int height)
+        public Grid(int width, int height, List<ExternalPort> externalPorts)
         {
+            if (height < MinHeight) height = MinHeight;
             Width = width;
             Height = height;
+            ExternalPorts = externalPorts;
             CreateGrid();
         }
         public void CreateGrid()
@@ -60,23 +68,6 @@ namespace Model
 
             return false;
         }
-        public bool CanRotateComponentBy90(int Gridx, int Gridy)
-        {
-            var component = GetComponentAt(Gridx, Gridy);
-            if (component == null) return false;
-            int widthAfterRotation = component.HeightInTiles;
-            int heightAfterRotation = component.WidthInTiles;
-            for (int i = 0; i < widthAfterRotation; i++)
-            {
-                for (int j = 0; j < heightAfterRotation; j++)
-                {
-                    var componentAtTile = GetComponentAt(Gridx + i, Gridy + j);
-                    if (componentAtTile != component && componentAtTile != null)
-                        return false;
-                }
-            }
-            return true;
-        }
         public bool RotateComponentBy90(int tileX, int tileY)
         {
             ComponentBase component = GetComponentAt(tileX, tileY);
@@ -97,7 +88,7 @@ namespace Model
             }
             catch (ComponentCannotBePlacedException)
             {
-                rotatedComponent.Rotation90 = rotatedComponent.Rotation90 - 1;
+                rotatedComponent.Rotation90--;
                 PlaceComponent(x, y, rotatedComponent);
                 return false;
             }
@@ -159,22 +150,6 @@ namespace Model
             OnComponentRemoved?.Invoke(item, x, y);
             item.ClearGridData();
         }
-        public bool CanMoveComponent(int sourceX, int sourceY, int targetX, int targetY)
-        {
-            var comp = GetComponentAt(sourceX, sourceY);
-            if (comp == null) return false;
-            for (int i = 0; i < comp.WidthInTiles; i++)
-            {
-                for (int j = 0; j < comp.HeightInTiles; j++)
-                {
-                    var foundComp = GetComponentAt(targetX + i, targetY + j);
-                    if (foundComp != comp && foundComp != null)
-                        return false;
-                }
-            }
-            return true;
-        }
-
         public bool MoveComponent(int x, int y, int sourceX, int sourceY)
         {
             ComponentBase component = GetComponentAt(sourceX, sourceY);

@@ -142,7 +142,7 @@ class TestPDK(object):
 
 
 
-    def placeGrating_East(self, numIO):
+    def placeGratingArray_East(self, numIO):
         with nd.Cell(name='AkhetGratingEast') as gratingEast:
             nd.text(text='Grating Coupler Array E', height=15, layer=self._TextLayer, align='lb').put(-280, -50)
             # TODO: Draw correct shape

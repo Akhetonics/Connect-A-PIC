@@ -33,6 +33,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         {
             this.GridView = gridview;
             this.Grid = grid;
+            this.GridView.Columns = grid.Width;
             this.TileViews = new TileView[grid.Width, grid.Height];
             CreateComponentCommand = new CreateComponentCommand(grid);
             DeleteComponentCommand = new DeleteComponentCommand(grid);

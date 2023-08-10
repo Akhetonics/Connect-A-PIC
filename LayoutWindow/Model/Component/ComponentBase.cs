@@ -69,21 +69,22 @@ namespace ConnectAPIC.Scenes.Component
             }
             return Parts[offsetX, offsetY];
         }
-        public Guid PinIdRight(int x, int y)
+        public Guid PinIdRight(int offsetX, int offsetY)
         {
-            return Parts[x, y].GetPinAt(RectangleSide.Right).ID;
+            return Parts[offsetX, offsetY].GetPinAt(RectangleSide.Right).ID;
         }
-        public Guid PinIdDown(int x, int y)
+        public Guid PinIdDown(int offsetX, int offsetY)
         {
-            return Parts[x, y].GetPinAt(RectangleSide.Down).ID;
+            return Parts[offsetX, offsetY].GetPinAt(RectangleSide.Down).ID;
         }
-        public Guid PinIdLeft(int x, int y)
+        public Guid PinIdLeft(int offsetX, int offsetY)
         {
-            return Parts[x, y].GetPinAt(RectangleSide.Left).ID;
+            return Parts[offsetX, offsetY].GetPinAt(RectangleSide.Left).ID;
         }
-        public Guid PinIdUp(int x, int y)
+        public Guid PinIdUp(int offsetX, int offsetY)
         {
-            return Parts[x, y].GetPinAt(RectangleSide.Up).ID;
+            return Parts[offsetX, offsetY].GetPinAt(RectangleSide.Up).ID;
         }
+        public abstract string NazcaFunctionName { get; set; }
     }
 }
