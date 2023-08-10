@@ -16,7 +16,7 @@ namespace ConnectAPIC.LayoutWindow.View
         private PinView _PinLeft;
         private PinView _PinUp;
         [Export] public PinView PinRight { get => _PinRight; set { _PinRight = value; _PinRight?.SetPinRelativePosition(RectangleSide.Right); } }
-        [Export] public PinView PinDown { get => _PinDown; set { _PinDown = value; _PinDown?.SetPinRelativePosition(RectangleSide.Down); } }
+        [Export] public PinView PinDown { get => _PinDown; set { _PinDown = value ; _PinDown?.SetPinRelativePosition(RectangleSide.Down); } }
         [Export] public PinView PinLeft { get => _PinLeft; set { _PinLeft = value; _PinLeft?.SetPinRelativePosition(RectangleSide.Left); } }
         [Export] public PinView PinUp { get => _PinUp; set { _PinUp = value; _PinUp?.SetPinRelativePosition(RectangleSide.Up); } }
 
@@ -126,20 +126,20 @@ namespace ConnectAPIC.LayoutWindow.View
             Visible = true;
             RotationDegrees = 0;
             ComponentView = null;
-            PinRight.SetMatterType(MatterType.None);
-            PinDown.SetMatterType(MatterType.None);
-            PinLeft.SetMatterType(MatterType.None);
-            PinUp.SetMatterType(MatterType.None);
+            PinRight?.SetMatterType(MatterType.None);
+            PinDown?.SetMatterType(MatterType.None);
+            PinLeft?.SetMatterType(MatterType.None);
+            PinUp?.SetMatterType(MatterType.None);
         }
         public TileView Duplicate()
         {
             var copy = base.Duplicate() as TileView;
             copy.RotationDegrees = RotationDegrees;
             var children = copy.GetChildren();
-            copy.PinRight = children.First(f=>f.Name == "PinRight") as PinView;
-            copy.PinDown= children.First(f => f.Name == "PinDown") as PinView;
-            copy.PinLeft= children.First(f => f.Name == "PinLeft") as PinView;
-            copy.PinUp = children.First(f => f.Name == "PinUp") as PinView;
+            copy.PinRight = children.FirstOrDefault(f=>f.Name == "PinRight") as PinView;
+            copy.PinDown= children.FirstOrDefault(f => f.Name == "PinDown") as PinView;
+            copy.PinLeft= children.FirstOrDefault(f => f.Name == "PinLeft") as PinView;
+            copy.PinUp = children.FirstOrDefault(f => f.Name == "PinUp") as PinView;
             return copy;
         }
 

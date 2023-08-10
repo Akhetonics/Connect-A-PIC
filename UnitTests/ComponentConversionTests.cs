@@ -12,9 +12,9 @@ namespace UnitTests
         public void TestComponentConversions()
         {
             // get all ComponentBase deriving classes from Model
-            var ComponentBaseTypes = this.GetType().Assembly.GetTypes().Where(t=>typeof(ComponentBase).IsAssignableFrom(t) ).ToList();
+            var ComponentBaseTypes = typeof(ComponentBase).Assembly.GetTypes().Where(t=>typeof(ComponentBase).IsAssignableFrom(t) ).ToList();
             // get all ComponentBaseView deriving Classes from View
-            var ComponentBaseViewTypes = this.GetType().Assembly.GetTypes().Where(t => typeof(ComponentBaseView).IsAssignableFrom(t)).ToList();
+            var ComponentBaseViewTypes = typeof(ComponentBaseView).Assembly.GetTypes().Where(t => typeof(ComponentBaseView).IsAssignableFrom(t)).ToList();
             // try to convert all ComponentBase classes to view
             
             List<Type> Errors = new List<Type>();
@@ -38,6 +38,9 @@ namespace UnitTests
                 }
             }
 
+            Assert.True(ComponentViewModelTypeConverter.ToModel(typeof(StraightWaveGuideView)) == typeof(StraightWaveGuide));
+            Assert.True(ComponentViewModelTypeConverter.ToModel(typeof(ComponentBaseView)) == typeof(ComponentBase));
+            Assert.True(ComponentViewModelTypeConverter.ToModel(typeof(GratingCouplerView)) == typeof(GratingCoupler));
             Assert.Empty(Errors);
             // try to convert all ComponentBaseView classes to Model
 

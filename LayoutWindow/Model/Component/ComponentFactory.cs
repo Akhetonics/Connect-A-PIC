@@ -20,15 +20,12 @@ namespace ConnectAPIC.LayoutWindow.Model.Component
         public ComponentBase CreateComponent(Type T)
         {
             if (!typeof(ComponentBase).IsAssignableFrom(T))
-            {
-                throw new ArgumentException($"Type is not of {nameof(ComponentBase)}: {nameof(T) + " " +T.FullName}");
-            }
-            if (T == typeof(StraightWaveGuide))
-            {
-                var item = new StraightWaveGuide();
-                return item;
-            }
-            return null;
+                throw new ArgumentException($"Type is not of {nameof(ComponentBase)}: {nameof(T) + " " + T.FullName}");
+
+            if (!T.IsClass || T.IsAbstract || T.GetConstructor(Type.EmptyTypes) == null)
+                throw new ArgumentException($"Type is abstract or has no empty constructor: {nameof(T) + " " + T.FullName}");
+
+            return (ComponentBase)Activator.CreateInstance(T);
         }
     }
 }

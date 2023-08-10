@@ -16,6 +16,10 @@ namespace ConnectAPIC.LayoutWindow.View
         [Export] protected Texture2D LightPinTexture { get; set; }
         public static readonly int PinPixelSize = 6;
 
+        public PinView()
+        {
+            SetMatterType(MatterType.None);
+        }
         public override void _Ready()
         {
             base._Ready();

@@ -136,6 +136,7 @@ componentTemplatePath = NodePath("../../../../../ComponentTemplates/GratingCoupl
 PinRight = NodePath("PinRight")
 
 [node name="PinRight" type="TextureRect" parent="GameManager/ComponentToolBox/ScrollContainer/ToolBoxGrid/GratingCouplerTemplate"]
+layout_mode = 0
 offset_left = 58.0
 offset_top = 28.0
 offset_right = 64.0
