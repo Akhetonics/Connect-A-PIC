@@ -6,8 +6,8 @@ using Tiles;
 
 namespace ConnectAPIC.Scenes.Compiler
 {
-    interface IExporter
+    interface ICompiler
     {
-        string Export(Grid grid);
+        string Compile();
     }
 }

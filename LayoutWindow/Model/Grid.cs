@@ -1,5 +1,6 @@
 using ConnectAPIC.LayoutWindow.Model.Component;
 using ConnectAPIC.LayoutWindow.Model.ExternalPorts;
+using ConnectAPIC.LayoutWindow.Model.Helpers;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scenes.Component;
 using System;
@@ -27,6 +28,19 @@ namespace Model
         public int Height { get; private set; }
         public const int MinHeight = 10;
 
+        public Grid(int width, int height) :this(width,height,null)
+        {
+            int CenterY = height/ 2;
+            var StandardPorts = new List<ExternalPort>() {
+                    new StandardInput("io1",LightCycleColor.Red , 0,CenterY-5),
+                    new StandardInput("io2",LightCycleColor.Green, 0,CenterY-3),
+                    new StandardInput("io3",LightCycleColor.Blue, 0,CenterY-1),
+                    new StandardOutput("io4",CenterY+1),
+                    new StandardOutput("io5",CenterY+3),
+                    new StandardOutput("io6",CenterY+5),
+                };
+            ExternalPorts = StandardPorts;
+        }
         public Grid(int width, int height, List<ExternalPort> externalPorts)
         {
             if (height < MinHeight) height = MinHeight;
@@ -35,7 +49,7 @@ namespace Model
             ExternalPorts = externalPorts;
             CreateGrid();
         }
-        public void CreateGrid()
+        private void CreateGrid()
         {
             Tiles = new Tile[Width, Height];
             for (int x = 0; x < Width; x++)
@@ -167,6 +181,33 @@ namespace Model
                 PlaceComponent(oldMainGridx, oldMainGridy, component);
             }
             return false;
+        }
+        public List<Tile> GetConnectedNeighbours(Tile parent)
+        {
+            if (parent == null || parent.Component == null) return default;
+            List<Tile> children = new();
+            foreach (Part part in parent.Component.Parts)
+            {
+                for (int x = 0; x < 2; x++)
+                {
+                    for (int y = 0; y < 2; y++)
+                    {
+                        if ((x != 0 && y != 0) || (y == 0 && x == 0)) continue; // only compute Tiles that are "up down left right"
+                        var neighbourX = parent.GridX + x;
+                        var neighbourY = parent.GridY + y;
+                        if (!IsInGrid(neighbourX, neighbourY, 1, 1)) continue;
+                        Tile neighbour = Tiles[neighbourX, neighbourY];
+                        var neighbourComponent = neighbour?.Component;
+                        if (parent.Component == neighbourComponent || neighbourComponent == null) continue;
+                        var lightDirection = new IntVector(x, y);
+                        var neighbourPin = neighbour.GetPinAt(lightDirection * -1);
+                        var parentPin = parent.GetPinAt(lightDirection);
+                        if (neighbourPin?.MatterType != MatterType.Light || parentPin?.MatterType != MatterType.Light) continue;
+                        children.Add(neighbour);
+                    }
+                }
+            }
+            return children;
         }
     }
 }

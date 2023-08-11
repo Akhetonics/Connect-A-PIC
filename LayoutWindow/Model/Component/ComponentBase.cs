@@ -61,6 +61,12 @@ namespace ConnectAPIC.Scenes.Component
                 part.Rotation90 = _discreteRotation;
             }
         }
+        public Part GetPartAtGridXY(int gridX,int gridY)
+        {
+            int offsetX = gridX- GridXMainTile;
+            int offsetY = gridY - GridYMainTile;
+            return GetPartAt(offsetX, offsetY);
+        }
         public Part GetPartAt(int offsetX, int offsetY)
         {
             if (offsetX < 0 || offsetY < 0 || offsetX >= WidthInTiles || offsetY >= HeightInTiles)

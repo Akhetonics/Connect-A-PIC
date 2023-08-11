@@ -4,6 +4,8 @@ using ConnectAPIC.Scenes.Component;
 using ConnectAPIC.Scenes.Tiles;
 using ConnectAPIC.Scenes.Compiler;
 using Tiles;
+using Model;
+using ConnectAPIC.LayoutWindow.Model.ExternalPorts;
 
 namespace UnitTests
 {
@@ -12,8 +14,10 @@ namespace UnitTests
         [Fact]
         public void ExportNazcaTests()
         {
-            NazcaExporter exporter = new NazcaExporter();
-            expoter.
+            Grid grid = new(24,12);
+            
+            NazcaCompiler exporter = new NazcaExporter();
+            
 
         }
        
