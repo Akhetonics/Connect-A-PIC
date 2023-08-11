@@ -28,7 +28,7 @@ namespace ConnectAPIC.Scenes.Compiler
         public StringBuilder ExportAllConnectedTiles(Tile parent, Tile child)
         {
             var nazcaString = new StringBuilder();
-            nazcaString.Append(child.ExportToNazca(parent));
+            nazcaString.Append(child.ExportToNazca(parent, child.Component.NazcaFunctionParameters));
             AlreadyProcessedComponents.Add(child.Component);
             var neighbours = grid.GetConnectedNeighbours(child);
             neighbours = neighbours.Where(n => !AlreadyProcessedComponents.Contains(n.Component)).ToList();

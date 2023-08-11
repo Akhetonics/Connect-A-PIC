@@ -12,14 +12,15 @@ namespace UnitTests
     public class ExportNazcaTests
     {
         [Fact]
-        public void ExportNazcaTests()
+        public void NazcaCompilerTest()
         {
             Grid grid = new(24,12);
             
-            NazcaCompiler exporter = new NazcaExporter();
-            
+            NazcaCompiler exporter = new(grid);
+
+            // test if parameters in NazcaFunctionParameters work - like the DirectionalCoupler
 
         }
-       
+
     }
 }

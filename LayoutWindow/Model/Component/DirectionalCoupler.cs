@@ -15,6 +15,9 @@ namespace ConnectAPIC.Scenes.Component
     public class DirectionalCoupler : ComponentBase
     {
         public int deltaLength { get; set; } = 50;
+        public override string NazcaFunctionName { get; set; } = "placeCell_DirectionalCoupler";
+        public override string NazcaFunctionParameters { get => $"deltaLength = {deltaLength}"; }
+
         public DirectionalCoupler()
         {
             Parts = new Part[2, 1];
@@ -58,13 +61,6 @@ namespace ConnectAPIC.Scenes.Component
             }
             
             Connections.setValues(connectionweights);
-        }
-
-        public override string ExportToNazca(string parentCellName, string parentPinName, int gridX , int gridY, string currentPinName)
-        {
-            var cellName = $"cell_{gridX}_{gridY}";
-            var nazcaFunctionName = "placeCell_DirectionalCoupler";
-            return $"{cellName} = CAPICPDK.{nazcaFunctionName}(deltaLength = {deltaLength}).put('{currentPinName}', {parentCellName}.pin['{parentPinName}'])";
         }
     }
 }

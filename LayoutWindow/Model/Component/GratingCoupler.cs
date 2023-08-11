@@ -39,6 +39,7 @@ namespace ConnectAPIC.Scenes.Component
             Connections.setValues(connectionweights);
         }
 
-       
+        public override string NazcaFunctionName { get; set; } = "placeCell_GratingCoupler";
+        public override string NazcaFunctionParameters { get; } 
     }
 }

@@ -14,17 +14,20 @@ namespace ConnectAPIC.Scenes.Component
 {
     public partial class StraightWaveGuide : ComponentBase
     {
-        
+
+        public override string NazcaFunctionName { get; set; } = "placeCell_StraightWG";
+        public override string NazcaFunctionParameters { get; } = "";
+
         public StraightWaveGuide()
         {
             Parts = new Part[2, 1];
-            Parts[0, 0] = new ();
+            Parts[0, 0] = new();
             Parts[0, 0].Rotation90 = DiscreteRotation.R0;
             Parts[0, 0].InitializePin(RectangleSide.Right, "Right", MatterType.None);
             Parts[0, 0].InitializePin(RectangleSide.Up, "Up", MatterType.Light);
             Parts[0, 0].InitializePin(RectangleSide.Left, "Left", MatterType.Light);
             Parts[0, 0].InitializePin(RectangleSide.Down, "Down", MatterType.Light);
-            Parts[1, 0] = new ();
+            Parts[1, 0] = new();
             Parts[1, 0].InitializePin(RectangleSide.Right, "1", MatterType.Light);
             Parts[1, 0].InitializePin(RectangleSide.Up, "2", MatterType.Light);
             Parts[1, 0].InitializePin(RectangleSide.Left, "3", MatterType.None);
@@ -47,19 +50,17 @@ namespace ConnectAPIC.Scenes.Component
                 foreach (RectangleSide side2 in Enum.GetValues(typeof(RectangleSide)))
                 {
                     lightPower += 0.1f;
-                    connectionweights.Add((Parts[0,0].GetPinAt(side).ID, Parts[0,0].GetPinAt(side2).ID), new Complex(lightPower, 0.2));
+                    connectionweights.Add((Parts[0, 0].GetPinAt(side).ID, Parts[0, 0].GetPinAt(side2).ID), new Complex(lightPower, 0.2));
                     lightPower += 0.1f;
-                    connectionweights.Add((Parts[0,0].GetPinAt(side).ID, Parts[1,0].GetPinAt(side2).ID), new Complex(lightPower, 0.2));
+                    connectionweights.Add((Parts[0, 0].GetPinAt(side).ID, Parts[1, 0].GetPinAt(side2).ID), new Complex(lightPower, 0.2));
                     lightPower += 0.1f;
-                    connectionweights.Add((Parts[1,0].GetPinAt(side).ID, Parts[0,0].GetPinAt(side2).ID), new Complex(lightPower, 0.2));
+                    connectionweights.Add((Parts[1, 0].GetPinAt(side).ID, Parts[0, 0].GetPinAt(side2).ID), new Complex(lightPower, 0.2));
                     lightPower += 0.1f;
-                    connectionweights.Add((Parts[1,0].GetPinAt(side).ID, Parts[1,0].GetPinAt(side2).ID), new Complex(lightPower, 0.2));
+                    connectionweights.Add((Parts[1, 0].GetPinAt(side).ID, Parts[1, 0].GetPinAt(side2).ID), new Complex(lightPower, 0.2));
                 }
             }
-            
+
             Connections.setValues(connectionweights);
         }
-
-       
     }
 }

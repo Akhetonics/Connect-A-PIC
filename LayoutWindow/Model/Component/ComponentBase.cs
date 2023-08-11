@@ -13,7 +13,7 @@ using TransferFunction;
 namespace ConnectAPIC.Scenes.Component
 {
     public abstract class ComponentBase
-{
+    {
         public int WidthInTiles => Parts.GetLength(0);
         public int HeightInTiles => Parts.GetLength(1);
         public bool IsPlacedInGrid { get; private set; }
@@ -21,6 +21,8 @@ namespace ConnectAPIC.Scenes.Component
         public int GridYMainTile { get; protected set; }
         public virtual Part[,] Parts { get; protected set; }
         public SMatrix Connections { get; protected set; }
+        public abstract string NazcaFunctionName { get; set; }
+        public abstract string NazcaFunctionParameters { get; }
         private DiscreteRotation _discreteRotation;
         public DiscreteRotation Rotation90
         {
@@ -39,8 +41,8 @@ namespace ConnectAPIC.Scenes.Component
             Parts = new Part[1, 1];
             _discreteRotation = DiscreteRotation.R0;
         }
-        
-        public void RegisterPositionInGrid(int gridX , int gridY)
+
+        public void RegisterPositionInGrid(int gridX, int gridY)
         {
             IsPlacedInGrid = true;
             this.GridXMainTile = gridX;
@@ -61,9 +63,9 @@ namespace ConnectAPIC.Scenes.Component
                 part.Rotation90 = _discreteRotation;
             }
         }
-        public Part GetPartAtGridXY(int gridX,int gridY)
+        public Part GetPartAtGridXY(int gridX, int gridY)
         {
-            int offsetX = gridX- GridXMainTile;
+            int offsetX = gridX - GridXMainTile;
             int offsetY = gridY - GridYMainTile;
             return GetPartAt(offsetX, offsetY);
         }
@@ -91,6 +93,5 @@ namespace ConnectAPIC.Scenes.Component
         {
             return Parts[offsetX, offsetY].GetPinAt(RectangleSide.Up).ID;
         }
-        public abstract string NazcaFunctionName { get; set; }
     }
 }
