@@ -19,13 +19,8 @@ namespace ConnectAPIC.Scenes.Component
         public GratingCoupler()
         {
             Parts = new Part[1, 1];
-            Parts[0, 0] = new ();
-            Parts[0, 0].Rotation90 = DiscreteRotation.R0;
-            Parts[0, 0].InitializePin(RectangleSide.Right, "Right", MatterType.Light);
-            Parts[0, 0].InitializePin(RectangleSide.Up, "Up", MatterType.None);
-            Parts[0, 0].InitializePin(RectangleSide.Left, "Left", MatterType.None);
-            Parts[0, 0].InitializePin(RectangleSide.Down, "Down", MatterType.None);
-            
+            Parts[0, 0] = Parts[0, 0] = CreatePart(RectangleSide.Right);
+
             // setting up the SMatrix
             var allPins = new List<Guid> {
                 PinIdRight(0,0),

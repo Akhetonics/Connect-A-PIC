@@ -77,6 +77,18 @@ namespace ConnectAPIC.Scenes.Component
             }
             return Parts[offsetX, offsetY];
         }
+        public Part CreatePart(params RectangleSide[] LightTransmittingSides)
+        {
+            var part = new Part
+            {
+                Rotation90 = DiscreteRotation.R0
+            };
+            foreach (RectangleSide side in LightTransmittingSides)
+            {
+                part.InitializePin(side, null, MatterType.Light);
+            }
+            return part;
+        }
         public Guid PinIdRight(int offsetX, int offsetY)
         {
             return Parts[offsetX, offsetY].GetPinAt(RectangleSide.Right).ID;

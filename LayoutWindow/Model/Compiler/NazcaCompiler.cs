@@ -44,8 +44,9 @@ namespace ConnectAPIC.Scenes.Compiler
             StringBuilder NazcaCode = new();
             NazcaCode.Append(PythonResources.CreateHeader(PDKName, StandardInputCellName));
             // start at all the three intputTiles.
-            foreach (StandardInput input in grid.ExternalPorts)
+            foreach (ExternalPort port in grid.ExternalPorts)
             {
+                if (port is not StandardInput input) continue;
                 var x = 0;
                 var y = input.TilePositionY;
                 if (!grid.IsInGrid(x, y, 1, 1)) continue;

@@ -9,7 +9,7 @@ namespace TransferFunction
 	public class SMatrix
 	{
 		public Matrix<Complex> SMat;
-		public readonly List<Guid>? PinReference;
+		public readonly List<Guid> PinReference;
 		private readonly int size;
 
 		public SMatrix(List<Guid> allPinsInGrid)

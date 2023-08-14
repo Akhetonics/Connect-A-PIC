@@ -36,9 +36,10 @@ namespace Tiles
         }
         public string ExportToNazcaExtended(IntVector parentGridPos, string parentCellName, string parentPinName, string parameters ="")
         {
+            if (Component == null) return "";
             var cellName = getNazcaCellName(this.GridX, GridY);
             var currentDirection = (IntVector)GetParentTouchingEdgeSide(parentGridPos.X, parentGridPos.Y, GridX, GridY) * (-1);
-            var currentPinName = GetPinAt(currentDirection).Name;
+            var currentPinName = GetPinAt(currentDirection)?.Name ?? "";
             return $"{cellName} = {NazcaCompiler.PDKName}.{Component.NazcaFunctionName}({parameters}).put('{currentPinName}', {parentCellName}.pin['{parentPinName}'])\n";
         }
         private RectangleSide GetParentTileTouchingEdgeSide(Tile parentTile)
@@ -47,8 +48,8 @@ namespace Tiles
         }
         public static RectangleSide GetParentTouchingEdgeSide(int parentx, int parenty , int childx, int childy)
         {
-            int xdir = Math.Clamp(parentx - childx, -1, 1);
-            int ydir = Math.Clamp(parenty - childy, -1, 1);
+            int xdir = Math.Clamp(childx - parentx, -1, 1);
+            int ydir = Math.Clamp(childy - parenty, -1, 1);
             var lightFLowDirection = new IntVector(xdir, ydir);
             return (RectangleSide)lightFLowDirection;
         }

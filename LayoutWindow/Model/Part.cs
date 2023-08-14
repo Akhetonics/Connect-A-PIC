@@ -19,17 +19,20 @@ namespace Model
         {
             Pins = new List<Pin>
             {
-                new Pin("", MatterType.None, RectangleSide.Left),
-                new Pin("", MatterType.None, RectangleSide.Up),
-                new Pin("", MatterType.None, RectangleSide.Right),
-                new Pin("", MatterType.None, RectangleSide.Down),
+                new Pin("Left", MatterType.None, RectangleSide.Left),
+                new Pin("Up", MatterType.None, RectangleSide.Up),
+                new Pin("Right", MatterType.None, RectangleSide.Right),
+                new Pin("Down", MatterType.None, RectangleSide.Down),
             };
         }
         public void InitializePin(RectangleSide side, string name, MatterType matterType)
         {
             var pin = GetPinAt(side);
             pin.MatterType = matterType;
-            pin.Name = name;
+            if(name != null)
+            {
+                pin.Name = name;
+            }
         }
 
         /// <summary>

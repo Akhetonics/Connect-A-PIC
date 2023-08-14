@@ -15,8 +15,11 @@ namespace ConnectAPic.LayoutWindow
 		[Export] public int FieldWidth { get; set; } = 24;
 
 		[Export] public int FieldHeight { get; set; } = 12;
-		[Export] public TextureRect ExternalOutputDraft{get;set;}
-		[Export] public TextureRect ExternalInputDraft{get;set;}
+		[Export] public TextureRect ExternalOutputTemplate{get;set;}
+		[Export] public TextureRect ExternalInputRedTemplate{get;set;}
+		[Export] public TextureRect ExternalInputGreenTemplate{get;set;}
+		[Export] public TextureRect ExternalInputBlueTemplate{get;set;}
+		[Export] public Control Background{ get; set; }
 		public GridView GridView { get; set; }
 		public Grid Grid { get; set; }
 		public static GameManager instance;
@@ -40,11 +43,11 @@ namespace ConnectAPic.LayoutWindow
 					new StandardOutput("io5",CenterY+3),
 					new StandardOutput("io6",CenterY+5),
 				};
-				InitializeExternalPortViews(StandardPorts);
 				GridView = GetNode<GridView>(GridViewPath);
 				Grid = new Grid(FieldWidth, FieldHeight, StandardPorts);
 				GridViewModel = new GridViewModel(GridView, Grid);
 				GridView.Initialize(GridViewModel);
+				InitializeExternalPortViews(StandardPorts);
 			}
 			else
 			{
@@ -57,15 +60,26 @@ namespace ConnectAPic.LayoutWindow
 			foreach (var port in StandardPorts)
 			{
 				TextureRect view;
-				if (port.GetType() == typeof(StandardInput))
+				if (port is StandardInput input)
 				{
-					view = ExternalInputDraft.Duplicate() as TextureRect;
+					if(input.Color == LightCycleColor.Red)
+					{
+						view = ExternalInputRedTemplate.Duplicate() as TextureRect;
+					} else if(input.Color == LightCycleColor.Green)
+					{
+						view = ExternalInputGreenTemplate.Duplicate() as TextureRect;
+					}
+					else
+					{
+						view = ExternalInputBlueTemplate.Duplicate() as TextureRect;
+					}
 				} else
 				{
-					view = ExternalInputDraft.Duplicate() as TextureRect;
+					view = ExternalOutputTemplate.Duplicate() as TextureRect;
 				}
 				view.Visible = true;
-				view.GlobalPosition = GridView.GlobalPosition + new Vector2(0, TileView.TilePixelSize * port.TilePositionY);
+				this.AddChild(view);
+				view.Position = new Vector2(view.Position.X, GridView.GlobalPosition.Y+ TileView.TilePixelSize * port.TilePositionY);
 			}
 		}
 	}

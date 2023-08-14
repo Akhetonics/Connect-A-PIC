@@ -1,4 +1,5 @@
 using ConnectAPIC.LayoutWindow.View;
+using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scenes.Component;
 using ConnectAPIC.Scenes.Tiles;
 using Godot;
@@ -29,6 +30,11 @@ namespace ConnectAPIC.LayoutWindow.View
 		{
 			return componentTemplate;
 		}
-	}
+
+        public override void _GuiInput(InputEvent inputEvent)
+        {
+            // override so that the tile cannot use middle click and rightclick
+        }
+    }
 
 }

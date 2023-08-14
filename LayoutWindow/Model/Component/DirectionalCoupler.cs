@@ -21,26 +21,15 @@ namespace ConnectAPIC.Scenes.Component
         public DirectionalCoupler()
         {
             Parts = new Part[2, 1];
-            Parts[0, 0] = new ();
-            Parts[0, 0].Rotation90 = DiscreteRotation.R0;
-            Parts[0, 0].InitializePin(RectangleSide.Right, "Right", MatterType.None);
-            Parts[0, 0].InitializePin(RectangleSide.Up, "Up", MatterType.Light);
-            Parts[0, 0].InitializePin(RectangleSide.Left, "Left", MatterType.Light);
-            Parts[0, 0].InitializePin(RectangleSide.Down, "Down", MatterType.Light);
-            Parts[1, 0] = new ();
-            Parts[1, 0].InitializePin(RectangleSide.Right, "1", MatterType.Light);
-            Parts[1, 0].InitializePin(RectangleSide.Up, "2", MatterType.Light);
-            Parts[1, 0].InitializePin(RectangleSide.Left, "3", MatterType.None);
-            Parts[1, 0].InitializePin(RectangleSide.Down, "4", MatterType.Light);
+            Parts[0, 0] = CreatePart(RectangleSide.Left, RectangleSide.Right);
+            Parts[1, 0] = CreatePart(RectangleSide.Left, RectangleSide.Right);
 
             // setting up the SMatrix
             var allPins = new List<Guid> {
-                PinIdUp(0,0),
+                PinIdRight(0,0),
                 PinIdLeft(0,0),
-                PinIdDown(0,0),
-                PinIdUp(1,0),
                 PinIdRight(1,0),
-                PinIdDown(1,0),
+                PinIdLeft(1,0),
             };
             Connections = new SMatrix(allPins);
             var connectionweights = new Dictionary<(Guid, Guid), Complex>();

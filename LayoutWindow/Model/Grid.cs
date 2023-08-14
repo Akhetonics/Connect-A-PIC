@@ -20,7 +20,6 @@ namespace Model
         public event OnComponentChangedEventHandler OnComponentRemoved;
         public event OnComponentChangedEventHandler OnComponentRotated;
         public event OnComponentChangedEventHandler OnComponentMoved;
-
         public List<ExternalPort> ExternalPorts;
 
         public Tile[,] Tiles { get; private set; }
@@ -188,9 +187,9 @@ namespace Model
             List<Tile> children = new();
             foreach (Part part in parent.Component.Parts)
             {
-                for (int x = 0; x < 2; x++)
+                for (int x = -1; x < 2; x++)
                 {
-                    for (int y = 0; y < 2; y++)
+                    for (int y = -1; y < 2; y++)
                     {
                         if ((x != 0 && y != 0) || (y == 0 && x == 0)) continue; // only compute Tiles that are "up down left right"
                         var neighbourX = parent.GridX + x;

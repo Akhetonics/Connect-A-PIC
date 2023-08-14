@@ -81,9 +81,9 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             {
                 this.TileViews = new TileView[width, height];
             }
-            for (int gridy = 0; gridy < width; gridy++)
+            for (int gridy = 0; gridy < height; gridy++)
             {
-                for (int gridx = 0; gridx < height; gridx++)
+                for (int gridx = 0; gridx < width; gridx++)
                 {
                     TileViews[gridx, gridy] = GridView.DefaultTile.Duplicate();
                     TileViews[gridx, gridy].Visible = true;
