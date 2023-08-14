@@ -77,13 +77,13 @@ namespace ConnectAPIC.Scenes.Component
             }
             return Parts[offsetX, offsetY];
         }
-        public Part CreatePart(params RectangleSide[] LightTransmittingSides)
+        public Part CreatePart(params RectSide[] LightTransmittingSides)
         {
             var part = new Part
             {
                 Rotation90 = DiscreteRotation.R0
             };
-            foreach (RectangleSide side in LightTransmittingSides)
+            foreach (RectSide side in LightTransmittingSides)
             {
                 part.InitializePin(side, null, MatterType.Light);
             }
@@ -91,19 +91,19 @@ namespace ConnectAPIC.Scenes.Component
         }
         public Guid PinIdRight(int offsetX, int offsetY)
         {
-            return Parts[offsetX, offsetY].GetPinAt(RectangleSide.Right).ID;
+            return Parts[offsetX, offsetY].GetPinAt(RectSide.Right).ID;
         }
         public Guid PinIdDown(int offsetX, int offsetY)
         {
-            return Parts[offsetX, offsetY].GetPinAt(RectangleSide.Down).ID;
+            return Parts[offsetX, offsetY].GetPinAt(RectSide.Down).ID;
         }
         public Guid PinIdLeft(int offsetX, int offsetY)
         {
-            return Parts[offsetX, offsetY].GetPinAt(RectangleSide.Left).ID;
+            return Parts[offsetX, offsetY].GetPinAt(RectSide.Left).ID;
         }
         public Guid PinIdUp(int offsetX, int offsetY)
         {
-            return Parts[offsetX, offsetY].GetPinAt(RectangleSide.Up).ID;
+            return Parts[offsetX, offsetY].GetPinAt(RectSide.Up).ID;
         }
     }
 }

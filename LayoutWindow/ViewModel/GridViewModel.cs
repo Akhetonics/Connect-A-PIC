@@ -121,10 +121,10 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
                     SetTileTexture(gridX, gridY, ComponentView.GetTexture(i, j).Duplicate() as Texture2D, (float)ComponentView.Rotation90 * 90f);
                     TileViews[gridX, gridY].ComponentView = ComponentView;
                     var part = componentModel.Parts[i, j];
-                    var PinRightAbsoluteEdgePos = RectangleSide.Right.RotateSideCounterClockwise(part.Rotation90);
-                    var PinDownAbsoluteEdgePos = RectangleSide.Down.RotateSideCounterClockwise(part.Rotation90);
-                    var PinLeftAbsoluteEdgePos = RectangleSide.Left.RotateSideCounterClockwise(part.Rotation90);
-                    var PinUpAbsoluteEdgePos = RectangleSide.Up.RotateSideCounterClockwise(part.Rotation90);
+                    var PinRightAbsoluteEdgePos = RectSide.Right.RotateSideCounterClockwise(part.Rotation90);
+                    var PinDownAbsoluteEdgePos = RectSide.Down.RotateSideCounterClockwise(part.Rotation90);
+                    var PinLeftAbsoluteEdgePos = RectSide.Left.RotateSideCounterClockwise(part.Rotation90);
+                    var PinUpAbsoluteEdgePos = RectSide.Up.RotateSideCounterClockwise(part.Rotation90);
                     TileViews[gridX, gridY].PinRight.SetMatterType(part.GetPinAt(PinRightAbsoluteEdgePos).MatterType);
                     TileViews[gridX, gridY].PinDown.SetMatterType(part.GetPinAt(PinDownAbsoluteEdgePos).MatterType);
                     TileViews[gridX, gridY].PinLeft.SetMatterType(part.GetPinAt(PinLeftAbsoluteEdgePos).MatterType);

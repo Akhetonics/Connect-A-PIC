@@ -24,7 +24,7 @@ namespace ConnectAPIC.Scenes.TransferFunction
         {
             int gridWidth = GridView.Tiles.GetLength(0);
             int gridHeight = GridView.Tiles.GetLength(1);
-            Array allSides = Enum.GetValues(typeof(RectangleSide));
+            Array allSides = Enum.GetValues(typeof(RectSide));
             Dictionary<(Pin, Pin), Complex> pin2pinLightDistribution = new();
 
 
@@ -32,7 +32,7 @@ namespace ConnectAPIC.Scenes.TransferFunction
             {
                 for (int y = 0; y < gridHeight; y++)
                 {
-                    foreach (RectangleSide side in allSides)
+                    foreach (RectSide side in allSides)
                     {
                         ConnectAllComponentBorderEdges(pin2pinLightDistribution, x, y, side);
                     }
@@ -41,7 +41,7 @@ namespace ConnectAPIC.Scenes.TransferFunction
             return pin2pinLightDistribution;
         }
 
-        private void ConnectAllComponentBorderEdges(Dictionary<(Pin, Pin), Complex> pin2pinLightDistribution, int x, int y, RectangleSide side)
+        private void ConnectAllComponentBorderEdges(Dictionary<(Pin, Pin), Complex> pin2pinLightDistribution, int x, int y, RectSide side)
         {
             if (IsComponentBorderEdge(x, y, side) == false) return;
             if (GridView.Tiles[x, y].Component == null) return;
@@ -54,7 +54,7 @@ namespace ConnectAPIC.Scenes.TransferFunction
             }
         }
 
-        private Pin GetPin(int x, int y, RectangleSide side)
+        private Pin GetPin(int x, int y, RectSide side)
         {
             var component = GridView.Tiles[x, y].Component;
             var partx = x - component.GridXMainTile;
@@ -71,33 +71,33 @@ namespace ConnectAPIC.Scenes.TransferFunction
             }
             return true;
         }
-        public static (int, int) GetOffsetByEdgeDirection(RectangleSide side)
+        public static (int, int) GetOffsetByEdgeDirection(RectSide side)
         {
             var offsetX = 0;
             var offsetY = 0;
-            if (side == RectangleSide.Right)
+            if (side == RectSide.Right)
             {
                 offsetX = 1;
                 offsetY = 0;
             }
-            if (side == RectangleSide.Down)
+            if (side == RectSide.Down)
             {
                 offsetX = 0;
                 offsetY = 1;
             }
-            if (side == RectangleSide.Left)
+            if (side == RectSide.Left)
             {
                 offsetX = -1;
                 offsetY = 0;
             }
-            if (side == RectangleSide.Up)
+            if (side == RectSide.Up)
             {
                 offsetX = 0;
                 offsetY = -1;
             }
             return (offsetX, offsetY);
         }
-        private bool IsComponentBorderEdge(int gridx, int gridy, RectangleSide side)
+        private bool IsComponentBorderEdge(int gridx, int gridy, RectSide side)
         {
             (int offsetX, int offsetY) = GetOffsetByEdgeDirection(side);
             var centeredComponent = GridView.Tiles[gridx, gridy].Component;

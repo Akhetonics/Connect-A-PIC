@@ -3,6 +3,7 @@ using Godot;
 using Model;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -21,8 +22,8 @@ namespace ConnectAPIC.Scenes.Component
         public DirectionalCoupler()
         {
             Parts = new Part[2, 1];
-            Parts[0, 0] = CreatePart(RectangleSide.Left, RectangleSide.Right);
-            Parts[1, 0] = CreatePart(RectangleSide.Left, RectangleSide.Right);
+            Parts[0, 0] = CreatePart(RectSide.Left, RectSide.Right);
+            Parts[1, 0] = CreatePart(RectSide.Left, RectSide.Right);
 
             // setting up the SMatrix
             var allPins = new List<Guid> {
@@ -32,23 +33,19 @@ namespace ConnectAPIC.Scenes.Component
                 PinIdLeft(1,0),
             };
             Connections = new SMatrix(allPins);
-            var connectionweights = new Dictionary<(Guid, Guid), Complex>();
-            float lightPower = 0.1f;
-            foreach (RectangleSide side in Enum.GetValues(typeof(RectangleSide)))
+            var connectionweights = new Dictionary<(Guid, Guid), Complex>()
             {
-                foreach (RectangleSide side2 in Enum.GetValues(typeof(RectangleSide)))
-                {
-                    lightPower += 0.1f;
-                    connectionweights.Add((Parts[0,0].GetPinAt(side).ID, Parts[0,0].GetPinAt(side2).ID), new Complex(lightPower, 0.2));
-                    lightPower += 0.1f;
-                    connectionweights.Add((Parts[0,0].GetPinAt(side).ID, Parts[1,0].GetPinAt(side2).ID), new Complex(lightPower, 0.2));
-                    lightPower += 0.1f;
-                    connectionweights.Add((Parts[1,0].GetPinAt(side).ID, Parts[0,0].GetPinAt(side2).ID), new Complex(lightPower, 0.2));
-                    lightPower += 0.1f;
-                    connectionweights.Add((Parts[1,0].GetPinAt(side).ID, Parts[1,0].GetPinAt(side2).ID), new Complex(lightPower, 0.2));
-                }
-            }
-            
+                { (PinIdLeft(0,0), PinIdRight(0,0)), new Complex(0.5, 0) },
+                { (PinIdLeft(0,0), PinIdRight(0,1)), new Complex(0.5, 0) },
+                { (PinIdLeft(0,1), PinIdRight(0,0)), new Complex(0.5, 0) },
+                { (PinIdLeft(0,1), PinIdRight(0,1)), new Complex(0.5, 0) },
+
+                { (PinIdRight(0,0), PinIdLeft(0,0)), new Complex(0.5, 0) },
+                { (PinIdRight(0,0), PinIdLeft(0,1)), new Complex(0.5, 0) },
+                { (PinIdRight(0,1), PinIdLeft(0,0)), new Complex(0.5, 0) },
+                { (PinIdRight(0,1), PinIdLeft(0,1)), new Complex(0.5, 0) },
+
+            };
             Connections.setValues(connectionweights);
         }
     }

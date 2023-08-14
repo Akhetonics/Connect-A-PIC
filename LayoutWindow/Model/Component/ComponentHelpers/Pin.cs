@@ -13,8 +13,8 @@ namespace ConnectAPIC.Scenes.Component
         public event PropertyChangedEventHandler PropertyChanged;
         public string Name { get; set; } // the nazca name like b0, a0, a1}
         public Guid ID { get; set; }
-        private RectangleSide _side;
-        public RectangleSide Side {
+        private RectSide _side;
+        public RectSide Side {
             get => _side;
             private set {
                 _side = value;
@@ -29,11 +29,11 @@ namespace ConnectAPIC.Scenes.Component
                 NotifyPropertyChanged(); 
             } 
         }
-        public Pin(string Name, MatterType newMatterType, RectangleSide side) : this(Name, side)
+        public Pin(string Name, MatterType newMatterType, RectSide side) : this(Name, side)
         {
             this.MatterType = newMatterType;
         }
-        public Pin( string Name, RectangleSide side)
+        public Pin( string Name, RectSide side)
         {
             this.Side = side;
             this.Name = Name;

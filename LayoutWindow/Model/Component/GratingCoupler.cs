@@ -19,7 +19,7 @@ namespace ConnectAPIC.Scenes.Component
         public GratingCoupler()
         {
             Parts = new Part[1, 1];
-            Parts[0, 0] = Parts[0, 0] = CreatePart(RectangleSide.Right);
+            Parts[0, 0] = Parts[0, 0] = CreatePart(RectSide.Right);
 
             // setting up the SMatrix
             var allPins = new List<Guid> {
@@ -28,7 +28,7 @@ namespace ConnectAPIC.Scenes.Component
             Connections = new SMatrix(allPins);
             var connectionweights = new Dictionary<(Guid, Guid), Complex>
             {
-                { (Parts[0, 0].GetPinAt(RectangleSide.Right).ID, Parts[0, 0].GetPinAt(RectangleSide.Right).ID), new Complex(1, 0) }
+                { (PinIdRight(0,0), PinIdRight(0,0)), new Complex(1, 0) },
             };
 
             Connections.setValues(connectionweights);

@@ -36,23 +36,23 @@ namespace ConnectAPIC.LayoutWindow.Model.Helpers
         {
             return scalar * vector;
         }
-        public static implicit operator IntVector(RectangleSide edgeSide)
+        public static implicit operator IntVector(RectSide edgeSide)
         {
-            if (edgeSide == RectangleSide.Right) return IntVector.Right;
-            if (edgeSide == RectangleSide.Down) return IntVector.Down;
-            if (edgeSide == RectangleSide.Left) return IntVector.Left;
+            if (edgeSide == RectSide.Right) return IntVector.Right;
+            if (edgeSide == RectSide.Down) return IntVector.Down;
+            if (edgeSide == RectSide.Left) return IntVector.Left;
             return IntVector.Up;
         }
-        public static implicit operator RectangleSide(IntVector vector)
+        public static implicit operator RectSide(IntVector vector)
         {
             if (vector.X == IntVector.Right.X && vector.Y == IntVector.Right.Y)
-                return RectangleSide.Right;
+                return RectSide.Right;
             if (vector.X == IntVector.Down.X && vector.Y == IntVector.Down.Y)
-                return RectangleSide.Down;
+                return RectSide.Down;
             if (vector.X == IntVector.Left.X && vector.Y == IntVector.Left.Y)
-                return RectangleSide.Left;
+                return RectSide.Left;
             if(vector.X == IntVector.Up.X && vector.Y == IntVector.Up.Y) 
-                return RectangleSide.Up;
+                return RectSide.Up;
             throw new ArgumentException("vector does not match any rectangleSide");
         }
 

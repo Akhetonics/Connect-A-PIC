@@ -15,10 +15,10 @@ namespace ConnectAPIC.LayoutWindow.View
         private PinView _PinDown;
         private PinView _PinLeft;
         private PinView _PinUp;
-        [Export] public PinView PinRight { get => _PinRight; set { _PinRight = value; _PinRight?.SetPinRelativePosition(RectangleSide.Right); } }
-        [Export] public PinView PinDown { get => _PinDown; set { _PinDown = value ; _PinDown?.SetPinRelativePosition(RectangleSide.Down); } }
-        [Export] public PinView PinLeft { get => _PinLeft; set { _PinLeft = value; _PinLeft?.SetPinRelativePosition(RectangleSide.Left); } }
-        [Export] public PinView PinUp { get => _PinUp; set { _PinUp = value; _PinUp?.SetPinRelativePosition(RectangleSide.Up); } }
+        [Export] public PinView PinRight { get => _PinRight; set { _PinRight = value; _PinRight?.SetPinRelativePosition(RectSide.Right); } }
+        [Export] public PinView PinDown { get => _PinDown; set { _PinDown = value ; _PinDown?.SetPinRelativePosition(RectSide.Down); } }
+        [Export] public PinView PinLeft { get => _PinLeft; set { _PinLeft = value; _PinLeft?.SetPinRelativePosition(RectSide.Left); } }
+        [Export] public PinView PinUp { get => _PinUp; set { _PinUp = value; _PinUp?.SetPinRelativePosition(RectSide.Up); } }
 
         private GridViewModel ViewModel { get; set; }
         public ComponentBaseView ComponentView { get; set; }

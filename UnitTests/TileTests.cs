@@ -9,22 +9,22 @@ namespace UnitTests
         [Fact]
         public void CalculateSideShiftingTests()
         {
-            Assert.Equal(RectangleSide.Right, RectangleSide.Right.RotateSideCounterClockwise( DiscreteRotation.R0));
-            Assert.Equal(RectangleSide.Up, RectangleSide.Right.RotateSideCounterClockwise( DiscreteRotation.R90));
-            Assert.Equal(RectangleSide.Left, RectangleSide.Right.RotateSideCounterClockwise( DiscreteRotation.R180));
-            Assert.Equal(RectangleSide.Down, RectangleSide.Right.RotateSideCounterClockwise( DiscreteRotation.R270));
-            Assert.Equal(RectangleSide.Down, RectangleSide.Down.RotateSideCounterClockwise( DiscreteRotation.R0)); 
-            Assert.Equal(RectangleSide.Right, RectangleSide.Down.RotateSideCounterClockwise( DiscreteRotation.R90)); 
-            Assert.Equal(RectangleSide.Up, RectangleSide.Down.RotateSideCounterClockwise( DiscreteRotation.R180)); 
-            Assert.Equal(RectangleSide.Left, RectangleSide.Down.RotateSideCounterClockwise( DiscreteRotation.R270)); 
-            Assert.Equal(RectangleSide.Left, RectangleSide.Left.RotateSideCounterClockwise( DiscreteRotation.R0)); 
-            Assert.Equal(RectangleSide.Down, RectangleSide.Left.RotateSideCounterClockwise( DiscreteRotation.R90));
-            Assert.Equal(RectangleSide.Right, RectangleSide.Left.RotateSideCounterClockwise( DiscreteRotation.R180));
-            Assert.Equal(RectangleSide.Up, RectangleSide.Left.RotateSideCounterClockwise( DiscreteRotation.R270)); 
-            Assert.Equal(RectangleSide.Up, RectangleSide.Up.RotateSideCounterClockwise( DiscreteRotation.R0)); 
-            Assert.Equal(RectangleSide.Left, RectangleSide.Up.RotateSideCounterClockwise( DiscreteRotation.R90)); 
-            Assert.Equal(RectangleSide.Down, RectangleSide.Up.RotateSideCounterClockwise( DiscreteRotation.R180)); 
-            Assert.Equal(RectangleSide.Right, RectangleSide.Up.RotateSideCounterClockwise( DiscreteRotation.R270)); 
+            Assert.Equal(RectSide.Right, RectSide.Right.RotateSideCounterClockwise( DiscreteRotation.R0));
+            Assert.Equal(RectSide.Up, RectSide.Right.RotateSideCounterClockwise( DiscreteRotation.R90));
+            Assert.Equal(RectSide.Left, RectSide.Right.RotateSideCounterClockwise( DiscreteRotation.R180));
+            Assert.Equal(RectSide.Down, RectSide.Right.RotateSideCounterClockwise( DiscreteRotation.R270));
+            Assert.Equal(RectSide.Down, RectSide.Down.RotateSideCounterClockwise( DiscreteRotation.R0)); 
+            Assert.Equal(RectSide.Right, RectSide.Down.RotateSideCounterClockwise( DiscreteRotation.R90)); 
+            Assert.Equal(RectSide.Up, RectSide.Down.RotateSideCounterClockwise( DiscreteRotation.R180)); 
+            Assert.Equal(RectSide.Left, RectSide.Down.RotateSideCounterClockwise( DiscreteRotation.R270)); 
+            Assert.Equal(RectSide.Left, RectSide.Left.RotateSideCounterClockwise( DiscreteRotation.R0)); 
+            Assert.Equal(RectSide.Down, RectSide.Left.RotateSideCounterClockwise( DiscreteRotation.R90));
+            Assert.Equal(RectSide.Right, RectSide.Left.RotateSideCounterClockwise( DiscreteRotation.R180));
+            Assert.Equal(RectSide.Up, RectSide.Left.RotateSideCounterClockwise( DiscreteRotation.R270)); 
+            Assert.Equal(RectSide.Up, RectSide.Up.RotateSideCounterClockwise( DiscreteRotation.R0)); 
+            Assert.Equal(RectSide.Left, RectSide.Up.RotateSideCounterClockwise( DiscreteRotation.R90)); 
+            Assert.Equal(RectSide.Down, RectSide.Up.RotateSideCounterClockwise( DiscreteRotation.R180)); 
+            Assert.Equal(RectSide.Right, RectSide.Up.RotateSideCounterClockwise( DiscreteRotation.R270)); 
         }
        
     }

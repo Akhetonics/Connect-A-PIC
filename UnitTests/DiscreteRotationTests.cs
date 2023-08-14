@@ -26,10 +26,10 @@ namespace UnitTests
         [Fact]
         public void Rotation90SideCorellationTests()
         {
-            Assert.True((int)DiscreteRotation.R0 == (int)RectangleSide.Right);
-            Assert.True((int)DiscreteRotation.R90 == (int)RectangleSide.Down, "Because both the rotation and Orientation should be clockwise as it is in the Godot Engine to be easily compatible");
-            Assert.True((int)DiscreteRotation.R180 == (int)RectangleSide.Left);
-            Assert.True((int)DiscreteRotation.R270 == (int)RectangleSide.Up);
+            Assert.True((int)DiscreteRotation.R0 == (int)RectSide.Right);
+            Assert.True((int)DiscreteRotation.R90 == (int)RectSide.Down, "Because both the rotation and Orientation should be clockwise as it is in the Godot Engine to be easily compatible");
+            Assert.True((int)DiscreteRotation.R180 == (int)RectSide.Left);
+            Assert.True((int)DiscreteRotation.R270 == (int)RectSide.Up);
         }
        
     }

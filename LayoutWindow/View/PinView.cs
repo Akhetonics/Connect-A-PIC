@@ -25,21 +25,21 @@ namespace ConnectAPIC.LayoutWindow.View
             base._Ready();
             Visible = false;
         }
-        public void SetPinRelativePosition(RectangleSide side)
+        public void SetPinRelativePosition(RectSide side)
         {
-            if (side == RectangleSide.Right)
+            if (side == RectSide.Right)
             {
                 this.Position = new Vector2(TileView.TilePixelSize - PinPixelSize, TileView.TilePixelSize / 2 - PinPixelSize / 2);
             }
-            if (side == RectangleSide.Down)
+            if (side == RectSide.Down)
             {
                 Position = new Vector2(TileView.TilePixelSize / 2 - PinPixelSize / 2, TileView.TilePixelSize - PinPixelSize);
             }
-            if (side == RectangleSide.Left)
+            if (side == RectSide.Left)
             {
                 Position = new Vector2(0, TileView.TilePixelSize / 2 - PinPixelSize / 2);
             }
-            if (side == RectangleSide.Up)
+            if (side == RectSide.Up)
             {
                 Position = new Vector2(TileView.TilePixelSize / 2 - PinPixelSize / 2, 0);
             }

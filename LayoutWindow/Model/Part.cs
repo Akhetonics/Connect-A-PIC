@@ -19,13 +19,13 @@ namespace Model
         {
             Pins = new List<Pin>
             {
-                new Pin("Left", MatterType.None, RectangleSide.Left),
-                new Pin("Up", MatterType.None, RectangleSide.Up),
-                new Pin("Right", MatterType.None, RectangleSide.Right),
-                new Pin("Down", MatterType.None, RectangleSide.Down),
+                new Pin("Left", MatterType.None, RectSide.Left),
+                new Pin("Up", MatterType.None, RectSide.Up),
+                new Pin("Right", MatterType.None, RectSide.Right),
+                new Pin("Down", MatterType.None, RectSide.Down),
             };
         }
-        public void InitializePin(RectangleSide side, string name, MatterType matterType)
+        public void InitializePin(RectSide side, string name, MatterType matterType)
         {
             var pin = GetPinAt(side);
             pin.MatterType = matterType;
@@ -41,7 +41,7 @@ namespace Model
         /// <param name="side"></param>
         /// <param name="absoluteOrientation"></param>
         /// <returns></returns>
-        public Pin GetPinAt(RectangleSide side , bool absoluteOrientation = true) 
+        public Pin GetPinAt(RectSide side , bool absoluteOrientation = true) 
         {
             if (absoluteOrientation)
                 side = side.RotateSideCounterClockwise(Rotation90);

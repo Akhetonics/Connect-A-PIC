@@ -42,18 +42,18 @@ namespace Tiles
             var currentPinName = GetPinAt(currentDirection)?.Name ?? "";
             return $"{cellName} = {NazcaCompiler.PDKName}.{Component.NazcaFunctionName}({parameters}).put('{currentPinName}', {parentCellName}.pin['{parentPinName}'])\n";
         }
-        private RectangleSide GetParentTileTouchingEdgeSide(Tile parentTile)
+        private RectSide GetParentTileTouchingEdgeSide(Tile parentTile)
         {
             return GetParentTouchingEdgeSide(parentTile.GridX, parentTile.GridY, GridX, GridY);
         }
-        public static RectangleSide GetParentTouchingEdgeSide(int parentx, int parenty , int childx, int childy)
+        public static RectSide GetParentTouchingEdgeSide(int parentx, int parenty , int childx, int childy)
         {
             int xdir = Math.Clamp(childx - parentx, -1, 1);
             int ydir = Math.Clamp(childy - parenty, -1, 1);
             var lightFLowDirection = new IntVector(xdir, ydir);
-            return (RectangleSide)lightFLowDirection;
+            return (RectSide)lightFLowDirection;
         }
-        public Pin GetPinAt(RectangleSide side)
+        public Pin GetPinAt(RectSide side)
         {
             if (Component == null) return null;
             var Part = Component.GetPartAtGridXY(GridX, GridY);
