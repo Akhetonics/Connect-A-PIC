@@ -7,6 +7,7 @@ using Tiles;
 using Model;
 using ConnectAPIC.LayoutWindow.Model.ExternalPorts;
 using System.Linq;
+using System.Runtime.ExceptionServices;
 
 namespace UnitTests
 {
@@ -18,27 +19,22 @@ namespace UnitTests
             Grid grid = new(24,12);
             var inputs = grid.ExternalPorts.Where(p => p.GetType() == typeof(StandardInput)).ToList();
             var inputHeight = inputs.FirstOrDefault().TilePositionY;
-            var firstComponent = new StraightWaveGuide();
-            // add grid components and tiles
+            var firstComponent = new DirectionalCoupler();
             grid.PlaceComponent(0, inputHeight, firstComponent);
-            var secondComponent = new StraightWaveGuide();
-            var GridXSecondComponent = firstComponent.GridXMainTile + firstComponent.WidthInTiles;
-            grid.PlaceComponent(GridXSecondComponent, inputHeight, secondComponent);
-            var thirdComponent = new StraightWaveGuide();
-            var GridXThirdComponent = secondComponent.GridXMainTile + secondComponent.WidthInTiles;
-            grid.PlaceComponent(GridXThirdComponent, inputHeight, thirdComponent);
-            var fourthComponent = new StraightWaveGuide();
-            var GridXFourthComponent = thirdComponent.GridXMainTile + thirdComponent.WidthInTiles;
-            grid.PlaceComponent(GridXSecondComponent, inputHeight, secondComponent);
+            var secondComponent = PlaceAndConcatenateComponent(grid, firstComponent);
+            var thirdComponent = PlaceAndConcatenateComponent(grid, secondComponent);
+            var fourthComponent = PlaceAndConcatenateComponent(grid, thirdComponent);
+            
             NazcaCompiler compiler = new(grid);
             // test if parameters in NazcaFunctionParameters work - like the DirectionalCoupler
-            Tile firstComponentMainTile = grid.Tiles[firstComponent.GridXMainTile, inputHeight];
             var neighboursOfComponentOne = grid.GetConnectedNeighboursOfComponent(firstComponent);
-            Tile secondComponentMainTile = grid.Tiles[secondComponent.GridXMainTile, inputHeight];
-            Assert.True(neighboursOfComponentOne.Contains(secondComponentMainTile));
+            
             Assert.True(neighboursOfComponentOne.Count > 0);
             var output = compiler.Compile();
-
+            Assert.Contains(firstComponent.NazcaFunctionName, output);
+            Assert.Contains(secondComponent.NazcaFunctionName, output);
+            Assert.Contains(thirdComponent.NazcaFunctionName, output);
+            Assert.Contains(fourthComponent.NazcaFunctionName, output);
         }
         
         [Fact]
@@ -52,19 +48,17 @@ namespace UnitTests
             grid.PlaceComponent(0, inputHeight, firstComponent);
             var secondComponent = PlaceAndConcatenateComponent(grid, firstComponent);
             var thirdComponent = PlaceAndConcatenateComponent(grid, secondComponent);
-            var fourthComponent = PlaceAndConcatenateComponent(grid, thirdComponent);
-            NazcaCompiler compiler = new(grid);
+            
             // test if parameters in NazcaFunctionParameters work - like the DirectionalCoupler
             Tile firstComponentMainTile = grid.Tiles[firstComponent.GridXMainTile, inputHeight];
             Tile secondComponentMainTile = grid.Tiles[secondComponent.GridXMainTile, secondComponent.GridYMainTile];
             Tile thirdComponentMainTile = grid.Tiles[thirdComponent.GridXMainTile, thirdComponent.GridYMainTile];
 
-            Assert.True(grid.GetConnectedNeighboursOfComponent(firstComponent).Contains(secondComponentMainTile));
-            Assert.True(grid.GetConnectedNeighboursOfComponent(secondComponent).Contains(thirdComponentMainTile));
-            Assert.True(grid.GetConnectedNeighboursOfComponent(secondComponent).Contains(firstComponentMainTile));
-
+            Assert.Contains(secondComponentMainTile, grid.GetConnectedNeighboursOfComponent(firstComponent));
+            Assert.Contains(thirdComponentMainTile, grid.GetConnectedNeighboursOfComponent(secondComponent));
+            Assert.Contains(firstComponentMainTile, grid.GetConnectedNeighboursOfComponent(secondComponent));
         }
-
+        
         private static ComponentBase PlaceAndConcatenateComponent(Grid grid, ComponentBase parentComponent)
         {
             ComponentBase newComponent = new StraightWaveGuide();

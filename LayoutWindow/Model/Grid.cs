@@ -63,7 +63,7 @@ namespace Model
 
         public bool IsColliding(int x, int y, int sizeX, int sizeY)
         {
-            if (IsInGrid(x, y, sizeX, sizeY) == false)
+            if (!IsInGrid(x, y, sizeX, sizeY))
             {
                 return true;
             }
@@ -112,7 +112,7 @@ namespace Model
         }
         public ComponentBase GetComponentAt(int x, int y)
         {
-            if (IsInGrid(x, y, 1, 1) == false)
+            if (!IsInGrid(x, y, 1, 1))
             {
                 return null;
             }
@@ -123,7 +123,8 @@ namespace Model
             ComponentBase component = ComponentFactory.Instance.CreateComponent(componentType);
             if (IsColliding(x, y, component.WidthInTiles, component.HeightInTiles))
             {
-                throw new ComponentCannotBePlacedException(component);
+                var blockingComponent = GetComponentAt(x, y);
+                throw new ComponentCannotBePlacedException(component, blockingComponent);
             }
             PlaceComponent(x, y, component);
             return component;
@@ -133,7 +134,9 @@ namespace Model
         {
             if (IsColliding(x, y, component.WidthInTiles, component.HeightInTiles))
             {
-                throw new ComponentCannotBePlacedException(component);
+                var blockingComponent = GetComponentAt(x, y);
+                IsColliding(x, y, component.WidthInTiles, component.HeightInTiles);
+                throw new ComponentCannotBePlacedException(component, blockingComponent);
             }
             component.RegisterPositionInGrid(x, y);
             for (int i = 0; i < component.WidthInTiles; i++)
@@ -184,12 +187,16 @@ namespace Model
 
         public List<Tile> GetConnectedNeighboursOfComponent(ComponentBase component)
         {
+            if (component is null) return new List<Tile>();
             // connectedNeighbours should get all neighbours of the component, shouldn't it?
             List<Tile> children = new();
             for (int partX = 0; partX < component.Parts.GetLength(0); partX++)
             {
                 for (int partY = 0; partY < component.Parts.GetLength(1); partY++)
                 {
+                    var compGridX = component.GridXMainTile + partX;
+                    var compGridY = component.GridYMainTile + partY;
+                    if (!IsInGrid(compGridX, compGridY, 1, 1)) continue;
                     if (component.Parts[partX, partY] == null) continue;
                     var tile = Tiles[component.GridXMainTile + partX, component.GridYMainTile + partY];
                     children.AddRange(GetConnectedNeighboursOfSingleTile(tile));
