@@ -24,15 +24,29 @@ namespace UnitTests
             var secondComponent = new StraightWaveGuide();
             var GridXSecondComponent = firstStraightLine.GridXMainTile + firstStraightLine.WidthInTiles;
             grid.PlaceComponent(GridXSecondComponent, inputHeight, secondComponent);
+            var thirdComponent = new StraightWaveGuide();
+            var GridXThirdComponent = secondComponent.GridXMainTile + secondComponent.WidthInTiles;
+            grid.PlaceComponent(GridXThirdComponent, inputHeight, thirdComponent);
+            var fourthComponent = new StraightWaveGuide();
+            var GridXFourthComponent = thirdComponent.GridXMainTile + thirdComponent.WidthInTiles;
+            grid.PlaceComponent(GridXSecondComponent, inputHeight, secondComponent);
             NazcaCompiler compiler = new(grid);
             // test if parameters in NazcaFunctionParameters work - like the DirectionalCoupler
-            var neighboursOfComponentOne = grid.GetConnectedNeighbours(grid.Tiles[1,inputHeight]);
-            neighboursOfComponentOne.Contains(secondComponent);
+            Tile firstComponentMainTile = grid.Tiles[firstStraightLine.GridXMainTile, inputHeight];
+            var neighboursOfComponentOne = grid.GetConnectedNeighbours(firstComponentMainTile);
+            Tile secondComponentMainTile = grid.Tiles[secondComponent.GridXMainTile, inputHeight];
+            Assert.True(neighboursOfComponentOne.Contains(secondComponentMainTile));
             Assert.True(neighboursOfComponentOne.Count > 0);
             var output = compiler.Compile();
 
         }
 
+        private Tile GetComponentMainTile(Grid grid, ComponentBase component)
+        {
+            Tile secondComponentMainTile = grid.Tiles[firstStraightLine.GridXMainTile, inputHeight];
+            var neighboursOfComponentOne = grid.GetConnectedNeighbours(firstComponentMainTile);
+            Assert.True(neighboursOfComponentOne.Contains(secondComponentMainTile));
+        }
         [Fact]
         public void GetConnectedNeighboursTest()
         {
@@ -42,18 +56,27 @@ namespace UnitTests
             var firstStraightLine = new StraightWaveGuide();
             // add grid components and tiles
             grid.PlaceComponent(0, inputHeight, firstStraightLine);
-            var secondComponent = new DirectionalCoupler();
+            var secondComponent = new StraightWaveGuide();
             var GridXSecondComponent = firstStraightLine.GridXMainTile + firstStraightLine.WidthInTiles;
             grid.PlaceComponent(GridXSecondComponent, inputHeight, secondComponent);
-
-            var Comp1ConnectionPart = firstStraightLine.GetPartAt(1, 0);
-            var Comp2ConnectionPart = secondComponent.GetPartAt(0, 0);
-
+            var thirdComponent = new StraightWaveGuide();
+            var GridXThirdComponent = secondComponent.GridXMainTile + secondComponent.WidthInTiles;
+            grid.PlaceComponent(GridXThirdComponent, inputHeight, thirdComponent);
+            var fourthComponent = new StraightWaveGuide();
+            var GridXFourthComponent = thirdComponent.GridXMainTile + thirdComponent.WidthInTiles;
+            grid.PlaceComponent(GridXSecondComponent, inputHeight, secondComponent);
             NazcaCompiler compiler = new(grid);
             // test if parameters in NazcaFunctionParameters work - like the DirectionalCoupler
-            var neighboursOfComponentOne = grid.GetConnectedNeighbours(grid.Tiles[1, inputHeight]);
-            neighboursOfComponentOne.Contains()
+            Tile firstComponentMainTile = grid.Tiles[firstStraightLine.GridXMainTile, inputHeight];
+            Tile secondComponentMainTile = grid.Tiles[firstStraightLine.GridXMainTile, inputHeight];
+            var neighboursOfComponentOne = grid.GetConnectedNeighbours(firstComponentMainTile);
+            var neighboursOfComponentTwo = grid.GetConnectedNeighbours(secondComponentMainTile);
+            Tile secondComponentMainTile = grid.Tiles[secondComponent.GridXMainTile, inputHeight];
+            Tile secondComponentMainTile = grid.Tiles[secondComponent.GridXMainTile, inputHeight];
+            Assert.True(neighboursOfComponentOne.Contains(secondComponentMainTile));
+            Assert.True(neighboursOfComponentOne.Contains(secondComponentMainTile));
             Assert.True(neighboursOfComponentOne.Count > 0);
+            var output = compiler.Compile();
 
 
 

@@ -30,7 +30,7 @@ namespace ConnectAPIC.Scenes.Compiler
             var nazcaString = new StringBuilder();
             nazcaString.Append(child.ExportToNazca(parent, child.Component.NazcaFunctionParameters));
             AlreadyProcessedComponents.Add(child.Component);
-            var neighbours = grid.GetConnectedNeighbours(child);
+            var neighbours = grid.GetConnectedNeighbours(child.Component);
             neighbours = neighbours.Where(n => !AlreadyProcessedComponents.Contains(n.Component)).ToList();
             foreach (Tile childsNeighbourTile in neighbours)
             {

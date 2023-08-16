@@ -27,9 +27,9 @@ namespace Model
         public int Height { get; private set; }
         public const int MinHeight = 10;
 
-        public Grid(int width, int height) :this(width,height,null)
+        public Grid(int width, int height) : this(width, height, null)
         {
-            int CenterY = height/ 2;
+            int CenterY = height / 2;
             var StandardPorts = new List<ExternalPort>() {
                     new StandardInput("io1",LightCycleColor.Red , 0,CenterY-5),
                     new StandardInput("io2",LightCycleColor.Green, 0,CenterY-3),
@@ -181,32 +181,41 @@ namespace Model
             }
             return false;
         }
+
+        public List<Tile> GetConnectedNeighbours(ComponentBase component)
+        {
+            List<Tile> children = new();
+            for (int partX = 0; partX < component.Parts.GetLength(0); partX++)
+            {
+                for (int partY = 0; partY < component.Parts.GetLength(1); partY++)
+                {
+                    for (int x = -1; x < 2; x++)
+                    {
+                        for (int y = -1; y < 2; y++)
+                        {
+                            if ((x != 0 && y != 0) || (y == 0 && x == 0)) continue; // only compute Tiles that are "up down left right"
+                            var neighbourGridX = component.GridXMainTile + partX + x;
+                            var neighbourGridY = component.GridYMainTile + partY + y;
+                            if (!IsInGrid(neighbourGridX, neighbourGridY, 1, 1)) continue;
+                            Tile neighbour = Tiles[neighbourGridX, neighbourGridY];
+                            var neighbourComponent = neighbour?.Component;
+                            if (component == neighbourComponent || neighbourComponent == null) continue;
+                            var lightDirection = new IntVector(x, y);
+                            var neighbourPin = neighbour.GetPinAt(lightDirection * -1);
+                            var parentPin = GetPinAt(lightDirection);
+                            if (neighbourPin?.MatterType != MatterType.Light || parentPin?.MatterType != MatterType.Light) continue;
+                            children.Add(neighbour);
+                        }
+                    }
+                }
+
+            }
+            return children;
+        }
         public List<Tile> GetConnectedNeighbours(Tile parent)
         {
             if (parent == null || parent.Component == null) return default;
-            List<Tile> children = new();
-            foreach (Part part in parent.Component.Parts)
-            {
-                for (int x = -1; x < 2; x++)
-                {
-                    for (int y = -1; y < 2; y++)
-                    {
-                        if ((x != 0 && y != 0) || (y == 0 && x == 0)) continue; // only compute Tiles that are "up down left right"
-                        var neighbourX = parent.GridX + x;
-                        var neighbourY = parent.GridY + y;
-                        if (!IsInGrid(neighbourX, neighbourY, 1, 1)) continue;
-                        Tile neighbour = Tiles[neighbourX, neighbourY];
-                        var neighbourComponent = neighbour?.Component;
-                        if (parent.Component == neighbourComponent || neighbourComponent == null) continue;
-                        var lightDirection = new IntVector(x, y);
-                        var neighbourPin = neighbour.GetPinAt(lightDirection * -1);
-                        var parentPin = parent.GetPinAt(lightDirection);
-                        if (neighbourPin?.MatterType != MatterType.Light || parentPin?.MatterType != MatterType.Light) continue;
-                        children.Add(neighbour);
-                    }
-                }
-            }
-            return children;
+
         }
     }
 }
