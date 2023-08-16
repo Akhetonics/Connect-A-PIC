@@ -30,7 +30,7 @@ namespace ConnectAPIC.Scenes.Compiler
             var nazcaString = new StringBuilder();
             nazcaString.Append(child.ExportToNazca(parent, child.Component.NazcaFunctionParameters));
             AlreadyProcessedComponents.Add(child.Component);
-            var neighbours = grid.GetConnectedNeighbours(child.Component);
+            var neighbours = grid.GetConnectedNeighboursOfComponent(child.Component);
             neighbours = neighbours.Where(n => !AlreadyProcessedComponents.Contains(n.Component)).ToList();
             foreach (Tile childsNeighbourTile in neighbours)
             {
@@ -52,7 +52,7 @@ namespace ConnectAPIC.Scenes.Compiler
                 if (!grid.IsInGrid(x, y, 1, 1)) continue;
                 var currentTile = grid.Tiles[x, y];
                 NazcaCode.Append(currentTile.ExportToNazcaExtended(new IntVector(-1, y), StandardInputCellName, input.PinName));
-                var neighbours = grid.GetConnectedNeighbours(currentTile);
+                var neighbours = grid.GetConnectedNeighboursOfComponent(currentTile.Component);
                 if (neighbours == null) continue;
                 foreach (Tile neighbour in neighbours)
                 {

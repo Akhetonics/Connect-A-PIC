@@ -182,40 +182,45 @@ namespace Model
             return false;
         }
 
-        public List<Tile> GetConnectedNeighbours(ComponentBase component)
+        public List<Tile> GetConnectedNeighboursOfComponent(ComponentBase component)
         {
+            // connectedNeighbours should get all neighbours of the component, shouldn't it?
             List<Tile> children = new();
             for (int partX = 0; partX < component.Parts.GetLength(0); partX++)
             {
                 for (int partY = 0; partY < component.Parts.GetLength(1); partY++)
                 {
-                    for (int x = -1; x < 2; x++)
-                    {
-                        for (int y = -1; y < 2; y++)
-                        {
-                            if ((x != 0 && y != 0) || (y == 0 && x == 0)) continue; // only compute Tiles that are "up down left right"
-                            var neighbourGridX = component.GridXMainTile + partX + x;
-                            var neighbourGridY = component.GridYMainTile + partY + y;
-                            if (!IsInGrid(neighbourGridX, neighbourGridY, 1, 1)) continue;
-                            Tile neighbour = Tiles[neighbourGridX, neighbourGridY];
-                            var neighbourComponent = neighbour?.Component;
-                            if (component == neighbourComponent || neighbourComponent == null) continue;
-                            var lightDirection = new IntVector(x, y);
-                            var neighbourPin = neighbour.GetPinAt(lightDirection * -1);
-                            var parentPin = GetPinAt(lightDirection);
-                            if (neighbourPin?.MatterType != MatterType.Light || parentPin?.MatterType != MatterType.Light) continue;
-                            children.Add(neighbour);
-                        }
-                    }
+                    if (component.Parts[partX, partY] == null) continue;
+                    var tile = Tiles[component.GridXMainTile + partX, component.GridYMainTile + partY];
+                    children.AddRange(GetConnectedNeighboursOfSingleTile(tile));
                 }
-
             }
             return children;
         }
-        public List<Tile> GetConnectedNeighbours(Tile parent)
+        // finds all neighbour components that are connected to a certain Tile (parent) only if the Pins match.
+        public List<Tile> GetConnectedNeighboursOfSingleTile(Tile parent)
         {
-            if (parent == null || parent.Component == null) return default;
-
+            if (parent == null || parent.Component == null) return new List<Tile>();
+            List<Tile> children = new();
+            for (int x = -1; x < 2; x++)
+            {
+                for (int y = -1; y < 2; y++)
+                {
+                    if ((x != 0 && y != 0) || (y == 0 && x == 0)) continue; // only compute Tiles that are "up down left right"
+                    var neighbourX = parent.GridX + x;
+                    var neighbourY = parent.GridY + y;
+                    if (!IsInGrid(neighbourX, neighbourY, 1, 1)) continue;
+                    Tile neighbour = Tiles[neighbourX, neighbourY];
+                    var neighbourComponent = neighbour?.Component;
+                    if (parent.Component == neighbourComponent || neighbourComponent == null) continue;
+                    var lightDirection = new IntVector(x, y);
+                    var neighbourPin = neighbour.GetPinAt(lightDirection * -1);
+                    var parentPin = parent.GetPinAt(lightDirection);
+                    if (neighbourPin?.MatterType != MatterType.Light || parentPin?.MatterType != MatterType.Light) continue;
+                    children.Add(neighbour);
+                }
+            }
+            return children;
         }
     }
 }

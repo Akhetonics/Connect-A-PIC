@@ -18,11 +18,11 @@ namespace UnitTests
             Grid grid = new(24,12);
             var inputs = grid.ExternalPorts.Where(p => p.GetType() == typeof(StandardInput)).ToList();
             var inputHeight = inputs.FirstOrDefault().TilePositionY;
-            var firstStraightLine = new StraightWaveGuide();
+            var firstComponent = new StraightWaveGuide();
             // add grid components and tiles
-            grid.PlaceComponent(0, inputHeight, firstStraightLine);
+            grid.PlaceComponent(0, inputHeight, firstComponent);
             var secondComponent = new StraightWaveGuide();
-            var GridXSecondComponent = firstStraightLine.GridXMainTile + firstStraightLine.WidthInTiles;
+            var GridXSecondComponent = firstComponent.GridXMainTile + firstComponent.WidthInTiles;
             grid.PlaceComponent(GridXSecondComponent, inputHeight, secondComponent);
             var thirdComponent = new StraightWaveGuide();
             var GridXThirdComponent = secondComponent.GridXMainTile + secondComponent.WidthInTiles;
@@ -32,55 +32,45 @@ namespace UnitTests
             grid.PlaceComponent(GridXSecondComponent, inputHeight, secondComponent);
             NazcaCompiler compiler = new(grid);
             // test if parameters in NazcaFunctionParameters work - like the DirectionalCoupler
-            Tile firstComponentMainTile = grid.Tiles[firstStraightLine.GridXMainTile, inputHeight];
-            var neighboursOfComponentOne = grid.GetConnectedNeighbours(firstComponentMainTile);
+            Tile firstComponentMainTile = grid.Tiles[firstComponent.GridXMainTile, inputHeight];
+            var neighboursOfComponentOne = grid.GetConnectedNeighboursOfComponent(firstComponent);
             Tile secondComponentMainTile = grid.Tiles[secondComponent.GridXMainTile, inputHeight];
             Assert.True(neighboursOfComponentOne.Contains(secondComponentMainTile));
             Assert.True(neighboursOfComponentOne.Count > 0);
             var output = compiler.Compile();
 
         }
-
-        private Tile GetComponentMainTile(Grid grid, ComponentBase component)
-        {
-            Tile secondComponentMainTile = grid.Tiles[firstStraightLine.GridXMainTile, inputHeight];
-            var neighboursOfComponentOne = grid.GetConnectedNeighbours(firstComponentMainTile);
-            Assert.True(neighboursOfComponentOne.Contains(secondComponentMainTile));
-        }
+        
         [Fact]
         public void GetConnectedNeighboursTest()
         {
             Grid grid = new(24, 12);
             var inputs = grid.ExternalPorts.Where(p => p.GetType() == typeof(StandardInput)).ToList();
             var inputHeight = inputs.FirstOrDefault().TilePositionY;
-            var firstStraightLine = new StraightWaveGuide();
+            var firstComponent = new StraightWaveGuide();
             // add grid components and tiles
-            grid.PlaceComponent(0, inputHeight, firstStraightLine);
-            var secondComponent = new StraightWaveGuide();
-            var GridXSecondComponent = firstStraightLine.GridXMainTile + firstStraightLine.WidthInTiles;
-            grid.PlaceComponent(GridXSecondComponent, inputHeight, secondComponent);
-            var thirdComponent = new StraightWaveGuide();
-            var GridXThirdComponent = secondComponent.GridXMainTile + secondComponent.WidthInTiles;
-            grid.PlaceComponent(GridXThirdComponent, inputHeight, thirdComponent);
-            var fourthComponent = new StraightWaveGuide();
-            var GridXFourthComponent = thirdComponent.GridXMainTile + thirdComponent.WidthInTiles;
-            grid.PlaceComponent(GridXSecondComponent, inputHeight, secondComponent);
+            grid.PlaceComponent(0, inputHeight, firstComponent);
+            var secondComponent = PlaceAndConcatenateComponent(grid, firstComponent);
+            var thirdComponent = PlaceAndConcatenateComponent(grid, secondComponent);
+            var fourthComponent = PlaceAndConcatenateComponent(grid, thirdComponent);
             NazcaCompiler compiler = new(grid);
             // test if parameters in NazcaFunctionParameters work - like the DirectionalCoupler
-            Tile firstComponentMainTile = grid.Tiles[firstStraightLine.GridXMainTile, inputHeight];
-            Tile secondComponentMainTile = grid.Tiles[firstStraightLine.GridXMainTile, inputHeight];
-            var neighboursOfComponentOne = grid.GetConnectedNeighbours(firstComponentMainTile);
-            var neighboursOfComponentTwo = grid.GetConnectedNeighbours(secondComponentMainTile);
-            Tile secondComponentMainTile = grid.Tiles[secondComponent.GridXMainTile, inputHeight];
-            Tile secondComponentMainTile = grid.Tiles[secondComponent.GridXMainTile, inputHeight];
-            Assert.True(neighboursOfComponentOne.Contains(secondComponentMainTile));
-            Assert.True(neighboursOfComponentOne.Contains(secondComponentMainTile));
-            Assert.True(neighboursOfComponentOne.Count > 0);
-            var output = compiler.Compile();
+            Tile firstComponentMainTile = grid.Tiles[firstComponent.GridXMainTile, inputHeight];
+            Tile secondComponentMainTile = grid.Tiles[secondComponent.GridXMainTile, secondComponent.GridYMainTile];
+            Tile thirdComponentMainTile = grid.Tiles[thirdComponent.GridXMainTile, thirdComponent.GridYMainTile];
 
-
+            Assert.True(grid.GetConnectedNeighboursOfComponent(firstComponent).Contains(secondComponentMainTile));
+            Assert.True(grid.GetConnectedNeighboursOfComponent(secondComponent).Contains(thirdComponentMainTile));
+            Assert.True(grid.GetConnectedNeighboursOfComponent(secondComponent).Contains(firstComponentMainTile));
 
         }
 
+        private static ComponentBase PlaceAndConcatenateComponent(Grid grid, ComponentBase parentComponent)
+        {
+            ComponentBase newComponent = new StraightWaveGuide();
+            var GridXSecondComponent = parentComponent.GridXMainTile + parentComponent.WidthInTiles;
+            grid.PlaceComponent(GridXSecondComponent, parentComponent.GridYMainTile, newComponent);
+            return newComponent;
+        }
     }
 }
