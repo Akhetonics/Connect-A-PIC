@@ -10,18 +10,16 @@ namespace ConnectAPIC.LayoutWindow.View
 {
 	public partial class StraightWaveGuideView : ComponentBaseView
 	{
-		[Export] protected Texture2D TextureLeft;
-		[Export] protected Texture2D TextureRight;
+		[Export] protected Texture2D Texture;
 		
 		public StraightWaveGuideView()
 		{
-			Textures = new Texture2D[2, 1];
+			Textures = new Texture2D[1, 1];
 		}
 		public override void _Ready()
 		{
 			base._Ready();
-			Textures[0, 0] = TextureLeft;
-			Textures[1, 0] = TextureRight;
+			Textures[0, 0] = Texture;
 		}
 	   
 	}

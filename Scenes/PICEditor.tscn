@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://cu6wqy6xwjfo1"]
+[gd_scene load_steps=19 format=3 uid="uid://cu6wqy6xwjfo1"]
 
 [ext_resource type="Script" path="res://LayoutWindow/GameManager.cs" id="1_1g8p6"]
 [ext_resource type="Script" path="res://LayoutWindow/View/GridView.cs" id="1_2pqex"]
@@ -13,7 +13,6 @@
 [ext_resource type="Texture2D" uid="uid://obrjry10rd00" path="res://GFX/StraightComponent.png" id="8_gfj5w"]
 [ext_resource type="Texture2D" uid="uid://dbc8fq12pwjqx" path="res://GFX/ExternalInputBlue.png" id="8_y1c58"]
 [ext_resource type="Texture2D" uid="uid://c2uey4rct0iyn" path="res://GFX/ExternalInputRed.png" id="9_kjo8d"]
-[ext_resource type="Texture2D" uid="uid://dlui314yxvnfr" path="res://GFX/StraightComponent_Right.png" id="9_o74m0"]
 [ext_resource type="Texture2D" uid="uid://b7fnv5qoysp51" path="res://GFX/GratingCoupler.png" id="10_m4std"]
 [ext_resource type="Texture2D" uid="uid://dfrkvavwush2t" path="res://GFX/ExternalInputGreen.png" id="10_msf4h"]
 [ext_resource type="Texture2D" uid="uid://bj1u105ivy4eu" path="res://GFX/ExternalOutput.png" id="11_v8xoy"]
@@ -24,28 +23,30 @@
 [node name="PICEditor" type="Node2D"]
 material = SubResource("CanvasItemMaterial_p8lel")
 
-[node name="GameManager" type="Node" parent="." node_paths=PackedStringArray("ExternalOutputTemplate", "ExternalInputRedTemplate", "ExternalInputGreenTemplate", "ExternalInputBlueTemplate")]
+[node name="GameManager" type="Node" parent="." node_paths=PackedStringArray("ExternalOutputTemplate", "ExternalInputRedTemplate", "ExternalInputGreenTemplate", "ExternalInputBlueTemplate", "Background")]
 script = ExtResource("1_1g8p6")
 GridViewPath = NodePath("PICArea/Grid")
 ExternalOutputTemplate = NodePath("PICArea/ExternalOutputTemplate")
 ExternalInputRedTemplate = NodePath("PICArea/ExternalInputRedTemplate")
 ExternalInputGreenTemplate = NodePath("PICArea/ExternalInputGreenTemplate")
 ExternalInputBlueTemplate = NodePath("PICArea/ExternalInputBlueTemplate")
+Background = NodePath("PICArea")
 
 [node name="PICArea" type="Panel" parent="GameManager"]
-offset_left = 69.0
-offset_top = 45.0
-offset_right = 596.0
-offset_bottom = 521.0
+self_modulate = Color(1, 1, 1, 0)
+offset_right = 527.0
+offset_bottom = 476.0
 scale = Vector2(1, 0.995443)
 
 [node name="Grid" type="GridContainer" parent="GameManager/PICArea"]
 layout_mode = 1
 anchors_preset = -1
-anchor_right = 0.121
-anchor_bottom = 0.134
-offset_right = 0.232998
-offset_bottom = 0.216
+offset_left = 137.0
+offset_top = 70.0
+offset_right = 424.801
+offset_bottom = 327.836
+theme_override_constants/h_separation = 0
+theme_override_constants/v_separation = 0
 columns = 6
 script = ExtResource("1_2pqex")
 DefaultTilePath = NodePath("../DefaultTile")
@@ -113,53 +114,57 @@ ElectricityPinTexture = ExtResource("7_uo1bp")
 LightPinTexture = ExtResource("5_lrhvy")
 
 [node name="ExternalInputBlueTemplate" type="TextureRect" parent="GameManager/PICArea"]
+visible = false
 custom_minimum_size = Vector2(64, 64)
-offset_left = -65.0
-offset_top = 65.2976
-offset_right = 19.2105
-offset_bottom = 129.298
+offset_left = 70.0
+offset_top = 74.3388
+offset_right = 154.211
+offset_bottom = 138.339
 texture = ExtResource("8_y1c58")
-expand_mode = 3
+expand_mode = 5
 
 [node name="ExternalInputRedTemplate" type="TextureRect" parent="GameManager/PICArea"]
+visible = false
 custom_minimum_size = Vector2(64, 64)
-offset_left = -65.0
-offset_top = 128.586
-offset_right = 19.2105
-offset_bottom = 192.586
+offset_left = 70.0
+offset_top = 137.627
+offset_right = 154.211
+offset_bottom = 201.627
 texture = ExtResource("9_kjo8d")
-expand_mode = 3
+expand_mode = 5
 
 [node name="ExternalInputGreenTemplate" type="TextureRect" parent="GameManager/PICArea"]
+visible = false
 custom_minimum_size = Vector2(64, 64)
-offset_left = -65.0
-offset_top = 192.879
-offset_right = 19.2105
-offset_bottom = 256.879
+offset_left = 70.0
+offset_top = 201.92
+offset_right = 154.211
+offset_bottom = 265.92
 texture = ExtResource("10_msf4h")
-expand_mode = 3
+expand_mode = 5
 
 [node name="ExternalOutputTemplate" type="TextureRect" parent="GameManager/PICArea"]
+visible = false
 custom_minimum_size = Vector2(64, 64)
-offset_left = -131.0
-offset_top = 257.172
-offset_right = 17.48
-offset_bottom = 321.172
+offset_left = 4.0
+offset_top = 266.213
+offset_right = 152.48
+offset_bottom = 330.213
 texture = ExtResource("11_v8xoy")
-expand_mode = 3
+expand_mode = 5
 
 [node name="ComponentToolBox" type="Panel" parent="GameManager"]
-offset_left = 659.0
-offset_top = 224.0
-offset_right = 969.0
-offset_bottom = 454.0
+offset_left = 774.0
+offset_top = 360.0
+offset_right = 1084.0
+offset_bottom = 590.0
 
 [node name="ScrollContainer" type="ScrollContainer" parent="GameManager/ComponentToolBox"]
 layout_mode = 0
 offset_left = 3.0
 offset_top = 2.0
-offset_right = 307.0
-offset_bottom = 224.0
+offset_right = 264.0
+offset_bottom = 198.0
 
 [node name="ToolBoxGrid" type="GridContainer" parent="GameManager/ComponentToolBox/ScrollContainer"]
 layout_mode = 2
@@ -199,8 +204,7 @@ script = ExtResource("7_x7uef")
 
 [node name="StraightWaveGuideView" type="Node" parent="ComponentTemplates"]
 script = ExtResource("7_tohqs")
-TextureLeft = ExtResource("8_gfj5w")
-TextureRight = ExtResource("9_o74m0")
+Texture = ExtResource("8_gfj5w")
 
 [node name="GratingCouplerView" type="Node" parent="ComponentTemplates"]
 script = ExtResource("14_bqkgg")

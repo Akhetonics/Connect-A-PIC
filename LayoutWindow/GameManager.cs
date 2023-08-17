@@ -35,13 +35,16 @@ namespace ConnectAPic.LayoutWindow
 			{
 				instance = this;
 				int CenterY = FieldHeight / 2;
+				int gap = 2;
+				if (FieldHeight < 11)
+					gap = 1;
 				var StandardPorts = new List<ExternalPort>() {
-					new StandardInput("io1",LightCycleColor.Red , 0,CenterY-5),
-					new StandardInput("io2",LightCycleColor.Green, 0,CenterY-3),
-					new StandardInput("io3",LightCycleColor.Blue, 0,CenterY-1),
-					new StandardOutput("io4",CenterY+1),
-					new StandardOutput("io5",CenterY+3),
-					new StandardOutput("io6",CenterY+5),
+					new StandardInput("io1",LightCycleColor.Red , 0,CenterY-(gap*3-1)),
+					new StandardInput("io2",LightCycleColor.Green, 0,CenterY-(gap*2-1)),
+					new StandardInput("io3",LightCycleColor.Blue, 0,CenterY-(gap-1)),
+					new StandardOutput("io4",CenterY+(gap-1)),
+					new StandardOutput("io5",CenterY+(gap*2-1)),
+					new StandardOutput("io6",CenterY+(gap*3-1)),
 				};
 				GridView = GetNode<GridView>(GridViewPath);
 				Grid = new Grid(FieldWidth, FieldHeight, StandardPorts);
@@ -79,7 +82,7 @@ namespace ConnectAPic.LayoutWindow
 				}
 				view.Visible = true;
 				this.AddChild(view);
-				view.Position = new Vector2(view.Position.X, GridView.GlobalPosition.Y+ TileView.TilePixelSize * port.TilePositionY);
+				view.Position = new Vector2(view.Position.X , GridView.GlobalPosition.Y+ (TileView.TilePixelSize-0.5f) * port.TilePositionY);
 			}
 		}
 	}

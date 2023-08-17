@@ -31,10 +31,10 @@ namespace ConnectAPIC.LayoutWindow.View
 			return componentTemplate;
 		}
 
-        public override void _GuiInput(InputEvent inputEvent)
-        {
-            // override so that the tile cannot use middle click and rightclick
-        }
-    }
+		public override void _GuiInput(InputEvent inputEvent)
+		{
+			// override so that the tile cannot use middle click and rightclick
+		}
+	}
 
 }
