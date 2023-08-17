@@ -4,6 +4,7 @@ using ConnectAPIC.LayoutWindow.Model.Helpers;
 using ConnectAPIC.Scenes.Component;
 using ConnectAPIC.Scenes.Tiles;
 using Godot;
+using MathNet.Numerics.Distributions;
 using Model;
 using System;
 using System.Collections;
@@ -51,7 +52,9 @@ namespace ConnectAPIC.Scenes.Compiler
                 var y = input.TilePositionY;
                 if (!grid.IsInGrid(x, y, 1, 1)) continue;
                 var currentTile = grid.Tiles[x, y];
-                NazcaCode.Append(currentTile.ExportToNazcaExtended(new IntVector(-1, y), StandardInputCellName, input.PinName));
+                if (currentTile.Component == null) continue;
+                NazcaCode.Append(currentTile.ExportToNazcaExtended(new IntVector(-1, y), StandardInputCellName, input.PinName, currentTile.Component.NazcaFunctionParameters));
+                AlreadyProcessedComponents.Add(currentTile.Component);
                 var neighbours = grid.GetConnectedNeighboursOfComponent(currentTile.Component);
                 if (neighbours == null) continue;
                 foreach (Tile neighbour in neighbours)

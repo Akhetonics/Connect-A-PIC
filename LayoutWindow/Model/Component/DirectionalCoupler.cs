@@ -21,16 +21,22 @@ namespace ConnectAPIC.Scenes.Component
 
         public DirectionalCoupler()
         {
-            Parts = new Part[2, 1];
-            Parts[0, 0] = CreatePart(RectSide.Left, RectSide.Right);
-            Parts[1, 0] = CreatePart(RectSide.Left, RectSide.Right);
+            Parts = new Part[1, 2];
+            Parts[0, 0] = new Part(new List<Pin>() { 
+                new Pin("west0", MatterType.Light, RectSide.Left),
+                new Pin("east0", MatterType.Light, RectSide.Right),
+            }) ;
+            Parts[0, 1] = new Part(new List<Pin>() {
+                new Pin("west1", MatterType.Light, RectSide.Left),
+                new Pin("east1", MatterType.Light, RectSide.Right),
+            });
 
             // setting up the SMatrix
             var allPins = new List<Guid> {
                 PinIdRight(0,0),
                 PinIdLeft(0,0),
-                PinIdRight(1,0),
-                PinIdLeft(1,0),
+                PinIdRight(0,1),
+                PinIdLeft(0,1),
             };
             Connections = new SMatrix(allPins);
             var connectionweights = new Dictionary<(Guid, Guid), Complex>()

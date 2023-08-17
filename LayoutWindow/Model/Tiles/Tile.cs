@@ -13,6 +13,7 @@ namespace Tiles
 
     public class Tile 
     {
+        private const string PythonFunctionIndention = "        ";
         public ComponentBase Component { get; set; }
         public int GridX { get; private set; }
         public int GridY { get; private set; }
@@ -40,7 +41,7 @@ namespace Tiles
             var cellName = getNazcaCellName(this.GridX, GridY);
             var currentDirection = (IntVector)GetParentTouchingEdgeSide(parentGridPos.X, parentGridPos.Y, GridX, GridY) * (-1);
             var currentPinName = GetPinAt(currentDirection)?.Name ?? "";
-            return $"{cellName} = {NazcaCompiler.PDKName}.{Component.NazcaFunctionName}({parameters}).put('{currentPinName}', {parentCellName}.pin['{parentPinName}'])\n";
+            return $"{PythonFunctionIndention}{cellName} = {NazcaCompiler.PDKName}.{Component.NazcaFunctionName}({parameters}).put('{currentPinName}', {parentCellName}.pin['{parentPinName}'])\n";
         }
         private RectSide GetParentTileTouchingEdgeSide(Tile parentTile)
         {

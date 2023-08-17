@@ -26,15 +26,13 @@ namespace UnitTests
             var fourthComponent = PlaceAndConcatenateComponent(grid, thirdComponent);
             
             NazcaCompiler compiler = new(grid);
-            // test if parameters in NazcaFunctionParameters work - like the DirectionalCoupler
-            var neighboursOfComponentOne = grid.GetConnectedNeighboursOfComponent(firstComponent);
-            
-            Assert.True(neighboursOfComponentOne.Count > 0);
             var output = compiler.Compile();
+
             Assert.Contains(firstComponent.NazcaFunctionName, output);
             Assert.Contains(secondComponent.NazcaFunctionName, output);
             Assert.Contains(thirdComponent.NazcaFunctionName, output);
             Assert.Contains(fourthComponent.NazcaFunctionName, output);
+            Assert.True(output.Split(firstComponent.NazcaFunctionName).Length == 2);
         }
         
         [Fact]

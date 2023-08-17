@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ConnectAPIC.LayoutWindow.Model.Compiler
 {
@@ -11,26 +12,25 @@ namespace ConnectAPIC.LayoutWindow.Model.Compiler
         public static string CreateHeader(string PDKName, string StandardInputCellName)
         {
             return @"
-using nazca as nd;
-from TestPDK import TestPDK;
+import nazca as nd
+from TestPDK import TestPDK
 
-" + PDKName + @" = TestPDK();
+CAPICPDK = TestPDK()
 
-def FullDesign(layoutName)
-{
-    using (var fullLayoutInner = nd.Cell(name: layoutName))
-    {
-        var " + StandardInputCellName + @" = CAPICPDK.placeGrating_East(8).put(0, 0);
-    }
-}
+def FullDesign(layoutName):
+    with nd.Cell(name=layoutName) as fullLayoutInner:       
+
+        grating = CAPICPDK.placeGratingArray_East(8).put(0, 0)
+
 ";
         }
         public static string CreateFooter()
         {
-            return @"return fullLayoutInner
+            return @"    return fullLayoutInner
 
 nd.print_warning = False
-nd.export_gds(topcells=FullDesign(""Akhetonics_ConnectAPIC""), filename=""Test.gds"")";
+nd.export_gds(topcells=FullDesign(""Akhetonics_ConnectAPIC""), filename=""Test.gds"")
+";
         }
     }
 }

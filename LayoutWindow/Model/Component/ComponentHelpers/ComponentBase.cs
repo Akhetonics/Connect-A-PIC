@@ -79,10 +79,7 @@ namespace ConnectAPIC.Scenes.Component
         }
         public Part CreatePart(params RectSide[] LightTransmittingSides)
         {
-            var part = new Part
-            {
-                Rotation90 = DiscreteRotation.R0
-            };
+            var part = new Part();
             foreach (RectSide side in LightTransmittingSides)
             {
                 part.InitializePin(side, null, MatterType.Light);

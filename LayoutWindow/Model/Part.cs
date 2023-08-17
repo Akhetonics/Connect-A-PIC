@@ -17,14 +17,21 @@ namespace Model
         public DiscreteRotation Rotation90 { get; set; }
         public Part()
         {
+            Rotation90 = DiscreteRotation.R0;
             Pins = new List<Pin>
             {
-                new Pin("Left", MatterType.None, RectSide.Left),
-                new Pin("Up", MatterType.None, RectSide.Up),
-                new Pin("Right", MatterType.None, RectSide.Right),
-                new Pin("Down", MatterType.None, RectSide.Down),
+                new Pin("west", MatterType.None, RectSide.Left),
+                new Pin("north", MatterType.None, RectSide.Up),
+                new Pin("east", MatterType.None, RectSide.Right),
+                new Pin("south", MatterType.None, RectSide.Down),
             };
         }
+        public Part(List<Pin> pins)
+        {
+            Pins = pins;
+        }
+
+
         public void InitializePin(RectSide side, string name, MatterType matterType)
         {
             var pin = GetPinAt(side);
