@@ -22,14 +22,15 @@ def FullDesign(layoutName):
 
         grating = CAPICPDK.placeGratingArray_East(8).put(0, 0)
 
-";
+".Replace("CAPICPDK", PDKName)
+.Replace("grating" ,StandardInputCellName);
         }
-        public static string CreateFooter()
+        public static string CreateFooter(string layoutName="Akhetonics_ConnectAPIC", string gdsFileName = "Test.gds")
         {
-            return @"    return fullLayoutInner
+            return @$"    return fullLayoutInner
 
 nd.print_warning = False
-nd.export_gds(topcells=FullDesign(""Akhetonics_ConnectAPIC""), filename=""Test.gds"")
+nd.export_gds(topcells=FullDesign(""{layoutName}""), filename=""{gdsFileName}"")
 ";
         }
     }
