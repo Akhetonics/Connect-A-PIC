@@ -11,7 +11,10 @@ def FullDesign(layoutName):
 
         cell_0_1 = CAPICPDK.placeCell_StraightWG().put('west', grating.pin['io1'])
         cell_1_1 = CAPICPDK.placeCell_StraightWG().put('west', cell_0_1.pin['east'])
-        cell_2_1 = CAPICPDK.placeCell_StraightWG().put('west', cell_1_1.pin['east'])
+        cell_0_3 = CAPICPDK.placeCell_StraightWG().put('west', grating.pin['io2'])
+        cell_1_3 = CAPICPDK.placeCell_StraightWG().put('west', cell_0_3.pin['east'])
+        cell_0_5 = CAPICPDK.placeCell_StraightWG().put('west', grating.pin['io3'])
+        cell_1_5 = CAPICPDK.placeCell_StraightWG().put('west', cell_0_5.pin['east'])
     return fullLayoutInner
 
 nd.print_warning = False

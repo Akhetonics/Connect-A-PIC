@@ -222,3 +222,5 @@ stretch_mode = 2
 script = ExtResource("6_ay4pw")
 ElectricityPinTexture = ExtResource("7_uo1bp")
 LightPinTexture = ExtResource("5_lrhvy")
+
+[connection signal="pressed" from="btnExportNazca" to="DragDropParent/Grid" method="_on_btn_export_nazca_pressed"]
