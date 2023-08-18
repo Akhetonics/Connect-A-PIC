@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://cu6wqy6xwjfo1"]
+[gd_scene load_steps=20 format=3 uid="uid://cu6wqy6xwjfo1"]
 
 [ext_resource type="Script" path="res://LayoutWindow/GameManager.cs" id="1_1g8p6"]
 [ext_resource type="Script" path="res://LayoutWindow/View/GridView.cs" id="1_2pqex"]
@@ -20,27 +20,22 @@
 [ext_resource type="PackedScene" uid="uid://bscqmaslppyt8" path="res://Scenes/NotificationBox.tscn" id="12_o0640"]
 [ext_resource type="Script" path="res://LayoutWindow/View/GratingCouplerView.cs" id="14_bqkgg"]
 
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_p8lel"]
-
-[node name="PICEditor" type="Node2D"]
-material = SubResource("CanvasItemMaterial_p8lel")
-
-[node name="GameManager" type="Node" parent="." node_paths=PackedStringArray("ExternalOutputTemplate", "ExternalInputRedTemplate", "ExternalInputGreenTemplate", "ExternalInputBlueTemplate", "Background")]
+[node name="GameManager" type="Node" node_paths=PackedStringArray("ExternalOutputTemplate", "ExternalInputRedTemplate", "ExternalInputGreenTemplate", "ExternalInputBlueTemplate", "Background")]
 script = ExtResource("1_1g8p6")
-GridViewPath = NodePath("../Grid")
+GridViewPath = NodePath("DragDropParent/Grid")
 ExternalOutputTemplate = NodePath("Templates/ExternalOutputTemplate")
 ExternalInputRedTemplate = NodePath("Templates/ExternalInputRedTemplate")
 ExternalInputGreenTemplate = NodePath("Templates/ExternalInputGreenTemplate")
 ExternalInputBlueTemplate = NodePath("Templates/ExternalInputBlueTemplate")
-Background = NodePath("")
+Background = NodePath("DragDropParent")
 
-[node name="NotificationManager" type="Node" parent="GameManager"]
+[node name="NotificationManager" type="Node" parent="."]
 script = ExtResource("2_nntly")
 NotificationBoxScene = ExtResource("12_o0640")
 
-[node name="Templates" type="Node" parent="GameManager"]
+[node name="Templates" type="Node" parent="."]
 
-[node name="DefaultTile" type="TextureRect" parent="GameManager/Templates" node_paths=PackedStringArray("PinRight", "PinDown", "PinLeft", "PinUp")]
+[node name="DefaultTile" type="TextureRect" parent="Templates" node_paths=PackedStringArray("PinRight", "PinDown", "PinLeft", "PinUp")]
 visible = false
 custom_minimum_size = Vector2(64, 64)
 offset_right = 64.0
@@ -53,7 +48,7 @@ PinDown = NodePath("PinDown")
 PinLeft = NodePath("PinLeft")
 PinUp = NodePath("PinUp")
 
-[node name="PinRight" type="TextureRect" parent="GameManager/Templates/DefaultTile"]
+[node name="PinRight" type="TextureRect" parent="Templates/DefaultTile"]
 layout_mode = 0
 offset_left = 46.0
 offset_top = 28.1282
@@ -65,7 +60,7 @@ script = ExtResource("6_ay4pw")
 ElectricityPinTexture = ExtResource("7_uo1bp")
 LightPinTexture = ExtResource("5_lrhvy")
 
-[node name="PinDown" type="TextureRect" parent="GameManager/Templates/DefaultTile"]
+[node name="PinDown" type="TextureRect" parent="Templates/DefaultTile"]
 layout_mode = 0
 offset_left = 26.0
 offset_top = 40.1831
@@ -77,7 +72,7 @@ script = ExtResource("6_ay4pw")
 ElectricityPinTexture = ExtResource("7_uo1bp")
 LightPinTexture = ExtResource("5_lrhvy")
 
-[node name="PinLeft" type="TextureRect" parent="GameManager/Templates/DefaultTile"]
+[node name="PinLeft" type="TextureRect" parent="Templates/DefaultTile"]
 layout_mode = 0
 offset_left = 12.0
 offset_top = 26.119
@@ -89,7 +84,7 @@ script = ExtResource("6_ay4pw")
 ElectricityPinTexture = ExtResource("7_uo1bp")
 LightPinTexture = ExtResource("5_lrhvy")
 
-[node name="PinUp" type="TextureRect" parent="GameManager/Templates/DefaultTile"]
+[node name="PinUp" type="TextureRect" parent="Templates/DefaultTile"]
 layout_mode = 0
 offset_left = 26.0
 offset_top = 14.0641
@@ -101,7 +96,7 @@ script = ExtResource("6_ay4pw")
 ElectricityPinTexture = ExtResource("7_uo1bp")
 LightPinTexture = ExtResource("5_lrhvy")
 
-[node name="ExternalInputBlueTemplate" type="TextureRect" parent="GameManager/Templates"]
+[node name="ExternalInputBlueTemplate" type="TextureRect" parent="Templates"]
 visible = false
 custom_minimum_size = Vector2(64, 64)
 offset_left = 70.0
@@ -111,7 +106,7 @@ offset_bottom = 138.339
 texture = ExtResource("8_y1c58")
 expand_mode = 5
 
-[node name="ExternalInputRedTemplate" type="TextureRect" parent="GameManager/Templates"]
+[node name="ExternalInputRedTemplate" type="TextureRect" parent="Templates"]
 visible = false
 custom_minimum_size = Vector2(64, 64)
 offset_left = 70.0
@@ -121,7 +116,7 @@ offset_bottom = 201.627
 texture = ExtResource("9_kjo8d")
 expand_mode = 5
 
-[node name="ExternalInputGreenTemplate" type="TextureRect" parent="GameManager/Templates"]
+[node name="ExternalInputGreenTemplate" type="TextureRect" parent="Templates"]
 visible = false
 custom_minimum_size = Vector2(64, 64)
 offset_left = 70.0
@@ -131,7 +126,7 @@ offset_bottom = 265.92
 texture = ExtResource("10_msf4h")
 expand_mode = 5
 
-[node name="ExternalOutputTemplate" type="TextureRect" parent="GameManager/Templates"]
+[node name="ExternalOutputTemplate" type="TextureRect" parent="Templates"]
 visible = false
 custom_minimum_size = Vector2(64, 64)
 offset_left = 4.0
@@ -152,7 +147,22 @@ Texture = ExtResource("8_gfj5w")
 script = ExtResource("14_bqkgg")
 Texture = ExtResource("10_m4std")
 
-[node name="Grid" type="GridContainer" parent="."]
+[node name="btnExportNazca" type="Button" parent="."]
+offset_left = 30.0
+offset_top = 7.0
+offset_right = 158.0
+offset_bottom = 40.0
+text = "Export Nazca"
+metadata/_edit_use_anchors_ = true
+
+[node name="DragDropParent" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+metadata/_edit_use_anchors_ = true
+
+[node name="Grid" type="GridContainer" parent="DragDropParent"]
 offset_left = 134.0
 offset_top = 74.0
 offset_right = 134.0
@@ -161,43 +171,47 @@ theme_override_constants/h_separation = 0
 theme_override_constants/v_separation = 0
 columns = 6
 script = ExtResource("1_2pqex")
-DefaultTilePath = NodePath("../GameManager/Templates/DefaultTile")
+DefaultTilePath = NodePath("../../Templates/DefaultTile")
 
 [node name="ComponentToolBox" type="Panel" parent="."]
-offset_left = 774.0
-offset_top = 360.0
-offset_right = 1084.0
-offset_bottom = 590.0
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -282.0
+offset_top = -100.0
+offset_bottom = 100.0
+grow_horizontal = 0
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true
 
-[node name="ScrollContainer" type="ScrollContainer" parent="ComponentToolBox"]
-layout_mode = 0
+[node name="ToolBoxGrid" type="GridContainer" parent="ComponentToolBox"]
+layout_mode = 2
 offset_left = 3.0
 offset_top = 2.0
-offset_right = 264.0
-offset_bottom = 198.0
-
-[node name="ToolBoxGrid" type="GridContainer" parent="ComponentToolBox/ScrollContainer"]
-layout_mode = 2
+offset_right = 135.0
+offset_bottom = 66.0
 columns = 4
 
-[node name="StraightWaveGuideTemplate" type="TextureRect" parent="ComponentToolBox/ScrollContainer/ToolBoxGrid"]
+[node name="StraightWaveGuideTemplate" type="TextureRect" parent="ComponentToolBox/ToolBoxGrid"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 texture = ExtResource("8_gfj5w")
 expand_mode = 3
 script = ExtResource("6_ly1br")
-componentTemplatePath = NodePath("../../../../ComponentTemplates/StraightWaveGuideView")
+componentTemplatePath = NodePath("../../../ComponentTemplates/StraightWaveGuideView")
 
-[node name="GratingCouplerTemplate" type="TextureRect" parent="ComponentToolBox/ScrollContainer/ToolBoxGrid" node_paths=PackedStringArray("PinRight")]
+[node name="GratingCouplerTemplate" type="TextureRect" parent="ComponentToolBox/ToolBoxGrid" node_paths=PackedStringArray("PinRight")]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 texture = ExtResource("10_m4std")
 expand_mode = 3
 script = ExtResource("6_ly1br")
-componentTemplatePath = NodePath("../../../../ComponentTemplates/GratingCouplerView")
-PinRight = NodePath("PinRight")
+componentTemplatePath = NodePath("../../../ComponentTemplates/GratingCouplerView")
+PinRight = NodePath("")
 
-[node name="PinRight" type="TextureRect" parent="ComponentToolBox/ScrollContainer/ToolBoxGrid/GratingCouplerTemplate"]
+[node name="PinRight" type="TextureRect" parent="ComponentToolBox/ToolBoxGrid/GratingCouplerTemplate"]
 layout_mode = 0
 offset_left = 58.0
 offset_top = 28.0
@@ -208,12 +222,3 @@ stretch_mode = 2
 script = ExtResource("6_ay4pw")
 ElectricityPinTexture = ExtResource("7_uo1bp")
 LightPinTexture = ExtResource("5_lrhvy")
-
-[node name="btnExportNazca" type="Button" parent="."]
-offset_left = 105.0
-offset_top = 8.0
-offset_right = 233.0
-offset_bottom = 41.0
-text = "Export Nazca"
-
-[connection signal="pressed" from="btnExportNazca" to="Grid" method="_on_btn_export_nazca_pressed"]
