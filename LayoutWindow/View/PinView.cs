@@ -44,7 +44,7 @@ namespace ConnectAPIC.LayoutWindow.View
                 Position = new Vector2(TileView.TilePixelSize / 2 - PinPixelSize / 2, 0);
             }
         }
-        public void SetMatterType(MatterType newMatterType)
+        public void SetMatterType(MatterType? newMatterType)
         {
             if (Texture != null)
             {

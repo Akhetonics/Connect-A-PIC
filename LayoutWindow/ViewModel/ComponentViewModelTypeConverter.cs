@@ -15,6 +15,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             { typeof(ComponentBase), typeof(ComponentBaseView) },
             { typeof(StraightWaveGuide), typeof(StraightWaveGuideView) },
             { typeof(GratingCoupler), typeof(GratingCouplerView) },
+            { typeof(DirectionalCoupler), typeof(DirectionalCouplerView) },
         };
         public static Type ToModel(Type ComponentViewType) {
             foreach (var modelView in ModelViewTable)

@@ -128,10 +128,10 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
                     var PinDownAbsoluteEdgePos = RectSide.Down.RotateSideCounterClockwise(part.Rotation90);
                     var PinLeftAbsoluteEdgePos = RectSide.Left.RotateSideCounterClockwise(part.Rotation90);
                     var PinUpAbsoluteEdgePos = RectSide.Up.RotateSideCounterClockwise(part.Rotation90);
-                    TileViews[gridX, gridY].PinRight.SetMatterType(part.GetPinAt(PinRightAbsoluteEdgePos).MatterType);
-                    TileViews[gridX, gridY].PinDown.SetMatterType(part.GetPinAt(PinDownAbsoluteEdgePos).MatterType);
-                    TileViews[gridX, gridY].PinLeft.SetMatterType(part.GetPinAt(PinLeftAbsoluteEdgePos).MatterType);
-                    TileViews[gridX, gridY].PinUp.SetMatterType(part.GetPinAt(PinUpAbsoluteEdgePos).MatterType);
+                    TileViews[gridX, gridY].PinRight.SetMatterType(part.GetPinAt(PinRightAbsoluteEdgePos)?.MatterType);
+                    TileViews[gridX, gridY].PinDown.SetMatterType(part.GetPinAt(PinDownAbsoluteEdgePos)?.MatterType);
+                    TileViews[gridX, gridY].PinLeft.SetMatterType(part.GetPinAt(PinLeftAbsoluteEdgePos)?.MatterType);
+                    TileViews[gridX, gridY].PinUp.SetMatterType(part.GetPinAt(PinUpAbsoluteEdgePos)?.MatterType);
                 }
             }
             return ComponentView;
