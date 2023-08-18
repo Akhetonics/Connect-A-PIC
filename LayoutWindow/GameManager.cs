@@ -82,7 +82,7 @@ namespace ConnectAPic.LayoutWindow
 				}
 				view.Visible = true;
 				this.AddChild(view);
-				view.Position = new Vector2(view.Position.X , GridView.GlobalPosition.Y+ (TileView.TilePixelSize-0.5f) * port.TilePositionY);
+				view.Position = new Vector2(view.Position.X , GridView.GlobalPosition.Y+ (TileView.TilePixelSize-0.33f) * port.TilePositionY);
 			}
 		}
 	}

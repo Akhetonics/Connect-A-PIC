@@ -18,6 +18,7 @@
     <Compile Remove="Scenes\Scenes.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="LayoutWindow\View\StandardDialogs\" />
     <Folder Include="Scenes\" />
   </ItemGroup>
   <ItemGroup>

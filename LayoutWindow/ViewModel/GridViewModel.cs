@@ -1,5 +1,6 @@
 ﻿using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
+using ConnectAPIC.Scenes.Compiler;
 using ConnectAPIC.Scenes.Component;
 using ConnectAPIC.Scenes.Tiles;
 using Godot;
@@ -22,6 +23,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         public ICommand MoveComponentCommand { get; set; }
         public ICommand DeleteComponentCommand { get; set; }
         public ICommand RotateComponentCommand { get; set; }
+        public ICommand ExportToNazcaCommand { get; set; }
         public TileView[,] TileViews { get; private set; }
         public int Width { get => TileViews.GetLength(0); }
         public int Height { get => TileViews.GetLength(1); }
@@ -39,6 +41,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             DeleteComponentCommand = new DeleteComponentCommand(grid);
             RotateComponentCommand = new RotateComponentCommand(grid);
             MoveComponentCommand = new MoveComponentCommand(grid);
+            ExportToNazcaCommand = new ExportNazcaCommand(new NazcaCompiler(), grid);
             CreateEmptyField(grid.Width, grid.Height);
             this.Grid.OnComponentPlacedOnTile += Grid_OnComponentPlacedOnTile;
             this.Grid.OnComponentRemoved += Grid_OnComponentRemoved;
@@ -64,7 +67,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         {
             return x >= 0 && y >= 0 && x + width <= this.Width && y + height <= this.Height;
         }
-        
+
         public void DeleteAllTiles()
         {
             foreach (TileView t in TileViews)

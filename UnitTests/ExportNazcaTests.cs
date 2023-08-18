@@ -25,8 +25,8 @@ namespace UnitTests
             var thirdComponent = PlaceAndConcatenateComponent(grid, secondComponent);
             var fourthComponent = PlaceAndConcatenateComponent(grid, thirdComponent);
             
-            NazcaCompiler compiler = new(grid);
-            var output = compiler.Compile();
+            NazcaCompiler compiler = new();
+            var output = compiler.Compile(grid);
 
             Assert.Contains(firstComponent.NazcaFunctionName, output);
             Assert.Contains(secondComponent.NazcaFunctionName, output);

@@ -18,15 +18,11 @@ namespace ConnectAPIC.Scenes.Compiler
 {
     public class NazcaCompiler : ICompiler
     {
-        private readonly Grid grid;
+        private Grid grid;
         public const string PDKName = "CAPICPDK";
         public const string StandardInputCellName = "grating";
         public List<ComponentBase> AlreadyProcessedComponents;
-        public NazcaCompiler(Grid grid)
-        {
-            this.grid = grid;
-        }
-        public StringBuilder ExportAllConnectedTiles(Tile parent, Tile child)
+        private StringBuilder ExportAllConnectedTiles(Tile parent, Tile child)
         {
             var nazcaString = new StringBuilder();
             nazcaString.Append(child.ExportToNazca(parent, child.Component.NazcaFunctionParameters));
@@ -39,8 +35,9 @@ namespace ConnectAPIC.Scenes.Compiler
             }
             return nazcaString;
         }
-        public string Compile()
+        public string Compile(Grid grid)
         {
+            this.grid = grid;
             AlreadyProcessedComponents = new List<ComponentBase>();
             StringBuilder NazcaCode = new();
             NazcaCode.Append(PythonResources.CreateHeader(PDKName, StandardInputCellName));
