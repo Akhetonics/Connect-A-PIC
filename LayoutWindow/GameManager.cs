@@ -38,13 +38,14 @@ namespace ConnectAPic.LayoutWindow
 				int gap = 2;
 				if (FieldHeight < 11)
 					gap = 1;
+
 				var StandardPorts = new List<ExternalPort>() {
-					new StandardInput("io1",LightCycleColor.Red , 0,CenterY-(gap*3-1)),
-					new StandardInput("io2",LightCycleColor.Green, 0,CenterY-(gap*2-1)),
-					new StandardInput("io3",LightCycleColor.Blue, 0,CenterY-(gap-1)),
-					new StandardOutput("io4",CenterY+(gap-1)),
-					new StandardOutput("io5",CenterY+(gap*2-1)),
-					new StandardOutput("io6",CenterY+(gap*3-1)),
+					new StandardInput("io1",LightCycleColor.Red , 0,2),
+					new StandardInput("io2",LightCycleColor.Green, 0,3),
+					new StandardInput("io3",LightCycleColor.Blue, 0,4),
+					new StandardOutput("io4",5),
+					new StandardOutput("io5",6),
+					new StandardOutput("io6",7),
 				};
 				GridView = GetNode<GridView>(GridViewPath);
 				Grid = new Grid(FieldWidth, FieldHeight, StandardPorts);

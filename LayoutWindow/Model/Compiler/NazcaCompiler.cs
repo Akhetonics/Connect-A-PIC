@@ -42,26 +42,41 @@ namespace ConnectAPIC.Scenes.Compiler
             StringBuilder NazcaCode = new();
             NazcaCode.Append(PythonResources.CreateHeader(PDKName, StandardInputCellName));
             // start at all the three intputTiles.
+            ConnectComponentsAtInputsViaPin( NazcaCode);
+            NazcaCode.Append(PythonResources.CreateFooter());
+            return NazcaCode.ToString();
+        }
+
+        private void ConnectComponentsAtInputsViaPin( StringBuilder NazcaCode)
+        {
             foreach (ExternalPort port in grid.ExternalPorts)
             {
                 if (port is not StandardInput input) continue;
                 var x = 0;
                 var y = input.TilePositionY;
                 if (!grid.IsInGrid(x, y, 1, 1)) continue;
-                var currentTile = grid.Tiles[x, y];
-                if (currentTile.Component == null) continue;
-                NazcaCode.Append(currentTile.ExportToNazcaExtended(new IntVector(-1, y), StandardInputCellName, input.PinName, currentTile.Component.NazcaFunctionParameters));
-                AlreadyProcessedComponents.Add(currentTile.Component);
-                var neighbours = grid.GetConnectedNeighboursOfComponent(currentTile.Component);
-                if (neighbours == null) continue;
+                var firstConnectedTile = grid.Tiles[x, y];
+                if (firstConnectedTile.Component == null) continue;
+                StartConnectingAtInput( NazcaCode, input, firstConnectedTile);
+            }
+        }
+        private void StartConnectingAtTile(StringBuilder NazcaCode, string ParentPinName, int parentX, int parentY, string CellName, Tile currentTile)
+        {
+            NazcaCode.Append(currentTile.ExportToNazcaExtended(new IntVector(parentX, parentY), CellName, ParentPinName, currentTile.Component.NazcaFunctionParameters));
+            AlreadyProcessedComponents.Add(currentTile.Component);
+            var neighbours = grid.GetConnectedNeighboursOfComponent(currentTile.Component);
+            if (neighbours != null)
+            {
                 foreach (Tile neighbour in neighbours)
                 {
                     NazcaCode.Append(ExportAllConnectedTiles(currentTile, neighbour));
                 }
             }
+        }
+        private void StartConnectingAtInput( StringBuilder NazcaCode, StandardInput input, Tile firstConnectedTile)
+        {
+            StartConnectingAtTile(NazcaCode, input.PinName, -1 , input.TilePositionY, StandardInputCellName, firstConnectedTile);
 
-            NazcaCode.Append(PythonResources.CreateFooter());
-            return NazcaCode.ToString();
         }
     }
 }

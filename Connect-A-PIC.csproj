@@ -26,6 +26,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="MathNet.Numerics.dll" />
+    <None Include="PDK\TestPDK.py" />
     <ContentWithTargetPath Include="MathNet.Numerics.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <TargetPath>MathNet.Numerics.dll</TargetPath>

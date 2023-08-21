@@ -19,7 +19,7 @@ namespace ConnectAPIC.Scenes.Component
         public GratingCoupler()
         {
             Parts = new Part[1, 1];
-            Parts[0, 0] = Parts[0, 0] = CreatePart(RectSide.Right);
+            Parts[0, 0] = Parts[0, 0] = CreatePart(RectSide.Left);
 
             // setting up the SMatrix
             var allPins = new List<Guid> {

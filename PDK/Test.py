@@ -1,39 +1,59 @@
+
 import nazca as nd
 from TestPDK import TestPDK
+
+class ExtendedCell(nd.Cell):
+    def __init__(self, *args, **kwargs):
+        # Setzen von autobbox auf True vor dem Aufruf des ursprünglichen Konstruktors
+        kwargs["autobbox"] = True
+        super().__init__(*args, **kwargs)
+    def rotate(self, angle):
+        # Voraussetzung ist, dass die Bounding-Box bekannt ist
+        self.autobbox = True
+        bbox = self.bbox
+
+        # Breite und Höhe der Bounding-Box ermitteln
+        width = bbox[1] - bbox[0]
+        height = bbox[3] - bbox[2]
+
+        # Abhängig vom Drehwinkel die Zelle verschieben
+        if angle == 90:
+            self.move(0, -width)
+        elif angle == 180:
+            self.move(-width, -height)
+        elif angle == 270:
+            self.move(-height, 0)
+        else:
+            raise ValueError("Unsupported rotation angle. Only 90, 180, or 270 degrees are supported.")
+
+        # Durchführen der eigentlichen Rotation
+        for instance in self.cell_instances:
+            instance.transformation.rotate(angle)
 
 CAPICPDK = TestPDK()
 
 def FullDesign(layoutName):
     with nd.Cell(name=layoutName) as fullLayoutInner:       
+        cell = ExtendedCell('my_cell')
+        nd.Polygon(points=[(0, 0), (10, 0), (10, 10), (0, 10)]).put()
+        cell.rotate(90)
 
-        grating = CAPICPDK.placeGrating_East(8).put(0, 0)
-
-# -------------------
-
-        cell_00 = CAPICPDK.placeCell_StraightWG().put('west', grating.pin['io5'])
-        cell_01 = CAPICPDK.placeCell_Crossing().put('west', cell_00.pin['east'])
-        cell_02 = CAPICPDK.placeCell_BendWG().put('west', cell_01.pin['east'])
-        cell_03 = CAPICPDK.placeCell_StraightWG().put('west', cell_02.pin['south'])
-        cell_04 = CAPICPDK.placeCell_BendWG().put('south', cell_03.pin['east'])
-        cell_05 = CAPICPDK.placeCell_StraightWG().put('west', cell_04.pin['west'])
-        cell_06 = CAPICPDK.placeCell_BendWG().put('west', cell_05.pin['east'])
-        cell_07 = CAPICPDK.placeCell_BendWG().put('west', cell_06.pin['south'])
-        cell_08 = CAPICPDK.placeCell_StraightWG().put('west', cell_07.pin['south'])
-        cell_09 = CAPICPDK.placeCell_StraightWG().put('west', cell_08.pin['east'])
-        cell_10 = CAPICPDK.placeCell_StraightWG().put('west', cell_09.pin['east'])
-        cell_11 = CAPICPDK.placeCell_StraightWG().put('west', cell_10.pin['east'])
+        # Demonstration in einer Hauptzelle
+        main_cell = nd.Cell('main_cell')
+        main_cell.put(cell)
         
-        cell_12 = CAPICPDK.placeCell_AWG().put('west', cell_01.pin['north'])
-        cell_13 = CAPICPDK.placeCell_Termination().put('west', cell_12.pin['east0'])
-        cell_14 = CAPICPDK.placeCell_DirectionalCoupler(deltaLength = 50).put('west0', cell_12.pin['east1'])
-        cell_15 = CAPICPDK.placeCell_Ring(deltaLength = 50).put('west0', cell_14.pin['east1'])
+        grating = CAPICPDK.placeGratingArray_East(8).put(0, 0)
+        cell_0_2 = CAPICPDK.placeCell_StraightWG().put( 0 ,-CAPICPDK._CellSize*2 - CAPICPDK._GratingOffset)
         
-        cell_16 = CAPICPDK.placeCell_GratingCoupler().put('west', cell_01.pin['south'])
-        
-        cell_17 = CAPICPDK.placeCell_BendWG().put('south', cell_14.pin['east0'])
-        cell_18 = CAPICPDK.placeCell_StraightWG().put('west', cell_17.pin['west'])
-# -------------------
-
+        #cell_0_2 = CAPICPDK.placeCell_StraightWG().put('west', grating.pin['io1'])
+        cell_1_2 = CAPICPDK.placeCell_StraightWG().put(CAPICPDK._CellSize ,-CAPICPDK._CellSize*2 - CAPICPDK._GratingOffset)
+        #cell_1_2 = CAPICPDK.placeCell_StraightWG().put('west', cell_0_2.pin['east'])
+        cell_2_2 = CAPICPDK.placeCell_GratingCoupler().put('west', cell_1_2.pin['east'])
+        cell_0_3 = CAPICPDK.placeCell_StraightWG().put('west', grating.pin['io2'])
+        cell_1_3 = CAPICPDK.placeCell_StraightWG().put('west', cell_0_3.pin['east'])
+        cell_2_3 = CAPICPDK.placeCell_GratingCoupler().put('west', cell_1_3.pin['east'])
+        cell_0_4 = CAPICPDK.placeCell_StraightWG().put('west', grating.pin['io3'])
+        cell_1_4 = CAPICPDK.placeCell_GratingCoupler().put('west', cell_0_4.pin['east'])
     return fullLayoutInner
 
 nd.print_warning = False

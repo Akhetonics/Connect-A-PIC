@@ -222,9 +222,8 @@ componentTemplatePath = NodePath("../../../ComponentTemplates/GratingCouplerView
 
 [node name="PinRight" type="TextureRect" parent="ComponentToolBox/ToolBoxGrid/GratingCouplerTemplate"]
 layout_mode = 0
-offset_left = 58.0
 offset_top = 28.0
-offset_right = 64.0
+offset_right = 6.0
 offset_bottom = 34.0
 texture = ExtResource("5_lrhvy")
 stretch_mode = 2

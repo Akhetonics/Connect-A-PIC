@@ -19,7 +19,7 @@ class TestPDK(object):
         self._TextLayer = 1002
 
     def placeCell_StraightWG(self):
-        with nd.Cell(name='AkhetCell_StraightWG') as akhetCell:
+        with nd.Cell(name='AkhetCell_StraightWG', autobbox=True) as akhetCell:
             nd.Polygon(layer=self._BoxLayer, points=[(0,-self._CellSize * 0.5), (self._CellSize, -self._CellSize * 0.5), (self._CellSize, self._CellSize * 0.5), (0, self._CellSize * 0.5)]).put()
             nd.text(text='Straight WG', height=15, layer=self._TextLayer, align='lb').put(self._CellSize * 0.05, self._CellSize * 0.4)
 
@@ -27,6 +27,7 @@ class TestPDK(object):
 
             nd.Pin('east', width=self._WGWidth).put(self._CellSize, 0, 0)
             nd.Pin('west', width=self._WGWidth).put(0, 0, 180)
+            nd.Pin('center', width=self._WGWidth).put(self._CellSize/2,self._CellSize/2)
         return akhetCell
 
     def placeCell_BendWG(self):
@@ -39,6 +40,7 @@ class TestPDK(object):
 
             nd.Pin('south', width=self._WGWidth).put(self._CellSize * 0.5, -self._CellSize * 0.5, 270)
             nd.Pin('west', width=self._WGWidth).put(0, 0, 180)
+            nd.Pin('center', width=self._WGWidth).put(self._CellSize/2,self._CellSize/2)
         return akhetCell
     
         
@@ -50,6 +52,7 @@ class TestPDK(object):
             nd.Polygon(layer=self._SiNLayer, points=[(0,-self._WGWidth * 0.5), (0, self._WGWidth * 0.5), (self._CellSize * 0.7, 0)]).put(0, 0)
 
             nd.Pin('west', width=self._WGWidth).put(0, 0, 180)
+            nd.Pin('center', width=self._WGWidth).put(self._CellSize/2,self._CellSize/2)
         return akhetCell
         
     def placeCell_GratingCoupler(self):
@@ -61,6 +64,7 @@ class TestPDK(object):
             nd.Polygon(layer=self._SiNLayer, points=[(0,-self._WGWidth * 0.5), (0, self._WGWidth * 0.5), (self._CellSize * 0.7, 50), (self._CellSize * 0.7, -50)]).put(0, 0)
 
             nd.Pin('west', width=self._WGWidth).put(0, 0, 180)
+            nd.Pin('center', width=self._WGWidth).put(self._CellSize/2,self._CellSize/2)
         return akhetCell
 
     def placeCell_Crossing(self):
@@ -76,6 +80,7 @@ class TestPDK(object):
             nd.Pin('east', width=self._WGWidth).put(self._CellSize, 0, 0)
             nd.Pin('north', width=self._WGWidth).put(self._CellSize * 0.5, self._CellSize * 0.5, 90)
             nd.Pin('west', width=self._WGWidth).put(0, 0, 180)
+            nd.Pin('center', width=self._WGWidth).put(self._CellSize/2,self._CellSize/2)
         return akhetCell
 
     def placeCell_DirectionalCoupler(self, deltaLength):
@@ -91,6 +96,7 @@ class TestPDK(object):
             nd.Pin('west1', width=self._WGWidth).put(0, -self._CellSize, 180)
             nd.Pin('east0', width=self._WGWidth).put(self._CellSize * 2, 0, 0)
             nd.Pin('east1', width=self._WGWidth).put(self._CellSize * 2, -self._CellSize, 0)
+            nd.Pin('center', width=self._WGWidth).put(self._CellSize/2,self._CellSize/2)
         return akhetCell
 
     def placeCell_Delay(self, deltaLength):
