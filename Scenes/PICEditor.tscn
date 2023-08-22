@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://cu6wqy6xwjfo1"]
+[gd_scene load_steps=26 format=3 uid="uid://cu6wqy6xwjfo1"]
 
 [ext_resource type="Script" path="res://LayoutWindow/GameManager.cs" id="1_1g8p6"]
 [ext_resource type="Script" path="res://LayoutWindow/View/GridView.cs" id="1_2pqex"]
@@ -23,6 +23,8 @@
 [ext_resource type="Texture2D" uid="uid://dha8w66k3ydtc" path="res://GFX/DirectionalCoupler/DirectionalCoupler_00.png" id="19_nqt60"]
 [ext_resource type="Texture2D" uid="uid://dy4bainp8psfb" path="res://GFX/DirectionalCoupler/DirectionalCoupler_01.png" id="20_msf2j"]
 [ext_resource type="Texture2D" uid="uid://uoowtaubmv1i" path="res://GFX/DirectionalCoupler/DirectionalCoupler.png" id="21_a2v5y"]
+[ext_resource type="Texture2D" uid="uid://d0hlmkhjg0k8h" path="res://GFX/DirectionalCoupler/DirectionalCoupler_10.png" id="21_qylg0"]
+[ext_resource type="Texture2D" uid="uid://dhrb4gn6u4xjf" path="res://GFX/DirectionalCoupler/DirectionalCoupler_11.png" id="22_tx2wv"]
 
 [node name="GameManager" type="Node" node_paths=PackedStringArray("ExternalOutputTemplate", "ExternalInputRedTemplate", "ExternalInputGreenTemplate", "ExternalInputBlueTemplate", "Background")]
 script = ExtResource("1_1g8p6")
@@ -153,8 +155,10 @@ Texture = ExtResource("10_m4std")
 
 [node name="DirectionalCouplerView" type="Node" parent="ComponentTemplates"]
 script = ExtResource("18_4lqdc")
-TextureUp = ExtResource("19_nqt60")
-TextureDown = ExtResource("20_msf2j")
+TextureLeftUp = ExtResource("19_nqt60")
+TextureLeftDown = ExtResource("20_msf2j")
+TextureRightUp = ExtResource("21_qylg0")
+TextureRightDown = ExtResource("22_tx2wv")
 
 [node name="btnExportNazca" type="Button" parent="."]
 offset_left = 30.0

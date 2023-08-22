@@ -40,12 +40,12 @@ namespace ConnectAPic.LayoutWindow
 					gap = 1;
 
 				var StandardPorts = new List<ExternalPort>() {
-					new StandardInput("io1",LightCycleColor.Red , 0,2),
-					new StandardInput("io2",LightCycleColor.Green, 0,3),
-					new StandardInput("io3",LightCycleColor.Blue, 0,4),
-					new StandardOutput("io4",5),
-					new StandardOutput("io5",6),
-					new StandardOutput("io6",7),
+					new StandardInput("io0",LightCycleColor.Red , 0,2),
+					new StandardInput("io1",LightCycleColor.Green, 0,3),
+					new StandardInput("io2",LightCycleColor.Blue, 0,4),
+					new StandardOutput("io3",5),
+					new StandardOutput("io4",6),
+					new StandardOutput("io5",7),
 				};
 				GridView = GetNode<GridView>(GridViewPath);
 				Grid = new Grid(FieldWidth, FieldHeight, StandardPorts);

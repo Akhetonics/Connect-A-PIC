@@ -6,6 +6,7 @@ using Godot;
 using Godot.NativeInterop;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Net.NetworkInformation;
 
 namespace Tiles
@@ -23,26 +24,58 @@ namespace Tiles
             GridX = X;
             GridY = Y;
         }
-
-        private string getNazcaCellName(int gridX, int gridY)
+        public string GetComponentCellName()
         {
-            return $"cell_{gridX}_{gridY}";
+            var mainGridX = Component.GridXMainTile;
+            var mainGridY = Component.GridYMainTile;
+            return $"cell_{mainGridX}_{mainGridY}";
         }
-        public string ExportToNazca(Tile parentTile, string parameters = "")
+        public string ExportToNazca(Tile parentTile)
         {
-            var parentCellName = getNazcaCellName(parentTile.GridX, parentTile.GridY);
+            var parentCellName = parentTile.GetComponentCellName();
             var parentTileEdgeSide = GetParentTileTouchingEdgeSide(parentTile);
             var parentPinName = parentTile.GetPinAt(parentTileEdgeSide).Name;
-            return ExportToNazcaExtended(new IntVector(parentTile.GridX, parentTile.GridY), parentCellName, parentPinName, parameters);
+            return ExportToNazcaExtended(new IntVector(parentTile.GridX, parentTile.GridY), parentCellName, parentPinName);
         }
-        public string ExportToNazcaExtended(IntVector parentGridPos, string parentCellName, string parentPinName, string parameters ="")
+        public string ExportToNazcaExtended(IntVector parentGridPos, string parentCellName, string parentPinName)
         {
             if (Component == null) return "";
-            var cellName = getNazcaCellName(this.GridX, GridY);
+            var cellName = GetComponentCellName();
             var currentDirection = (IntVector)GetParentTouchingEdgeSide(parentGridPos.X, parentGridPos.Y, GridX, GridY) * (-1);
             var currentPinName = GetPinAt(currentDirection)?.Name ?? "";
+            var parameters = Component.NazcaFunctionParameters;
             return $"{PythonFunctionIndention}{cellName} = {NazcaCompiler.PDKName}.{Component.NazcaFunctionName}({parameters}).put('{currentPinName}', {parentCellName}.pin['{parentPinName}'])\n";
         }
+        public string ExportToNazcaAbsolutePosition()
+        {
+            // TODO: Take rotation of component into consideration and move the component accordingly around when it has more than one tile and gets rotated.
+            if (Component == null) return "";
+            var cellName = GetComponentCellName();
+            var comp = this.Component;
+            var parameters = Component.NazcaFunctionParameters;
+            var rotationDisplacementCorrectionX = 0f;
+            var rotationDisplacementCorrectionY = 0f;
+            var rotation = (int)comp.Rotation90 * 90;
+            // bei Nazca ist der StartPin immer das lokale (0,0), also links oben
+            if(rotation == 90)
+            {
+                rotationDisplacementCorrectionX = 0.5f;
+                rotationDisplacementCorrectionY = -(comp.WidthInTiles -0.5f);
+            } else if (rotation == 180)
+            {
+                rotationDisplacementCorrectionX = comp.WidthInTiles;
+                rotationDisplacementCorrectionY = (-1) * (comp.HeightInTiles-1);
+            } else if(rotation == 270)
+            {
+                rotationDisplacementCorrectionX = (comp.HeightInTiles-0.5f);
+                rotationDisplacementCorrectionY = 0.5f;
+            }
+            var posX = $"({comp.GridXMainTile}+{rotationDisplacementCorrectionX.ToString(CultureInfo.InvariantCulture)})*CAPICPDK._CellSize";
+            var posY = $"({-comp.GridYMainTile}+{rotationDisplacementCorrectionY.ToString(CultureInfo.InvariantCulture)})*CAPICPDK._CellSize";
+            
+            return $"{PythonFunctionIndention}{cellName} = {NazcaCompiler.PDKName}.{Component.NazcaFunctionName}({parameters}).put({posX},{posY},{rotation})\n";
+        }
+        
         private RectSide GetParentTileTouchingEdgeSide(Tile parentTile)
         {
             return GetParentTouchingEdgeSide(parentTile.GridX, parentTile.GridY, GridX, GridY);

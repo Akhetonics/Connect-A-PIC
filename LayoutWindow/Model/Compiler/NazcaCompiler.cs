@@ -21,11 +21,11 @@ namespace ConnectAPIC.Scenes.Compiler
         private Grid grid;
         public const string PDKName = "CAPICPDK";
         public const string StandardInputCellName = "grating";
-        public List<ComponentBase> AlreadyProcessedComponents;
+        private List<ComponentBase> AlreadyProcessedComponents;
         private StringBuilder ExportAllConnectedTiles(Tile parent, Tile child)
         {
             var nazcaString = new StringBuilder();
-            nazcaString.Append(child.ExportToNazca(parent, child.Component.NazcaFunctionParameters));
+            nazcaString.Append(child.ExportToNazca(parent));
             AlreadyProcessedComponents.Add(child.Component);
             var neighbours = grid.GetConnectedNeighboursOfComponent(child.Component);
             neighbours = neighbours.Where(n => !AlreadyProcessedComponents.Contains(n.Component)).ToList();
@@ -47,7 +47,7 @@ namespace ConnectAPIC.Scenes.Compiler
             return NazcaCode.ToString();
         }
 
-        private void ConnectComponentsAtInputsViaPin( StringBuilder NazcaCode)
+        private void ConnectComponentsAtInputsViaPin(StringBuilder NazcaCode)
         {
             foreach (ExternalPort port in grid.ExternalPorts)
             {
@@ -57,13 +57,30 @@ namespace ConnectAPIC.Scenes.Compiler
                 if (!grid.IsInGrid(x, y, 1, 1)) continue;
                 var firstConnectedTile = grid.Tiles[x, y];
                 if (firstConnectedTile.Component == null) continue;
-                StartConnectingAtInput( NazcaCode, input, firstConnectedTile);
+                StartConnectingAtInput(NazcaCode, input, firstConnectedTile);
+            }
+            // go through rest of components, start with one that is not being added to the NazcaCode yet
+            for (int x = 0; x < grid.Width; x++)
+            {
+                for (int y = 0; y < grid.Height; y++)
+                {
+                    var comp = grid.Tiles[x, y].Component;
+                    if (comp == null) continue;
+                    if (AlreadyProcessedComponents.Contains(comp)) continue;
+                    StartConnectingAtTile(NazcaCode, grid.Tiles[x, y]);
+                }
             }
         }
-        private void StartConnectingAtTile(StringBuilder NazcaCode, string ParentPinName, int parentX, int parentY, string CellName, Tile currentTile)
+        
+        private void StartConnectingAtTile(StringBuilder NazcaCode, Tile currentTile)
         {
-            NazcaCode.Append(currentTile.ExportToNazcaExtended(new IntVector(parentX, parentY), CellName, ParentPinName, currentTile.Component.NazcaFunctionParameters));
+            NazcaCode.Append(currentTile.ExportToNazcaAbsolutePosition());
             AlreadyProcessedComponents.Add(currentTile.Component);
+            ExportAllNeighbours(NazcaCode, currentTile);
+        }
+
+        private void ExportAllNeighbours(StringBuilder NazcaCode, Tile currentTile)
+        {
             var neighbours = grid.GetConnectedNeighboursOfComponent(currentTile.Component);
             if (neighbours != null)
             {
@@ -73,10 +90,12 @@ namespace ConnectAPIC.Scenes.Compiler
                 }
             }
         }
-        private void StartConnectingAtInput( StringBuilder NazcaCode, StandardInput input, Tile firstConnectedTile)
-        {
-            StartConnectingAtTile(NazcaCode, input.PinName, -1 , input.TilePositionY, StandardInputCellName, firstConnectedTile);
 
+        private void StartConnectingAtInput( StringBuilder NazcaCode, StandardInput input, Tile firstConnectedTile)
+        {   
+            NazcaCode.Append(firstConnectedTile.ExportToNazcaExtended(new IntVector(-1, input.TilePositionY), StandardInputCellName, input.PinName));
+            AlreadyProcessedComponents.Add(firstConnectedTile.Component);
+            ExportAllNeighbours(NazcaCode, firstConnectedTile);
         }
     }
 }

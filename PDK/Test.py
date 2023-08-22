@@ -10,6 +10,8 @@ class ExtendedCell(nd.Cell):
     def rotate(self, angle):
         # Voraussetzung ist, dass die Bounding-Box bekannt ist
         self.autobbox = True
+        self._calculate_bbox()
+        self.
         bbox = self.bbox
 
         # Breite und Höhe der Bounding-Box ermitteln
@@ -18,6 +20,7 @@ class ExtendedCell(nd.Cell):
 
         # Abhängig vom Drehwinkel die Zelle verschieben
         if angle == 90:
+            
             self.move(0, -width)
         elif angle == 180:
             self.move(-width, -height)
@@ -27,15 +30,14 @@ class ExtendedCell(nd.Cell):
             raise ValueError("Unsupported rotation angle. Only 90, 180, or 270 degrees are supported.")
 
         # Durchführen der eigentlichen Rotation
-        for instance in self.cell_instances:
-            instance.transformation.rotate(angle)
+        instance.transformation.rotate(angle)
 
 CAPICPDK = TestPDK()
 
 def FullDesign(layoutName):
     with nd.Cell(name=layoutName) as fullLayoutInner:       
         cell = ExtendedCell('my_cell')
-        nd.Polygon(points=[(0, 0), (10, 0), (10, 10), (0, 10)]).put()
+        nd.Polygon(points=[(0, 0), (CAPICPDK._CellSize, 0), (CAPICPDK._CellSize, -2*CAPICPDK._CellSize), (0, -2*CAPICPDK._CellSize)]).put()
         cell.rotate(90)
 
         # Demonstration in einer Hauptzelle
