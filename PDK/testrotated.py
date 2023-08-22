@@ -9,10 +9,10 @@ def FullDesign(layoutName):
 
         grating = CAPICPDK.placeGratingArray_East(8).put(0, 0)
 
-        cell_0_2 = CAPICPDK.placeCell_StraightWG().put('west', grating.pin['io0'])
-        cell_2_2 = CAPICPDK.placeCell_StraightWG().put((2+0.5)*CAPICPDK._CellSize,(-2+-0.5)*CAPICPDK._CellSize,90)
-        cell_4_2 = CAPICPDK.placeCell_StraightWG().put((4+1)*CAPICPDK._CellSize,(-2+0)*CAPICPDK._CellSize,180)
-        cell_6_2 = CAPICPDK.placeCell_StraightWG().put((6+0.5)*CAPICPDK._CellSize,(-2+0.5)*CAPICPDK._CellSize,270)
+        cell_2_2 = CAPICPDK.placeCell_DirectionalCoupler(deltaLength = 50).put((2+0)*CAPICPDK._CellSize,(-2+0)*CAPICPDK._CellSize,0)
+        cell_5_2 = CAPICPDK.placeCell_DirectionalCoupler(deltaLength = 50).put((5+0.5)*CAPICPDK._CellSize,(-2+-1.5)*CAPICPDK._CellSize,90)
+        cell_8_2 = CAPICPDK.placeCell_DirectionalCoupler(deltaLength = 50).put((8+2)*CAPICPDK._CellSize,(-2+-1)*CAPICPDK._CellSize,180)
+        cell_11_2 = CAPICPDK.placeCell_DirectionalCoupler(deltaLength = 50).put((11+0)*CAPICPDK._CellSize,(-2+0)*CAPICPDK._CellSize,0)
     return fullLayoutInner
 
 nd.print_warning = False
