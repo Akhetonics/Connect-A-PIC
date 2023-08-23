@@ -1,6 +1,9 @@
 using ConnectAPIC.Scenes.Component;
-using ConnectAPIC.Scenes.Tiles;
-using Tiles;
+using ConnectAPIC.Scenes.TransferFunction;
+using Model;
+using Moq;
+using System.ComponentModel;
+using System.Numerics;
 using TransferFunction;
 
 namespace UnitTests
@@ -10,15 +13,24 @@ namespace UnitTests
         [Fact]
         public void TestSMatrix()
         {
-            Guid PinIda1 = Guid.NewGuid();
-            Guid PinIda2 = Guid.NewGuid();
-            Guid PinIda3 = Guid.NewGuid();
-            Guid PinIda4 = Guid.NewGuid();
-
-            List<Guid> pinList = new() { PinIda1, PinIda2, PinIda3, PinIda4 };
-            //SMatrix smatrix = new SMatrix(pinList);
-            //smatrix.setValues()
+            var straight = new StraightWaveGuide();
+            var directionalCoupler = new DirectionalCoupler();
+            var Grating = new GratingCoupler();
+            
+            var grid = new Grid(20,10);
+            grid.PlaceComponent(0, 3, straight);
+            grid.PlaceComponent(1, 3, directionalCoupler);
+            grid.PlaceComponent(3, 3, Grating);
+            var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid);
+            var systemMatrix = gridSMatrixAnalyzer.CreateSystemSMatrix();
+            var connectionPairs = systemMatrix.GetValues();
+            var startPinId = straight.PinIdLeft(0, 0);
+            var endPinId = Grating.PinIdLeft(0, 0);
+            var LightValue = connectionPairs[(startPinId, endPinId)];
+            // Ensure result is valid according to constraints
+            Assert.Equal(LightValue, Complex.One);
+            
         }
-       
+
     }
 }

@@ -104,15 +104,15 @@ namespace ConnectAPIC.Scenes.Component
         }
         public override string ToString()
         {
-            return $"Nazca Name: {NazcaFunctionName}\n" +
-                   $"Parameters: {NazcaFunctionParameters}\n" +
-                   $"Width in Tiles: {WidthInTiles}\n" +
-                   $"Height in Tiles: {HeightInTiles}\n" +
-                   $"Is Placed in Grid: {IsPlacedInGrid}\n" +
-                   $"Grid X (Main Tile): {GridXMainTile}\n" +
-                   $"Grid Y (Main Tile): {GridYMainTile}\n" +
-                   $"Rotation: {Rotation90CounterClock}\n" +
-                   $"Parts Length: {Parts?.Length}\n" +
+            return $"Nazca Name: {NazcaFunctionName} \n" +
+                   $"Parameters: {NazcaFunctionParameters} \n" +
+                   $"Width in Tiles: {WidthInTiles} \n" +
+                   $"Height in Tiles: {HeightInTiles} \n" +
+                   $"Is Placed in Grid: {IsPlacedInGrid} \n" +
+                   $"Grid X (Main Tile): {GridXMainTile} \n" +
+                   $"Grid Y (Main Tile): {GridYMainTile} \n" +
+                   $"Rotation: {Rotation90CounterClock} \n" +
+                   $"Parts Length: {Parts?.Length} \n" +
                    $"Connections PinReferences Count: {Connections?.PinReference?.Count}";
         }
     }

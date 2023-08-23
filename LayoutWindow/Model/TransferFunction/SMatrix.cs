@@ -35,7 +35,7 @@ namespace TransferFunction
 			}
 
 			// Reset matrix
-			if (reset == true)
+			if (reset)
 			{
 				this.SMat = Matrix<Complex>.Build.Dense(this.size, this.size);
 			}
@@ -53,7 +53,7 @@ namespace TransferFunction
 			}
 		}
 
-		public Dictionary<(Guid, Guid), Complex> getValues()
+		public Dictionary<(Guid, Guid), Complex> GetValues()
 		{
 			var transfers = new Dictionary<(Guid, Guid), Complex>();
 			for (int i = 0; i < this.size; i++)
@@ -69,14 +69,14 @@ namespace TransferFunction
 			return transfers;
 		}
 
-		public static SMatrix createSystemSMatrix(List<SMatrix> matrices)
+		public static SMatrix CreateSystemSMatrix(List<SMatrix> matrices)
 		{
 			var portsReference = matrices.SelectMany(x => x.PinReference).Distinct().ToList();
-			SMatrix sysMat = new SMatrix(portsReference);
+			SMatrix sysMat = new(portsReference);
 
 			foreach (SMatrix matrix in matrices)
 			{
-				var transfers = matrix.getValues();
+				var transfers = matrix.GetValues();
 				sysMat.setValues(transfers);
 			}
 

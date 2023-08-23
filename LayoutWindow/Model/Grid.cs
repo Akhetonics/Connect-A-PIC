@@ -106,7 +106,7 @@ namespace Model
                 return false;
             }
         }
-        public bool IsInGrid(int x, int y, int width, int height)
+        public bool IsInGrid(int x, int y, int width=1, int height=1)
         {
             return x >= 0 && y >= 0 && x + width <= this.Width && y + height <= this.Height;
         }
