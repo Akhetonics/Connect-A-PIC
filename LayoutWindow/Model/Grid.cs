@@ -81,7 +81,7 @@ namespace Model
 
             return false;
         }
-        public bool RotateComponentBy90(int tileX, int tileY)
+        public bool RotateComponentBy90CounterClockwise(int tileX, int tileY)
         {
             ComponentBase component = GetComponentAt(tileX, tileY);
             if (component == null) return false;
@@ -92,7 +92,7 @@ namespace Model
             int x = tile.Component.GridXMainTile;
             int y = tile.Component.GridYMainTile;
             UnregisterComponentAt(tile.GridX, tile.GridY);
-            rotatedComponent.RotateBy90();
+            rotatedComponent.RotateBy90CounterClockwise();
             try
             {
                 PlaceComponent(x, y, rotatedComponent);
@@ -101,7 +101,7 @@ namespace Model
             }
             catch (ComponentCannotBePlacedException)
             {
-                rotatedComponent.Rotation90--;
+                rotatedComponent.Rotation90CounterClock--;
                 PlaceComponent(x, y, rotatedComponent);
                 return false;
             }

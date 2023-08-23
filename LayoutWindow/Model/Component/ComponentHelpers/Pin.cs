@@ -50,10 +50,6 @@ namespace ConnectAPIC.Scenes.Component
             SetMatterType( MatterType.None);
             Name = "";
         }
-        public override string ToString()
-        {
-            return Name;
-        }
         public Pin Duplicate()
         {
             var duplicatedPin = new Pin(Name,MatterType, Side);
@@ -62,6 +58,10 @@ namespace ConnectAPIC.Scenes.Component
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        public override string ToString()
+        {
+            return $"{Name}: {MatterType}";
         }
     }
 }

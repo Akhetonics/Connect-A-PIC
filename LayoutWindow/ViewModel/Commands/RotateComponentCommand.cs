@@ -45,9 +45,9 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
         }
         public void Execute(object parameter)
         {
-            if (CanExecute(parameter) == false) return;
+            if (!CanExecute(parameter)) return;
             var args = (RotateComponentArgs)parameter;
-            grid.RotateComponentBy90(args.Gridx, args.Gridy);
+            grid.RotateComponentBy90CounterClockwise(args.Gridx, args.Gridy);
         }
     }
     public class RotateComponentArgs

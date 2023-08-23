@@ -14,7 +14,7 @@ namespace ConnectAPIC.LayoutWindow.View
         public int WidthInTiles => Textures != null ? Textures.GetLength(0) : 0;
         public int HeightInTiles => Textures != null ? Textures.GetLength(1) : 0;
         private DiscreteRotation _discreteRotation;
-        public DiscreteRotation Rotation90
+        public DiscreteRotation Rotation90CounterClock
         {
             get => _discreteRotation;
             set
@@ -61,7 +61,7 @@ namespace ConnectAPIC.LayoutWindow.View
         public ComponentBaseView Duplicate()
         {
             var copy = base.Duplicate() as ComponentBaseView;
-            copy.Rotation90 = Rotation90;
+            copy.Rotation90CounterClock = Rotation90CounterClock;
             copy.Textures = new Texture2D[Textures.GetLength(0), Textures.GetLength(1)];
             for ( int i = 0; i < Textures.GetLength(0); i++)
             {

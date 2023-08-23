@@ -82,8 +82,8 @@ namespace ConnectAPIC.LayoutWindow.View
         {
             var previewGrid = new GridContainer();
             previewGrid.PivotOffset = previewGrid.Size / 2f;
-            var oldRotation = component.Rotation90;
-            component.Rotation90 = 0;
+            var oldRotation = component.Rotation90CounterClock;
+            component.Rotation90CounterClock = 0;
             previewGrid.Columns = component.WidthInTiles;
             for (int y = 0; y < component.HeightInTiles; y++)
             {
@@ -97,7 +97,7 @@ namespace ConnectAPIC.LayoutWindow.View
                 }
             }
             previewGrid.RotationDegrees = (int)oldRotation*90;
-            component.Rotation90 = oldRotation;
+            component.Rotation90CounterClock = oldRotation;
             this.SetDragPreview(previewGrid);
         }
         public override void _DropData(Vector2 atPosition, Variant data)
@@ -106,7 +106,7 @@ namespace ConnectAPIC.LayoutWindow.View
             {
                 if (!componentView.Visible)
                 {
-                    ViewModel.CreateComponentCommand.Execute(new CreateComponentArgs(componentView.GetType(), GridX, GridY, componentView.Rotation90));
+                    ViewModel.CreateComponentCommand.Execute(new CreateComponentArgs(componentView.GetType(), GridX, GridY, componentView.Rotation90CounterClock));
                 }
                 else
                 {

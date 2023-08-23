@@ -1,4 +1,5 @@
-﻿using ConnectAPIC.LayoutWindow.View;
+﻿using ConnectAPIC.LayoutWindow.Model.Helpers;
+using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scenes.Compiler;
 using ConnectAPIC.Scenes.Component;
@@ -17,7 +18,7 @@ using Tiles;
 
 namespace ConnectAPIC.LayoutWindow.ViewModel
 {
-    public class GridViewModel :INotifyPropertyChanged
+    public class GridViewModel 
     {
         public ICommand CreateComponentCommand { get; set; }
         public ICommand MoveComponentCommand { get; set; }
@@ -30,7 +31,6 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         public Grid Grid { get; set; }
         public GridView GridView { get; set; }
         public int MaxTileCount { get => Width*Height; }
-        public event PropertyChangedEventHandler PropertyChanged;
         public GridViewModel(GridView gridview, Grid grid )
         {
             this.GridView = gridview;
@@ -51,17 +51,17 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         {
             ResetTilesAt(x, y, component.WidthInTiles, component.HeightInTiles);
         }
-        public void SetTileTexture(int x, int y, Texture2D texture, float rotationDegrees)
+        public void SetTileTexture(int x, int y, Texture2D texture, float rotationDegreesCounterClockwise)
         {
             if (!IsInGrid(x, y, 1, 1)) return;
             TileViews[x, y].ResetToDefault(texture);
             TileViews[x, y].Texture = texture;
-            TileViews[x, y].RotationDegrees = rotationDegrees;
+            TileViews[x, y].RotationDegrees = RotationHelper.ToClockwise(rotationDegreesCounterClockwise);
         }
         private void Grid_OnComponentPlacedOnTile(ComponentBase component, int gridX, int gridY)
         {
             Type componentViewType = ComponentViewModelTypeConverter.ToView(component.GetType());
-            CreateComponentViewByType(gridX, gridY, component.Rotation90, componentViewType, component);
+            CreateComponentViewByType(gridX, gridY, component.Rotation90CounterClock, componentViewType, component);
         }
         public bool IsInGrid(int x, int y, int width, int height)
         {
@@ -111,7 +111,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         public ComponentBaseView CreateComponentViewByType(int x, int y, DiscreteRotation rotation, Type componentViewType, ComponentBase componentModel)
         {
             var ComponentView = ComponentViewFactory.Instance.CreateComponentView(componentViewType);
-            ComponentView.Rotation90 = rotation;
+            ComponentView.Rotation90CounterClock = rotation;
             int width = ComponentView.WidthInTiles;
             int height = ComponentView.HeightInTiles;
             ComponentView.Show(x, y);
@@ -121,7 +121,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
                 {
                     int gridX = x + i;
                     int gridY = y + j;
-                    SetTileTexture(gridX, gridY, ComponentView.GetTexture(i, j).Duplicate() as Texture2D, (float)ComponentView.Rotation90 * 90f);
+                    SetTileTexture(gridX, gridY, ComponentView.GetTexture(i, j).Duplicate() as Texture2D, (float)ComponentView.Rotation90CounterClock * 90f);
                     TileViews[gridX, gridY].ComponentView = ComponentView;
                     var part = componentModel.Parts[i, j];
                     var PinRightAbsoluteEdgePos = RectSide.Right.RotateSideCounterClockwise(part.Rotation90);
@@ -136,10 +136,5 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             }
             return ComponentView;
         }
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
     }
 }

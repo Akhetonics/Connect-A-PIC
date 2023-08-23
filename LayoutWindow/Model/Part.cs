@@ -51,24 +51,14 @@ namespace Model
         public Pin GetPinAt(RectSide side , bool absoluteOrientation = true) 
         {
             if (absoluteOrientation)
-                side = side.RotateSideCounterClockwise(Rotation90);
+                side = side.RotateSideClockwise(Rotation90);
             
             return Pins.Find(p => p.Side == side);
         }
-        
-
-        public Part Duplicate()
+        public override string ToString()
         {
-            var copy = new Part
-            {
-                Pins = new List<Pin>()
-            };
-            foreach (var pin in Pins)
-            {
-                copy.Pins.Add(pin.Duplicate());   
-            }
-            return copy;
+            // Filter pins that have MatterType of None and then join them as string
+            return string.Join(", ", Pins.Where(pin => pin.MatterType!= MatterType.None));
         }
-
     }
 }

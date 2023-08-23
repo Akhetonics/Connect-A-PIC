@@ -55,7 +55,7 @@ namespace Tiles
             var parameters = Component.NazcaFunctionParameters;
             var rotationDisplacementCorrectionX = 0f;
             var rotationDisplacementCorrectionY = 0f;
-            var rotation = (int)comp.Rotation90 * 90;
+            var rotation = (int)comp.Rotation90CounterClock * 90;
             // bei Nazca ist der StartPin immer das lokale (0,0), also links oben
             if(rotation == 90)
             {

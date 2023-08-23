@@ -24,7 +24,7 @@ namespace ConnectAPIC.Scenes.Component
         public abstract string NazcaFunctionName { get; set; }
         public abstract string NazcaFunctionParameters { get; }
         private DiscreteRotation _discreteRotation;
-        public DiscreteRotation Rotation90
+        public DiscreteRotation Rotation90CounterClock
         {
             get => _discreteRotation;
             set
@@ -32,7 +32,7 @@ namespace ConnectAPIC.Scenes.Component
                 int rotationIntervals = _discreteRotation.CalculateCyclesTillTargetRotation(value);
                 for (int i = 0; i < rotationIntervals; i++)
                 {
-                    RotateBy90();
+                    RotateBy90CounterClockwise();
                 }
             }
         }
@@ -54,9 +54,9 @@ namespace ConnectAPIC.Scenes.Component
             this.GridXMainTile = -1;
             this.GridYMainTile = -1;
         }
-        public void RotateBy90()
+        public void RotateBy90CounterClockwise()
         {
-            Parts = Parts.RotateClockwise();
+            Parts = Parts.RotateCounterClockwise();
             _discreteRotation = _discreteRotation.RotateBy90();
             foreach (Part part in Parts)
             {
@@ -111,7 +111,7 @@ namespace ConnectAPIC.Scenes.Component
                    $"Is Placed in Grid: {IsPlacedInGrid}\n" +
                    $"Grid X (Main Tile): {GridXMainTile}\n" +
                    $"Grid Y (Main Tile): {GridYMainTile}\n" +
-                   $"Rotation: {Rotation90}\n" +
+                   $"Rotation: {Rotation90CounterClock}\n" +
                    $"Parts Length: {Parts?.Length}\n" +
                    $"Connections PinReferences Count: {Connections?.PinReference?.Count}";
         }
