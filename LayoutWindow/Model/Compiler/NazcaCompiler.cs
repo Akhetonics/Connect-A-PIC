@@ -22,16 +22,16 @@ namespace ConnectAPIC.Scenes.Compiler
         public const string PDKName = "CAPICPDK";
         public const string StandardInputCellName = "grating";
         private List<ComponentBase> AlreadyProcessedComponents;
-        private StringBuilder ExportAllConnectedTiles(Tile parent, Tile child)
+        private StringBuilder ExportAllConnectedTiles(Tile connectedParent, Tile child)
         {
             var nazcaString = new StringBuilder();
-            nazcaString.Append(child.ExportToNazca(parent));
+            nazcaString.Append(child.ExportToNazca(connectedParent));
             AlreadyProcessedComponents.Add(child.Component);
             var neighbours = grid.GetConnectedNeighboursOfComponent(child.Component);
-            neighbours = neighbours.Where(n => !AlreadyProcessedComponents.Contains(n.Component)).ToList();
-            foreach (Tile childsNeighbourTile in neighbours)
+            neighbours = neighbours.Where(n => !AlreadyProcessedComponents.Contains(n.Child.Component)).ToList();
+            foreach (ParentAndChildTile childsNeighbourTile in neighbours)
             {
-                nazcaString.Append(ExportAllConnectedTiles(child, childsNeighbourTile));
+                nazcaString.Append(ExportAllConnectedTiles(childsNeighbourTile.ParentPart, childsNeighbourTile.Child));
             }
             return nazcaString;
         }
@@ -84,9 +84,9 @@ namespace ConnectAPIC.Scenes.Compiler
             var neighbours = grid.GetConnectedNeighboursOfComponent(currentTile.Component);
             if (neighbours != null)
             {
-                foreach (Tile neighbour in neighbours)
+                foreach (ParentAndChildTile neighbour in neighbours)
                 {
-                    NazcaCode.Append(ExportAllConnectedTiles(currentTile, neighbour));
+                    NazcaCode.Append(ExportAllConnectedTiles(neighbour.ParentPart, neighbour.Child));
                 }
             }
         }

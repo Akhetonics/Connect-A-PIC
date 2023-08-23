@@ -185,11 +185,11 @@ namespace Model
             return false;
         }
 
-        public List<Tile> GetConnectedNeighboursOfComponent(ComponentBase component)
+        public List<ParentAndChildTile> GetConnectedNeighboursOfComponent(ComponentBase component)
         {
-            if (component is null) return new List<Tile>();
+            if (component is null) return new List<ParentAndChildTile>();
             // connectedNeighbours should get all neighbours of the component, shouldn't it?
-            List<Tile> children = new();
+            List<ParentAndChildTile> neighbours = new();
             for (int partX = 0; partX < component.Parts.GetLength(0); partX++)
             {
                 for (int partY = 0; partY < component.Parts.GetLength(1); partY++)
@@ -198,11 +198,12 @@ namespace Model
                     var compGridY = component.GridYMainTile + partY;
                     if (!IsInGrid(compGridX, compGridY, 1, 1)) continue;
                     if (component.Parts[partX, partY] == null) continue;
-                    var tile = Tiles[component.GridXMainTile + partX, component.GridYMainTile + partY];
-                    children.AddRange(GetConnectedNeighboursOfSingleTile(tile));
+                    var parentTile = Tiles[component.GridXMainTile + partX, component.GridYMainTile + partY];
+                    GetConnectedNeighboursOfSingleTile(parentTile)
+                        .ForEach(child => neighbours.Add(new ParentAndChildTile(parentTile, child)));
                 }
             }
-            return children;
+            return neighbours;
         }
         // finds all neighbour components that are connected to a certain Tile (parent) only if the Pins match.
         public List<Tile> GetConnectedNeighboursOfSingleTile(Tile parent)
@@ -228,6 +229,18 @@ namespace Model
                 }
             }
             return children;
+        }
+    }
+    public record struct ParentAndChildTile(Tile ParentPart, Tile Child)
+    {
+        public static implicit operator (Tile, Tile)(ParentAndChildTile value)
+        {
+            return (value.ParentPart, value.Child);
+        }
+
+        public static implicit operator ParentAndChildTile((Tile, Tile) ParentAndChild)
+        {
+            return new ParentAndChildTile(ParentAndChild.Item1, ParentAndChild.Item2);
         }
     }
 }

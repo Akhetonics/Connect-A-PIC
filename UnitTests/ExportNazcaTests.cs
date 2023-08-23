@@ -62,16 +62,17 @@ namespace UnitTests
             Tile secondComponentMainTile = grid.Tiles[secondComponent.GridXMainTile, secondComponent.GridYMainTile];
             Tile thirdComponentMainTile = grid.Tiles[thirdComponent.GridXMainTile, thirdComponent.GridYMainTile];
             
-            Assert.Contains(secondComponentMainTile, grid.GetConnectedNeighboursOfComponent(firstComponent));
-            Assert.Contains(thirdComponentMainTile, grid.GetConnectedNeighboursOfComponent(secondComponent));
-            Assert.Contains(firstComponentMainTile, grid.GetConnectedNeighboursOfComponent(secondComponent));
+            Assert.Contains(secondComponentMainTile, grid.GetConnectedNeighboursOfComponent(firstComponent).Select(b=>b.Child));
+            Assert.Contains(thirdComponentMainTile, grid.GetConnectedNeighboursOfComponent(secondComponent).Select(b => b.Child));
+            Assert.Contains(firstComponentMainTile, grid.GetConnectedNeighboursOfComponent(secondComponent).Select(b => b.Child));
         }
         
         private static ComponentBase PlaceAndConcatenateComponent(Grid grid, ComponentBase parentComponent)
         {
             ComponentBase newComponent = new StraightWaveGuide();
             var GridXSecondComponent = parentComponent.GridXMainTile + parentComponent.WidthInTiles;
-            grid.PlaceComponent(GridXSecondComponent, parentComponent.GridYMainTile, newComponent);
+            var GridYSecondComponent = parentComponent.GridYMainTile + parentComponent.HeightInTiles-1;
+            grid.PlaceComponent(GridXSecondComponent, GridYSecondComponent, newComponent);
             return newComponent;
         }
     }
