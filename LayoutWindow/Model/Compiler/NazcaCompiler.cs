@@ -19,8 +19,6 @@ namespace ConnectAPIC.Scenes.Compiler
     public class NazcaCompiler : ICompiler
     {
         private Grid grid;
-        public const string PDKName = "CAPICPDK";
-        public const string StandardInputCellName = "grating";
         private List<ComponentBase> AlreadyProcessedComponents;
         private StringBuilder ExportAllConnectedTiles(Tile connectedParent, Tile child)
         {
@@ -40,7 +38,7 @@ namespace ConnectAPIC.Scenes.Compiler
             this.grid = grid;
             AlreadyProcessedComponents = new List<ComponentBase>();
             StringBuilder NazcaCode = new();
-            NazcaCode.Append(PythonResources.CreateHeader(PDKName, StandardInputCellName));
+            NazcaCode.Append(PythonResources.CreateHeader(Resources.NazcaPDKName, Resources.NazcaStandardInputCellName));
             // start at all the three intputTiles.
             ConnectComponentsAtInputsViaPin( NazcaCode);
             NazcaCode.Append(PythonResources.CreateFooter());
@@ -93,7 +91,7 @@ namespace ConnectAPIC.Scenes.Compiler
 
         private void StartConnectingAtInput( StringBuilder NazcaCode, StandardInput input, Tile firstConnectedTile)
         {   
-            NazcaCode.Append(firstConnectedTile.ExportToNazcaExtended(new IntVector(-1, input.TilePositionY), StandardInputCellName, input.PinName));
+            NazcaCode.Append(firstConnectedTile.ExportToNazcaExtended(new IntVector(-1, input.TilePositionY), Resources.NazcaStandardInputCellName, input.PinName));
             AlreadyProcessedComponents.Add(firstConnectedTile.Component);
             ExportAllNeighbours(NazcaCode, firstConnectedTile);
         }

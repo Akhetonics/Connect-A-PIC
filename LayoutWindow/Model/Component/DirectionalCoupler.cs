@@ -35,25 +35,29 @@ namespace ConnectAPIC.Scenes.Component
                 new Pin("east1", MatterType.Light, RectSide.Right),
             });
 
+            var leftUp = PinIdLeft(0, 0);
+            var leftDown = PinIdLeft(0, 1);
+            var rightUp = PinIdRight(1, 0);
+            var rightDown = PinIdRight(1, 1);
             // setting up the SMatrix
             var allPins = new List<Guid> {
-                PinIdRight(1,0),
-                PinIdLeft(0,0),
-                PinIdRight(1,1),
-                PinIdLeft(0,1),
+                leftUp,
+                leftDown,
+                rightUp,
+                rightDown,
             };
             Connections = new SMatrix(allPins);
             var connectionweights = new Dictionary<(Guid, Guid), Complex>()
             {
-                { (PinIdLeft(0,0), PinIdRight(1,0)), new Complex(0.5, 0) },
-                { (PinIdLeft(0,0), PinIdRight(1,1)), new Complex(0.5, 0) },
-                { (PinIdLeft(0,1), PinIdRight(1,0)), new Complex(0.5, 0) },
-                { (PinIdLeft(0,1), PinIdRight(1,1)), new Complex(0.5, 0) },
+                { (leftUp, rightUp), new Complex(0.5, 0) },
+                { (leftUp, rightDown), new Complex(0.5, 0) },
+                { (leftDown, rightUp), new Complex(0.5, 0) },
+                { (leftDown, rightDown), new Complex(0.5, 0) },
 
-                { (PinIdRight(1,0), PinIdLeft(0,0)), new Complex(0.5, 0) },
-                { (PinIdRight(1,0), PinIdLeft(0,1)), new Complex(0.5, 0) },
-                { (PinIdRight(1,1), PinIdLeft(0,0)), new Complex(0.5, 0) },
-                { (PinIdRight(1,1), PinIdLeft(0,1)), new Complex(0.5, 0) },
+                { (rightUp, leftUp), new Complex(0.5, 0) },
+                { (rightUp, leftDown), new Complex(0.5, 0) },
+                { (rightDown, leftUp), new Complex(0.5, 0) },
+                { (rightDown, leftDown), new Complex(0.5, 0) },
 
             };
             Connections.setValues(connectionweights);

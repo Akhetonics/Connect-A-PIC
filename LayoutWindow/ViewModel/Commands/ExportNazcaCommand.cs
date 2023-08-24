@@ -8,6 +8,7 @@ using Godot;
 using Model;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -44,6 +45,9 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             var nazcaParams = (ExportNazcaParameters)parameter;
             var pythonCode = compiler.Compile(this.grid);
             FileSaver.SaveToFile(pythonCode, nazcaParams.Path);
+            string directoryPath = Path.GetDirectoryName(nazcaParams.Path);
+            string fullPath = Path.Combine(directoryPath, Resources.PDKFileName);
+            FileSaver.SaveToFile(Resources.PDK, fullPath);
         }
     }
 

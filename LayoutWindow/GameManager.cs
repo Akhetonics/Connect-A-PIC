@@ -34,11 +34,6 @@ namespace ConnectAPic.LayoutWindow
 			if (instance == null)
 			{
 				instance = this;
-				int CenterY = FieldHeight / 2;
-				int gap = 2;
-				if (FieldHeight < 11)
-					gap = 1;
-
 				var StandardPorts = new List<ExternalPort>() {
 					new StandardInput("io0",LightCycleColor.Red , 0,2),
 					new StandardInput("io1",LightCycleColor.Green, 0,3),

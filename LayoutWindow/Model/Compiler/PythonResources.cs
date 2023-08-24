@@ -11,28 +11,19 @@ namespace ConnectAPIC.LayoutWindow.Model.Compiler
     {
         public static string CreateHeader(string PDKName, string StandardInputCellName)
         {
-            return @"
-import nazca as nd
-from TestPDK import TestPDK
-
-CAPICPDK = TestPDK()
-
-def FullDesign(layoutName):
-    with nd.Cell(name=layoutName) as fullLayoutInner:       
-
-        grating = CAPICPDK.placeGratingArray_East(8).put(0, 0)
-
-".Replace("CAPICPDK", PDKName)
-.Replace("grating" ,StandardInputCellName);
+            return Resources.NazcaHeader
+                .Replace("CAPICPDK", PDKName)
+                .Replace("grating" , StandardInputCellName);
         }
 
-        public static string CreateFooter(string layoutName="Akhetonics_ConnectAPIC", string gdsFileName = "Test.gds")
+        public static string CreateFooter(string layoutName= null, string gdsFileName = null)
         {
-            return @$"    return fullLayoutInner
-
-nd.print_warning = False
-nd.export_gds(topcells=FullDesign(""{layoutName}""), filename=""{gdsFileName}"")
-";
+            layoutName ??= Resources.NazcaLayoutName;
+            gdsFileName ??= Resources.PDKFileName;
+            return Resources.NazcaFooter
+                .Replace("Akhetonics_ConnectAPIC", layoutName)
+                .Replace("ReplaceThisFileName.gds", gdsFileName);
         }
+
     }
 }

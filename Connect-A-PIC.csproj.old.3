@@ -1,4 +1,4 @@
-﻿<Project Sdk="Godot.NET.Sdk/4.1.1">
+﻿<Project Sdk="Godot.NET.Sdk/4.1.0">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>ConnectAPIC</RootNamespace>
@@ -7,9 +7,7 @@
     <StartArguments>--path C:\dev\Akhetonics\Connect-A-PIC\</StartArguments>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Remove="PDK\**" />
     <Compile Remove="Tests\**" />
-    <EmbeddedResource Remove="PDK\**" />
     <EmbeddedResource Remove="Tests\**" />
     <Compile Remove="UnitTests\**" />
     <EmbeddedResource Remove="UnitTests\**" />
@@ -26,6 +24,9 @@
     <None Include="Resources\NazcaHeader.txt" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\NazcaHeader.py.txt" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="Resources\PDK.txt" />
   </ItemGroup>
   <ItemGroup>
@@ -37,6 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="MathNet.Numerics.dll" />
+    <None Include="PDK\TestPDK.py" />
     <ContentWithTargetPath Include="MathNet.Numerics.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <TargetPath>MathNet.Numerics.dll</TargetPath>

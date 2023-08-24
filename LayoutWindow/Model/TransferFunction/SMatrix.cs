@@ -6,93 +6,90 @@ using System.Linq;
 using ConnectAPIC.Scenes.Component;
 namespace TransferFunction
 {
-	public class SMatrix
-	{
-		public Matrix<Complex> SMat;
-		public readonly List<Guid> PinReference;
-		private readonly int size;
+    public class SMatrix
+    {
+        public Matrix<Complex> SMat;
+        public readonly List<Guid> PinReference;
+        private readonly int size;
 
-		public SMatrix(List<Guid> allPinsInGrid)
-		{
-			if (allPinsInGrid != null && allPinsInGrid.Count > 0)
-			{
-				this.size = allPinsInGrid.Count;
-			}
-			else
-			{
-				this.size = 1;
-			}
+        public SMatrix(List<Guid> allPinsInGrid)
+        {
+            if (allPinsInGrid != null && allPinsInGrid.Count > 0)
+            {
+                this.size = allPinsInGrid.Count;
+            }
+            else
+            {
+                this.size = 1;
+            }
 
-			this.SMat = Matrix<Complex>.Build.Dense(this.size, this.size);
-			this.PinReference = allPinsInGrid;
-		}
+            this.SMat = Matrix<Complex>.Build.Dense(this.size, this.size);
+            this.PinReference = allPinsInGrid;
+        }
 
-		public void setValues(Dictionary<(Guid, Guid), Complex> transfers, bool reset = false)
-		{
-			if (transfers == null || this.PinReference == null)
-			{
-				return;
-			}
+        public void setValues(Dictionary<(Guid, Guid), Complex> transfers, bool reset = false)
+        {
+            if (transfers == null || this.PinReference == null)
+            {
+                return;
+            }
 
-			// Reset matrix
-			if (reset)
-			{
-				this.SMat = Matrix<Complex>.Build.Dense(this.size, this.size);
-			}
-			
-			foreach (var relation in transfers.Keys)
-			{
-				if (PinReference.Contains(relation.Item1) && PinReference.Contains(relation.Item2))
-				{
-					// TODO: These might need to be switched?
-					int row = PinReference.IndexOf(relation.Item2);
-					int col = PinReference.IndexOf(relation.Item1);
+            // Reset matrix
+            if (reset)
+            {
+                this.SMat = Matrix<Complex>.Build.Dense(this.size, this.size);
+            }
 
-					this.SMat[row, col] = transfers[relation];
-				}
-			}
-		}
+            foreach (var relation in transfers.Keys)
+            {
+                if (PinReference.Contains(relation.Item1) && PinReference.Contains(relation.Item2))
+                {
+                    // TODO: These might need to be switched?
+                    int row = PinReference.IndexOf(relation.Item2);
+                    int col = PinReference.IndexOf(relation.Item1);
 
-		public Dictionary<(Guid, Guid), Complex> GetValues()
-		{
-			var transfers = new Dictionary<(Guid, Guid), Complex>();
-			for (int i = 0; i < this.size; i++)
-			{
-				for (int j = 0; j < this.size; j++)
-				{
-					if (this.SMat[i, j] != 0)
-					{
-						transfers[new (this.PinReference[j], this.PinReference[i])] = this.SMat[i, j];
-					}
-				}
-			}
-			return transfers;
-		}
+                    this.SMat[row, col] = transfers[relation];
+                }
+            }
+        }
 
-		public static SMatrix CreateSystemSMatrix(List<SMatrix> matrices)
-		{
-			var portsReference = matrices.SelectMany(x => x.PinReference).Distinct().ToList();
-			SMatrix sysMat = new(portsReference);
+        public Dictionary<(Guid, Guid), Complex> GetValues()
+        {
+            var transfers = new Dictionary<(Guid, Guid), Complex>();
+            for (int i = 0; i < this.size; i++)
+            {
+                for (int j = 0; j < this.size; j++)
+                {
+                    transfers[new(this.PinReference[j], this.PinReference[i])] = this.SMat[i, j];
+                }
+            }
+            return transfers;
+        }
 
-			foreach (SMatrix matrix in matrices)
-			{
-				var transfers = matrix.GetValues();
-				sysMat.setValues(transfers);
-			}
+        public static SMatrix CreateSystemSMatrix(List<SMatrix> matrices)
+        {
+            var portsReference = matrices.SelectMany(x => x.PinReference).Distinct().ToList();
+            SMatrix sysMat = new(portsReference);
 
-			return sysMat;
-		}
+            foreach (SMatrix matrix in matrices)
+            {
+                var transfers = matrix.GetValues();
+                sysMat.setValues(transfers);
+            }
 
-		// Takes this matrix to the power n and sets it permanently to that value.
-		public void setToPower(int n)
-		{
-			this.SMat = this.SMat.Power(n);
-		}
+            return sysMat;
+        }
 
-		public override string ToString()
-		{
-			// TODO: 
-			return "";
-		}
-	}
+        // Takes this matrix to the power n and sets it permanently to that value.
+        public void setToPower(int n)
+        {
+            this.SMat = this.SMat.Power(n);
+        }
+
+        public override string ToString()
+        {
+            // TODO: 
+            return "";
+        }
+    }
 }

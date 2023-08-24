@@ -86,19 +86,19 @@ namespace ConnectAPIC.Scenes.Component
             }
             return part;
         }
-        public Guid PinIdRight(int offsetX, int offsetY)
+        public Guid PinIdRight(int offsetX = 0, int offsetY = 0)
         {
             return Parts[offsetX, offsetY].GetPinAt(RectSide.Right).ID;
         }
-        public Guid PinIdDown(int offsetX, int offsetY)
+        public Guid PinIdDown(int offsetX = 0, int offsetY = 0)
         {
             return Parts[offsetX, offsetY].GetPinAt(RectSide.Down).ID;
         }
-        public Guid PinIdLeft(int offsetX, int offsetY)
+        public Guid PinIdLeft(int offsetX=0, int offsetY=0)
         {
             return Parts[offsetX, offsetY].GetPinAt(RectSide.Left).ID;
         }
-        public Guid PinIdUp(int offsetX, int offsetY)
+        public Guid PinIdUp(int offsetX = 0, int offsetY = 0)
         {
             return Parts[offsetX, offsetY].GetPinAt(RectSide.Up).ID;
         }

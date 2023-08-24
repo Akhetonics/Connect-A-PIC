@@ -1,3 +1,4 @@
+using ConnectAPIC;
 using ConnectAPIC.LayoutWindow.Model.Helpers;
 using ConnectAPIC.Scenes.Compiler;
 using ConnectAPIC.Scenes.Component;
@@ -44,7 +45,7 @@ namespace Tiles
             var currentDirection = (IntVector)GetParentTouchingEdgeSide(parentGridPos.X, parentGridPos.Y, GridX, GridY) * (-1);
             var currentPinName = GetPinAt(currentDirection)?.Name ?? "";
             var parameters = Component.NazcaFunctionParameters;
-            return $"{PythonFunctionIndention}{cellName} = {NazcaCompiler.PDKName}.{Component.NazcaFunctionName}({parameters}).put('{currentPinName}', {parentCellName}.pin['{parentPinName}'])\n";
+            return $"{PythonFunctionIndention}{cellName} = {Resources.NazcaPDKName}.{Component.NazcaFunctionName}({parameters}).put('{currentPinName}', {parentCellName}.pin['{parentPinName}'])\n";
         }
         public string ExportToNazcaAbsolutePosition()
         {
@@ -73,7 +74,7 @@ namespace Tiles
             var posX = $"({comp.GridXMainTile}+{rotationDisplacementCorrectionX.ToString(CultureInfo.InvariantCulture)})*CAPICPDK._CellSize";
             var posY = $"({-comp.GridYMainTile}+{rotationDisplacementCorrectionY.ToString(CultureInfo.InvariantCulture)})*CAPICPDK._CellSize";
             
-            return $"{PythonFunctionIndention}{cellName} = {NazcaCompiler.PDKName}.{Component.NazcaFunctionName}({parameters}).put({posX},{posY},{rotation})\n";
+            return $"{PythonFunctionIndention}{cellName} = {Resources.NazcaPDKName}.{Component.NazcaFunctionName}({parameters}).put({posX},{posY},{rotation})\n";
         }
         
         private RectSide GetParentTileTouchingEdgeSide(Tile parentTile)

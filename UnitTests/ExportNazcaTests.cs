@@ -18,7 +18,7 @@ namespace UnitTests
         {
             Grid grid = new(24,12);
             var inputs = grid.ExternalPorts.Where(p => p.GetType() == typeof(StandardInput)).ToList();
-            var inputHeight = inputs.FirstOrDefault().TilePositionY;
+            int inputHeight = inputs.FirstOrDefault()?.TilePositionY ?? throw new Exception("there is no StandardInput defined");
             var firstComponent = new DirectionalCoupler();
             grid.PlaceComponent(0, inputHeight, firstComponent);
             var secondComponent = PlaceAndConcatenateComponent(grid, firstComponent);
