@@ -14,9 +14,7 @@ namespace UnitTests
         public void TestSMatrix()
         {
             var directionalCoupler = new DirectionalCoupler();
-            
             var grid = new Grid(20,10);
-            //grid.PlaceComponent(1, 3, directionalCoupler);
             grid.PlaceComponent(3, 3, directionalCoupler);
             var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid);
             var systemMatrix = gridSMatrixAnalyzer.CreateSystemSMatrix();
