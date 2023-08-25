@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System;
 using System.Linq;
 using ConnectAPIC.Scenes.Component;
+using System.Text;
+
 namespace TransferFunction
 {
     public class SMatrix
@@ -20,14 +22,14 @@ namespace TransferFunction
             }
             else
             {
-                this.size = 1;
+                this.size = 0;
             }
 
             this.SMat = Matrix<Complex>.Build.Dense(this.size, this.size);
             this.PinReference = allPinsInGrid;
         }
 
-        public void setValues(Dictionary<(Guid, Guid), Complex> transfers, bool reset = false)
+        public void SetValues(Dictionary<(Guid, Guid), Complex> transfers, bool reset = false)
         {
             if (transfers == null || this.PinReference == null)
             {
@@ -45,22 +47,24 @@ namespace TransferFunction
                 if (PinReference.Contains(relation.Item1) && PinReference.Contains(relation.Item2))
                 {
                     // TODO: These might need to be switched?
-                    int row = PinReference.IndexOf(relation.Item2);
-                    int col = PinReference.IndexOf(relation.Item1);
+                    int row = PinReference.IndexOf(relation.Item1);
+                    int col = PinReference.IndexOf(relation.Item2);
+                    
 
                     this.SMat[row, col] = transfers[relation];
                 }
             }
         }
 
-        public Dictionary<(Guid, Guid), Complex> GetValues()
+        public Dictionary<(Guid, Guid), Complex> GetNonNullValues()
         {
             var transfers = new Dictionary<(Guid, Guid), Complex>();
             for (int i = 0; i < this.size; i++)
             {
                 for (int j = 0; j < this.size; j++)
                 {
-                    transfers[new(this.PinReference[j], this.PinReference[i])] = this.SMat[i, j];
+                    if (this.SMat[i, j] == Complex.Zero) continue;
+                    transfers[(this.PinReference[j], this.PinReference[i])] = this.SMat[i, j];
                 }
             }
             return transfers;
@@ -73,23 +77,44 @@ namespace TransferFunction
 
             foreach (SMatrix matrix in matrices)
             {
-                var transfers = matrix.GetValues();
-                sysMat.setValues(transfers);
+                var transfers = matrix.GetNonNullValues();
+                sysMat.SetValues(transfers);
             }
 
             return sysMat;
         }
 
         // Takes this matrix to the power n and sets it permanently to that value.
-        public void setToPower(int n)
+        public void SetToPower(int n)
         {
             this.SMat = this.SMat.Power(n);
         }
 
         public override string ToString()
         {
-            // TODO: 
-            return "";
+            var result = new StringBuilder();
+
+            // Optional: Add header with the PinReference IDs for clarity
+            result.Append("|\t");
+            foreach (var pin in PinReference)
+            {
+                result.Append(pin.ToString().Substring(0, 4) + "\t");  // Just showing first 4 chars of GUID for brevity
+            }
+            result.AppendLine("|");
+
+            // Now, iterate over each row of the matrix
+            for (int i = 0; i < size; i++)
+            {
+                result.Append("|\t");
+                for (int j = 0; j < size; j++)
+                {
+                    var complexValue = SMat[i, j];
+                    result.Append($"{complexValue.Real:F2}+{complexValue.Imaginary:F2}i\t");
+                }
+                result.AppendLine("|");
+            }
+
+            return result.ToString();
         }
     }
 }

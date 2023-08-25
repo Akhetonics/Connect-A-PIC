@@ -28,15 +28,16 @@ namespace ConnectAPIC.Scenes.TransferFunction
         {
             CalcAllConnectionsBetweenComponents();
             var allComponentsSMatrices = GetAllComponentsSMatrices();
-            var allConnectionsSMatrix = new SMatrix(InterComponentConnections.Select(c => c.Key.Item1).ToList());
-            allConnectionsSMatrix.setValues(InterComponentConnections);
+            var allUsedPinIDs = InterComponentConnections.Select(c => c.Key.Item1).Distinct().ToList();
+            var allConnectionsSMatrix = new SMatrix(allUsedPinIDs); // it is enough to get all Item1s-PinIDs as the Item2s are identically as they all have a backlink
+            allConnectionsSMatrix.SetValues(InterComponentConnections);
             allComponentsSMatrices.Add(allConnectionsSMatrix);
             return SMatrix.CreateSystemSMatrix(allComponentsSMatrices);
         }
         private List<SMatrix> GetAllComponentsSMatrices()
         {
             List<SMatrix> sMatrices = new();
-            foreach(Tile tile in grid.Tiles)
+            foreach (Tile tile in grid.Tiles)
             {
                 if (tile.Component == null) continue;
                 if (tile.Component.Connections == null) continue;
@@ -51,48 +52,43 @@ namespace ConnectAPIC.Scenes.TransferFunction
         {
             int gridWidth = grid.Tiles.GetLength(0);
             int gridHeight = grid.Tiles.GetLength(1);
-            Array allSides = Enum.GetValues(typeof(RectSide));
             InterComponentConnections = new();
 
             for (int x = 0; x < gridWidth; x++)
             {
                 for (int y = 0; y < gridHeight; y++)
                 {
-                    foreach (RectSide side in allSides)
-                    {
-                        ConnectComponentBorderEdge( x, y, side);
-                    }
+                    ConnectAllBorderEdgesOfComponentAt(x, y);
                 }
             }
         }
 
-        private void ConnectComponentBorderEdge( int x, int y, RectSide side)
+        private void ConnectAllBorderEdgesOfComponentAt(int x, int y)
         {
-            if (!IsComponentBorderEdge(x, y, side)) return;
-            if (grid.Tiles[x, y].Component == null) return;
-            IntVector offset = side;
-            
-            Pin currentPin = grid.Tiles[x, y].GetPinAt(side);
-            if (currentPin == null) return;
-            if (grid.IsInGrid(x + offset.X, y + offset.Y))
+            Array allSides = Enum.GetValues(typeof(RectSide));
+            foreach (RectSide side in allSides)
             {
-                var foreignPinSide = (IntVector)side * (-1);
-                Pin foreignPin = grid.Tiles[x+offset.X, y+offset.Y].GetPinAt(foreignPinSide);
-                if (foreignPin == null) return;
+                IntVector offset = side;
+                if (grid.Tiles[x, y].Component == null) continue;
+                if (!grid.IsInGrid(x + offset.X, y + offset.Y)) continue;
+                var foreignTile = grid.Tiles[x + offset.X, y + offset.Y];
+                if (!IsComponentBorderEdge(x, y, foreignTile)) continue;
+                Pin currentPin = grid.Tiles[x, y].GetPinAt(side);
+                if (currentPin == null) continue;
+                var foreignPinSide = offset * (-1);
+                Pin foreignPin = foreignTile.GetPinAt(foreignPinSide);
+                if (foreignPin == null) continue;
+                
                 InterComponentConnections.Add((currentPin.ID, foreignPin.ID), 1);
+                
             }
         }
 
-        private bool IsComponentBorderEdge(int gridx, int gridy, RectSide side)
+        private bool IsComponentBorderEdge(int gridx, int gridy, Tile foreignTile)
         {
-            IntVector offset = side;
+            if (foreignTile == null) return false;
             var centeredComponent = grid.Tiles[gridx, gridy].Component;
-            if (!grid.IsInGrid(gridx + offset.X, gridy + offset.Y))
-            {
-                return true;
-            }
-            var offsetComponent = grid.Tiles[gridx + offset.X, gridy + offset.Y].Component;
-            return centeredComponent != offsetComponent;
+            return centeredComponent != foreignTile.Component;
         }
     }
 }

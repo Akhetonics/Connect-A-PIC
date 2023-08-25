@@ -25,17 +25,19 @@ namespace ConnectAPIC.Scenes.Component
 
             // setting up the SMatrix
             var allPins = new List<Guid> {
-                PinIdLeft(0,0),
-                PinIdRight(0,0),
+                PinIdLeft(),
+                PinIdRight(),
             };
             Connections = new SMatrix(allPins);
             var connectionweights = new Dictionary<(Guid, Guid), Complex>
             {
-                { (PinIdLeft(0,0), PinIdRight(0,0) ), new Complex(1, 0) },
-                { (PinIdRight(0,0), PinIdLeft(0,0) ), new Complex(1, 0) },
+                { (PinIdLeft(), PinIdRight() ), new Complex(1, 0) },
+                { (PinIdLeft(), PinIdLeft()), new Complex(1, 0) },
+                { (PinIdRight() , PinIdRight() ), new Complex(1, 0) },
+                { (PinIdRight(), PinIdLeft() ), new Complex(1, 0) },
             };
 
-            Connections.setValues(connectionweights);
+            Connections.SetValues(connectionweights);
         }
     }
 }
