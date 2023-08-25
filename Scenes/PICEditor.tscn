@@ -168,6 +168,15 @@ offset_bottom = 40.0
 text = "Export Nazca"
 metadata/_edit_use_anchors_ = true
 
+[node name="btnShowLightPropagation" type="Button" parent="."]
+offset_left = 166.0
+offset_top = 7.0
+offset_right = 294.0
+offset_bottom = 40.0
+toggle_mode = true
+text = "Light Paths"
+metadata/_edit_use_anchors_ = true
+
 [node name="DragDropParent" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
@@ -256,3 +265,4 @@ ElectricityPinTexture = ExtResource("7_uo1bp")
 LightPinTexture = ExtResource("5_lrhvy")
 
 [connection signal="pressed" from="btnExportNazca" to="DragDropParent/Grid" method="_on_btn_export_nazca_pressed"]
+[connection signal="pressed" from="btnShowLightPropagation" to="DragDropParent/Grid" method="_on_btn_export_nazca_pressed"]
