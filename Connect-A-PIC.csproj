@@ -8,8 +8,10 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="PDK\**" />
+    <Compile Remove="libraries\SBB\obj\Debug\**" />
     <Compile Remove="Tests\**" />
     <EmbeddedResource Remove="PDK\**" />
+    <EmbeddedResource Remove="libraries\SBB\obj\Debug\**" />
     <EmbeddedResource Remove="Tests\**" />
     <Compile Remove="UnitTests\**" />
     <EmbeddedResource Remove="UnitTests\**" />
@@ -30,10 +32,14 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="LayoutWindow\View\StandardDialogs\" />
+    <Folder Include="libraries\SBB\obj\" />
     <Folder Include="Scenes\" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
+    <PackageReference Include="System.Data.SQLite" Version="1.0.118" />
+    <PackageReference Include="YamlDotNet" Version="13.2.0" />
   </ItemGroup>
   <ItemGroup>
     <None Include="MathNet.Numerics.dll" />

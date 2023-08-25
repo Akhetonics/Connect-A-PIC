@@ -1,3 +1,4 @@
+using AtetDataFormats.OpenEPDA;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.Scenes.Component;
 using Godot;
@@ -26,6 +27,14 @@ namespace ConnectAPIC.LayoutWindow.Model.Component
                 throw new ArgumentException($"Type is abstract or has no empty constructor: {nameof(T) + " " + T.FullName}");
 
             return (ComponentBase)Activator.CreateInstance(T);
+        }
+        
+        public ComponentBase LoadComponent (string yamlOfSBBComponent)
+        {
+            SBB sbb = SBBBuilder.createSBB(yamlOfSBBComponent);
+            ComponentBase newComponent;
+            // create Component from sbb
+            throw new NotImplementedException();
         }
     }
 }
