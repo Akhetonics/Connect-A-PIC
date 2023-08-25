@@ -265,4 +265,5 @@ ElectricityPinTexture = ExtResource("7_uo1bp")
 LightPinTexture = ExtResource("5_lrhvy")
 
 [connection signal="pressed" from="btnExportNazca" to="DragDropParent/Grid" method="_on_btn_export_nazca_pressed"]
-[connection signal="pressed" from="btnShowLightPropagation" to="DragDropParent/Grid" method="_on_btn_export_nazca_pressed"]
+[connection signal="pressed" from="btnShowLightPropagation" to="DragDropParent/Grid" method="_on_btn_showLightPropagation_pressed"]
+[connection signal="toggled" from="btnShowLightPropagation" to="DragDropParent/Grid" method="_on_btn_show_light_propagation_toggled"]
