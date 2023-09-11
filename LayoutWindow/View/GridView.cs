@@ -58,15 +58,23 @@ namespace ConnectAPIC.LayoutWindow.View
 				}
 			});
 		}
-        private void _on_btn_show_light_propagation_toggled(bool button_pressed)
-        {
-            // es soll nun ein shader über alle tiles gelegt werden
-			// Eine Animation mit den passenden Bildern soll über jedem Tile dargestellt sein
-			// Der Alphakanal der Animationsbilder soll der Lichtintensität entsprechen, oder?
+		private void _on_btn_show_light_propagation_toggled(bool button_pressed)
+		{
+			if (button_pressed)
+			{
+				// recalculate SMatrix in Model
+				// assign a value to every Pin
+				// display the Values here.
+			}
+
+			// es soll nun ein shader ueber alle tiles gelegt werden 
+			// Eine Animation mit den passenden Bildern soll ueber jedem Tile dargestellt sein
+			// Der Alphakanal der Animationsbilder soll der Lichtintensitaet entsprechen, oder?
 			// Light-flow-richtung kann ignoriert werden
 			// animations-folge soll ge-offsettet werden nach der Phase des lichtes.
-        }
-        
 
-    }
+		}
+		
+
+	}
 }
