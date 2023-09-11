@@ -22,6 +22,7 @@
     <Compile Remove="Scenes\Scenes.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="README.md" />
     <None Include="Resources\NazcaFooter.txt" />
   </ItemGroup>
   <ItemGroup>
