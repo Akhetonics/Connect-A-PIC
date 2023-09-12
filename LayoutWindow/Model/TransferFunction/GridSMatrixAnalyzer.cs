@@ -25,7 +25,7 @@ namespace ConnectAPIC.Scenes.TransferFunction
         }
 
         // calculates the light intensity and phase at a given PIN-ID for both light-flow-directions "in" and "out"
-        public Dictionary<Guid,Complex> CalculateLightPropagation()
+        public Dictionary<(Guid,bool),Complex> CalculateLightPropagation()
         {
 
         }

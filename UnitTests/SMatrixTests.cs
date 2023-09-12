@@ -37,7 +37,7 @@ namespace UnitTests
         {
             // I want to calculate the lightvalues at each PIN for the whole lifetime of the matrix.
             // I will go from n = 1 to 200 and add all matrices to one and just get the light values for each pin
-            
+            // first I might want to create a grid and some components.
             
         }
         [Fact]
