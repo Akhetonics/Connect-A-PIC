@@ -3,6 +3,7 @@ using ConnectAPIC.Scenes.Tiles;
 using Godot;
 using System;
 using System.ComponentModel;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using Tiles;
 
@@ -13,6 +14,8 @@ namespace ConnectAPIC.Scenes.Component
         public event PropertyChangedEventHandler PropertyChanged;
         public string Name { get; set; } // the nazca name like b0, a0, a1}
         public Guid ID { get; set; }
+        public Complex LightInflow { get; set; } // the light flowing into this component at this pin
+        public Complex LightOutflow { get; set; } // the light exiting this component at this pin
         private RectSide _side;
         public RectSide Side {
             get => _side;

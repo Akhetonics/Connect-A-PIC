@@ -18,7 +18,7 @@ namespace UnitTests
             grid.PlaceComponent(1, 3, directionalCoupler);
             var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid);
             var systemMatrix = gridSMatrixAnalyzer.CreateSystemSMatrix();
-            systemMatrix.SetToPower(4);
+            systemMatrix.CalculateLightPropagationAfterSteps(4);
             var connectionPairs = systemMatrix.GetNonNullValues();
 
             // test directionalCoupler
@@ -32,6 +32,14 @@ namespace UnitTests
             Assert.True(directionalCompLightValDownUp.Real > 0);
         }
 
+        [Fact] 
+        public void TestLightPropagationOverTime()
+        {
+            // I want to calculate the lightvalues at each PIN for the whole lifetime of the matrix.
+            // I will go from n = 1 to 200 and add all matrices to one and just get the light values for each pin
+            
+            
+        }
         [Fact]
         public void TestSMatrixForGrid()
         {
@@ -45,7 +53,7 @@ namespace UnitTests
             grid.PlaceComponent(3, 3, Grating);
             var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid);
             var systemMatrix = gridSMatrixAnalyzer.CreateSystemSMatrix();
-            systemMatrix.SetToPower(4);
+            systemMatrix.CalculateLightPropagationAfterSteps(4);
             var systemMatrixConnections = systemMatrix.GetNonNullValues();
 
             // test straightcomponent light throughput

@@ -36,7 +36,6 @@ namespace TransferFunction
                 return;
             }
 
-            // Reset matrix
             if (reset)
             {
                 this.SMat = Matrix<Complex>.Build.Dense(this.size, this.size);
@@ -46,11 +45,8 @@ namespace TransferFunction
             {
                 if (PinReference.Contains(relation.Item1) && PinReference.Contains(relation.Item2))
                 {
-                    // TODO: These might need to be switched?
                     int row = PinReference.IndexOf(relation.Item1);
                     int col = PinReference.IndexOf(relation.Item2);
-                    
-
                     this.SMat[row, col] = transfers[relation];
                 }
             }
@@ -84,8 +80,8 @@ namespace TransferFunction
             return sysMat;
         }
 
-        // Takes this matrix to the power n and sets it permanently to that value.
-        public void SetToPower(int n)
+        // n is the number of timesteps to move forward "n=3" would return the light propagation after 3 steps.
+        public void CalculateLightPropagationAfterSteps(int n)
         {
             this.SMat = this.SMat.Power(n);
         }
@@ -94,11 +90,11 @@ namespace TransferFunction
         {
             var result = new StringBuilder();
 
-            // Optional: Add header with the PinReference IDs for clarity
+            // Add header with the PinReference IDs for clarity
             result.Append("|\t");
             foreach (var pin in PinReference)
             {
-                result.Append(pin.ToString().Substring(0, 4) + "\t");  // Just showing first 4 chars of GUID for brevity
+                result.Append(pin.ToString().Substring(0, 6) + "\t");  // Just showing first 6 chars of GUID for brevity
             }
             result.AppendLine("|");
 
@@ -109,7 +105,7 @@ namespace TransferFunction
                 for (int j = 0; j < size; j++)
                 {
                     var complexValue = SMat[i, j];
-                    result.Append($"{complexValue.Real:F2}+{complexValue.Imaginary:F2}i\t");
+                    result.Append($"{complexValue.Real:F2}+{complexValue.Imaginary:F1}i\t");
                 }
                 result.AppendLine("|");
             }

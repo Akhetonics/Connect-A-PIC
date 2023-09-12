@@ -24,6 +24,11 @@ namespace ConnectAPIC.Scenes.TransferFunction
             this.grid = grid;
         }
 
+        // calculates the light intensity and phase at a given PIN-ID for both light-flow-directions "in" and "out"
+        public Dictionary<Guid,Complex> CalculateLightPropagation()
+        {
+
+        }
         public SMatrix CreateSystemSMatrix()
         {
             CalcAllConnectionsBetweenComponents();

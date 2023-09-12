@@ -63,6 +63,8 @@ namespace ConnectAPIC.LayoutWindow.View
 			if (button_pressed)
 			{
 				// recalculate SMatrix in Model
+				// calculate the SMatrices for the exponent 1-20 and then sum up the vectors 
+
 				// assign a value to every Pin
 				// display the Values here.
 			}
