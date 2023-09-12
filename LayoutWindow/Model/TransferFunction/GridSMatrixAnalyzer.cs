@@ -28,8 +28,11 @@ namespace ConnectAPIC.Scenes.TransferFunction
         {
             CalcAllConnectionsBetweenComponents();
             var allComponentsSMatrices = GetAllComponentsSMatrices();
-            var allUsedPinIDs = InterComponentConnections.Select(c => c.Key.Item1).Distinct().ToList();
-            var allConnectionsSMatrix = new SMatrix(allUsedPinIDs); // it is enough to get all Item1s-PinIDs as the Item2s are identically as they all have a backlink
+            var allUsedPinIDs = InterComponentConnections
+                .SelectMany(c => new[] { c.Key.Item1, c.Key.Item2 })
+                .Distinct()
+                .ToList();
+            var allConnectionsSMatrix = new SMatrix(allUsedPinIDs); 
             allConnectionsSMatrix.SetValues(InterComponentConnections);
             allComponentsSMatrices.Add(allConnectionsSMatrix);
             return SMatrix.CreateSystemSMatrix(allComponentsSMatrices);

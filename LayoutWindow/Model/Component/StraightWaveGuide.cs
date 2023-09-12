@@ -32,8 +32,8 @@ namespace ConnectAPIC.Scenes.Component
             var connectionweights = new Dictionary<(Guid, Guid), Complex>
             {
                 { (PinIdLeft(), PinIdRight() ), new Complex(1, 0) },
-                { (PinIdLeft(), PinIdLeft()), new Complex(1, 0) },
-                { (PinIdRight() , PinIdRight() ), new Complex(1, 0) },
+                { (PinIdLeft(), PinIdLeft()), new Complex(0, 0) },
+                { (PinIdRight() , PinIdRight() ), new Complex(0, 0) },
                 { (PinIdRight(), PinIdLeft() ), new Complex(1, 0) },
             };
 
