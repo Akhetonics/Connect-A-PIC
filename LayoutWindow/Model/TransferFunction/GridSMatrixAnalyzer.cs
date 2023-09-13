@@ -12,6 +12,11 @@ using System.Threading.Tasks;
 using Tiles;
 using TransferFunction;
 
+public record LightFlow
+{
+    public Complex LightInFlow;
+    public Complex LightOutFlow;
+}
 namespace ConnectAPIC.Scenes.TransferFunction
 {
     public class GridSMatrixAnalyzer
@@ -25,10 +30,10 @@ namespace ConnectAPIC.Scenes.TransferFunction
         }
 
         // calculates the light intensity and phase at a given PIN-ID for both light-flow-directions "in" and "out"
-        public Dictionary<(Guid,bool),Complex> CalculateLightPropagation()
-        {
+        //public Dictionary<Guid, LightFlow> CalculateLightPropagation()
+        //{
 
-        }
+        //}
         public SMatrix CreateSystemSMatrix()
         {
             CalcAllConnectionsBetweenComponents();

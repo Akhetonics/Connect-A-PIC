@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://cu6wqy6xwjfo1"]
+[gd_scene load_steps=29 format=3 uid="uid://cu6wqy6xwjfo1"]
 
 [ext_resource type="Script" path="res://LayoutWindow/GameManager.cs" id="1_1g8p6"]
 [ext_resource type="Script" path="res://LayoutWindow/View/GridView.cs" id="1_2pqex"]
@@ -19,6 +19,7 @@
 [ext_resource type="Texture2D" uid="uid://bj1u105ivy4eu" path="res://GFX/ExternalOutput.png" id="11_v8xoy"]
 [ext_resource type="PackedScene" uid="uid://bscqmaslppyt8" path="res://Scenes/NotificationBox.tscn" id="12_o0640"]
 [ext_resource type="Shader" path="res://Scenes/LightAnimationOverlay.gdshader" id="13_nlker"]
+[ext_resource type="Texture2D" uid="uid://cjiupx6m53yfn" path="res://icon.svg" id="14_60nxl"]
 [ext_resource type="Script" path="res://LayoutWindow/View/GratingCouplerView.cs" id="14_bqkgg"]
 [ext_resource type="Script" path="res://LayoutWindow/View/DirectionalCouplerView.cs" id="18_4lqdc"]
 [ext_resource type="Texture2D" uid="uid://dha8w66k3ydtc" path="res://GFX/DirectionalCoupler/DirectionalCoupler_00.png" id="19_nqt60"]
@@ -148,27 +149,49 @@ texture = ExtResource("11_v8xoy")
 expand_mode = 5
 
 [node name="AnimationOverlayTest3" type="TextureRect" parent="Templates"]
-offset_left = 11.0
-offset_top = 73.0
-offset_right = 111.0
-offset_bottom = 149.0
+offset_left = -9.0
+offset_top = 43.0
+offset_right = 91.0
+offset_bottom = 119.0
 texture = ExtResource("8_y1c58")
 
-[node name="AnimationOverlayTest" type="TextureRect" parent="Templates"]
-z_as_relative = false
-material = SubResource("ShaderMaterial_03ckl")
-offset_left = 124.0
-offset_top = 47.0
-offset_right = 224.0
-offset_bottom = 123.0
-texture = ExtResource("8_y1c58")
+[node name="AnimationOverlayTest4" type="TextureRect" parent="Templates"]
+offset_left = 92.0
+offset_top = 43.0
+offset_right = 192.0
+offset_bottom = 119.0
+texture = ExtResource("5_lrhvy")
 
 [node name="AnimationOverlayTest2" type="TextureRect" parent="Templates"]
 material = SubResource("ShaderMaterial_03ckl")
-offset_left = 43.0
-offset_top = 29.0
-offset_right = 143.0
-offset_bottom = 105.0
+offset_left = 319.0
+offset_top = 14.0
+offset_right = 447.0
+offset_bottom = 142.0
+texture = ExtResource("14_60nxl")
+
+[node name="BackBufferCopy" type="BackBufferCopy" parent="Templates"]
+position = Vector2(213, 53)
+scale = Vector2(0.98, 0.88)
+
+[node name="AnimationOverlayTest" type="TextureRect" parent="Templates/BackBufferCopy"]
+material = SubResource("ShaderMaterial_03ckl")
+offset_left = -18.3673
+offset_top = 61.3636
+offset_right = 81.6327
+offset_bottom = 137.364
+texture = ExtResource("8_y1c58")
+
+[node name="BackBufferCopy2" type="BackBufferCopy" parent="Templates"]
+position = Vector2(80.9999, 39)
+scale = Vector2(0.98, 0.88)
+
+[node name="AnimationOverlayTest" type="TextureRect" parent="Templates/BackBufferCopy2"]
+material = SubResource("ShaderMaterial_03ckl")
+offset_left = -23.4693
+offset_top = 107.955
+offset_right = 76.5307
+offset_bottom = 183.955
 texture = ExtResource("8_y1c58")
 
 [node name="ComponentTemplates" type="Node" parent="."]
