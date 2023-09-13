@@ -17,15 +17,13 @@ namespace UnitTests
             var grid = new Grid(20,10);
             grid.PlaceComponent(1, 3, directionalCoupler);
             var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid);
-            var systemMatrix = gridSMatrixAnalyzer.CreateSystemSMatrix();
-            systemMatrix.CalculateLightPropagationAfterSteps(4);
-            var connectionPairs = systemMatrix.GetNonNullValues();
+            var connectionPairs = gridSMatrixAnalyzer.CalculateLightPropagation(4);
 
             // test directionalCoupler
-            var directionalCompLightValUp = connectionPairs[(directionalCoupler.PinIdLeft(0, 0), directionalCoupler.PinIdRight(1, 0))];
-            var directionalCompLightValDown = connectionPairs[(directionalCoupler.PinIdLeft(0, 1), directionalCoupler.PinIdRight(1, 1))];
-            var directionalCompLightValUpDown = connectionPairs[(directionalCoupler.PinIdLeft(0, 0), directionalCoupler.PinIdRight(1, 1))];
-            var directionalCompLightValDownUp = connectionPairs[(directionalCoupler.PinIdLeft(0, 1), directionalCoupler.PinIdRight(1, 0))];
+            var directionalCompLightValUp = connectionPairs[(directionalCoupler.PinIdLeftIn(0, 0), directionalCoupler.PinIdRightOut(1, 0))];
+            var directionalCompLightValDown = connectionPairs[(directionalCoupler.PinIdLeftIn(0, 1), directionalCoupler.PinIdRightOut(1, 1))];
+            var directionalCompLightValUpDown = connectionPairs[(directionalCoupler.PinIdLeftIn(0, 0), directionalCoupler.PinIdRightOut(1, 1))];
+            var directionalCompLightValDownUp = connectionPairs[(directionalCoupler.PinIdLeftIn(0, 1), directionalCoupler.PinIdRightOut(1, 0))];
             Assert.True(directionalCompLightValUp.Real > 0);
             Assert.True(directionalCompLightValDown.Real > 0);
             Assert.True(directionalCompLightValUpDown.Real > 0);
@@ -52,15 +50,21 @@ namespace UnitTests
             grid.PlaceComponent(1, 3, directionalCoupler);
             grid.PlaceComponent(3, 3, Grating);
             var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid);
-            var systemMatrix = gridSMatrixAnalyzer.CreateSystemSMatrix();
-            systemMatrix.CalculateLightPropagationAfterSteps(4);
-            var systemMatrixConnections = systemMatrix.GetNonNullValues();
+            var systemMatrixConnections = gridSMatrixAnalyzer.CalculateLightPropagation(100);
 
             // test straightcomponent light throughput
-            var straightCompLightVal = systemMatrixConnections[(straight.PinIdLeft(), straight.PinIdRight())];
+            var straightCompLightVal = systemMatrixConnections[(straight.PinIdLeftIn(), straight.PinIdRightOut())];
 
             // test whole circuit's light throughput
-            var connectionPairFromBeginningToEndComponent = (straight.PinIdLeft(), Grating.PinIdLeft());
+            var connectionPairFromBeginningToEndComponent = (straight.PinIdLeftIn(), Grating.PinIdLeftOut());
+            string debugInfo = systemMatrixConnections.ToString() ?? "";
+            debugInfo += gridSMatrixAnalyzer.CreateSystemSMatrix().ToString().Replace("+0,0i" , "\t");
+            // connections I would expect are:
+            // straight to directional
+            var straightToDirectionalVal = systemMatrixConnections[(straight.PinIdLeftIn() , directionalCoupler.PinIdRightOut(1,0))];
+            // directional to grating
+            // grating Pin ID
+            var gratingPinID = Grating.PinIdLeftOut();
             var circuitLightVal = systemMatrixConnections[connectionPairFromBeginningToEndComponent];
             Assert.Contains(connectionPairFromBeginningToEndComponent, systemMatrixConnections);
             Assert.True(straightCompLightVal.Real > 0);

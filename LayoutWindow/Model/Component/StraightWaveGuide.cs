@@ -23,18 +23,22 @@ namespace ConnectAPIC.Scenes.Component
             Parts = new Part[1, 1];
             Parts[0, 0] = CreatePart(RectSide.Left, RectSide.Right);
 
+            var leftIn = PinIdLeftIn();
+            var leftOut = PinIdLeftOut();
+            var rightIn = PinIdRightIn();
+            var rightOut = PinIdRightOut();
             // setting up the SMatrix
             var allPins = new List<Guid> {
-                PinIdLeft(),
-                PinIdRight(),
+                leftIn,
+                leftOut,
+                rightIn,
+                rightOut
             };
             Connections = new SMatrix(allPins);
             var connectionweights = new Dictionary<(Guid, Guid), Complex>
             {
-                { (PinIdLeft(), PinIdRight() ), new Complex(1, 0) },
-                { (PinIdLeft(), PinIdLeft()), new Complex(0, 0) },
-                { (PinIdRight() , PinIdRight() ), new Complex(0, 0) },
-                { (PinIdRight(), PinIdLeft() ), new Complex(1, 0) },
+                { (leftIn, rightOut ), new Complex(1, 0) },
+                { (rightIn, leftOut ), new Complex(1, 0) },
             };
 
             Connections.SetValues(connectionweights);

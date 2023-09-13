@@ -80,10 +80,10 @@ namespace TransferFunction
             return sysMat;
         }
 
-        // n is the number of timesteps to move forward "n=3" would return the light propagation after 3 steps.
-        public void CalculateLightPropagationAfterSteps(int n)
+        // n is the number of timesteps to move forward "steps=3" would return the light propagation after 3 steps.
+        public void GetLightPropagationAfterSteps(int steps)
         {
-            this.SMat = this.SMat.Power(n);
+            this.SMat = this.SMat.Power(steps);
         }
 
         public override string ToString()
@@ -94,7 +94,7 @@ namespace TransferFunction
             result.Append("|\t");
             foreach (var pin in PinReference)
             {
-                result.Append(pin.ToString().Substring(0, 6) + "\t");  // Just showing first 6 chars of GUID for brevity
+                result.Append(pin.ToString().Substring(0, 6) + "\t\t");  // Just showing first 6 chars of GUID for brevity
             }
             result.AppendLine("|");
 

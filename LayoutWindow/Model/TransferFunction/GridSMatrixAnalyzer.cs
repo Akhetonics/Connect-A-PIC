@@ -29,11 +29,18 @@ namespace ConnectAPIC.Scenes.TransferFunction
             this.grid = grid;
         }
 
-        // calculates the light intensity and phase at a given PIN-ID for both light-flow-directions "in" and "out"
-        //public Dictionary<Guid, LightFlow> CalculateLightPropagation()
-        //{
-
-        //}
+        // calculates the light intensity and phase at a given PIN-ID for both light-flow-directions "in" and "out" for a given period of steps
+        public Dictionary<(Guid,Guid), Complex> CalculateLightPropagation(int stepCount)
+        {
+            var SMatrix = CreateSystemSMatrix();
+            var AllStepsSMatrix = CreateSystemSMatrix();
+            for(int i = 0; i < stepCount; i++)
+            {
+                SMatrix.GetLightPropagationAfterSteps(i);
+                AllStepsSMatrix.SMat += SMatrix.SMat;
+            }
+            return AllStepsSMatrix.GetNonNullValues();
+        }
         public SMatrix CreateSystemSMatrix()
         {
             CalcAllConnectionsBetweenComponents();
@@ -92,8 +99,7 @@ namespace ConnectAPIC.Scenes.TransferFunction
                 Pin foreignPin = foreignTile.GetPinAt(foreignPinSide);
                 if (foreignPin == null) continue;
                 
-                InterComponentConnections.Add((currentPin.ID, foreignPin.ID), 1);
-                
+                InterComponentConnections.Add((currentPin.IDOutFlow, foreignPin.IDInFlow), 1);
             }
         }
 

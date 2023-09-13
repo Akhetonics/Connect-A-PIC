@@ -86,21 +86,37 @@ namespace ConnectAPIC.Scenes.Component
             }
             return part;
         }
-        public Guid PinIdRight(int offsetX = 0, int offsetY = 0)
+        public Guid PinIdRightIn(int offsetX = 0, int offsetY = 0)
         {
-            return Parts[offsetX, offsetY].GetPinAt(RectSide.Right).ID;
+            return Parts[offsetX, offsetY].GetPinAt(RectSide.Right).IDInFlow;
         }
-        public Guid PinIdDown(int offsetX = 0, int offsetY = 0)
+        public Guid PinIdRightOut(int offsetX = 0, int offsetY = 0)
         {
-            return Parts[offsetX, offsetY].GetPinAt(RectSide.Down).ID;
+            return Parts[offsetX, offsetY].GetPinAt(RectSide.Right).IDOutFlow;
         }
-        public Guid PinIdLeft(int offsetX=0, int offsetY=0)
+        public Guid PinIdDownIn(int offsetX = 0, int offsetY = 0)
         {
-            return Parts[offsetX, offsetY].GetPinAt(RectSide.Left).ID;
+            return Parts[offsetX, offsetY].GetPinAt(RectSide.Down).IDInFlow;
         }
-        public Guid PinIdUp(int offsetX = 0, int offsetY = 0)
+        public Guid PinIdDownOut(int offsetX = 0, int offsetY = 0)
         {
-            return Parts[offsetX, offsetY].GetPinAt(RectSide.Up).ID;
+            return Parts[offsetX, offsetY].GetPinAt(RectSide.Down).IDOutFlow;
+        }
+        public Guid PinIdLeftIn(int offsetX=0, int offsetY=0)
+        {
+            return Parts[offsetX, offsetY].GetPinAt(RectSide.Left).IDInFlow;
+        }
+        public Guid PinIdLeftOut(int offsetX = 0, int offsetY = 0)
+        {
+            return Parts[offsetX, offsetY].GetPinAt(RectSide.Left).IDOutFlow;
+        }
+        public Guid PinIdUpIn(int offsetX = 0, int offsetY = 0)
+        {
+            return Parts[offsetX, offsetY].GetPinAt(RectSide.Up).IDInFlow;
+        }
+        public Guid PinIdUpOut(int offsetX = 0, int offsetY = 0)
+        {
+            return Parts[offsetX, offsetY].GetPinAt(RectSide.Up).IDOutFlow;
         }
         public override string ToString()
         {

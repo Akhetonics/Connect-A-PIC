@@ -188,10 +188,10 @@ scale = Vector2(0.98, 0.88)
 
 [node name="AnimationOverlayTest" type="TextureRect" parent="Templates/BackBufferCopy2"]
 material = SubResource("ShaderMaterial_03ckl")
-offset_left = -23.4693
-offset_top = 107.955
-offset_right = 76.5307
-offset_bottom = 183.955
+offset_left = -15.3061
+offset_top = 94.3182
+offset_right = 84.6939
+offset_bottom = 170.318
 texture = ExtResource("8_y1c58")
 
 [node name="ComponentTemplates" type="Node" parent="."]
