@@ -1,3 +1,4 @@
+using ConnectAPIC.LayoutWindow.Model.Helpers;
 using ConnectAPIC.Scenes.Component;
 using ConnectAPIC.Scenes.TransferFunction;
 using Model;
@@ -38,6 +39,7 @@ namespace UnitTests
             // first I might want to create a grid and some components.
             
         }
+        
         [Fact]
         public void TestSMatrixForGrid()
         {
@@ -50,15 +52,15 @@ namespace UnitTests
             grid.PlaceComponent(1, 3, directionalCoupler);
             grid.PlaceComponent(3, 3, Grating);
             var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid);
-            var systemMatrixConnections = gridSMatrixAnalyzer.CalculateLightPropagation(100);
+            var systemMatrixConnections = gridSMatrixAnalyzer.CalculateLightPropagation(3);
 
             // test straightcomponent light throughput
             var straightCompLightVal = systemMatrixConnections[(straight.PinIdLeftIn(), straight.PinIdRightOut())];
 
             // test whole circuit's light throughput
             var connectionPairFromBeginningToEndComponent = (straight.PinIdLeftIn(), Grating.PinIdLeftOut());
-            string debugInfo = systemMatrixConnections.ToString() ?? "";
-            debugInfo += gridSMatrixAnalyzer.CreateSystemSMatrix().ToString().Replace("+0,0i" , "\t");
+            string debugInfo = systemMatrixConnections.ConvertToString() ?? "";
+            debugInfo += "\n" + gridSMatrixAnalyzer.CreateSystemSMatrix().ToString(true);
             // connections I would expect are:
             // straight to directional
             var straightToDirectionalVal = systemMatrixConnections[(straight.PinIdLeftIn() , directionalCoupler.PinIdRightOut(1,0))];

@@ -1,10 +1,10 @@
 using MathNet.Numerics.LinearAlgebra;
-using System.Numerics;
 using System.Collections.Generic;
 using System;
 using System.Linq;
 using ConnectAPIC.Scenes.Component;
 using System.Text;
+using System.Numerics;
 
 namespace TransferFunction
 {
@@ -81,12 +81,22 @@ namespace TransferFunction
         }
 
         // n is the number of timesteps to move forward "steps=3" would return the light propagation after 3 steps.
-        public void GetLightPropagationAfterSteps(int steps)
+        public MathNet.Numerics.LinearAlgebra.Vector<Complex> GetLightPropagationAfterSteps(MathNet.Numerics.LinearAlgebra.Vector<Complex> inputVector , int steps)
         {
-            this.SMat = this.SMat.Power(steps);
+            if (steps < 1) return null;
+            var inputAfterSteps = this.SMat * inputVector;
+            for ( int i = 1; i < steps; i++)
+            {
+                inputAfterSteps = this.SMat * inputVector + inputAfterSteps;
+            }
+            return inputAfterSteps;
         }
 
         public override string ToString()
+        {
+            return ToString(false);
+        }
+        public string ToString(bool leaveOutImaginary )
         {
             var result = new StringBuilder();
 
@@ -94,7 +104,11 @@ namespace TransferFunction
             result.Append("|\t");
             foreach (var pin in PinReference)
             {
-                result.Append(pin.ToString().Substring(0, 6) + "\t\t");  // Just showing first 6 chars of GUID for brevity
+                result.Append(pin.ToString()[..6] + "\t");  // Just showing first 6 chars of GUID for brevity
+                if (leaveOutImaginary == false)
+                {
+                    result.Append('\t');
+                }
             }
             result.AppendLine("|");
 
@@ -105,7 +119,14 @@ namespace TransferFunction
                 for (int j = 0; j < size; j++)
                 {
                     var complexValue = SMat[i, j];
-                    result.Append($"{complexValue.Real:F2}+{complexValue.Imaginary:F1}i\t");
+                    if (leaveOutImaginary)
+                    {
+                        result.Append($"{complexValue.Real:F2}\t");
+                    }
+                    else
+                    {
+                        result.Append($"{complexValue.Real:F2}+{complexValue.Imaginary:F1}i\t");
+                    }
                 }
                 result.AppendLine("|");
             }

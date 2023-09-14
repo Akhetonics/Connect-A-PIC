@@ -33,13 +33,10 @@ namespace ConnectAPIC.Scenes.TransferFunction
         public Dictionary<(Guid,Guid), Complex> CalculateLightPropagation(int stepCount)
         {
             var SMatrix = CreateSystemSMatrix();
-            var AllStepsSMatrix = CreateSystemSMatrix();
-            for(int i = 0; i < stepCount; i++)
-            {
-                SMatrix.GetLightPropagationAfterSteps(i);
-                AllStepsSMatrix.SMat += SMatrix.SMat;
-            }
-            return AllStepsSMatrix.GetNonNullValues();
+            
+                SMatrix.GetLightPropagationAfterSteps();
+            
+            return SMatrix.GetNonNullValues();
         }
         public SMatrix CreateSystemSMatrix()
         {
