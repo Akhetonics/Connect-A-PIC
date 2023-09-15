@@ -34,19 +34,11 @@ namespace ConnectAPic.LayoutWindow
 			if (instance == null)
 			{
 				instance = this;
-				var StandardPorts = new List<ExternalPort>() {
-					new StandardInput("io0",LightCycleColor.Red , 0,2),
-					new StandardInput("io1",LightCycleColor.Green, 0,3),
-					new StandardInput("io2",LightCycleColor.Blue, 0,4),
-					new StandardOutput("io3",5),
-					new StandardOutput("io4",6),
-					new StandardOutput("io5",7),
-				};
 				GridView = GetNode<GridView>(GridViewPath);
-				Grid = new Grid(FieldWidth, FieldHeight, StandardPorts);
+				Grid = new Grid(FieldWidth, FieldHeight);
 				GridViewModel = new GridViewModel(GridView, Grid);
 				GridView.Initialize(GridViewModel);
-				InitializeExternalPortViews(StandardPorts);
+				InitializeExternalPortViews(Grid.ExternalPorts);
 			}
 			else
 			{

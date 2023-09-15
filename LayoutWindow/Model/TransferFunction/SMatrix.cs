@@ -13,6 +13,7 @@ namespace TransferFunction
         public Matrix<Complex> SMat;
         public readonly List<Guid> PinReference;
         private readonly int size;
+        public const int MaxToStringPinGuidSize = 6;
 
         public SMatrix(List<Guid> allPinsInGrid)
         {
@@ -81,15 +82,28 @@ namespace TransferFunction
         }
 
         // n is the number of timesteps to move forward "steps=3" would return the light propagation after 3 steps.
-        public MathNet.Numerics.LinearAlgebra.Vector<Complex> GetLightPropagationAfterSteps(MathNet.Numerics.LinearAlgebra.Vector<Complex> inputVector , int steps)
+        public Dictionary<Guid,Complex> GetLightPropagation(MathNet.Numerics.LinearAlgebra.Vector<Complex> inputVector , int maxSteps)
         {
-            if (steps < 1) return null;
+            if (maxSteps < 1) return null;
             var inputAfterSteps = this.SMat * inputVector;
-            for ( int i = 1; i < steps; i++)
+            for (int i = 1; i < maxSteps; i++)
             {
-                inputAfterSteps = this.SMat * inputVector + inputAfterSteps;
+                var oldInputAfterSteps = inputAfterSteps;
+                inputAfterSteps = this.SMat * inputAfterSteps + inputVector;
+                if (oldInputAfterSteps.Equals(inputAfterSteps)) break;
             }
-            return inputAfterSteps;
+
+            return ConvertToDictWithGuids(inputAfterSteps);
+        }
+
+        private Dictionary<Guid, Complex> ConvertToDictWithGuids(MathNet.Numerics.LinearAlgebra.Vector<Complex> lightPropagationVector)
+        {
+            var GuidsAndLightValues = new Dictionary<Guid, Complex>();
+            for (int i = 0; i < lightPropagationVector.Count; i++)
+            {
+                GuidsAndLightValues.Add(PinReference[i], lightPropagationVector[i]);
+            }
+            return GuidsAndLightValues;
         }
 
         public override string ToString()
@@ -102,24 +116,20 @@ namespace TransferFunction
 
             // Add header with the PinReference IDs for clarity
             result.Append("|\t");
-            foreach (var pin in PinReference)
+            foreach (var pinGuid in PinReference)
             {
-                result.Append(pin.ToString()[..6] + "\t");  // Just showing first 6 chars of GUID for brevity
-                if (leaveOutImaginary == false)
-                {
-                    result.Append('\t');
-                }
+                result.Append(pinGuid.ToString()[..MaxToStringPinGuidSize] + "\t");  // Just showing first 6 chars of GUID for brevity
             }
             result.AppendLine("|");
 
             // Now, iterate over each row of the matrix
             for (int i = 0; i < size; i++)
             {
-                result.Append("|\t");
+                result.Append($"{PinReference[i].ToString()[..MaxToStringPinGuidSize]}\t");
                 for (int j = 0; j < size; j++)
                 {
                     var complexValue = SMat[i, j];
-                    if (leaveOutImaginary)
+                    if (leaveOutImaginary || complexValue.Imaginary == 0)
                     {
                         result.Append($"{complexValue.Real:F2}\t");
                     }

@@ -20,5 +20,16 @@ namespace ConnectAPIC.LayoutWindow.Model.Helpers
 
             return "[" + entries + "]";
         }
+        public static string ConvertToString(this Dictionary<Guid, Complex> dict)
+        {
+            var entries = new StringBuilder();
+
+            foreach (var kvp in dict)
+            {
+                entries.AppendLine($"(({kvp.Key.ToString()[..6]}), {kvp.Value})");
+            }
+
+            return "[" + entries + "]";
+        }
     }
 }

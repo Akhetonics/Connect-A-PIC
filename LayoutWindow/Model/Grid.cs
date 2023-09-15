@@ -3,14 +3,35 @@ using ConnectAPIC.LayoutWindow.Model.ExternalPorts;
 using ConnectAPIC.LayoutWindow.Model.Helpers;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scenes.Component;
+using ConnectAPIC.Scenes.Tiles;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Numerics;
 using Tiles;
+using TransferFunction;
 
 namespace Model
 {
+    public static class UsedStandardInputConverter
+    {
+        public static MathNet.Numerics.LinearAlgebra.Vector<Complex> ToVector(List<UsedStandardInput> usedInputs , SMatrix SystemSMatrix)
+        {
+            var inputVector = MathNet.Numerics.LinearAlgebra.Vector<Complex>.Build.Dense(SystemSMatrix.SMat.RowCount);
+            foreach (var inputData in usedInputs)
+            {
+                var rowNr = SystemSMatrix.PinReference.IndexOf(inputData.AttachedComponentPinId);
+                inputVector[rowNr] = inputData.Input.LightInflow;
+            }
+            return inputVector;
+        }
+    }
+    public class UsedStandardInput
+    {
+        public StandardInput Input { get; set; }
+        public Guid AttachedComponentPinId { get; set; }
 
+    }
     public class Grid
     {
         public delegate void OnGridCreatedHandler(Tile[,] Tiles);
@@ -27,28 +48,41 @@ namespace Model
         public int Height { get; private set; }
         public const int MinHeight = 10;
 
-        public Grid(int width, int height) : this(width, height, null)
-        {
-            int CenterY = height / 2;
-            var StandardPorts = new List<ExternalPort>() {
-                    new StandardInput("io1",LightCycleColor.Red , 0,CenterY-5),
-                    new StandardInput("io2",LightCycleColor.Green, 0,CenterY-3),
-                    new StandardInput("io3",LightCycleColor.Blue, 0,CenterY-1),
-                    new StandardOutput("io4",CenterY+1),
-                    new StandardOutput("io5",CenterY+3),
-                    new StandardOutput("io6",CenterY+5),
-                };
-            ExternalPorts = StandardPorts;
-        }
-        public Grid(int width, int height, List<ExternalPort> externalPorts)
+        public Grid(int width, int height)
         {
             if (height < MinHeight) height = MinHeight;
             Width = width;
             Height = height;
-            ExternalPorts = externalPorts;
-            CreateGrid();
+            ExternalPorts = new List<ExternalPort>() {
+                    new StandardInput("io0",LightCycleColor.Red  , 0, 2,1),
+                    new StandardInput("io1",LightCycleColor.Green, 0, 3,1),
+                    new StandardInput("io2",LightCycleColor.Blue , 0, 4,1),
+                    new StandardOutput("io3",5),
+                    new StandardOutput("io4",6),
+                    new StandardOutput("io5",7),
+                };
+            GenerateAllTiles();
         }
-        private void CreateGrid()
+        public List<UsedStandardInput> GetUsedStandardInputs()
+        {
+            List<UsedStandardInput> inputsFound = new();
+            foreach (var port in ExternalPorts)
+            {
+                if(port is StandardInput input)
+                {
+                    var inputY = input.TilePositionY;
+                    if (IsInGrid(0, inputY) == false) continue;
+                    if (Tiles[0, inputY] == null) continue;
+                    if (Tiles[0, inputY].Component == null) continue;
+                    if (Tiles[0, inputY].Component.Parts[0,0].GetPinAt(RectSide.Left) == null) continue;
+
+                    Guid pinId = Tiles[0, inputY].Component.PinIdLeftIn();
+                    inputsFound.Add(new UsedStandardInput() { AttachedComponentPinId= pinId, Input=input });
+                }
+            }
+            return inputsFound;
+        }
+        private void GenerateAllTiles()
         {
             Tiles = new Tile[Width, Height];
             for (int x = 0; x < Width; x++)
@@ -106,7 +140,7 @@ namespace Model
                 return false;
             }
         }
-        public bool IsInGrid(int x, int y, int width=1, int height=1)
+        public bool IsInGrid(int x, int y, int width = 1, int height = 1)
         {
             return x >= 0 && y >= 0 && x + width <= this.Width && y + height <= this.Height;
         }

@@ -2,11 +2,14 @@
 using ConnectAPIC.Scenes.Component;
 using ConnectAPIC.Scenes.Tiles;
 using Godot;
+using MathNet.Numerics.LinearAlgebra;
 using Model;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Tiles;
@@ -23,33 +26,47 @@ namespace ConnectAPIC.Scenes.TransferFunction
     {
         private readonly Grid grid;
         private Dictionary<(Guid, Guid), Complex> InterComponentConnections;
-
+        public SMatrix SystemSMatrix { get; private set; }
+        private Dictionary<Guid, Complex> lightPropagation;
+        public Dictionary<Guid,Complex> LightPropagation { 
+            get {
+                if (lightPropagation == null)
+                {
+                    lightPropagation = ReCalculateLightPropagation();
+                }
+                return lightPropagation;
+            } }
         public GridSMatrixAnalyzer(Grid grid)
         {
             this.grid = grid;
+            UpdateSystemSMatrix();
         }
 
         // calculates the light intensity and phase at a given PIN-ID for both light-flow-directions "in" and "out" for a given period of steps
-        public Dictionary<(Guid,Guid), Complex> CalculateLightPropagation(int stepCount)
+        private Dictionary<Guid,Complex> ReCalculateLightPropagation()
         {
-            var SMatrix = CreateSystemSMatrix();
-            
-                SMatrix.GetLightPropagationAfterSteps();
-            
-            return SMatrix.GetNonNullValues();
+            var stepCount = SystemSMatrix.PinReference.Count() * 2;
+            var usedInputs = grid.GetUsedStandardInputs();
+            var inputVector = UsedStandardInputConverter.ToVector(usedInputs, SystemSMatrix);
+            return SystemSMatrix.GetLightPropagation(inputVector, stepCount);
         }
-        public SMatrix CreateSystemSMatrix()
+
+        private void UpdateSystemSMatrix()
         {
             CalcAllConnectionsBetweenComponents();
             var allComponentsSMatrices = GetAllComponentsSMatrices();
-            var allUsedPinIDs = InterComponentConnections
-                .SelectMany(c => new[] { c.Key.Item1, c.Key.Item2 })
-                .Distinct()
-                .ToList();
-            var allConnectionsSMatrix = new SMatrix(allUsedPinIDs); 
+            var allUsedPinIDs = InterComponentConnections.SelectMany(c => new[] { c.Key.Item1, c.Key.Item2 }).Distinct().ToList();
+            var allConnectionsSMatrix = new SMatrix(allUsedPinIDs);
             allConnectionsSMatrix.SetValues(InterComponentConnections);
             allComponentsSMatrices.Add(allConnectionsSMatrix);
-            return SMatrix.CreateSystemSMatrix(allComponentsSMatrices);
+            SystemSMatrix = SMatrix.CreateSystemSMatrix(allComponentsSMatrices);
+            
+            string Debug_allConnections = GetSMatrixWithPinNames(allConnectionsSMatrix);
+            string Degug_FirstCompMatrix = GetSMatrixWithPinNames(allComponentsSMatrices[0]);
+            string Degug_2CompMatrix = GetSMatrixWithPinNames(allComponentsSMatrices[1]);
+            string Degug_3CompMatrix = GetSMatrixWithPinNames(allComponentsSMatrices[2]);
+            string Degug_SystemSMatrix = GetSMatrixWithPinNames(SystemSMatrix);
+
         }
         private List<SMatrix> GetAllComponentsSMatrices()
         {
@@ -105,6 +122,57 @@ namespace ConnectAPIC.Scenes.TransferFunction
             if (foreignTile == null) return false;
             var centeredComponent = grid.Tiles[gridx, gridy].Component;
             return centeredComponent != foreignTile.Component;
+        }
+
+        public override string ToString()
+        {
+            var allPinsInField = GetAllPinShortNames();
+            var outputstring = GetSMatrixWithPinNames(this.SystemSMatrix);
+            outputstring += "\n\nLightPropagationVector:\n\n";
+
+            foreach (var lightIntensity in lightPropagation)
+            {
+                outputstring += $"({allPinsInField[lightIntensity.Key]}\t{lightIntensity.Key}\t{lightIntensity.Value})\n";
+            }
+
+            return outputstring;
+        }
+        public string GetSMatrixWithPinNames(SMatrix matrix)
+        {
+            if (matrix == null) return "" ;
+            // get the smatrix tostring of the whole systemmatrix, also get the LightPropagation vector, replace the IDs of the pins with the name of the pin
+            var allPinsInField = GetAllPinShortNames();
+            var outputstring = matrix.ToString();
+            foreach (Guid guid in matrix.PinReference)
+            {
+                outputstring = outputstring.Replace(guid.ToString()[..SMatrix.MaxToStringPinGuidSize], allPinsInField[guid]);
+            }
+            return outputstring;
+        }
+        private Dictionary<Guid, string> GetAllPinShortNames()
+        {
+            Dictionary<Guid, string> PinsProcessed = new();
+            for (int x = 0; x < grid.Width; x++)
+            {
+                for (int y = 0; y < grid.Height; y++)
+                {
+                    var component = grid.GetComponentAt(x, y);
+                    if (component == null) continue;
+                    var part = component.GetPartAtGridXY(x, y);
+                    foreach (RectSide side in Enum.GetValues(typeof(RectSide)))
+                    {
+                        var pin = part.GetPinAt(side);
+                        if (pin == null) continue;
+                        var componentTypeName = component.GetType().Name[..3];
+                        var sideShort = Enum.GetName(typeof(RectSide), side)[..1];
+                        var pinname = $"{componentTypeName}[{x},{y}]{sideShort}i";
+                        PinsProcessed.Add(pin.IDInFlow, pinname);
+                        pinname = $"{componentTypeName}[{x},{y}]{sideShort}o";
+                        PinsProcessed.Add(pin.IDOutFlow, pinname);
+                    }
+                }
+            }
+            return PinsProcessed;
         }
     }
 }
