@@ -1,3 +1,4 @@
+using ConnectAPIC.LayoutWindow.Model.ExternalPorts;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
@@ -62,17 +63,17 @@ namespace ConnectAPIC.LayoutWindow.View
 		{
 			if (button_pressed)
 			{
-				// recalculate SMatrix in Model
-				// calculate the SMatrices for the exponent 1-20 and then sum up the vectors 
+				var LightVectorRed = ViewModel.GetLightVector(LightColor.Red);
+				var LightVectorGreen = ViewModel.GetLightVector(LightColor.Green);
+				var LightVectorBlue = ViewModel.GetLightVector(LightColor.Blue);
 
-				// assign a value to every Pin
-				// display the Values here.
+				// each ComponentView should be able to display the LightVector
+				// calculate LightVectorRed, Green, Blue that shows the values on each pin on grid.
 			}
 
 			// es soll nun ein shader ueber alle tiles gelegt werden 
 			// Eine Animation mit den passenden Bildern soll ueber jedem Tile dargestellt sein
 			// Der Alphakanal der Animationsbilder soll der Lichtintensitaet entsprechen, oder?
-			// Light-flow-richtung kann ignoriert werden
 			// animations-folge soll ge-offsettet werden nach der Phase des lichtes.
 
 		}

@@ -73,5 +73,14 @@ namespace ConnectAPIC.LayoutWindow.View
             
             return copy;
         }
+
+        public void DisplayLightVector()
+        {
+            // display the light animation
+        }
+        public void HideLightVector()
+        {
+            // hide it again
+        }
     }
 }

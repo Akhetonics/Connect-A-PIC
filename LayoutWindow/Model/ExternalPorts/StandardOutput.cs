@@ -2,7 +2,7 @@
 {
     public class StandardOutput : ExternalPort
     {
-        public StandardOutput(string pinName, int tilePositionY) : base(pinName, LightCycleColor.Red, 0, tilePositionY)
+        public StandardOutput(string pinName, int tilePositionY) : base(pinName, LightColor.Red, 0, tilePositionY)
         {
         }
     }

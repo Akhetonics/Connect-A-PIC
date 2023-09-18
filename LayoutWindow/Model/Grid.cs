@@ -31,9 +31,9 @@ namespace Model
             Width = width;
             Height = height;
             ExternalPorts = new List<ExternalPort>() {
-                    new StandardInput("io0",LightCycleColor.Red  , 0, 2,1),
-                    new StandardInput("io1",LightCycleColor.Green, 0, 3,1),
-                    new StandardInput("io2",LightCycleColor.Blue , 0, 4,1),
+                    new StandardInput("io0",LightColor.Red  , 0, 2,1),
+                    new StandardInput("io1",LightColor.Green, 0, 3,1),
+                    new StandardInput("io2",LightColor.Blue , 0, 4,1),
                     new StandardOutput("io3",5),
                     new StandardOutput("io4",6),
                     new StandardOutput("io5",7),

@@ -53,10 +53,10 @@ namespace ConnectAPic.LayoutWindow
 				TextureRect view;
 				if (port is StandardInput input)
 				{
-					if(input.Color == LightCycleColor.Red)
+					if(input.Color == LightColor.Red)
 					{
 						view = ExternalInputRedTemplate.Duplicate() as TextureRect;
-					} else if(input.Color == LightCycleColor.Green)
+					} else if(input.Color == LightColor.Green)
 					{
 						view = ExternalInputGreenTemplate.Duplicate() as TextureRect;
 					}

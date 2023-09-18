@@ -1,15 +1,18 @@
-﻿using ConnectAPIC.LayoutWindow.Model.Helpers;
+﻿using ConnectAPIC.LayoutWindow.Model.ExternalPorts;
+using ConnectAPIC.LayoutWindow.Model.Helpers;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scenes.Compiler;
 using ConnectAPIC.Scenes.Component;
 using ConnectAPIC.Scenes.Tiles;
+using ConnectAPIC.Scenes.TransferFunction;
 using Godot;
 using Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
@@ -135,6 +138,13 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
                 }
             }
             return ComponentView;
+        }
+
+        public Dictionary<Guid, Complex> GetLightVector(LightColor color)
+        {
+            
+            var analyzer = new GridSMatrixAnalyzer(this.Grid);
+            return analyzer.LightPropagation;
         }
     }
 }

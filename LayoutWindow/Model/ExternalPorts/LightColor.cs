@@ -1,6 +1,6 @@
 ﻿namespace ConnectAPIC.LayoutWindow.Model.ExternalPorts
 {
-    public enum LightCycleColor
+    public enum LightColor
     {
         Red,
         Green,

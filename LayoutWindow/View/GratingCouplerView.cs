@@ -21,6 +21,9 @@ namespace ConnectAPIC.LayoutWindow.View
 			base._Ready();
 			Textures[0, 0] = Texture;
 		}
-	   
+	   public void DisplayLightVector ()
+		{
+
+		}
 	}
 }

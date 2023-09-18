@@ -2,7 +2,7 @@
 {
     public abstract class ExternalPort
     {
-        public ExternalPort(string pinName, LightCycleColor color, int waveLength, int tilePositionY)
+        public ExternalPort(string pinName, LightColor color, int waveLength, int tilePositionY)
         {
             PinName = pinName;
             Color = color;
@@ -11,7 +11,7 @@
         }
 
         public string PinName { get; }
-        public LightCycleColor Color { get; }
+        public LightColor Color { get; }
         public int WaveLength { get; }
         public int TilePositionY { get; }
     }

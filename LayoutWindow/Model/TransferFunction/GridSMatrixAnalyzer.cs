@@ -30,9 +30,13 @@ namespace ConnectAPIC.Scenes.TransferFunction
                 lightPropagation ??= ReCalculateLightPropagation();
                 return lightPropagation;
             } }
-        public GridSMatrixAnalyzer(Grid grid)
+
+        public LightColor InputLightColor { get; }
+
+        public GridSMatrixAnalyzer(Grid grid, LightColor inputLightColor)
         {
             this.Grid = grid;
+            InputLightColor = inputLightColor;
             UpdateSystemSMatrix();
         }
 
@@ -40,7 +44,7 @@ namespace ConnectAPIC.Scenes.TransferFunction
         private Dictionary<Guid,Complex> ReCalculateLightPropagation()
         {
             var stepCount = SystemSMatrix.PinReference.Count() * 2;
-            var usedInputs = Grid.GetUsedStandardInputs();
+            var usedInputs = Grid.GetUsedStandardInputs().Where(i=>i.Input.Color == InputLightColor).ToList();
             var inputVector = UsedStandardInputConverter.ToVector(usedInputs, SystemSMatrix);
             return SystemSMatrix.GetLightPropagation(inputVector, stepCount);
         }
