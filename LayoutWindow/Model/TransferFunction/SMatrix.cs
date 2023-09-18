@@ -2,7 +2,6 @@ using MathNet.Numerics.LinearAlgebra;
 using System.Collections.Generic;
 using System;
 using System.Linq;
-using ConnectAPIC.Scenes.Component;
 using System.Text;
 using System.Numerics;
 
@@ -46,8 +45,8 @@ namespace TransferFunction
             {
                 if (PinReference.Contains(relation.Item1) && PinReference.Contains(relation.Item2))
                 {
-                    int row = PinReference.IndexOf(relation.Item1);
-                    int col = PinReference.IndexOf(relation.Item2);
+                    int col = PinReference.IndexOf(relation.Item1);
+                    int row = PinReference.IndexOf(relation.Item2);
                     this.SMat[row, col] = transfers[relation];
                 }
             }
@@ -128,7 +127,7 @@ namespace TransferFunction
                 result.Append($"{PinReference[i].ToString()[..MaxToStringPinGuidSize]}\t");
                 for (int j = 0; j < size; j++)
                 {
-                    var complexValue = SMat[i, j];
+                    var complexValue = SMat[i,j];
                     if (leaveOutImaginary || complexValue.Imaginary == 0)
                     {
                         result.Append($"{complexValue.Real:F2}\t");

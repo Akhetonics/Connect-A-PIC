@@ -1,37 +1,14 @@
 using ConnectAPIC.LayoutWindow.Model.Component;
 using ConnectAPIC.LayoutWindow.Model.ExternalPorts;
 using ConnectAPIC.LayoutWindow.Model.Helpers;
-using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scenes.Component;
 using ConnectAPIC.Scenes.Tiles;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Numerics;
 using Tiles;
-using TransferFunction;
 
 namespace Model
 {
-    public static class UsedStandardInputConverter
-    {
-        public static MathNet.Numerics.LinearAlgebra.Vector<Complex> ToVector(List<UsedStandardInput> usedInputs , SMatrix SystemSMatrix)
-        {
-            var inputVector = MathNet.Numerics.LinearAlgebra.Vector<Complex>.Build.Dense(SystemSMatrix.SMat.RowCount);
-            foreach (var inputData in usedInputs)
-            {
-                var rowNr = SystemSMatrix.PinReference.IndexOf(inputData.AttachedComponentPinId);
-                inputVector[rowNr] = inputData.Input.LightInflow;
-            }
-            return inputVector;
-        }
-    }
-    public class UsedStandardInput
-    {
-        public StandardInput Input { get; set; }
-        public Guid AttachedComponentPinId { get; set; }
-
-    }
     public class Grid
     {
         public delegate void OnGridCreatedHandler(Tile[,] Tiles);
@@ -75,8 +52,8 @@ namespace Model
                     if (Tiles[0, inputY] == null) continue;
                     if (Tiles[0, inputY].Component == null) continue;
                     if (Tiles[0, inputY].Component.Parts[0,0].GetPinAt(RectSide.Left) == null) continue;
-
-                    Guid pinId = Tiles[0, inputY].Component.PinIdLeftIn();
+                    var connectedPartOfComponent = Tiles[0, inputY].Component.GetPartAtGridXY(0, inputY);
+                    Guid pinId = connectedPartOfComponent.GetPinAt(RectSide.Left).IDInFlow;
                     inputsFound.Add(new UsedStandardInput() { AttachedComponentPinId= pinId, Input=input });
                 }
             }

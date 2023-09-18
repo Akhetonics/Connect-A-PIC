@@ -17,24 +17,28 @@ namespace UnitTests
         {
             var directionalCoupler = new DirectionalCoupler();
             var grid = new Grid(20,10);
-            grid.PlaceComponent(1, grid.ExternalPorts[0].TilePositionY, directionalCoupler);
+            grid.PlaceComponent(0, grid.ExternalPorts[0].TilePositionY, directionalCoupler);
             var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid);
             var lightPropagation = gridSMatrixAnalyzer.LightPropagation;
 
             // test directionalCoupler
-            var directionalCouplerLightIn = lightPropagation[directionalCoupler.PinIdRightIn()];
-            var directionalCouplerLightOut = lightPropagation[directionalCoupler.PinIdLeftOut(1,0)];
-            Assert.True(directionalCouplerLightIn.Real == 1);
-            Assert.True(directionalCouplerLightOut.Real == 0.5);
-        }
+            var allComponentsSMatrices = gridSMatrixAnalyzer.GetAllComponentsSMatrices();
+            var debug_directionalComponentMatrix = gridSMatrixAnalyzer.ToString();
+            var UpperToRightConnection = allComponentsSMatrices[0].GetNonNullValues().Where(e=>e.Key ==(directionalCoupler.PinIdLeftIn(0,0), directionalCoupler.PinIdRightOut(1, 0))).Single().Value;
+            var LowerToRightConnection = allComponentsSMatrices[0].GetNonNullValues().Where(e=>e.Key ==(directionalCoupler.PinIdLeftIn(0,1), directionalCoupler.PinIdRightOut(1, 1))).Single().Value;
+            var UpperToLeftConnection = allComponentsSMatrices[0].GetNonNullValues().Where(e=>e.Key ==(directionalCoupler.PinIdRightIn(1,0), directionalCoupler.PinIdLeftOut(0,0))).Single().Value;
+            var LowerToLeftConnection = allComponentsSMatrices[0].GetNonNullValues().Where(e=>e.Key ==(directionalCoupler.PinIdRightIn(1,1), directionalCoupler.PinIdLeftOut(0,1))).Single().Value;
 
-        [Fact] 
-        public void TestLightPropagationOverTime()
-        {
-            // I want to calculate the lightvalues at each PIN for the whole lifetime of the matrix.
-            // I will go from n = 1 to 200 and add all matrices to one and just get the light values for each pin
-            // first I might want to create a grid and some components.
-            
+            var directionalCouplerLightIn = lightPropagation[directionalCoupler.PinIdLeftIn()];
+            var directionalCouplerLightOut = lightPropagation[directionalCoupler.PinIdRightOut(1,0)];
+
+            Assert.True(UpperToRightConnection.Real == 0.5);
+            Assert.True(LowerToRightConnection.Real == 0.5);
+            Assert.True(UpperToLeftConnection.Real == 0.5);
+            Assert.True(LowerToLeftConnection.Real == 0.5);
+
+            Assert.True(directionalCouplerLightIn.Real == 1);
+            Assert.True(directionalCouplerLightOut.Real == 1);
         }
         
         [Fact]
@@ -46,22 +50,24 @@ namespace UnitTests
 
             var grid = new Grid(20, 10);
             grid.PlaceComponent(0, 3, straight);
-            grid.PlaceComponent(1, 3, directionalCoupler);
-            grid.PlaceComponent(3, 3, Grating);
+            grid.PlaceComponent(1, 3, Grating);
+
             var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid);
-            var systemMatrixConnections = gridSMatrixAnalyzer.LightPropagation;
+            var lightValues = gridSMatrixAnalyzer.LightPropagation;
+            var allComponentsSMatrices = gridSMatrixAnalyzer.GetAllComponentsSMatrices();
+            var Straight_LiRoConnection = allComponentsSMatrices[0].GetNonNullValues().Where(b => b.Key == (straight.PinIdLeftIn(), straight.PinIdRightOut()));
+            var Straight_RiLoConnection = allComponentsSMatrices[0].GetNonNullValues().Where(b => b.Key == (straight.PinIdRightIn(), straight.PinIdLeftOut()));
 
             // test straightcomponent light throughput
-            var straightCompLightVal = systemMatrixConnections[straight.PinIdRightOut()];
+            var straightCompLightVal = lightValues[straight.PinIdRightOut()];
 
             // test whole circuit's light throughput
-            var debugInfo = "\n" + gridSMatrixAnalyzer.ToString();
+            var circuitLightVal = lightValues[Grating.PinIdLeftIn()]; // the light flows into the grating and therefore leaves the circuit.
+            string all = gridSMatrixAnalyzer.ToString();
 
-            var gratingPinID = Grating.PinIdLeftOut();
-            var circuitLightVal = systemMatrixConnections[Grating.PinIdLeftOut()];
-            Assert.Contains(Grating.PinIdLeftOut(), systemMatrixConnections);
-            Assert.True(straightCompLightVal.Real > 0);
-            Assert.True(circuitLightVal.Real > 0 );
+            Assert.Contains(Grating.PinIdLeftOut(), lightValues);
+            Assert.True(straightCompLightVal.Real == 1);
+            Assert.True(circuitLightVal.Real == 1 );
         }
         [Fact]
         public void TestSystemSMatrixManually()
