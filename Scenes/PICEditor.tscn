@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://cu6wqy6xwjfo1"]
+[gd_scene load_steps=30 format=3 uid="uid://cu6wqy6xwjfo1"]
 
 [ext_resource type="Script" path="res://LayoutWindow/GameManager.cs" id="1_1g8p6"]
 [ext_resource type="Script" path="res://LayoutWindow/View/GridView.cs" id="1_2pqex"]
@@ -27,6 +27,7 @@
 [ext_resource type="Texture2D" uid="uid://uoowtaubmv1i" path="res://GFX/DirectionalCoupler/DirectionalCoupler.png" id="21_a2v5y"]
 [ext_resource type="Texture2D" uid="uid://d0hlmkhjg0k8h" path="res://GFX/DirectionalCoupler/DirectionalCoupler_10.png" id="21_qylg0"]
 [ext_resource type="Texture2D" uid="uid://dhrb4gn6u4xjf" path="res://GFX/DirectionalCoupler/DirectionalCoupler_11.png" id="22_tx2wv"]
+[ext_resource type="Texture2D" uid="uid://cwouvy31mb31m" path="res://GFX/Components/Ring Resonator/Overlay/Ring Resonator Overlay.png" id="28_oraxs"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_03ckl"]
 resource_local_to_scene = true
@@ -176,10 +177,10 @@ scale = Vector2(0.98, 0.88)
 
 [node name="AnimationOverlayTest" type="TextureRect" parent="Templates/BackBufferCopy"]
 material = SubResource("ShaderMaterial_03ckl")
-offset_left = -18.3673
-offset_top = 61.3636
-offset_right = 81.6327
-offset_bottom = 137.364
+offset_left = -71.4286
+offset_top = 90.9091
+offset_right = 28.5714
+offset_bottom = 166.909
 texture = ExtResource("8_y1c58")
 
 [node name="BackBufferCopy2" type="BackBufferCopy" parent="Templates"]
@@ -188,10 +189,10 @@ scale = Vector2(0.98, 0.88)
 
 [node name="AnimationOverlayTest" type="TextureRect" parent="Templates/BackBufferCopy2"]
 material = SubResource("ShaderMaterial_03ckl")
-offset_left = -15.3061
-offset_top = 94.3182
-offset_right = 84.6939
-offset_bottom = 170.318
+offset_left = 8.16336
+offset_top = 107.955
+offset_right = 108.163
+offset_bottom = 183.955
 texture = ExtResource("8_y1c58")
 
 [node name="ComponentTemplates" type="Node" parent="."]
@@ -315,6 +316,31 @@ stretch_mode = 2
 script = ExtResource("6_ay4pw")
 ElectricityPinTexture = ExtResource("7_uo1bp")
 LightPinTexture = ExtResource("5_lrhvy")
+
+[node name="Node" type="Node" parent="."]
+
+[node name="DirectionalCoupler00" type="Sprite2D" parent="Node"]
+position = Vector2(254, 457)
+texture = ExtResource("19_nqt60")
+
+[node name="DirectionalCoupler01" type="Sprite2D" parent="Node"]
+position = Vector2(250, 522)
+texture = ExtResource("20_msf2j")
+
+[node name="DirectionalCoupler10" type="Sprite2D" parent="Node"]
+position = Vector2(317, 459)
+texture = ExtResource("21_qylg0")
+
+[node name="DirectionalCoupler11" type="Sprite2D" parent="Node"]
+position = Vector2(316, 521)
+texture = ExtResource("22_tx2wv")
+
+[node name="TextureRect" type="TextureRect" parent="Node"]
+offset_left = 217.0
+offset_top = 421.0
+offset_right = 461.0
+offset_bottom = 487.0
+texture = ExtResource("28_oraxs")
 
 [connection signal="pressed" from="btnExportNazca" to="DragDropParent/Grid" method="_on_btn_export_nazca_pressed"]
 [connection signal="pressed" from="btnShowLightPropagation" to="DragDropParent/Grid" method="_on_btn_showLightPropagation_pressed"]

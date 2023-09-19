@@ -147,5 +147,50 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             MatrixAnalyzer ??= new GridSMatrixAnalyzer(this.Grid);
             return MatrixAnalyzer.CalculateLightPropagation(color);
         }
+
+        public void ShowLightPropagation(Dictionary<Guid, Complex> lightVectorRed, Dictionary<Guid, Complex> lightVectorGreen, Dictionary<Guid, Complex> lightVectorBlue)
+        {
+            // go through the whole grid and send all 
+            AssignLightToComponentViews(lightVectorRed, LightColor.Red);
+            AssignLightToComponentViews(lightVectorGreen, LightColor.Green);
+            AssignLightToComponentViews(lightVectorBlue, LightColor.Blue);
+        }
+
+        private void AssignLightToComponentViews(Dictionary<Guid, Complex> lightVectorRed , LightColor color)
+        {
+            for (int x = 0; x < Grid.Width; x++)
+            {
+                for (int y = 0; y < Grid.Height; y++)
+                {
+                    var componentModel = Grid.GetComponentAt(x, y);
+                    if (componentModel == null) continue;
+                    var part = componentModel.GetPartAtGridXY(x, y);
+                    foreach (var side in Enum.GetValues(typeof(RectSide)).OfType<RectSide>())
+                    {
+                        var pin = part.GetPinAt(side);
+                        var lightIntensityIn = lightVectorRed[pin.IDInFlow].Real;
+                        var lightPhaseIn = lightVectorRed[pin.IDInFlow].Phase;
+                        var lightIntensityOut = lightVectorRed[pin.IDOutFlow].Real;
+                        var lightPhaseOut = lightVectorRed[pin.IDOutFlow].Phase;
+                        var pinView = TileViews[x, y].GetPinAt(side);
+
+                        pinView.LightIn[color] = new Complex(lightIntensityIn, lightPhaseIn);
+                        pinView.LightOut[color] = new Complex(lightIntensityOut, lightPhaseOut);
+                    }
+                    TileViews[x, y].ComponentView.DisplayLightVector();
+                }
+            }
+        }
+
+        public void HideLightPropagation()
+        {
+            for (int x = 0; x < Grid.Width; x++)
+            {
+                for (int y = 0; y < Grid.Height; y++)
+                {
+                    TileViews[x, y].ComponentView.HideLightVector();
+                }
+            }
+        }
     }
 }

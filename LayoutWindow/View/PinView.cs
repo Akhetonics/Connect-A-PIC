@@ -1,12 +1,8 @@
+using ConnectAPIC.LayoutWindow.Model.ExternalPorts;
 using ConnectAPIC.Scenes.Component;
 using ConnectAPIC.Scenes.Tiles;
 using Godot;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Tiles;
 
 namespace ConnectAPIC.LayoutWindow.View
 {
@@ -15,10 +11,13 @@ namespace ConnectAPIC.LayoutWindow.View
 		[Export] protected Texture2D ElectricityPinTexture { get; set; }
 		[Export] protected Texture2D LightPinTexture { get; set; }
 		public static readonly int PinPixelSize = 6;
-
+		public Dictionary<LightColor, System.Numerics.Complex> LightIn { get; set; }
+		public Dictionary<LightColor,System.Numerics.Complex> LightOut { get; set; }
 		public PinView()
 		{
 			SetMatterType(MatterType.None);
+			LightIn = new() { { LightColor.Red, 0 } , { LightColor.Green, 0 } , { LightColor.Blue, 0 } };
+			LightOut = new() { { LightColor.Red, 0 } , { LightColor.Green, 0 } , { LightColor.Blue, 0 } };
 		}
 		public override void _Ready()
 		{
@@ -58,10 +57,10 @@ namespace ConnectAPIC.LayoutWindow.View
 						Texture = LightPinTexture;
 						break;
 					case MatterType.None:
-						Visible = false;
-						break;
 					default:
 						Visible = false;
+						LightIn = new() { { LightColor.Red, 0 }, { LightColor.Green, 0 }, { LightColor.Blue, 0 } };
+						LightOut = new() { { LightColor.Red, 0 }, { LightColor.Green, 0 }, { LightColor.Blue, 0 } };
 						break;
 				}
 			}
@@ -72,6 +71,8 @@ namespace ConnectAPIC.LayoutWindow.View
 			copy.ElectricityPinTexture = ElectricityPinTexture;
 			copy.LightPinTexture = LightPinTexture;
 			copy._Ready();
+			copy.LightIn = new Dictionary<LightColor, System.Numerics.Complex>(LightIn);
+			copy.LightOut = new Dictionary<LightColor, System.Numerics.Complex>(LightOut);
 			return copy;
 		}
 	}

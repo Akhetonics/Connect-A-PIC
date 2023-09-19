@@ -19,6 +19,17 @@ namespace ConnectAPIC.LayoutWindow.View
 		{
 			Textures = new Texture2D[2,2];
 		}
+
+		public override void DisplayLightVector()
+		{
+			throw new NotImplementedException();
+		}
+
+		public override void HideLightVector()
+		{
+			throw new NotImplementedException();
+		}
+
 		public override void _Ready()
 		{
 			base._Ready();

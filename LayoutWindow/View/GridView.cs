@@ -66,16 +66,11 @@ namespace ConnectAPIC.LayoutWindow.View
 				var LightVectorRed = ViewModel.GetLightVector(LightColor.Red);
 				var LightVectorGreen = ViewModel.GetLightVector(LightColor.Green);
 				var LightVectorBlue = ViewModel.GetLightVector(LightColor.Blue);
-
-				// each ComponentView should be able to display the LightVector
-				// calculate LightVectorRed, Green, Blue that shows the values on each pin on grid.
+				ViewModel.ShowLightPropagation(LightVectorRed, LightVectorGreen, LightVectorBlue);
+			} else
+			{
+				ViewModel.HideLightPropagation();
 			}
-
-			// es soll nun ein shader ueber alle tiles gelegt werden 
-			// Eine Animation mit den passenden Bildern soll ueber jedem Tile dargestellt sein
-			// Der Alphakanal der Animationsbilder soll der Lichtintensitaet entsprechen, oder?
-			// animations-folge soll ge-offsettet werden nach der Phase des lichtes.
-
 		}
 		
 

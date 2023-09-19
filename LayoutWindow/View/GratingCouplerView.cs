@@ -1,8 +1,10 @@
+using ConnectAPIC.LayoutWindow.Model.ExternalPorts;
 using ConnectAPIC.Scenes.Component;
 using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,9 +23,15 @@ namespace ConnectAPIC.LayoutWindow.View
 			base._Ready();
 			Textures[0, 0] = Texture;
 		}
-	   public void DisplayLightVector ()
+
+		public override void DisplayLightVector()
 		{
 
+		}
+
+		public override void HideLightVector()
+		{
+			throw new NotImplementedException();
 		}
 	}
 }

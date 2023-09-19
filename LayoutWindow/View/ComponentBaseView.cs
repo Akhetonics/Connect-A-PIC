@@ -30,10 +30,13 @@ namespace ConnectAPIC.LayoutWindow.View
         protected Texture2D[,] Textures;
         public int GridX { get; set; }
         public int GridY { get; set; }
+        public abstract void DisplayLightVector();
+        public abstract void HideLightVector();
         protected ComponentBaseView()
         {
             Textures = new Texture2D[2, 1];
         }
+
         public void RotateBy90()
         {
             Textures = Textures.RotateCounterClockwise();
@@ -72,15 +75,6 @@ namespace ConnectAPIC.LayoutWindow.View
             }
             
             return copy;
-        }
-
-        public void DisplayLightVector()
-        {
-            // display the light animation
-        }
-        public void HideLightVector()
-        {
-            // hide it again
         }
     }
 }

@@ -68,6 +68,14 @@ namespace ConnectAPIC.LayoutWindow.View
                 }
             }
         }
+
+        public PinView GetPinAt(RectSide side)
+        {
+            if (side == RectSide.Right) return PinRight;
+            if (side == RectSide.Down) return PinDown;
+            if (side == RectSide.Left) return PinLeft;
+            return PinUp;
+        }
         public override bool _CanDropData(Vector2 position, Variant data)
         {
             // extract all tiles from the component that is about to be dropped here at position and SetDragPreview them
