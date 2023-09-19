@@ -1,3 +1,4 @@
+using ConnectAPIC.LayoutWindow.Model.ExternalPorts;
 using ConnectAPIC.LayoutWindow.Model.Helpers;
 using ConnectAPIC.Scenes.Component;
 using ConnectAPIC.Scenes.TransferFunction;
@@ -19,7 +20,7 @@ namespace UnitTests
             var grid = new Grid(20,10);
             grid.PlaceComponent(0, grid.ExternalPorts[0].TilePositionY, directionalCoupler);
             var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid);
-            var lightPropagation = gridSMatrixAnalyzer.LightPropagation;
+            var lightPropagation = gridSMatrixAnalyzer.CalculateLightPropagation(grid.ExternalPorts[0].Color);
 
             // test directionalCoupler
             var allComponentsSMatrices = gridSMatrixAnalyzer.GetAllComponentsSMatrices();
@@ -32,13 +33,13 @@ namespace UnitTests
             var directionalCouplerLightIn = lightPropagation[directionalCoupler.PinIdLeftIn()];
             var directionalCouplerLightOut = lightPropagation[directionalCoupler.PinIdRightOut(1,0)];
 
-            Assert.True(UpperToRightConnection.Real == 0.5);
-            Assert.True(LowerToRightConnection.Real == 0.5);
-            Assert.True(UpperToLeftConnection.Real == 0.5);
-            Assert.True(LowerToLeftConnection.Real == 0.5);
+            Assert.Equal(0.5, UpperToRightConnection.Real);
+            Assert.Equal(0.5, LowerToRightConnection.Real);
+            Assert.Equal(0.5, UpperToLeftConnection.Real);
+            Assert.Equal(0.5, LowerToLeftConnection.Real);
 
-            Assert.True(directionalCouplerLightIn.Real == 1);
-            Assert.True(directionalCouplerLightOut.Real == 1);
+            Assert.Equal(1, directionalCouplerLightIn.Real);
+            Assert.Equal(0.5, directionalCouplerLightOut.Real);
         }
         
         [Fact]
@@ -49,11 +50,12 @@ namespace UnitTests
             var Grating = new GratingCoupler();
 
             var grid = new Grid(20, 10);
-            grid.PlaceComponent(0, 3, straight);
-            grid.PlaceComponent(1, 3, Grating);
+            var inputPort = grid.ExternalPorts[0];
+            grid.PlaceComponent(0, inputPort.TilePositionY, straight);
+            grid.PlaceComponent(1, inputPort.TilePositionY, Grating);
 
             var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid);
-            var lightValues = gridSMatrixAnalyzer.LightPropagation;
+            var lightValues = gridSMatrixAnalyzer.CalculateLightPropagation(inputPort.Color);
             var allComponentsSMatrices = gridSMatrixAnalyzer.GetAllComponentsSMatrices();
             var Straight_LiRoConnection = allComponentsSMatrices[0].GetNonNullValues().Where(b => b.Key == (straight.PinIdLeftIn(), straight.PinIdRightOut()));
             var Straight_RiLoConnection = allComponentsSMatrices[0].GetNonNullValues().Where(b => b.Key == (straight.PinIdRightIn(), straight.PinIdLeftOut()));
@@ -66,8 +68,8 @@ namespace UnitTests
             string all = gridSMatrixAnalyzer.ToString();
 
             Assert.Contains(Grating.PinIdLeftOut(), lightValues);
-            Assert.True(straightCompLightVal.Real == 1);
-            Assert.True(circuitLightVal.Real == 1 );
+            Assert.Equal(1, straightCompLightVal.Real);
+            Assert.Equal(1, circuitLightVal.Real);
         }
         [Fact]
         public void TestSystemSMatrixManually()

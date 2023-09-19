@@ -1,6 +1,8 @@
-﻿using ConnectAPIC.Scenes.Tiles;
+﻿using ConnectAPIC.LayoutWindow.Model.ExternalPorts;
+using ConnectAPIC.Scenes.Tiles;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TransferFunction;
 namespace ConnectAPIC.Scenes.TransferFunction
 {
@@ -70,10 +72,15 @@ namespace ConnectAPIC.Scenes.TransferFunction
             var outputstring = all;
             outputstring += "\n\nLightPropagationVector:\n\n";
 
-            foreach (var lightIntensity in Analyzer.LightPropagation)
+            foreach(var color in Enum.GetValues(typeof(LightColor)).OfType<LightColor>())
             {
-                outputstring += $"({allPinsInField[lightIntensity.Key]}\t{lightIntensity.Key}\t{lightIntensity.Value})\n";
+                foreach (var lightIntensity in Analyzer.CalculateLightPropagation(color))
+                {
+                    string lightColorName = Enum.GetName(typeof(LightColor), color);
+                    outputstring += $"LightColor: {lightColorName}\t{allPinsInField[lightIntensity.Key]}\t{lightIntensity.Key}\t{lightIntensity.Value}\n";
+                }
             }
+            
 
             return outputstring;
         }

@@ -11,6 +11,7 @@ using Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.CompilerServices;
@@ -33,6 +34,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         public int Height { get => TileViews.GetLength(1); }
         public Grid Grid { get; set; }
         public GridView GridView { get; set; }
+        private GridSMatrixAnalyzer MatrixAnalyzer;
         public int MaxTileCount { get => Width*Height; }
         public GridViewModel(GridView gridview, Grid grid )
         {
@@ -142,9 +144,8 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
 
         public Dictionary<Guid, Complex> GetLightVector(LightColor color)
         {
-            
-            var analyzer = new GridSMatrixAnalyzer(this.Grid);
-            return analyzer.LightPropagation;
+            MatrixAnalyzer ??= new GridSMatrixAnalyzer(this.Grid);
+            return MatrixAnalyzer.CalculateLightPropagation(color);
         }
     }
 }

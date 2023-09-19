@@ -24,25 +24,19 @@ namespace ConnectAPIC.Scenes.TransferFunction
         public readonly Grid Grid;
         public Dictionary<(Guid, Guid), Complex> InterComponentConnections { get; private set; }
         public SMatrix SystemSMatrix { get; private set; }
-        private Dictionary<Guid, Complex> lightPropagation;
-        public Dictionary<Guid,Complex> LightPropagation { 
-            get {
-                lightPropagation ??= ReCalculateLightPropagation();
-                return lightPropagation;
-            } }
+        private Dictionary<Guid, Complex> LightPropagation;
+        public LightColor InputLightColor { get; private set; }
 
-        public LightColor InputLightColor { get; }
-
-        public GridSMatrixAnalyzer(Grid grid, LightColor inputLightColor)
+        public GridSMatrixAnalyzer(Grid grid)
         {
             this.Grid = grid;
-            InputLightColor = inputLightColor;
             UpdateSystemSMatrix();
         }
 
         // calculates the light intensity and phase at a given PIN-ID for both light-flow-directions "in" and "out" for a given period of steps
-        private Dictionary<Guid,Complex> ReCalculateLightPropagation()
+        public Dictionary<Guid,Complex> CalculateLightPropagation(LightColor newLightColor)
         {
+            InputLightColor = newLightColor;
             var stepCount = SystemSMatrix.PinReference.Count() * 2;
             var usedInputs = Grid.GetUsedStandardInputs().Where(i=>i.Input.Color == InputLightColor).ToList();
             var inputVector = UsedStandardInputConverter.ToVector(usedInputs, SystemSMatrix);
