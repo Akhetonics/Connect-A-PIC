@@ -1,13 +1,9 @@
-using ConnectAPIC.LayoutWindow.View;
-using ConnectAPIC.LayoutWindow.ViewModel;
-using ConnectAPIC.Scenes.Component;
-using ConnectAPIC.Scenes.Tiles;
-using ConnectAPIC.Scenes.Compiler;
-using Tiles;
-using Model;
-using ConnectAPIC.LayoutWindow.Model.ExternalPorts;
-using System.Linq;
-using System.Runtime.ExceptionServices;
+using CAP_Core;
+using CAP_Core.CodeExporter;
+using CAP_Core.Component;
+using CAP_Core.Component.ComponentHelpers;
+using CAP_Core.ExternalPorts;
+using CAP_Core.Tiles;
 
 namespace UnitTests
 {
@@ -27,8 +23,8 @@ namespace UnitTests
             var orphant = new DirectionalCoupler();
             grid.PlaceComponent(10, 5, orphant);
             
-            NazcaCompiler compiler = new();
-            var output = compiler.Compile(grid);
+            NazcaExporter exporter = new();
+            var output = exporter.Export(grid);
             var firstCellName = grid.Tiles[firstComponent.GridXMainTile, firstComponent.GridYMainTile].GetComponentCellName();
             var secondCellName = grid.Tiles[secondComponent.GridXMainTile, secondComponent.GridYMainTile].GetComponentCellName();
             var thirdCellName = grid.Tiles[thirdComponent.GridXMainTile, thirdComponent.GridYMainTile].GetComponentCellName();

@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Connect-A-PIC", "Connect-A-
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{38E38AFA-CF5A-42D7-BCFE-196AE801328E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CAP-Core", "Connect-A-Pic-Core\CAP-Core.csproj", "{1CC753BE-8ADB-497F-84A8-94C45E54CA4A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -31,8 +33,19 @@ Global
 		{38E38AFA-CF5A-42D7-BCFE-196AE801328E}.ExportRelease|Any CPU.Build.0 = Release|Any CPU
 		{38E38AFA-CF5A-42D7-BCFE-196AE801328E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{38E38AFA-CF5A-42D7-BCFE-196AE801328E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1CC753BE-8ADB-497F-84A8-94C45E54CA4A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CC753BE-8ADB-497F-84A8-94C45E54CA4A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1CC753BE-8ADB-497F-84A8-94C45E54CA4A}.ExportDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1CC753BE-8ADB-497F-84A8-94C45E54CA4A}.ExportDebug|Any CPU.Build.0 = Debug|Any CPU
+		{1CC753BE-8ADB-497F-84A8-94C45E54CA4A}.ExportRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{1CC753BE-8ADB-497F-84A8-94C45E54CA4A}.ExportRelease|Any CPU.Build.0 = Release|Any CPU
+		{1CC753BE-8ADB-497F-84A8-94C45E54CA4A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1CC753BE-8ADB-497F-84A8-94C45E54CA4A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2B70C013-47CF-4713-82B5-02E1EAAA663F}
 	EndGlobalSection
 EndGlobal

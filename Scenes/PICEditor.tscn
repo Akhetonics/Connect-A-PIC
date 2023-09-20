@@ -1,16 +1,15 @@
-[gd_scene load_steps=30 format=3 uid="uid://cu6wqy6xwjfo1"]
+[gd_scene load_steps=36 format=3 uid="uid://cu6wqy6xwjfo1"]
 
-[ext_resource type="Script" path="res://LayoutWindow/GameManager.cs" id="1_1g8p6"]
-[ext_resource type="Script" path="res://LayoutWindow/View/GridView.cs" id="1_2pqex"]
-[ext_resource type="Texture2D" uid="uid://dm0sl0jrwrfx6" path="res://GFX/EmptyGround.png" id="2_ddx4u"]
-[ext_resource type="Script" path="res://LayoutWindow/View/StandardDialogs/NotificationManager.cs" id="2_nntly"]
-[ext_resource type="Script" path="res://LayoutWindow/View/TileView.cs" id="3_anirx"]
+[ext_resource type="Script" path="res://Scripts/GameManager.cs" id="1_1g8p6"]
+[ext_resource type="Script" path="res://Scripts/View/GridView.cs" id="1_2pqex"]
+[ext_resource type="Script" path="res://Scripts/View/StandardDialogs/NotificationManager.cs" id="2_nntly"]
 [ext_resource type="Texture2D" uid="uid://cd2busn0vvaoq" path="res://GFX/PinLight.png" id="5_lrhvy"]
-[ext_resource type="Script" path="res://LayoutWindow/View/PinView.cs" id="6_ay4pw"]
-[ext_resource type="Script" path="res://LayoutWindow/View/TemplateTileView.cs" id="6_ly1br"]
-[ext_resource type="Script" path="res://LayoutWindow/View/StraightWaveGuideView.cs" id="7_tohqs"]
+[ext_resource type="Script" path="res://Scripts/View/PinView.cs" id="6_ay4pw"]
+[ext_resource type="PackedScene" uid="uid://bec0btl4kcs3x" path="res://Scenes/default_tile.tscn" id="6_k31i7"]
+[ext_resource type="Script" path="res://Scripts/View/TemplateTileView.cs" id="6_ly1br"]
+[ext_resource type="Script" path="res://Scripts/View/StraightWaveGuideView.cs" id="7_tohqs"]
 [ext_resource type="Texture2D" uid="uid://emq4du4tlo3h" path="res://GFX/PinElectric.png" id="7_uo1bp"]
-[ext_resource type="Script" path="res://LayoutWindow/View/ComponentViewFactory.cs" id="7_x7uef"]
+[ext_resource type="Script" path="res://Scripts/View/ComponentViewFactory.cs" id="7_x7uef"]
 [ext_resource type="Texture2D" uid="uid://obrjry10rd00" path="res://GFX/StraightComponent.png" id="8_gfj5w"]
 [ext_resource type="Texture2D" uid="uid://dbc8fq12pwjqx" path="res://GFX/ExternalInputBlue.png" id="8_y1c58"]
 [ext_resource type="Texture2D" uid="uid://c2uey4rct0iyn" path="res://GFX/ExternalInputRed.png" id="9_kjo8d"]
@@ -19,12 +18,12 @@
 [ext_resource type="Texture2D" uid="uid://bj1u105ivy4eu" path="res://GFX/ExternalOutput.png" id="11_v8xoy"]
 [ext_resource type="PackedScene" uid="uid://bscqmaslppyt8" path="res://Scenes/NotificationBox.tscn" id="12_o0640"]
 [ext_resource type="Shader" path="res://Scenes/LightAnimationOverlay.gdshader" id="13_nlker"]
-[ext_resource type="Texture2D" uid="uid://cjiupx6m53yfn" path="res://icon.svg" id="14_60nxl"]
-[ext_resource type="Script" path="res://LayoutWindow/View/GratingCouplerView.cs" id="14_bqkgg"]
-[ext_resource type="Script" path="res://LayoutWindow/View/DirectionalCouplerView.cs" id="18_4lqdc"]
+[ext_resource type="Script" path="res://Scripts/View/GratingCouplerView.cs" id="14_bqkgg"]
+[ext_resource type="Script" path="res://Scripts/View/DirectionalCouplerView.cs" id="18_4lqdc"]
 [ext_resource type="Texture2D" uid="uid://dha8w66k3ydtc" path="res://GFX/DirectionalCoupler/DirectionalCoupler_00.png" id="19_nqt60"]
 [ext_resource type="Texture2D" uid="uid://dy4bainp8psfb" path="res://GFX/DirectionalCoupler/DirectionalCoupler_01.png" id="20_msf2j"]
 [ext_resource type="Texture2D" uid="uid://uoowtaubmv1i" path="res://GFX/DirectionalCoupler/DirectionalCoupler.png" id="21_a2v5y"]
+[ext_resource type="Texture2D" uid="uid://jcla22kq5xkl" path="res://GFX/ScreenshotMockUp.png" id="21_opdte"]
 [ext_resource type="Texture2D" uid="uid://d0hlmkhjg0k8h" path="res://GFX/DirectionalCoupler/DirectionalCoupler_10.png" id="21_qylg0"]
 [ext_resource type="Texture2D" uid="uid://dhrb4gn6u4xjf" path="res://GFX/DirectionalCoupler/DirectionalCoupler_11.png" id="22_tx2wv"]
 [ext_resource type="Texture2D" uid="uid://cwouvy31mb31m" path="res://GFX/Components/Ring Resonator/Overlay/Ring Resonator Overlay.png" id="28_oraxs"]
@@ -33,14 +32,307 @@
 resource_local_to_scene = true
 shader = ExtResource("13_nlker")
 
+[sub_resource type="AtlasTexture" id="AtlasTexture_0eddn"]
+atlas = ExtResource("28_oraxs")
+region = Rect2(0, 0, 61, 61)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_438o5"]
+atlas = ExtResource("28_oraxs")
+region = Rect2(61, 0, 61, 61)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yv7yx"]
+atlas = ExtResource("28_oraxs")
+region = Rect2(122, 0, 61, 61)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_x10hl"]
+atlas = ExtResource("28_oraxs")
+region = Rect2(183, 0, 61, 61)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_w4c40"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_0eddn")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_438o5")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yv7yx")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_x10hl")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4gtug"]
+texture = ExtResource("21_opdte")
+margins = Vector2i(37, 10)
+texture_region_size = Vector2i(62, 62)
+use_texture_padding = false
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+6:0/0 = 0
+7:0/0 = 0
+8:0/0 = 0
+9:0/0 = 0
+10:0/0 = 0
+11:0/0 = 0
+12:0/0 = 0
+13:0/0 = 0
+14:0/0 = 0
+15:0/0 = 0
+16:0/0 = 0
+17:0/0 = 0
+18:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+4:1/0 = 0
+5:1/0 = 0
+6:1/0 = 0
+7:1/0 = 0
+8:1/0 = 0
+9:1/0 = 0
+10:1/0 = 0
+11:1/0 = 0
+12:1/0 = 0
+13:1/0 = 0
+14:1/0 = 0
+15:1/0 = 0
+16:1/0 = 0
+17:1/0 = 0
+18:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+4:2/0 = 0
+5:2/0 = 0
+6:2/0 = 0
+7:2/0 = 0
+8:2/0 = 0
+9:2/0 = 0
+10:2/0 = 0
+11:2/0 = 0
+12:2/0 = 0
+13:2/0 = 0
+14:2/0 = 0
+15:2/0 = 0
+16:2/0 = 0
+17:2/0 = 0
+18:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+4:3/0 = 0
+5:3/0 = 0
+6:3/0 = 0
+7:3/0 = 0
+8:3/0 = 0
+9:3/0 = 0
+10:3/0 = 0
+11:3/0 = 0
+12:3/0 = 0
+13:3/0 = 0
+14:3/0 = 0
+15:3/0 = 0
+16:3/0 = 0
+17:3/0 = 0
+18:3/0 = 0
+0:4/0 = 0
+1:4/0 = 0
+2:4/0 = 0
+3:4/0 = 0
+4:4/0 = 0
+5:4/0 = 0
+6:4/0 = 0
+7:4/0 = 0
+8:4/0 = 0
+9:4/0 = 0
+10:4/0 = 0
+11:4/0 = 0
+12:4/0 = 0
+13:4/0 = 0
+14:4/0 = 0
+15:4/0 = 0
+16:4/0 = 0
+17:4/0 = 0
+18:4/0 = 0
+0:5/0 = 0
+1:5/0 = 0
+2:5/0 = 0
+3:5/0 = 0
+4:5/0 = 0
+5:5/0 = 0
+6:5/0 = 0
+7:5/0 = 0
+8:5/0 = 0
+9:5/0 = 0
+10:5/0 = 0
+11:5/0 = 0
+12:5/0 = 0
+13:5/0 = 0
+14:5/0 = 0
+15:5/0 = 0
+16:5/0 = 0
+17:5/0 = 0
+18:5/0 = 0
+0:6/0 = 0
+1:6/0 = 0
+2:6/0 = 0
+3:6/0 = 0
+4:6/0 = 0
+5:6/0 = 0
+6:6/0 = 0
+7:6/0 = 0
+8:6/0 = 0
+9:6/0 = 0
+10:6/0 = 0
+11:6/0 = 0
+12:6/0 = 0
+13:6/0 = 0
+14:6/0 = 0
+15:6/0 = 0
+16:6/0 = 0
+17:6/0 = 0
+18:6/0 = 0
+0:7/0 = 0
+1:7/0 = 0
+2:7/0 = 0
+3:7/0 = 0
+4:7/0 = 0
+5:7/0 = 0
+6:7/0 = 0
+7:7/0 = 0
+8:7/0 = 0
+9:7/0 = 0
+10:7/0 = 0
+11:7/0 = 0
+12:7/0 = 0
+13:7/0 = 0
+14:7/0 = 0
+15:7/0 = 0
+16:7/0 = 0
+17:7/0 = 0
+18:7/0 = 0
+0:8/0 = 0
+1:8/0 = 0
+2:8/0 = 0
+3:8/0 = 0
+4:8/0 = 0
+5:8/0 = 0
+6:8/0 = 0
+7:8/0 = 0
+8:8/0 = 0
+9:8/0 = 0
+10:8/0 = 0
+11:8/0 = 0
+12:8/0 = 0
+13:8/0 = 0
+14:8/0 = 0
+15:8/0 = 0
+16:8/0 = 0
+17:8/0 = 0
+18:8/0 = 0
+0:9/0 = 0
+1:9/0 = 0
+2:9/0 = 0
+3:9/0 = 0
+4:9/0 = 0
+5:9/0 = 0
+6:9/0 = 0
+7:9/0 = 0
+8:9/0 = 0
+9:9/0 = 0
+10:9/0 = 0
+11:9/0 = 0
+12:9/0 = 0
+13:9/0 = 0
+14:9/0 = 0
+15:9/0 = 0
+16:9/0 = 0
+17:9/0 = 0
+18:9/0 = 0
+0:10/0 = 0
+1:10/0 = 0
+2:10/0 = 0
+3:10/0 = 0
+4:10/0 = 0
+5:10/0 = 0
+6:10/0 = 0
+7:10/0 = 0
+8:10/0 = 0
+9:10/0 = 0
+10:10/0 = 0
+11:10/0 = 0
+12:10/0 = 0
+13:10/0 = 0
+14:10/0 = 0
+15:10/0 = 0
+16:10/0 = 0
+17:10/0 = 0
+18:10/0 = 0
+19:8/0 = 0
+19:7/0 = 0
+19:6/0 = 0
+19:5/0 = 0
+19:4/0 = 0
+19:3/0 = 0
+19:2/0 = 0
+19:1/0 = 0
+19:0/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_47324"]
+tile_size = Vector2i(64, 64)
+sources/0 = SubResource("TileSetAtlasSource_4gtug")
+
 [node name="GameManager" type="Node" node_paths=PackedStringArray("ExternalOutputTemplate", "ExternalInputRedTemplate", "ExternalInputGreenTemplate", "ExternalInputBlueTemplate", "Background")]
 script = ExtResource("1_1g8p6")
-GridViewPath = NodePath("DragDropParent/Grid")
+GridViewPath = NodePath("")
+FieldWidth = null
+FieldHeight = null
 ExternalOutputTemplate = NodePath("Templates/ExternalOutputTemplate")
 ExternalInputRedTemplate = NodePath("Templates/ExternalInputRedTemplate")
 ExternalInputGreenTemplate = NodePath("Templates/ExternalInputGreenTemplate")
 ExternalInputBlueTemplate = NodePath("Templates/ExternalInputBlueTemplate")
 Background = NodePath("DragDropParent")
+
+[node name="Debug_Delete this _Shader Tests" type="Node2D" parent="."]
+visible = false
+
+[node name="BackBufferCopy" type="BackBufferCopy" parent="Debug_Delete this _Shader Tests"]
+position = Vector2(213, 53)
+scale = Vector2(0.98, 0.88)
+
+[node name="AnimationOverlayTest" type="TextureRect" parent="Debug_Delete this _Shader Tests/BackBufferCopy"]
+material = SubResource("ShaderMaterial_03ckl")
+offset_left = -71.4286
+offset_top = 90.9091
+offset_right = 28.5714
+offset_bottom = 166.909
+texture = ExtResource("8_y1c58")
+
+[node name="BackBufferCopy2" type="BackBufferCopy" parent="Debug_Delete this _Shader Tests"]
+position = Vector2(80.9999, 39)
+scale = Vector2(0.98, 0.88)
+
+[node name="AnimationOverlayTest" type="TextureRect" parent="Debug_Delete this _Shader Tests/BackBufferCopy2"]
+material = SubResource("ShaderMaterial_03ckl")
+offset_left = 8.16336
+offset_top = 107.955
+offset_right = 108.163
+offset_bottom = 183.955
+texture = ExtResource("8_y1c58")
 
 [node name="NotificationManager" type="Node" parent="."]
 script = ExtResource("2_nntly")
@@ -48,66 +340,7 @@ NotificationBoxScene = ExtResource("12_o0640")
 
 [node name="Templates" type="Node" parent="."]
 
-[node name="DefaultTile" type="TextureRect" parent="Templates" node_paths=PackedStringArray("PinRight", "PinDown", "PinLeft", "PinUp")]
-visible = false
-custom_minimum_size = Vector2(64, 64)
-offset_right = 64.0
-offset_bottom = 64.0
-texture = ExtResource("2_ddx4u")
-expand_mode = 3
-script = ExtResource("3_anirx")
-PinRight = NodePath("PinRight")
-PinDown = NodePath("PinDown")
-PinLeft = NodePath("PinLeft")
-PinUp = NodePath("PinUp")
-
-[node name="PinRight" type="TextureRect" parent="Templates/DefaultTile"]
-layout_mode = 0
-offset_left = 46.0
-offset_top = 28.1282
-offset_right = 52.0
-offset_bottom = 34.1282
-texture = ExtResource("5_lrhvy")
-stretch_mode = 2
-script = ExtResource("6_ay4pw")
-ElectricityPinTexture = ExtResource("7_uo1bp")
-LightPinTexture = ExtResource("5_lrhvy")
-
-[node name="PinDown" type="TextureRect" parent="Templates/DefaultTile"]
-layout_mode = 0
-offset_left = 26.0
-offset_top = 40.1831
-offset_right = 32.0
-offset_bottom = 46.1831
-texture = ExtResource("5_lrhvy")
-stretch_mode = 2
-script = ExtResource("6_ay4pw")
-ElectricityPinTexture = ExtResource("7_uo1bp")
-LightPinTexture = ExtResource("5_lrhvy")
-
-[node name="PinLeft" type="TextureRect" parent="Templates/DefaultTile"]
-layout_mode = 0
-offset_left = 12.0
-offset_top = 26.119
-offset_right = 18.0
-offset_bottom = 32.119
-texture = ExtResource("5_lrhvy")
-stretch_mode = 2
-script = ExtResource("6_ay4pw")
-ElectricityPinTexture = ExtResource("7_uo1bp")
-LightPinTexture = ExtResource("5_lrhvy")
-
-[node name="PinUp" type="TextureRect" parent="Templates/DefaultTile"]
-layout_mode = 0
-offset_left = 26.0
-offset_top = 14.0641
-offset_right = 32.0
-offset_bottom = 20.0641
-texture = ExtResource("5_lrhvy")
-stretch_mode = 2
-script = ExtResource("6_ay4pw")
-ElectricityPinTexture = ExtResource("7_uo1bp")
-LightPinTexture = ExtResource("5_lrhvy")
+[node name="DefaultTile" parent="Templates" instance=ExtResource("6_k31i7")]
 
 [node name="ExternalInputBlueTemplate" type="TextureRect" parent="Templates"]
 visible = false
@@ -149,58 +382,45 @@ offset_bottom = 330.213
 texture = ExtResource("11_v8xoy")
 expand_mode = 5
 
-[node name="AnimationOverlayTest3" type="TextureRect" parent="Templates"]
-offset_left = -9.0
-offset_top = 43.0
-offset_right = 91.0
-offset_bottom = 119.0
-texture = ExtResource("8_y1c58")
-
-[node name="AnimationOverlayTest4" type="TextureRect" parent="Templates"]
-offset_left = 92.0
-offset_top = 43.0
-offset_right = 192.0
-offset_bottom = 119.0
-texture = ExtResource("5_lrhvy")
-
-[node name="AnimationOverlayTest2" type="TextureRect" parent="Templates"]
-material = SubResource("ShaderMaterial_03ckl")
-offset_left = 319.0
-offset_top = 14.0
-offset_right = 447.0
-offset_bottom = 142.0
-texture = ExtResource("14_60nxl")
-
-[node name="BackBufferCopy" type="BackBufferCopy" parent="Templates"]
-position = Vector2(213, 53)
-scale = Vector2(0.98, 0.88)
-
-[node name="AnimationOverlayTest" type="TextureRect" parent="Templates/BackBufferCopy"]
-material = SubResource("ShaderMaterial_03ckl")
-offset_left = -71.4286
-offset_top = 90.9091
-offset_right = 28.5714
-offset_bottom = 166.909
-texture = ExtResource("8_y1c58")
-
-[node name="BackBufferCopy2" type="BackBufferCopy" parent="Templates"]
-position = Vector2(80.9999, 39)
-scale = Vector2(0.98, 0.88)
-
-[node name="AnimationOverlayTest" type="TextureRect" parent="Templates/BackBufferCopy2"]
-material = SubResource("ShaderMaterial_03ckl")
-offset_left = 8.16336
-offset_top = 107.955
-offset_right = 108.163
-offset_bottom = 183.955
-texture = ExtResource("8_y1c58")
-
 [node name="ComponentTemplates" type="Node" parent="."]
 script = ExtResource("7_x7uef")
 
 [node name="StraightWaveGuideView" type="Node" parent="ComponentTemplates"]
 script = ExtResource("7_tohqs")
 Texture = ExtResource("8_gfj5w")
+
+[node name="DirectionalCoupler00" type="Sprite2D" parent="ComponentTemplates/StraightWaveGuideView"]
+texture = ExtResource("19_nqt60")
+centered = false
+region_rect = Rect2(11.5, 16, 41, 39)
+
+[node name="DirectionalCoupler01" type="Sprite2D" parent="ComponentTemplates/StraightWaveGuideView"]
+position = Vector2(0, 64)
+texture = ExtResource("20_msf2j")
+centered = false
+
+[node name="DirectionalCoupler10" type="Sprite2D" parent="ComponentTemplates/StraightWaveGuideView"]
+position = Vector2(64, 0)
+texture = ExtResource("21_qylg0")
+centered = false
+
+[node name="DirectionalCoupler11" type="Sprite2D" parent="ComponentTemplates/StraightWaveGuideView"]
+position = Vector2(64, 64)
+texture = ExtResource("22_tx2wv")
+centered = false
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="ComponentTemplates/StraightWaveGuideView"]
+process_mode = 1
+scale = Vector2(2.09836, 2.09836)
+sprite_frames = SubResource("SpriteFrames_w4c40")
+frame_progress = 0.742553
+speed_scale = 0.925
+centered = false
+
+[node name="TextureRect" type="TextureRect" parent="ComponentTemplates/StraightWaveGuideView"]
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("18_4lqdc")
 
 [node name="GratingCouplerView" type="Node" parent="ComponentTemplates"]
 script = ExtResource("14_bqkgg")
@@ -237,15 +457,10 @@ offset_right = 40.0
 offset_bottom = 40.0
 metadata/_edit_use_anchors_ = true
 
-[node name="Grid" type="GridContainer" parent="DragDropParent"]
-layout_mode = 0
-offset_left = 134.0
-offset_top = 74.0
-offset_right = 134.0
-offset_bottom = 74.0
-theme_override_constants/h_separation = 0
-theme_override_constants/v_separation = 0
-columns = 6
+[node name="TileMap" type="TileMap" parent="DragDropParent"]
+tile_set = SubResource("TileSet_47324")
+format = 2
+layer_0/tile_data = PackedInt32Array(131072, 65536, 1, 131073, 65536, 1, 131074, 65536, 1, 131075, 131072, 3, 131077, 65536, 1, 131076, 65536, 1, 196610, 65536, 1, 196609, 65536, 1, 196608, 65536, 1, 196611, 65536, 1, 196612, 65536, 1, 196613, 65536, 1, 65536, 131072, 1, 65537, 131072, 1, 65538, 131072, 1, 65539, 131072, 1, 65540, 131072, 1, 65541, 131072, 1, 5, 131072, 1, 4, 131072, 1, 3, 131072, 1, 2, 131072, 1, 1, 131072, 1, 0, 131072, 1, 262145, 65536, 1, 262146, 131072, 1, 262147, 131072, 1, 262148, 131072, 1, 262149, 131072, 1, 262150, 131072, 1, 262151, 131072, 1, 262152, 262144, 4, 262153, 262144, 4, 262154, 131072, 1, 196618, 262144, 4, 131082, 131072, 1, 131083, 131072, 1, 65547, 131072, 1, 11, 131072, 1, 10, 131072, 1, 9, 131072, 1, 8, 131072, 1, 7, 131072, 1, 6, 131072, 1, 65545, 131072, 1, 65546, 131072, 1, 65544, 131072, 1, 65543, 131072, 1, 65542, 131072, 1, 131078, 131072, 1, 131079, 131072, 1, 131080, 131072, 1, 131081, 131072, 1, 131084, 131072, 1, 196617, 262144, 4, 196616, 131072, 1, 196615, 131072, 1, 196614, 131072, 1, 196619, 262144, 4, 262155, 131072, 1, 262156, 262144, 4, 196620, 131072, 1, 65548, 131072, 1, 12, 131072, 1, -1, 0, 0, 65535, 0, 1, 131071, 0, 2, -65536, 65536, 0, -65535, 65536, 0, -65534, 65536, 0, -65533, 65536, 0, -65532, 65536, 0, -65531, 65536, 0, -65530, 65536, 0, -65529, 65536, 0, -65528, 65536, 0, -65527, 65536, 0, -65526, 65536, 0, -65525, 65536, 0, -65524, 524288, 0, -65523, 524288, 0, -65522, 524288, 0, -65521, 524288, 0, -65520, 524288, 0, -65519, 458752, 0, -65517, 458752, 0, -65518, 458752, 0, -65516, 524288, 0, 20, 196608, 1, 65556, 262144, 4, 131092, 262144, 4, 196628, 262144, 4, 262164, 262144, 4, 327700, 262144, 4, 13, 196608, 1, 14, 196608, 1, 15, 196608, 1, 16, 196608, 1, 17, 196608, 1, 18, 196608, 1, 19, 196608, 1, 21, 196608, 1, 22, 196608, 1, 23, 196608, 1, -65514, 524288, 0, -65515, 524288, 0, -65513, 524288, 0, -65512, 589824, 0, 65560, 589824, 8, 24, 589824, 8, 131096, 589824, 8, 196632, 589824, 8, 262168, 589824, 8, 327704, 589824, 8, 720920, 589824, 8, 655384, 589824, 8, 589848, 589824, 8, 524312, 589824, 8, 458776, 589824, 8, 393240, 589824, 8, 65559, 262144, 4, 65558, 262144, 4, 65557, 262144, 4, 65555, 262144, 4, 65554, 262144, 4, 65553, 262144, 4, 65552, 262144, 4, 65551, 262144, 4, 65550, 262144, 4, 65549, 262144, 4, 131085, 262144, 4, 131086, 262144, 4, 131087, 262144, 4, 131088, 262144, 4, 131089, 262144, 4, 131090, 262144, 4, 131091, 262144, 4, 131093, 262144, 4, 131094, 262144, 4, 131095, 262144, 4, 196631, 262144, 4, 262167, 262144, 4, 327702, 262144, 4, 393238, 262144, 4, 458774, 262144, 4, 524310, 262144, 4, 589846, 262144, 4, 655382, 262144, 4, 720919, 262144, 4, 655383, 262144, 4, 262166, 262144, 4, 327703, 262144, 4, 393239, 262144, 4, 458775, 262144, 4, 589847, 262144, 4, 524311, 262144, 4, 720918, 262144, 4, 720917, 262144, 4, 720916, 262144, 4, 720915, 262144, 4, 720914, 262144, 4, 720913, 262144, 4, 720912, 262144, 4, 720911, 262144, 4, 720910, 262144, 4, 720909, 262144, 4, 655373, 262144, 4, 655374, 262144, 4, 655375, 262144, 4, 655376, 262144, 4, 655377, 262144, 4, 655378, 262144, 4, 655379, 262144, 4, 655380, 262144, 4, 655381, 262144, 4, 589845, 262144, 4, 589844, 262144, 4, 589843, 262144, 4, 589842, 262144, 4, 589841, 262144, 4, 589840, 262144, 4, 589839, 262144, 4, 589838, 262144, 4, 589837, 262144, 4, 589836, 262144, 4, 589835, 262144, 4, 524301, 262144, 4, 524302, 262144, 4, 524303, 262144, 4, 524304, 262144, 4, 524305, 262144, 4, 524306, 262144, 4, 524307, 262144, 4, 524308, 262144, 4, 524309, 262144, 4, 458772, 262144, 4, 458771, 262144, 4, 458770, 262144, 4, 458769, 262144, 4, 458768, 262144, 4, 393231, 262144, 4, 393230, 262144, 4, 458767, 262144, 4, 458773, 262144, 4, 393237, 262144, 4, 393236, 262144, 4, 393235, 262144, 4, 393234, 262144, 4, 393233, 262144, 4, 393232, 262144, 4, 393229, 262144, 4, 327697, 262144, 4, 327698, 262144, 4, 327699, 262144, 4, 327701, 262144, 4, 327696, 262144, 4, 327695, 262144, 4, 327694, 262144, 4, 327693, 262144, 4, 262157, 262144, 4, 262158, 262144, 4, 262159, 262144, 4, 262160, 262144, 4, 262161, 262144, 4, 262162, 262144, 4, 262163, 262144, 4, 262165, 262144, 4, 196630, 262144, 4, 196629, 262144, 4, 196627, 262144, 4, 196626, 262144, 4, 196625, 262144, 4, 196624, 262144, 4, 196623, 262144, 4, 196622, 262144, 4, 196621, 262144, 4, 458766, 262144, 4, 458765, 262144, 4, 524300, 262144, 4, 524299, 262144, 4, 458762, 262144, 4, 393225, 262144, 4, 327689, 262144, 4, 327692, 262144, 4, 393228, 262144, 4, 458764, 262144, 4, 589834, 262144, 4, 524298, 262144, 4, 458763, 262144, 4, 393227, 262144, 4, 327691, 262144, 4, 393226, 262144, 4, 327690, 262144, 4, 458761, 262144, 4, 655370, 262144, 4, 655371, 262144, 4, 655372, 262144, 4, 720907, 262144, 4, 720906, 262144, 4, 655369, 262144, 4, 720905, 262144, 4, 720908, 262144, 4, 720904, 262144, 4, 720903, 262144, 4, 720902, 262144, 4, 720901, 262144, 4, 720900, 262144, 4, 720899, 262144, 4, 720898, 262144, 4, 720897, 262144, 4, 720896, 262144, 4, 655360, 262144, 4, 589824, 262144, 4, 524288, 262144, 4, 458752, 262144, 4, 393216, 65536, 1, 327680, 65536, 1, 327681, 131072, 2, 327682, 262144, 4, 327683, 262144, 4, 327684, 262144, 4, 327685, 262144, 4, 327686, 262144, 4, 327687, 262144, 4, 327688, 262144, 4, 524297, 262144, 4, 524296, 262144, 4, 524295, 262144, 4, 524294, 262144, 4, 524293, 262144, 4, 524292, 262144, 4, 524291, 262144, 4, 458755, 262144, 4, 458754, 262144, 4, 458753, 262144, 4, 393217, 65536, 1, 393218, 262144, 4, 393219, 262144, 4, 393220, 262144, 4, 393221, 262144, 4, 393222, 262144, 4, 393223, 262144, 4, 393224, 262144, 4, 458760, 262144, 4, 458759, 262144, 4, 458758, 262144, 4, 458757, 262144, 4, 458756, 262144, 4, 524290, 262144, 4, 524289, 262144, 4, 589825, 262144, 4, 589826, 262144, 4, 589827, 262144, 4, 589828, 262144, 4, 589829, 262144, 4, 589830, 262144, 4, 589831, 262144, 4, 589832, 262144, 4, 589833, 262144, 4, 655368, 262144, 4, 655367, 262144, 4, 655366, 262144, 4, 655365, 262144, 4, 655364, 262144, 4, 655361, 262144, 4, 655362, 262144, 4, 655363, 262144, 4, 262144, 65536, 1, 196607, 0, 7, 262143, 0, 7, 327679, 0, 7, 393215, 0, 7, 458751, 0, 7, 524287, 0, 7, 589823, 0, 7, 655359, 0, 7, 720895, 0, 7, 786431, 0, 7, 786432, 65536, 9, 786433, 131072, 9, 786434, 196608, 9, 786435, 262144, 9, 786436, 327680, 9, 786437, 393216, 9, 786438, 393216, 9, 786439, 393216, 9, 786440, 393216, 9, 786441, 393216, 9, 786442, 393216, 9, 786443, 393216, 9, 786444, 393216, 9, 786445, 393216, 9, 786446, 393216, 9, 786447, 393216, 9, 786448, 393216, 9, 786449, 393216, 9, 786450, 393216, 9, 786451, 393216, 9, 786452, 393216, 9, 786453, 393216, 9, 786454, 393216, 9, 786455, 393216, 9, 786456, 589824, 9, 851967, 0, 9)
 script = ExtResource("1_2pqex")
 DefaultTilePath = NodePath("../../Templates/DefaultTile")
 
@@ -270,7 +485,7 @@ offset_right = 135.0
 offset_bottom = 66.0
 columns = 4
 
-[node name="StraightWaveGuideTemplate" type="TextureRect" parent="ComponentToolBox/ToolBoxGrid"]
+[node name="StraightWaveGuideTool" type="TextureRect" parent="ComponentToolBox/ToolBoxGrid"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 texture = ExtResource("8_gfj5w")
@@ -278,7 +493,7 @@ expand_mode = 3
 script = ExtResource("6_ly1br")
 componentTemplatePath = NodePath("../../../ComponentTemplates/StraightWaveGuideView")
 
-[node name="GratingCouplerTemplate" type="TextureRect" parent="ComponentToolBox/ToolBoxGrid"]
+[node name="GratingCouplerTool" type="TextureRect" parent="ComponentToolBox/ToolBoxGrid"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 texture = ExtResource("10_m4std")
@@ -286,7 +501,7 @@ expand_mode = 3
 script = ExtResource("6_ly1br")
 componentTemplatePath = NodePath("../../../ComponentTemplates/GratingCouplerView")
 
-[node name="PinRight" type="TextureRect" parent="ComponentToolBox/ToolBoxGrid/GratingCouplerTemplate"]
+[node name="PinRight" type="TextureRect" parent="ComponentToolBox/ToolBoxGrid/GratingCouplerTool"]
 layout_mode = 0
 offset_top = 28.0
 offset_right = 6.0
@@ -297,7 +512,7 @@ script = ExtResource("6_ay4pw")
 ElectricityPinTexture = ExtResource("7_uo1bp")
 LightPinTexture = ExtResource("5_lrhvy")
 
-[node name="DirectionalCouplerTemplate" type="TextureRect" parent="ComponentToolBox/ToolBoxGrid"]
+[node name="DirectionalCouplerTool" type="TextureRect" parent="ComponentToolBox/ToolBoxGrid"]
 custom_minimum_size = Vector2(64, 64)
 layout_mode = 2
 texture = ExtResource("21_a2v5y")
@@ -305,7 +520,7 @@ expand_mode = 3
 script = ExtResource("6_ly1br")
 componentTemplatePath = NodePath("../../../ComponentTemplates/DirectionalCouplerView")
 
-[node name="PinRight" type="TextureRect" parent="ComponentToolBox/ToolBoxGrid/DirectionalCouplerTemplate"]
+[node name="PinRight" type="TextureRect" parent="ComponentToolBox/ToolBoxGrid/DirectionalCouplerTool"]
 layout_mode = 0
 offset_left = 58.0
 offset_top = 28.0
@@ -317,31 +532,4 @@ script = ExtResource("6_ay4pw")
 ElectricityPinTexture = ExtResource("7_uo1bp")
 LightPinTexture = ExtResource("5_lrhvy")
 
-[node name="Node" type="Node" parent="."]
-
-[node name="DirectionalCoupler00" type="Sprite2D" parent="Node"]
-position = Vector2(254, 457)
-texture = ExtResource("19_nqt60")
-
-[node name="DirectionalCoupler01" type="Sprite2D" parent="Node"]
-position = Vector2(250, 522)
-texture = ExtResource("20_msf2j")
-
-[node name="DirectionalCoupler10" type="Sprite2D" parent="Node"]
-position = Vector2(317, 459)
-texture = ExtResource("21_qylg0")
-
-[node name="DirectionalCoupler11" type="Sprite2D" parent="Node"]
-position = Vector2(316, 521)
-texture = ExtResource("22_tx2wv")
-
-[node name="TextureRect" type="TextureRect" parent="Node"]
-offset_left = 217.0
-offset_top = 421.0
-offset_right = 461.0
-offset_bottom = 487.0
-texture = ExtResource("28_oraxs")
-
-[connection signal="pressed" from="btnExportNazca" to="DragDropParent/Grid" method="_on_btn_export_nazca_pressed"]
-[connection signal="pressed" from="btnShowLightPropagation" to="DragDropParent/Grid" method="_on_btn_showLightPropagation_pressed"]
-[connection signal="toggled" from="btnShowLightPropagation" to="DragDropParent/Grid" method="_on_btn_show_light_propagation_toggled"]
+[node name="DirectionalCouplerTemplate" type="Node" parent="."]

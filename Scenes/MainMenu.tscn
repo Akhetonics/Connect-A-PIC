@@ -1,9 +1,9 @@
 [gd_scene load_steps=2 format=3 uid="uid://dyo6pjkr7nbrd"]
 
-[ext_resource type="Script" path="res://LayoutWindow/MainMenu.cs" id="1_h3qyc"]
+[ext_resource type="Script" path="res://Scripts/MainMenu.cs" id="1_e24ci"]
 
 [node name="MainMenu" type="Node2D"]
-script = ExtResource("1_h3qyc")
+script = ExtResource("1_e24ci")
 
 [node name="NewEditor" type="Button" parent="."]
 offset_left = 345.0

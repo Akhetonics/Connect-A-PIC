@@ -1,13 +1,7 @@
-using ConnectAPIC.LayoutWindow.Model.ExternalPorts;
-using ConnectAPIC.LayoutWindow.Model.Helpers;
-using ConnectAPIC.Scenes.Component;
-using ConnectAPIC.Scenes.TransferFunction;
-using Model;
-using Moq;
-using System.ComponentModel;
-using System.Diagnostics;
+using CAP_Core;
+using CAP_Core.Component;
+using CAP_Core.LightFlow;
 using System.Numerics;
-using TransferFunction;
 
 namespace UnitTests
 {
