@@ -25,10 +25,10 @@ namespace UnitTests
             // test directionalCoupler
             var allComponentsSMatrices = gridSMatrixAnalyzer.GetAllComponentsSMatrices();
             var debug_directionalComponentMatrix = gridSMatrixAnalyzer.ToString();
-            var UpperToRightConnection = allComponentsSMatrices[0].GetNonNullValues().Where(e=>e.Key ==(directionalCoupler.PinIdLeftIn(0,0), directionalCoupler.PinIdRightOut(1, 0))).Single().Value;
-            var LowerToRightConnection = allComponentsSMatrices[0].GetNonNullValues().Where(e=>e.Key ==(directionalCoupler.PinIdLeftIn(0,1), directionalCoupler.PinIdRightOut(1, 1))).Single().Value;
-            var UpperToLeftConnection = allComponentsSMatrices[0].GetNonNullValues().Where(e=>e.Key ==(directionalCoupler.PinIdRightIn(1,0), directionalCoupler.PinIdLeftOut(0,0))).Single().Value;
-            var LowerToLeftConnection = allComponentsSMatrices[0].GetNonNullValues().Where(e=>e.Key ==(directionalCoupler.PinIdRightIn(1,1), directionalCoupler.PinIdLeftOut(0,1))).Single().Value;
+            var UpperToRightConnection = allComponentsSMatrices[0].GetNonNullValues().Single(e =>e.Key ==(directionalCoupler.PinIdLeftIn(0,0), directionalCoupler.PinIdRightOut(1, 0))).Value;
+            var LowerToRightConnection = allComponentsSMatrices[0].GetNonNullValues().Single(e =>e.Key ==(directionalCoupler.PinIdLeftIn(0,1), directionalCoupler.PinIdRightOut(1, 1))).Value;
+            var UpperToLeftConnection = allComponentsSMatrices[0].GetNonNullValues().Single(e =>e.Key ==(directionalCoupler.PinIdRightIn(1,0), directionalCoupler.PinIdLeftOut(0,0))).Value;
+            var LowerToLeftConnection = allComponentsSMatrices[0].GetNonNullValues().Single(e =>e.Key ==(directionalCoupler.PinIdRightIn(1,1), directionalCoupler.PinIdLeftOut(0,1))).Value;
 
             var directionalCouplerLightIn = lightPropagation[directionalCoupler.PinIdLeftIn()];
             var directionalCouplerLightOut = lightPropagation[directionalCoupler.PinIdRightOut(1,0)];
@@ -52,24 +52,28 @@ namespace UnitTests
             var grid = new Grid(20, 10);
             var inputPort = grid.ExternalPorts[0];
             grid.PlaceComponent(0, inputPort.TilePositionY, straight);
-            grid.PlaceComponent(1, inputPort.TilePositionY, Grating);
+            grid.PlaceComponent(1, inputPort.TilePositionY, directionalCoupler);
+            grid.PlaceComponent(3, inputPort.TilePositionY, Grating);
 
             var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid);
             var lightValues = gridSMatrixAnalyzer.CalculateLightPropagation(inputPort.Color);
             var allComponentsSMatrices = gridSMatrixAnalyzer.GetAllComponentsSMatrices();
-            var Straight_LiRoConnection = allComponentsSMatrices[0].GetNonNullValues().Where(b => b.Key == (straight.PinIdLeftIn(), straight.PinIdRightOut()));
-            var Straight_RiLoConnection = allComponentsSMatrices[0].GetNonNullValues().Where(b => b.Key == (straight.PinIdRightIn(), straight.PinIdLeftOut()));
+            var Straight_LiRoConnection = allComponentsSMatrices[0].GetNonNullValues().Single(b => b.Key == (straight.PinIdLeftIn(), straight.PinIdRightOut())).Value;
+            var Straight_RiLoConnection = allComponentsSMatrices[0].GetNonNullValues().Single(b => b.Key == (straight.PinIdRightIn(), straight.PinIdLeftOut())).Value;
 
             // test straightcomponent light throughput
             var straightCompLightVal = lightValues[straight.PinIdRightOut()];
 
             // test whole circuit's light throughput
             var circuitLightVal = lightValues[Grating.PinIdLeftIn()]; // the light flows into the grating and therefore leaves the circuit.
-            string all = gridSMatrixAnalyzer.ToString();
+            string allDebugInformation = gridSMatrixAnalyzer.ToString();
 
             Assert.Contains(Grating.PinIdLeftOut(), lightValues);
             Assert.Equal(1, straightCompLightVal.Real);
-            Assert.Equal(1, circuitLightVal.Real);
+            Assert.Equal(0.5, circuitLightVal.Real);
+            Assert.Equal(1, Straight_LiRoConnection.Real);
+            Assert.Equal(1, Straight_RiLoConnection.Real);
+            
         }
         [Fact]
         public void TestSystemSMatrixManually()
