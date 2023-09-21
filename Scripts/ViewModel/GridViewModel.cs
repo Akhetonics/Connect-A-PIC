@@ -34,7 +34,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         {
             this.GridView = gridview;
             this.Grid = grid;
-            this.GridView.Columns = grid.Width;
+            //this.GridView.Columns = grid.Width;
             this.TileViews = new TileView[grid.Width, grid.Height];
             CreateComponentCommand = new CreateComponentCommand(grid);
             DeleteComponentCommand = new DeleteComponentCommand(grid);
@@ -78,7 +78,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         {
             if (width <= 0 || height <= 0) return;
             DeleteAllTiles();
-            this.GridView.Columns = width;
+            //this.GridView.Columns = width;
             if (this.Width != width || this.Height != height)
             {
                 this.TileViews = new TileView[width, height];

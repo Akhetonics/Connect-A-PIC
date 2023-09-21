@@ -8,13 +8,13 @@ namespace CAP_Core.Component.ComponentHelpers
     {
         public string ComponentTypeName { get; set; }
         public string BlockingComponentInfo { get; set; }
-        public ComponentCannotBePlacedException(ComponentBase component, ComponentBase blockingComponent)
-            : base(blockingComponent.ToString()
+        public ComponentCannotBePlacedException(ComponentBase? component, ComponentBase ?blockingComponent)
+            : base(blockingComponent?.ToString()
                   + "\n## Unable to Place this component ##: \n"
-                  + component.ToString())
+                  + component?.ToString())
         {
-            ComponentTypeName = component.GetType().FullName;
-            BlockingComponentInfo = blockingComponent.ToString();
+            ComponentTypeName = component?.GetType()?.FullName ?? "";
+            BlockingComponentInfo = blockingComponent?.ToString() ?? "";
         }
         protected ComponentCannotBePlacedException(SerializationInfo info, StreamingContext context) : base(info, context)
         {

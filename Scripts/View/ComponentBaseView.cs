@@ -23,7 +23,7 @@ namespace ConnectAPIC.LayoutWindow.View
             }
         }
         public bool Visible{ get; set; }
-        protected Texture2D[,] Textures;
+        protected Texture2D[,] Textures { get; set; }
         public int GridX { get; set; }
         public int GridY { get; set; }
         public abstract void DisplayLightVector();

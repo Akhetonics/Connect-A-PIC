@@ -117,7 +117,7 @@ namespace CAP_Core
         {
             return x >= 0 && y >= 0 && x + width <= Width && y + height <= Height;
         }
-        public ComponentBase GetComponentAt(int x, int y)
+        public ComponentBase? GetComponentAt(int x, int y)
         {
             if (!IsInGrid(x, y, 1, 1))
             {
@@ -125,7 +125,7 @@ namespace CAP_Core
             }
             return Tiles[x, y].Component;
         }
-        public ComponentBase PlaceComponentByType(int x, int y, Type componentType)
+        public ComponentBase? PlaceComponentByType(int x, int y, Type componentType)
         {
             ComponentBase component = ComponentFactory.Instance.CreateComponent(componentType);
             if (IsColliding(x, y, component.WidthInTiles, component.HeightInTiles))

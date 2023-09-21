@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://bscqmaslppyt8"]
 
-[ext_resource type="StyleBox" uid="uid://bedcptshxxv1e" path="res://c:\dev\Akhetonics\Connect-A-PIC\Connect-A-Pic-Core\MathNet.Numerics.dll/View/Styles/NotificationBoxGreen.tres" id="1_hgiou"]
+[ext_resource type="StyleBox" uid="uid://bedcptshxxv1e" path="res://Scripts/View/Styles/NotificationBoxGreen.tres" id="1_hgiou"]
 [ext_resource type="Script" path="res://Scripts/View/StandardDialogs/NotificationBox.cs" id="2_hjftt"]
 [ext_resource type="StyleBox" uid="uid://dntmuikjv8oe4" path="res://Scripts/View/Styles/NotificationBoxRed.tres" id="3_tnix0"]
 
