@@ -4,6 +4,7 @@ using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using Godot;
 using System;
+using System.Collections.Generic;
 
 namespace ConnectAPIC.LayoutWindow.View
 {
@@ -66,6 +67,34 @@ namespace ConnectAPIC.LayoutWindow.View
 				ViewModel.HideLightPropagation();
 			}
 		}
+
+        public override void _Input(InputEvent @event)
+        {
+            if (@event is InputEventMouseButton mouseButtonEvent)
+            {
+                if (mouseButtonEvent.Pressed)
+                {
+                    
+                    Vector2 clickedTile = WorldToMap(mouseButtonEvent.GlobalPosition);
+                    if (GetCellv(clickedTile) != -1)
+                    {
+                        Dictionary dragData = new Dictionary();
+                        dragData["tile"] = clickedTile;
+
+                        GetTree().SetDragData(dragData);
+                    }
+                }
+                else
+                {
+                    Dictionary droppedData = GetTree().GetDragData() as Dictionary;
+                    if (droppedData != null)
+                    {
+                        // Hier können Sie Ihre Drop-Logik implementieren.
+                        // Z.B. Verschieben des Tiles oder Verarbeiten von anderen Drag-Informationen.
+                    }
+                }
+            }
+        }
 
         public override bool _CanDropData(Vector2 position, Variant data)
         {

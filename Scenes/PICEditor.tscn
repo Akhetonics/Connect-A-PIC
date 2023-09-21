@@ -918,6 +918,6 @@ expand_mode = 5
 
 [node name="TextureRect" parent="DirectionalCouplerTemplate" instance=ExtResource("20_uysp3")]
 offset_left = 261.0
-offset_top = 81.0
+offset_top = 73.0
 offset_right = 390.0
-offset_bottom = 209.0
+offset_bottom = 201.0
