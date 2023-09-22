@@ -1,5 +1,6 @@
-using ConnectAPIC.Scenes.Component;
-using ConnectAPIC.Scenes.Tiles;
+using CAP_Core.Component.ComponentHelpers;
+using CAP_Core.Helpers;
+using CAP_Core.Tiles;
 
 namespace UnitTests
 {
@@ -11,8 +12,8 @@ namespace UnitTests
 
             DiscreteRotation rotation90 = DiscreteRotation.R90;
             DiscreteRotation rotation180 = DiscreteRotation.R180;
-            
-            int Cycles0 = rotation90.CalculateCyclesTillTargetRotation( DiscreteRotation.R90);
+
+            int Cycles0 = rotation90.CalculateCyclesTillTargetRotation(DiscreteRotation.R90);
             int Cycles1 = rotation90.CalculateCyclesTillTargetRotation( DiscreteRotation.R180);
             int Cycles2 = rotation90.CalculateCyclesTillTargetRotation( DiscreteRotation.R270);
             int Cycles3 = DiscreteRotationExtensions.CalculateCyclesTillTargetRotation(DiscreteRotation.R0, DiscreteRotation.R270);

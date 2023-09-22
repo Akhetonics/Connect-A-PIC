@@ -26,9 +26,9 @@ namespace ConnectAPIC.LayoutWindow.View
         public int GridY { get; private set; }
         public void SetPositionInGrid(int X, int Y)
         {
+            Position = new Vector2(X* TilePixelSize, Y* TilePixelSize);
             GridX = X;
             GridY = Y;
-
         }
         public override void _Ready()
         {
@@ -68,13 +68,7 @@ namespace ConnectAPIC.LayoutWindow.View
             }
         }
 
-        public PinView GetPinAt(RectSide side)
-        {
-            if (side == RectSide.Right) return PinRight;
-            if (side == RectSide.Down) return PinDown;
-            if (side == RectSide.Left) return PinLeft;
-            return PinUp;
-        }
+        
         public override bool _CanDropData(Vector2 position, Variant data)
         {
             // extract all tiles from the component that is about to be dropped here at position and SetDragPreview them
@@ -87,25 +81,13 @@ namespace ConnectAPIC.LayoutWindow.View
         }
         protected void ShowMultiTileDragPreview(Vector2 position, ComponentBaseView component )
         {
-            var previewGrid = new GridContainer();
-            previewGrid.PivotOffset = previewGrid.Size / 2f;
-            var oldRotation = component.Rotation90CounterClock;
-            component.Rotation90CounterClock = 0;
-            previewGrid.Columns = component.WidthInTiles;
-            for (int y = 0; y < component.HeightInTiles; y++)
-            {
-                for (int x = 0; x < component.WidthInTiles; x++)
-                {
-                    var previewtile = this.Duplicate();
-                    previewtile._Ready();
-                    previewtile.Texture = component.GetTexture(x,y).Duplicate() as Texture2D;
-                    previewtile.Visible = true;
-                    previewGrid.AddChild(previewtile);
-                }
-            }
-            previewGrid.RotationDegrees = (int)oldRotation*90;
-            component.Rotation90CounterClock = oldRotation;
-            this.SetDragPreview(previewGrid);
+            var preview = new GridContainer();
+            component = component.Duplicate();
+            component.Visible = true;
+            component.Position = new Vector2(0, 0);
+            component.Modulate = new Color(0, 1, 0, 0.5f);
+            preview.AddChild(component);
+            this.SetDragPreview(preview);
         }
         public override void _DropData(Vector2 atPosition, Variant data)
         {
@@ -113,7 +95,7 @@ namespace ConnectAPIC.LayoutWindow.View
             {
                 if (!componentView.Visible)
                 {
-                    ViewModel.CreateComponentCommand.Execute(new CreateComponentArgs(componentView.GetType(), GridX, GridY, componentView.Rotation90CounterClock));
+                    ViewModel.CreateComponentCommand.Execute(new CreateComponentArgs(componentView.GetType(), GridX, GridY, (DiscreteRotation)(componentView.RotationDegrees/90)));
                 }
                 else
                 {

@@ -1,4 +1,4 @@
-﻿<Project Sdk="Godot.NET.Sdk/4.1.0">
+﻿<Project Sdk="Godot.NET.Sdk/4.1.1">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>ConnectAPIC</RootNamespace>
@@ -8,9 +8,11 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="Connect-A-Pic-Core\**" />
+    <Compile Remove="libraries\**" />
     <Compile Remove="PDK\**" />
     <Compile Remove="Tests\**" />
     <EmbeddedResource Remove="Connect-A-Pic-Core\**" />
+    <EmbeddedResource Remove="libraries\**" />
     <EmbeddedResource Remove="PDK\**" />
     <EmbeddedResource Remove="Tests\**" />
     <Compile Remove="UnitTests\**" />

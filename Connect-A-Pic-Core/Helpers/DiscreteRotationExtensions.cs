@@ -17,6 +17,11 @@ namespace CAP_Core.Helpers
             return (DiscreteRotation)((int)(currentRotation + 1) % (int)(DiscreteRotation.R270 + 1));
         }
 
+        public static float ToDegrees (this DiscreteRotation currentRotation)
+        {
+            return (float)currentRotation * 90f;
+        }
+
         public static RectSide RotateSideCounterClockwise(this RectSide side, DiscreteRotation rotation)
         {
             int sideCount = Enum.GetValues(typeof(RectSide)).Length;

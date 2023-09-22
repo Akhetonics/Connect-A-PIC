@@ -1,6 +1,6 @@
-using ConnectAPIC.Scenes.Component;
-using ConnectAPIC.Scenes.Tiles;
-using Tiles;
+using CAP_Core.Component.ComponentHelpers;
+using CAP_Core.Tiles;
+using CAP_Core.Helpers;
 
 namespace UnitTests
 {

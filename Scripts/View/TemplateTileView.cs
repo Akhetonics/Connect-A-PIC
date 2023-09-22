@@ -3,7 +3,7 @@ using System;
 
 namespace ConnectAPIC.LayoutWindow.View
 {
-    public partial class TemplateTileView : TileView
+	public partial class TemplateTileView : TileView
 	{
 		[Export] private NodePath componentTemplatePath;
 		private ComponentBaseView componentTemplate;
@@ -11,7 +11,7 @@ namespace ConnectAPIC.LayoutWindow.View
 		{
 			base._Ready();
 			if (string.IsNullOrEmpty(componentTemplatePath)) throw new ArgumentNullException(nameof(componentTemplatePath));
-			Node node = GetNode<ComponentBaseView>(componentTemplatePath); // not sure what is wrong here but it cannot convert the node to straightline.
+			var node = GetNode(componentTemplatePath); // not sure what is wrong here but it cannot convert the node to straightline.
 			componentTemplate = (ComponentBaseView)node;
 			if (componentTemplate == null) GD.PrintErr(new ArgumentNullException(nameof(componentTemplate)));
 		}

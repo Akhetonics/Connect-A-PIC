@@ -51,17 +51,8 @@ namespace CAP_Core.LightFlow
 
         public List<SMatrix> GetAllComponentsSMatrices()
         {
-            List<SMatrix> sMatrices = new();
-            foreach (Tile tile in Grid.Tiles)
-            {
-                if (tile.Component == null) continue;
-                if (tile.Component.Connections == null) continue;
-                if (!sMatrices.Contains(tile.Component.Connections))
-                {
-                    sMatrices.Add(tile.Component.Connections);
-                }
-            }
-            return sMatrices;
+            var components = Grid.GetAllComponents();
+            return Grid.GetAllComponents().Select(c => c.Connections).ToList();   
         }
         private void CalcAllConnectionsBetweenComponents()
         {

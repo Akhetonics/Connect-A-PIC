@@ -16,32 +16,32 @@ using System.Windows.Input;
 
 namespace ConnectAPIC.LayoutWindow.ViewModel
 {
-    public class GridViewModel 
+    public class GridViewModel
     {
         public ICommand CreateComponentCommand { get; set; }
         public ICommand MoveComponentCommand { get; set; }
         public ICommand DeleteComponentCommand { get; set; }
         public ICommand RotateComponentCommand { get; set; }
         public ICommand ExportToNazcaCommand { get; set; }
-        public TileView[,] TileViews { get; private set; }
-        public int Width { get => TileViews.GetLength(0); }
-        public int Height { get => TileViews.GetLength(1); }
+        public ComponentBaseView[,] GridComponentViews { get; private set; }
+        public int Width { get => GridComponentViews.GetLength(0); }
+        public int Height { get => GridComponentViews.GetLength(1); }
         public Grid Grid { get; set; }
         public GridView GridView { get; set; }
         private GridSMatrixAnalyzer MatrixAnalyzer;
-        public int MaxTileCount { get => Width*Height; }
-        public GridViewModel(GridView gridview, Grid grid )
+        public int MaxTileCount { get => Width * Height; }
+        public GridViewModel(GridView gridview, Grid grid)
         {
             this.GridView = gridview;
             this.Grid = grid;
             //this.GridView.Columns = grid.Width;
-            this.TileViews = new TileView[grid.Width, grid.Height];
+            this.GridComponentViews = new ComponentBaseView[grid.Width, grid.Height];
             CreateComponentCommand = new CreateComponentCommand(grid);
             DeleteComponentCommand = new DeleteComponentCommand(grid);
             RotateComponentCommand = new RotateComponentCommand(grid);
             MoveComponentCommand = new MoveComponentCommand(grid);
             ExportToNazcaCommand = new ExportNazcaCommand(new NazcaExporter(), grid);
-            CreateEmptyField(grid.Width, grid.Height);
+            CreateEmptyField();
             this.Grid.OnComponentPlacedOnTile += Grid_OnComponentPlacedOnTile;
             this.Grid.OnComponentRemoved += Grid_OnComponentRemoved;
         }
@@ -49,13 +49,6 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         private void Grid_OnComponentRemoved(ComponentBase component, int x, int y)
         {
             ResetTilesAt(x, y, component.WidthInTiles, component.HeightInTiles);
-        }
-        public void SetTileTexture(int x, int y, Texture2D texture, float rotationDegreesCounterClockwise)
-        {
-            if (!IsInGrid(x, y, 1, 1)) return;
-            TileViews[x, y].ResetToDefault(texture);
-            TileViews[x, y].Texture = texture;
-            TileViews[x, y].RotationDegrees = RotationHelper.ToClockwise(rotationDegreesCounterClockwise);
         }
         private void Grid_OnComponentPlacedOnTile(ComponentBase component, int gridX, int gridY)
         {
@@ -67,32 +60,11 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             return x >= 0 && y >= 0 && x + width <= this.Width && y + height <= this.Height;
         }
 
-        public void DeleteAllTiles()
+        public void CreateEmptyField()
         {
-            foreach (TileView t in TileViews)
+            foreach (var componentView in GridComponentViews)
             {
-                GridView.RemoveChild(t);
-            }
-        }
-        public void CreateEmptyField(int width, int height)
-        {
-            if (width <= 0 || height <= 0) return;
-            DeleteAllTiles();
-            //this.GridView.Columns = width;
-            if (this.Width != width || this.Height != height)
-            {
-                this.TileViews = new TileView[width, height];
-            }
-            for (int gridy = 0; gridy < height; gridy++)
-            {
-                for (int gridx = 0; gridx < width; gridx++)
-                {
-                    TileViews[gridx, gridy] = GridView.DefaultTile.Duplicate();
-                    TileViews[gridx, gridy].Visible = true;
-                    TileViews[gridx, gridy].Initialize(this);
-                    TileViews[gridx, gridy].SetPositionInGrid(gridx, gridy);
-                    GridView.AddChild(TileViews[gridx, gridy]);
-                }
+                componentView?.QueueFree();
             }
         }
 
@@ -103,36 +75,16 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
                 for (int j = 0; j < height; j++)
                 {
                     if (!IsInGrid(i + x, j + y, 1, 1)) continue;
-                    TileViews[x + i, y + j].ResetToDefault(GridView.DefaultTile.Texture);
+                    GridComponentViews[x + i, y + j]?.QueueFree();
                 }
             }
         }
         public ComponentBaseView CreateComponentViewByType(int x, int y, DiscreteRotation rotation, Type componentViewType, ComponentBase componentModel)
         {
             var ComponentView = ComponentViewFactory.Instance.CreateComponentView(componentViewType);
-            ComponentView.Rotation90CounterClock = rotation;
-            int width = ComponentView.WidthInTiles;
-            int height = ComponentView.HeightInTiles;
-            ComponentView.Show(x, y);
-            for (int i = 0; i < width; i++)
-            {
-                for (int j = 0; j < height; j++)
-                {
-                    int gridX = x + i;
-                    int gridY = y + j;
-                    SetTileTexture(gridX, gridY, ComponentView.GetTexture(i, j).Duplicate() as Texture2D, (float)ComponentView.Rotation90CounterClock * 90f);
-                    TileViews[gridX, gridY].ComponentView = ComponentView;
-                    var part = componentModel.Parts[i, j];
-                    var PinRightAbsoluteEdgePos = RectSide.Right.RotateSideCounterClockwise(part.Rotation90);
-                    var PinDownAbsoluteEdgePos = RectSide.Down.RotateSideCounterClockwise(part.Rotation90);
-                    var PinLeftAbsoluteEdgePos = RectSide.Left.RotateSideCounterClockwise(part.Rotation90);
-                    var PinUpAbsoluteEdgePos = RectSide.Up.RotateSideCounterClockwise(part.Rotation90);
-                    TileViews[gridX, gridY].PinRight.SetMatterType(part.GetPinAt(PinRightAbsoluteEdgePos)?.MatterType);
-                    TileViews[gridX, gridY].PinDown.SetMatterType(part.GetPinAt(PinDownAbsoluteEdgePos)?.MatterType);
-                    TileViews[gridX, gridY].PinLeft.SetMatterType(part.GetPinAt(PinLeftAbsoluteEdgePos)?.MatterType);
-                    TileViews[gridX, gridY].PinUp.SetMatterType(part.GetPinAt(PinUpAbsoluteEdgePos)?.MatterType);
-                }
-            }
+            ComponentView.Initialize(x, y, rotation , ComponentView.WidthInTiles , ComponentView.HeightInTiles, this);
+            GridView.DragDropProxy.AddChild(ComponentView);
+            GridComponentViews[x, y] = ComponentView;
             return ComponentView;
         }
 
@@ -150,30 +102,42 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             AssignLightToComponentViews(lightVectorBlue, LightColor.Blue);
         }
 
-        private void AssignLightToComponentViews(Dictionary<Guid, Complex> lightVectorRed , LightColor color)
+        private void AssignLightToComponentViews(Dictionary<Guid, Complex> lightVector, LightColor color)
         {
-            for (int x = 0; x < Grid.Width; x++)
+            List<ComponentBase> components = Grid.GetAllComponents();
+            foreach( var componentModel in components)
             {
-                for (int y = 0; y < Grid.Height; y++)
-                {
-                    var componentModel = Grid.GetComponentAt(x, y);
-                    if (componentModel == null) continue;
-                    var part = componentModel.GetPartAtGridXY(x, y);
-                    foreach (var side in Enum.GetValues(typeof(RectSide)).OfType<RectSide>())
-                    {
-                        var pin = part.GetPinAt(side);
-                        var lightIntensityIn = lightVectorRed[pin.IDInFlow].Real;
-                        var lightPhaseIn = lightVectorRed[pin.IDInFlow].Phase;
-                        var lightIntensityOut = lightVectorRed[pin.IDOutFlow].Real;
-                        var lightPhaseOut = lightVectorRed[pin.IDOutFlow].Phase;
-                        var pinView = TileViews[x, y].GetPinAt(side);
+                List<LightAtPin> lightAtPins = new();
 
-                        pinView.LightIn[color] = new Complex(lightIntensityIn, lightPhaseIn);
-                        pinView.LightOut[color] = new Complex(lightIntensityOut, lightPhaseOut);
+                for(int offsetX = 0; offsetX < componentModel.WidthInTiles; offsetX++)
+                {
+                    for( int offsetY = 0; offsetY < componentModel.HeightInTiles; offsetY++)
+                    {
+                        var part = componentModel.GetPartAt(offsetX, offsetY);
+                        foreach (var side in Enum.GetValues(typeof(RectSide)).OfType<RectSide>())
+                        {
+                            var pin = part.GetPinAt(side);
+                            if (pin == null) continue;
+                            var lightIntensityIn = lightVector[pin.IDInFlow].Real;
+                            var lightPhaseIn = lightVector[pin.IDInFlow].Phase;
+                            var lightIntensityOut = lightVector[pin.IDOutFlow].Real;
+                            var lightPhaseOut = lightVector[pin.IDOutFlow].Phase;
+
+                            var lightFlow = new LightAtPin(
+                                offsetX,
+                                offsetY,
+                                side,
+                                color,
+                                new Complex(lightIntensityIn, lightPhaseIn),
+                                new Complex(lightIntensityOut, lightPhaseOut)
+                                );
+                            lightAtPins.Add(lightFlow);
+                        }
                     }
-                    TileViews[x, y].ComponentView.DisplayLightVector();
                 }
+                GridComponentViews[componentModel.GridXMainTile, componentModel.GridYMainTile].DisplayLightVector(lightAtPins);
             }
+            
         }
 
         public void HideLightPropagation()
@@ -182,7 +146,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             {
                 for (int y = 0; y < Grid.Height; y++)
                 {
-                    TileViews[x, y].ComponentView.HideLightVector();
+                    GridComponentViews[x, y]?.HideLightVector();
                 }
             }
         }

@@ -10,10 +10,10 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
     public class CreateComponentCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
-        private Grid MainGrid;
+        private Grid GridModel;
         public CreateComponentCommand(Grid mainGrid )
         {
-            this.MainGrid = mainGrid;
+            this.GridModel = mainGrid;
         }
         
         public bool CanExecute(object parameter)
@@ -24,7 +24,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
                 int width = comp.WidthInTiles;
                 int height = comp.HeightInTiles;
                 comp.QueueFree();
-                if (MainGrid != null && MainGrid.IsColliding(args.Gridx, args.Gridy, width, height) ==false){
+                if (GridModel != null && GridModel.IsColliding(args.Gridx, args.Gridy, width, height) ==false){
                     return true;
                 }
             }
@@ -36,7 +36,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             if (CanExecute(parameter) == false) return;
             var compParams = (CreateComponentArgs)parameter;
             var newComponentType = ComponentViewModelTypeConverter.ToModel(compParams.ComponentViewType);
-            MainGrid.PlaceComponentByType(compParams.Gridx, compParams.Gridy, newComponentType);
+            GridModel.PlaceComponentByType(compParams.Gridx, compParams.Gridy, newComponentType);
         }
     }
     public class CreateComponentArgs

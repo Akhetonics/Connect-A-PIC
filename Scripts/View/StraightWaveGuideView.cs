@@ -1,27 +1,32 @@
 using CAP_Core.ExternalPorts;
 using Godot;
+using System.Collections.Generic;
 
 namespace ConnectAPIC.LayoutWindow.View
 {
-    public partial class StraightWaveGuideView : ComponentBaseView
+	public partial class StraightWaveGuideView : ComponentBaseView
 	{
-		[Export] protected Texture2D Texture;
+		
 		[Export] protected TextureRect LightOverlay;
 		[Export] protected PinView LeftPin;
 		[Export] protected PinView RightPin;
 		
 		public StraightWaveGuideView()
 		{
-			Textures = new Texture2D[1, 1];
+			
 		}
 
-		public override void DisplayLightVector()
+		public override void DisplayLightVector(List<LightAtPin> lightsAtPins)
 		{
-			LightOverlay.Visible = true;
-			var color = LightColor.Red;
-			var alpha = (float)LeftPin.LightIn[color].Real;
-            LightOverlay.Modulate = new Color(1, 1, 1, alpha);
-        }
+			foreach (LightAtPin light in lightsAtPins)
+			{
+				LightOverlay.Visible = true;
+				var color = LightColor.Red;
+				var alpha = (float)LeftPin.LightIn[color].Real;
+				LightOverlay.Modulate = new Color(1, 1, 1, alpha);
+			}
+			
+		}
 
 		public override void HideLightVector()
 		{
@@ -31,7 +36,7 @@ namespace ConnectAPIC.LayoutWindow.View
 		public override void _Ready()
 		{
 			base._Ready();
-			Textures[0, 0] = Texture;
+			
 		}
 	   
 	}

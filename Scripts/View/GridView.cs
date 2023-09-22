@@ -1,4 +1,5 @@
 using CAP_Core;
+using CAP_Core.Component.ComponentHelpers;
 using CAP_Core.ExternalPorts;
 using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
@@ -9,36 +10,23 @@ using System.Collections.Generic;
 namespace ConnectAPIC.LayoutWindow.View
 {
 
-    public partial class GridView : TileMap
+	public partial class GridView : TileMap
 	{
 		public delegate void GridActionHandler(TileView tile);
 		public delegate void GridActionComponentHandler(TileView tile);
 
-		[Export] private NodePath DefaultTilePath;
-		private TileView _defaultTile;
+		[Export] public DragDropProxy DragDropProxy;
 		private GridViewModel ViewModel;
 
-		public TileView DefaultTile
-		{
-			get
-			{
-				if (_defaultTile != null) return _defaultTile;
-				_defaultTile = this.GetNode<TileView>(DefaultTilePath);
-				return _defaultTile;
-			}
-		}
-
-		public GridView()
-		{
-			if (string.IsNullOrEmpty(DefaultTilePath))
-			{
-				GD.PrintErr($"{nameof(DefaultTilePath)} is not assigned");
-			}
-		}
 		public void Initialize(GridViewModel viewModel)
 		{
 			this.ViewModel = viewModel;
+			DragDropProxy.OnGetDragData += _GetDragData;
+			DragDropProxy.OnCanDropData += _CanDropData;
+			DragDropProxy.OnDropData+= _DropData;
+			DragDropProxy.Initialize(viewModel.Width , viewModel.Height);
 		}
+
 		private void _on_btn_export_nazca_pressed()
 		{
 			SaveFileDialog.Open(this, path =>
@@ -68,85 +56,41 @@ namespace ConnectAPIC.LayoutWindow.View
 			}
 		}
 
-        public override void _Input(InputEvent @event)
-        {
-            if (@event is InputEventMouseButton mouseButtonEvent)
-            {
-                if (mouseButtonEvent.Pressed)
-                {
-                    
-                    Vector2 clickedTile = WorldToMap(mouseButtonEvent.GlobalPosition);
-                    if (GetCellv(clickedTile) != -1)
-                    {
-                        Dictionary dragData = new Dictionary();
-                        dragData["tile"] = clickedTile;
+		public bool _CanDropData(Vector2 position, Variant data)
+		{
+			if (data.Obj is ComponentBaseView component)
+			{
+				ShowMultiTileDragPreview(position, component);
+			}
 
-                        GetTree().SetDragData(dragData);
-                    }
-                }
-                else
-                {
-                    Dictionary droppedData = GetTree().GetDragData() as Dictionary;
-                    if (droppedData != null)
-                    {
-                        // Hier können Sie Ihre Drop-Logik implementieren.
-                        // Z.B. Verschieben des Tiles oder Verarbeiten von anderen Drag-Informationen.
-                    }
-                }
-            }
-        }
+			return true;
+		}
+		protected void ShowMultiTileDragPreview(Vector2 position, ComponentBaseView component)
+		{
+			var newComponent = component.Duplicate();
+			newComponent.Visible = true;
+            DragDropProxy.SetDragPreview(newComponent);
+		}
+		public void _DropData(Vector2 atPosition, Variant data)
+		{
+			Vector2I GridXY = LocalToMap(atPosition);
+			if (data.Obj is ComponentBaseView componentView)
+			{
+				if (!componentView.Visible)
+				{
+					ViewModel.CreateComponentCommand.Execute(new CreateComponentArgs(componentView.GetType(), GridXY.X, GridXY.Y, (DiscreteRotation)(componentView.RotationDegrees /90)));
+				}
+				else
+				{
+					ViewModel.MoveComponentCommand.Execute(new MoveComponentArgs(componentView.GridX, componentView.GridY, GridXY.X, GridXY.Y));
+				}
+			}
+		}
 
-        public override bool _CanDropData(Vector2 position, Variant data)
-        {
-            // extract all tiles from the component that is about to be dropped here at position and SetDragPreview them
-            if (data.Obj is ComponentBaseView component)
-            {
-                ShowMultiTileDragPreview(position, component);
-            }
-
-            return true;
-        }
-        protected void ShowMultiTileDragPreview(Vector2 position, ComponentBaseView component)
-        {
-            var previewGrid = new GridContainer();
-            previewGrid.PivotOffset = previewGrid.Size / 2f;
-            var oldRotation = component.Rotation90CounterClock;
-            component.Rotation90CounterClock = 0;
-            previewGrid.Columns = component.WidthInTiles;
-            for (int y = 0; y < component.HeightInTiles; y++)
-            {
-                for (int x = 0; x < component.WidthInTiles; x++)
-                {
-                    var previewtile = this.Duplicate();
-                    previewtile._Ready();
-                    previewtile.Texture = component.GetTexture(x, y).Duplicate() as Texture2D;
-                    previewtile.Visible = true;
-                    previewGrid.AddChild(previewtile);
-                }
-            }
-            previewGrid.RotationDegrees = (int)oldRotation * 90;
-            component.Rotation90CounterClock = oldRotation;
-            this.SetDragPreview(previewGrid);
-        }
-        public override void _DropData(Vector2 atPosition, Variant data)
-        {
-            if (data.Obj is ComponentBaseView componentView)
-            {
-                if (!componentView.Visible)
-                {
-                    ViewModel.CreateComponentCommand.Execute(new CreateComponentArgs(componentView.GetType(), GridX, GridY, componentView.Rotation90CounterClock));
-                }
-                else
-                {
-                    ViewModel.MoveComponentCommand.Execute(new MoveComponentArgs(componentView.GridX, componentView.GridY, GridX, GridY));
-                }
-            }
-        }
-
-        public override Variant _GetDragData(Vector2 position)
-        {
-            return this.ComponentView;
-        }
-
-    }
+		public Variant _GetDragData(Vector2 position)
+		{
+			Vector2I GridXY = LocalToMap(position);
+			return ViewModel.GridComponentViews[GridXY.X, GridXY.Y];
+		}
+	}
 }

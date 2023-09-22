@@ -125,6 +125,16 @@ namespace CAP_Core
             }
             return Tiles[x, y].Component;
         }
+        public List<ComponentBase> GetAllComponents()
+        {
+            List<ComponentBase> components = new();
+            foreach(Tile tile in Tiles)
+            {
+                if (tile.Component == null) continue;
+                components.Add(tile.Component);
+            }
+            return components.Distinct().ToList();
+        }
         public ComponentBase? PlaceComponentByType(int x, int y, Type componentType)
         {
             ComponentBase component = ComponentFactory.Instance.CreateComponent(componentType);
