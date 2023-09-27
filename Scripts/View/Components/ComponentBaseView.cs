@@ -22,26 +22,26 @@ namespace ConnectAPIC.LayoutWindow.View
         public abstract void DisplayLightVector(List<LightAtPin> lightsAtPins);
         public abstract void HideLightVector();
         
-        public void Initialize(int gridX, int gridY, DiscreteRotation discreteRotation,int widthInTiles, int heightInTiles, GridViewModel viewModel)
+        public void Initialize(int gridX, int gridY, DiscreteRotation discreteRotation, GridViewModel viewModel)
         {
-            if (widthInTiles == 0) throw new Exception("width in tiles cannot be 0");
-            if (heightInTiles == 0) throw new Exception("height in tiles cannot be 0");
+            if (WidthInTiles == 0) throw new Exception("width in tiles cannot be 0");
+            if (HeightInTiles == 0) throw new Exception("height in tiles cannot be 0");
             this.GridX = gridX;
             this.GridY = gridY;
             this.ViewModel = viewModel;
             this.RotationDegrees = discreteRotation.ToDegrees();
-            
+
             Position = new Vector2( this.GridX * TileView.TilePixelSize , this.GridY * TileView.TilePixelSize );
             switch (discreteRotation)
             {
                 case DiscreteRotation.R90: // Assuming you have a corresponding enumeration value
-                    Position += new Vector2(widthInTiles * TileView.TilePixelSize,0);
+                    Position += new Vector2(WidthInTiles * TileView.TilePixelSize,0);
                     break;
                 case DiscreteRotation.R180:
-                    Position += new Vector2(widthInTiles * TileView.TilePixelSize, heightInTiles * TileView.TilePixelSize);
+                    Position += new Vector2(WidthInTiles * TileView.TilePixelSize, HeightInTiles * TileView.TilePixelSize);
                     break;
                 case DiscreteRotation.R270:
-                    Position += new Vector2(0,heightInTiles * TileView.TilePixelSize);
+                    Position += new Vector2(0, HeightInTiles * TileView.TilePixelSize);
                     break;
             }
             Visible = true;

@@ -48,7 +48,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
 
         private void Grid_OnComponentRemoved(ComponentBase component, int x, int y)
         {
-            ResetTilesAt(x, y, component.WidthInTiles, component.HeightInTiles);
+            ResetTilesAt(x,y,component.WidthInTiles, component.HeightInTiles);
         }
         private void Grid_OnComponentPlacedOnTile(ComponentBase component, int gridX, int gridY)
         {
@@ -64,27 +64,45 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         {
             foreach (var componentView in GridComponentViews)
             {
-                componentView?.QueueFree();
+                if(componentView?.IsQueuedForDeletion() == false)
+                    componentView.QueueFree();
             }
         }
 
-        public void ResetTilesAt(int x, int y, int width, int height)
+        public void RegisterComponentView(ComponentBaseView componentView)
         {
-            for (int i = 0; i < width; i++)
+            for (int x = componentView.GridX; x < componentView.GridX + componentView.WidthInTiles; x++)
             {
-                for (int j = 0; j < height; j++)
+                for (int y = componentView.GridY; y < componentView.GridY + componentView.HeightInTiles; y++)
                 {
-                    if (!IsInGrid(i + x, j + y, 1, 1)) continue;
-                    GridComponentViews[x + i, y + j]?.QueueFree();
+                    if (!IsInGrid(x, y, 1, 1)) continue;                    
+                    GridComponentViews[x, y] = componentView;
                 }
             }
         }
-        public ComponentBaseView CreateComponentViewByType(int x, int y, DiscreteRotation rotation, Type componentViewType, ComponentBase componentModel)
+        public void ResetTilesAt(int startX, int startY, int width, int height)
+        {
+            for (int x = startX;  x < startX + width; x++)
+            {
+                for (int y = startY; y < startY +height; y++)
+                {
+                    if (!IsInGrid(x, y, 1, 1)) continue;
+                    var oldComponent = GridComponentViews[x, y];
+                    if (oldComponent == null) continue;
+                    if (!oldComponent.IsQueuedForDeletion())
+                    {
+                        oldComponent.QueueFree();
+                    }
+                    GridComponentViews[x, y] = null;
+                }
+            }
+        }
+        public ComponentBaseView CreateComponentViewByType(int gridx, int gridy, DiscreteRotation rotation, Type componentViewType, ComponentBase componentModel)
         {
             var ComponentView = ComponentViewFactory.Instance.CreateComponentView(componentViewType);
-            ComponentView.Initialize(x, y, rotation , ComponentView.WidthInTiles , ComponentView.HeightInTiles, this);
-            GridView.DragDropProxy.AddChild(ComponentView);
-            GridComponentViews[x, y] = ComponentView;
+            ComponentView.Initialize(gridx, gridy, rotation , this);
+            RegisterComponentView(ComponentView);
+            GridView.DragDropProxy.AddChild(ComponentView); // it has to be the child of the DragDropArea to be displayed
             return ComponentView;
         }
 
