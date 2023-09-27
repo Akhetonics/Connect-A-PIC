@@ -29,13 +29,13 @@ namespace CAP_Core.CodeExporter
             AlreadyProcessedComponents = new List<ComponentBase>();
             StringBuilder NazcaCode = new();
             NazcaCode.Append(PythonResources.CreateHeader(Resources.NazcaPDKName, Resources.NazcaStandardInputCellName));
-            // start at all the three intputTiles.
-            ConnectComponentsAtInputsViaPin(NazcaCode);
+            AddComponentsConnectedToStandardInputs(NazcaCode);
+            AddOrphants(NazcaCode);
             NazcaCode.Append(PythonResources.CreateFooter());
             return NazcaCode.ToString();
         }
 
-        private void ConnectComponentsAtInputsViaPin(StringBuilder NazcaCode)
+        private void AddComponentsConnectedToStandardInputs(StringBuilder NazcaCode)
         {
             foreach (ExternalPort port in grid.ExternalPorts)
             {
@@ -49,6 +49,10 @@ namespace CAP_Core.CodeExporter
                 if (AlreadyProcessedComponents.Contains(firstConnectedTile.Component)) continue;
                 StartConnectingAtInput(NazcaCode, input, firstConnectedTile);
             }
+        }
+
+        private void AddOrphants(StringBuilder NazcaCode)
+        {
             // go through rest of components, start with one that is not being added to the NazcaCode yet
             for (int x = 0; x < grid.Width; x++)
             {

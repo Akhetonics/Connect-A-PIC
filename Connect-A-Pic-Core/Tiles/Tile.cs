@@ -41,7 +41,6 @@ namespace CAP_Core.Tiles
         }
         public string ExportToNazcaAbsolutePosition()
         {
-            // TODO: Take rotation of component into consideration and move the component accordingly around when it has more than one tile and gets rotated.
             if (Component == null) return "";
             var cellName = GetComponentCellName();
             var comp = Component;
