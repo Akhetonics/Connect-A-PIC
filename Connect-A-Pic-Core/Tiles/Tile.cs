@@ -82,7 +82,7 @@ namespace CAP_Core.Tiles
             var lightFLowDirection = new IntVector(xdir, ydir);
             return (RectSide)lightFLowDirection;
         }
-        public Pin GetPinAt(RectSide side)
+        public Pin? GetPinAt(RectSide side)
         {
             if (Component == null) return null;
             var Part = Component.GetPartAtGridXY(GridX, GridY);

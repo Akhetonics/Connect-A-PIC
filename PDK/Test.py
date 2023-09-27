@@ -8,14 +8,9 @@ def FullDesign(layoutName):
 
         grating = CAPICPDK.placeGratingArray_East(8).put(0, 0)
         cell_0_2 = CAPICPDK.placeCell_DirectionalCoupler(deltaLength = 50).put('west0', grating.pin['io0'])
-        cell_2_3 = CAPICPDK.placeCell_DirectionalCoupler(deltaLength = 50).put('west0', cell_0_2.pin['east1'])
-        cell_4_2 = CAPICPDK.placeCell_DirectionalCoupler(deltaLength = 50).put('west1', cell_2_3.pin['east0'])
-        cell_4_4 = CAPICPDK.placeCell_DirectionalCoupler(deltaLength = 50).put('east1', cell_2_3.pin['east1'])
-        cell_0_2 = CAPICPDK.placeCell_DirectionalCoupler(deltaLength = 50).put('west1', grating.pin['io1'])
-        cell_2_3 = CAPICPDK.placeCell_DirectionalCoupler(deltaLength = 50).put('west0', cell_0_2.pin['east1'])
-        #cell_0_4 = CAPICPDK.placeCell_DirectionalCoupler(deltaLength = 50).put('', grating.pin['io2'])
-        cell_3_0 = CAPICPDK.placeCell_DirectionalCoupler(deltaLength = 50).put((3+0.5)*CAPICPDK._CellSize,(0+-1.5)*CAPICPDK._CellSize,90)
-        cell_3_6 = CAPICPDK.placeCell_DirectionalCoupler(deltaLength = 50).put((3+0.5)*CAPICPDK._CellSize,(-6+-1.5)*CAPICPDK._CellSize,90)
+        cell_2_2 = CAPICPDK.placeCell_DirectionalCoupler(deltaLength = 50).put('west0', cell_0_2.pin['east0'])
+        cell_4_2 = CAPICPDK.placeCell_DirectionalCoupler(deltaLength = 50).put('west0', cell_2_2.pin['east0'])
+        cell_10_1 = CAPICPDK.placeCell_DirectionalCoupler(deltaLength = 50).put((10+0)*CAPICPDK._CellSize,(-1+0)*CAPICPDK._CellSize,0)
     return fullLayoutInner
 
 nd.print_warning = False
