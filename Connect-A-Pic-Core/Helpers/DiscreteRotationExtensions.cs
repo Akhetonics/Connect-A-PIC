@@ -11,15 +11,15 @@ namespace CAP_Core.Helpers
             while (rotationIntervals < 0) rotationIntervals += (int)DiscreteRotation.R270 + 1;
             return rotationIntervals;
         }
-        public static DiscreteRotation RotateBy90(this DiscreteRotation currentRotation)
+        public static DiscreteRotation RotateBy90CounterC(this DiscreteRotation currentRotation)
         {
             while (currentRotation < 0) currentRotation += (int)DiscreteRotation.R270 + 1;
             return (DiscreteRotation)((int)(currentRotation + 1) % (int)(DiscreteRotation.R270 + 1));
         }
 
-        public static float ToDegrees (this DiscreteRotation currentRotation)
+        public static float ToDegreesClockwise (this DiscreteRotation currentRotation)
         {
-            return (float)currentRotation * 90f;
+            return (360-(float)currentRotation * 90f) % 360f;
         }
 
         public static RectSide RotateSideCounterClockwise(this RectSide side, DiscreteRotation rotation)

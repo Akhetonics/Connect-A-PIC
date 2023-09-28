@@ -25,11 +25,11 @@ namespace ConnectAPIC.LayoutWindow.View
 			LightFlowOverlayRightUpIn.Visible = true;
 			LightFlowOverlayRightDownIn.Visible = true;
 
-            LightFlowOverlayLeftUpOut.Visible = true;
-            LightFlowOverlayLeftDownOut.Visible = true;
-            LightFlowOverlayRightUpOut.Visible = true;
-            LightFlowOverlayRightDownOut.Visible = true;
-            var lightLeftUp = lightsAtPins.Where(l => l.partOffsetX == 0 && l.partOffsetY == 0);
+			LightFlowOverlayLeftUpOut.Visible = true;
+			LightFlowOverlayLeftDownOut.Visible = true;
+			LightFlowOverlayRightUpOut.Visible = true;
+			LightFlowOverlayRightDownOut.Visible = true;
+			var lightLeftUp = lightsAtPins.Where(l => l.partOffsetX == 0 && l.partOffsetY == 0);
 			foreach(var light in lightLeftUp)
 			{
 				// we have to match the partOffsetX, partoffsetY with the Left/Up values here, in theory also the side should be matched,
@@ -52,20 +52,20 @@ namespace ConnectAPIC.LayoutWindow.View
 			LightFlowOverlayRightDownIn.Visible = false;
 
 			LightFlowOverlayLeftUpOut.Visible = false;
-            LightFlowOverlayLeftDownOut.Visible = false;
-            LightFlowOverlayRightUpOut.Visible = false;
-            LightFlowOverlayRightDownOut.Visible = false;
-            // todo: Here I really need to create a list<Overlays> that know where they are located so they can automatically be assigned to the right LightAtPin Element.
-        }
+			LightFlowOverlayLeftDownOut.Visible = false;
+			LightFlowOverlayRightUpOut.Visible = false;
+			LightFlowOverlayRightDownOut.Visible = false;
+			// todo: Here I really need to create a list<Overlays> that know where they are located so they can automatically be assigned to the right LightAtPin Element.
+		}
 
 		public override void _Ready()
 		{
 			base._Ready();
-            LightFlowOverlayLeftUpOut = LightFlowOverlayLeftUpIn.Duplicate() as AnimatedSprite2D;
-            LightFlowOverlayLeftDownOut = LightFlowOverlayLeftDownIn.Duplicate() as AnimatedSprite2D;
-            LightFlowOverlayRightUpOut = LightFlowOverlayRightUpIn.Duplicate() as AnimatedSprite2D;
-            LightFlowOverlayRightDownOut = LightFlowOverlayRightDownIn.Duplicate() as AnimatedSprite2D;
-        }
+			LightFlowOverlayLeftUpOut = LightFlowOverlayLeftUpIn.Duplicate() as AnimatedSprite2D;
+			LightFlowOverlayLeftDownOut = LightFlowOverlayLeftDownIn.Duplicate() as AnimatedSprite2D;
+			LightFlowOverlayRightUpOut = LightFlowOverlayRightUpIn.Duplicate() as AnimatedSprite2D;
+			LightFlowOverlayRightDownOut = LightFlowOverlayRightDownIn.Duplicate() as AnimatedSprite2D;
+		}
 	   
 	}
 }

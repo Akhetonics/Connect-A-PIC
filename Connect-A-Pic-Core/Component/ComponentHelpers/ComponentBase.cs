@@ -49,7 +49,7 @@ namespace CAP_Core.Component.ComponentHelpers
         public void RotateBy90CounterClockwise()
         {
             Parts = Parts.RotateCounterClockwise();
-            _discreteRotation = _discreteRotation.RotateBy90();
+            _discreteRotation = _discreteRotation.RotateBy90CounterC();
             foreach (Part part in Parts)
             {
                 part.Rotation90 = _discreteRotation;

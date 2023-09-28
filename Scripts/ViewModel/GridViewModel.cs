@@ -97,10 +97,10 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
                 }
             }
         }
-        public ComponentBaseView CreateComponentViewByType(int gridx, int gridy, DiscreteRotation rotation, Type componentViewType, ComponentBase componentModel)
+        public ComponentBaseView CreateComponentViewByType(int gridx, int gridy, DiscreteRotation rotationCounterClockwise, Type componentViewType, ComponentBase componentModel)
         {
             var ComponentView = ComponentViewFactory.Instance.CreateComponentView(componentViewType);
-            ComponentView.Initialize(gridx, gridy, rotation , this);
+            ComponentView.Initialize(gridx, gridy, rotationCounterClockwise , this);
             RegisterComponentView(ComponentView);
             GridView.DragDropProxy.AddChild(ComponentView); // it has to be the child of the DragDropArea to be displayed
             return ComponentView;
