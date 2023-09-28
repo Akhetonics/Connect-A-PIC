@@ -116,6 +116,7 @@ speed_scale = 0.925
 centered = false
 
 [node name="RichTextLabel" type="RichTextLabel" parent="."]
+layout_mode = 0
 offset_left = 20.0
 offset_top = 97.0
 offset_right = 118.0

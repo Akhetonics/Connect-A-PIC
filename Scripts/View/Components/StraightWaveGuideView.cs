@@ -7,7 +7,7 @@ namespace ConnectAPIC.LayoutWindow.View
 	public partial class StraightWaveGuideView : ComponentBaseView
 	{
 		
-		[Export] protected TextureRect LightOverlay;
+		[Export] protected AnimatedSprite2D LightOverlay;
 		[Export] protected PinView LeftPin;
 		[Export] protected PinView RightPin;
 		
@@ -21,9 +21,11 @@ namespace ConnectAPIC.LayoutWindow.View
 			foreach (LightAtPin light in lightsAtPins)
 			{
 				LightOverlay.Visible = true;
+				LightOverlay.Play();
 				var color = LightColor.Red;
 				var alpha = (float)LeftPin.LightIn[color].Real;
 				LightOverlay.Modulate = new Color(1, 1, 1, alpha);
+				break;
 			}
 			
 		}

@@ -7,15 +7,15 @@
 [ext_resource type="Texture2D" uid="uid://cd2busn0vvaoq" path="res://GFX/PinLight.png" id="5_lrhvy"]
 [ext_resource type="Script" path="res://Scripts/View/PinView.cs" id="6_ay4pw"]
 [ext_resource type="Script" path="res://Scripts/View/TemplateTileView.cs" id="6_ly1br"]
-[ext_resource type="Script" path="res://Scripts/View/StraightWaveGuideView.cs" id="7_tohqs"]
 [ext_resource type="Texture2D" uid="uid://emq4du4tlo3h" path="res://GFX/PinElectric.png" id="7_uo1bp"]
 [ext_resource type="Script" path="res://Scripts/View/ComponentViewFactory.cs" id="7_x7uef"]
 [ext_resource type="Texture2D" uid="uid://obrjry10rd00" path="res://GFX/StraightComponent.png" id="8_gfj5w"]
 [ext_resource type="Texture2D" uid="uid://dbc8fq12pwjqx" path="res://GFX/ExternalInputBlue.png" id="8_y1c58"]
 [ext_resource type="Texture2D" uid="uid://b7fnv5qoysp51" path="res://GFX/GratingCoupler.png" id="10_m4std"]
+[ext_resource type="PackedScene" uid="uid://bm3jaqj5in510" path="res://Scenes/Components/GratingCoupler.tscn" id="12_dw85f"]
+[ext_resource type="PackedScene" uid="uid://b3bif06mnx8qd" path="res://Scenes/Components/StraightWaveGuide.tscn" id="12_g1ivk"]
 [ext_resource type="PackedScene" uid="uid://bscqmaslppyt8" path="res://Scenes/NotificationBox.tscn" id="12_o0640"]
 [ext_resource type="Shader" path="res://Scenes/LightAnimationOverlay.gdshader" id="13_nlker"]
-[ext_resource type="Script" path="res://Scripts/View/GratingCouplerView.cs" id="14_bqkgg"]
 [ext_resource type="PackedScene" uid="uid://b4ltp4nnviu3" path="res://Scenes/Components/DirectionalCouplerScene.tscn" id="20_uysp3"]
 [ext_resource type="Texture2D" uid="uid://uoowtaubmv1i" path="res://GFX/DirectionalCoupler/DirectionalCoupler.png" id="21_a2v5y"]
 [ext_resource type="Texture2D" uid="uid://jcla22kq5xkl" path="res://GFX/ScreenshotMockUp.png" id="21_opdte"]
@@ -762,27 +762,26 @@ NotificationBoxScene = ExtResource("12_o0640")
 [node name="ComponentTemplates" type="Node" parent="."]
 script = ExtResource("7_x7uef")
 
-[node name="StraightWaveGuideView" type="Node" parent="ComponentTemplates" node_paths=PackedStringArray("LightOverlay")]
-script = ExtResource("7_tohqs")
-LightOverlay = NodePath("TextureRect")
-WidthInTiles = 1
-HeightInTiles = 1
-
-[node name="TextureRect" type="TextureRect" parent="ComponentTemplates/StraightWaveGuideView"]
-offset_right = 40.0
-offset_bottom = 40.0
-
-[node name="GratingCouplerView" type="Node" parent="ComponentTemplates"]
-script = ExtResource("14_bqkgg")
-WidthInTiles = 1
-HeightInTiles = 1
-
 [node name="DirectionalCoupler" parent="ComponentTemplates" instance=ExtResource("20_uysp3")]
 visible = false
 offset_left = 219.0
 offset_top = 101.0
 offset_right = 348.0
 offset_bottom = 229.0
+
+[node name="StraightWaveGuideView" parent="ComponentTemplates" instance=ExtResource("12_g1ivk")]
+visible = false
+offset_left = 221.0
+offset_top = 170.0
+offset_right = 285.0
+offset_bottom = 234.0
+
+[node name="GratingCoupler" parent="ComponentTemplates" instance=ExtResource("12_dw85f")]
+visible = false
+offset_left = 227.0
+offset_top = 166.0
+offset_right = 292.0
+offset_bottom = 230.0
 
 [node name="btnExportNazca" type="Button" parent="."]
 offset_left = 30.0
@@ -845,7 +844,7 @@ layout_mode = 2
 texture = ExtResource("10_m4std")
 expand_mode = 3
 script = ExtResource("6_ly1br")
-componentTemplatePath = NodePath("../../../ComponentTemplates/GratingCouplerView")
+componentTemplatePath = NodePath("../../../ComponentTemplates/GratingCoupler")
 
 [node name="PinRight" type="TextureRect" parent="ComponentToolBox/ToolBoxGrid/GratingCouplerTool"]
 layout_mode = 0

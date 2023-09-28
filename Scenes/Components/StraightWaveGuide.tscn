@@ -1,0 +1,60 @@
+[gd_scene load_steps=9 format=3 uid="uid://b3bif06mnx8qd"]
+
+[ext_resource type="Texture2D" uid="uid://dlui314yxvnfr" path="res://GFX/StraightComponent_Right.png" id="1_2j6pt"]
+[ext_resource type="Script" path="res://Scripts/View/Components/StraightWaveGuideView.cs" id="2_4ru4l"]
+[ext_resource type="Texture2D" uid="uid://cirsar1cf6vkh" path="res://GFX/Components/Directional Coupler/Overlay/Directional Coupler Single Overlay.png" id="6_y46pm"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ka2eo"]
+atlas = ExtResource("6_y46pm")
+region = Rect2(0, 0, 61, 30)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_p7x50"]
+atlas = ExtResource("6_y46pm")
+region = Rect2(61, 0, 61, 30)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_s2c4y"]
+atlas = ExtResource("6_y46pm")
+region = Rect2(122, 0, 61, 30)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3st3g"]
+atlas = ExtResource("6_y46pm")
+region = Rect2(183, 0, 61, 30)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_6deer"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ka2eo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p7x50")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s2c4y")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3st3g")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="TextureRect" type="TextureRect" node_paths=PackedStringArray("LightOverlay")]
+offset_right = 65.0
+offset_bottom = 63.0
+texture = ExtResource("1_2j6pt")
+script = ExtResource("2_4ru4l")
+LightOverlay = NodePath("LightOverlays/AnimatedSpriteLeftUpOn")
+WidthInTiles = 1
+HeightInTiles = 1
+
+[node name="LightOverlays" type="Sprite2D" parent="."]
+
+[node name="AnimatedSpriteLeftUpOn" type="AnimatedSprite2D" parent="LightOverlays"]
+process_mode = 1
+visible = false
+scale = Vector2(2.09836, 2.09836)
+sprite_frames = SubResource("SpriteFrames_6deer")
+speed_scale = 0.925
+centered = false
