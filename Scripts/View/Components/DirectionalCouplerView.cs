@@ -61,11 +61,28 @@ namespace ConnectAPIC.LayoutWindow.View
 		public override void _Ready()
 		{
 			base._Ready();
-			LightFlowOverlayLeftUpOut = LightFlowOverlayLeftUpIn.Duplicate() as AnimatedSprite2D;
-			LightFlowOverlayLeftDownOut = LightFlowOverlayLeftDownIn.Duplicate() as AnimatedSprite2D;
-			LightFlowOverlayRightUpOut = LightFlowOverlayRightUpIn.Duplicate() as AnimatedSprite2D;
-			LightFlowOverlayRightDownOut = LightFlowOverlayRightDownIn.Duplicate() as AnimatedSprite2D;
+			if (LightFlowOverlayLeftUpOut == null) CustomLogger.PrintErr(new ArgumentNullException(nameof(LightFlowOverlayLeftUpOut)).ToString());
+			if (LightFlowOverlayLeftDownOut == null) throw new ArgumentNullException(nameof(LightFlowOverlayLeftDownOut));
+			if (LightFlowOverlayRightUpOut == null) throw new ArgumentNullException(nameof(LightFlowOverlayRightUpOut));
+			if (LightFlowOverlayRightDownOut == null) throw new ArgumentNullException(nameof(LightFlowOverlayRightDownOut));
+
+			if (LightFlowOverlayLeftUpIn == null) throw new ArgumentNullException(nameof(LightFlowOverlayLeftUpIn));
+			if (LightFlowOverlayLeftDownIn == null) throw new ArgumentNullException(nameof(LightFlowOverlayLeftDownIn));
+			if (LightFlowOverlayRightUpIn == null) throw new ArgumentNullException(nameof(LightFlowOverlayRightUpIn));
+			if (LightFlowOverlayRightDownIn == null) throw new ArgumentNullException(nameof(LightFlowOverlayRightDownIn));
 		}
-	   
+		public override ComponentBaseView Duplicate()
+		{
+			var copy = base.Duplicate() as DirectionalCouplerView;
+			//copy.LightFlowOverlayLeftUp
+
+
+			copy.LightFlowOverlayLeftUpIn = LightFlowOverlayLeftUpIn;
+			if (LightFlowOverlayLeftDownIn == null) throw new ArgumentNullException(nameof(LightFlowOverlayLeftDownIn));
+			if (LightFlowOverlayRightUpIn == null) throw new ArgumentNullException(nameof(LightFlowOverlayRightUpIn));
+			if (LightFlowOverlayRightDownIn == null) throw new ArgumentNullException(nameof(LightFlowOverlayRightDownIn));
+			return copy;
+		}
+
 	}
 }

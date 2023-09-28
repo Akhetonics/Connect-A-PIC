@@ -16,6 +16,7 @@ namespace ConnectAPIC.LayoutWindow.View
 		public override void _Ready()
 		{
 			base._Ready();
+			if (LightOverlay == null) throw new ArgumentNullException(nameof(LightOverlay));
 			
 		}
 		public override void DisplayLightVector(List<LightAtPin> lightsAtPins)

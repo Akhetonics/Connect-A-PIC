@@ -1,5 +1,6 @@
 using CAP_Core.ExternalPorts;
 using Godot;
+using System;
 using System.Collections.Generic;
 
 namespace ConnectAPIC.LayoutWindow.View
@@ -38,7 +39,7 @@ namespace ConnectAPIC.LayoutWindow.View
 		public override void _Ready()
 		{
 			base._Ready();
-			
+			if (LightOverlay == null) throw new ArgumentNullException(nameof(LightOverlay));
 		}
 	   
 	}

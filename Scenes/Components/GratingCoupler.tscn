@@ -40,11 +40,12 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="TextureRect" type="TextureRect"]
+[node name="TextureRect" type="TextureRect" node_paths=PackedStringArray("LightOverlay")]
 offset_right = 65.0
 offset_bottom = 63.0
 texture = ExtResource("1_5xgrn")
 script = ExtResource("2_vegh3")
+LightOverlay = NodePath("LightOverlays/AnimatedSpriteLeftUpOn")
 WidthInTiles = 1
 HeightInTiles = 1
 

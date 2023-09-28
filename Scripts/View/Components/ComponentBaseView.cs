@@ -24,8 +24,8 @@ namespace ConnectAPIC.LayoutWindow.View
         
         public void Initialize(int gridX, int gridY, DiscreteRotation rotationCounterClockwise, GridViewModel viewModel)
         {
-            if (WidthInTiles == 0) throw new Exception("width in tiles cannot be 0");
-            if (HeightInTiles == 0) throw new Exception("height in tiles cannot be 0");
+            if (WidthInTiles == 0) CustomLogger.PrintErr($"{nameof(WidthInTiles)} cannot be 0");
+            if (HeightInTiles == 0) CustomLogger.PrintErr($"{nameof(HeightInTiles)} cannot be 0");
             this.GridX = gridX;
             this.GridY = gridY;
             this.ViewModel = viewModel;
@@ -78,7 +78,7 @@ namespace ConnectAPIC.LayoutWindow.View
                 }
             }
         }
-        public ComponentBaseView Duplicate()
+        public virtual ComponentBaseView Duplicate()
         {
             var copy = base.Duplicate() as ComponentBaseView;
             return copy;
