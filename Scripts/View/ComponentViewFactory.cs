@@ -42,7 +42,8 @@ namespace ConnectAPIC.LayoutWindow.View
 		public ComponentBaseView CreateComponentView(Type ViewTypeListedInFactoryChildren)
 		{
 			if (! typeof(ComponentBaseView).IsAssignableFrom(ViewTypeListedInFactoryChildren)){
-				throw new ArgumentException($"Type is not of ComponentBaseView: {nameof(ViewTypeListedInFactoryChildren) + " " + ViewTypeListedInFactoryChildren.FullName}");
+				CustomLogger.PrintErr($"Type is not of ComponentBaseView: {nameof(ViewTypeListedInFactoryChildren) + " " + ViewTypeListedInFactoryChildren.FullName}");
+                throw new ArgumentException(nameof(ViewTypeListedInFactoryChildren));
 			}
 			foreach (ComponentBaseView component in AllComponentViewBlueprints)
 			{
@@ -53,7 +54,8 @@ namespace ConnectAPIC.LayoutWindow.View
 					return item;
 				}
 			}
-			throw new ComponentTemplateMissingException(ViewTypeListedInFactoryChildren.FullName);
+			CustomLogger.PrintErr($"ComponentTemplate is not defined: {ViewTypeListedInFactoryChildren.FullName}");
+            throw new ComponentTemplateMissingException(ViewTypeListedInFactoryChildren.FullName);
 		}
 	}
 }

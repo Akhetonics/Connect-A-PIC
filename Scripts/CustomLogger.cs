@@ -1,6 +1,7 @@
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 
 public record LogInfo
@@ -27,66 +28,85 @@ public partial class CustomLogger : ScrollContainer
 	}
 
 	public override void _UnhandledInput(InputEvent @event)
+    {
+        FlushBufferedLogs();
+        if (@event is InputEventKey eventKey)
+        {
+            if (eventKey.Pressed && eventKey.IsCommandOrControlPressed() && eventKey.Keycode == Key.F1)
+            {
+                if (visibilityChanged == false)
+                {
+                    visibilityChanged = true;
+                    Visible = !Visible;
+                }
+            }
+            else
+            {
+                visibilityChanged = false;
+            }
+        }
+    }
+
+    private static void FlushBufferedLogs()
+    {
+        if (LogInfos.Count != 0)
+        {
+            foreach (var info in LogInfos)
+            {
+                if (info.IsError)
+                {
+                    PrintErr(info.Info);
+                }
+                else
+                {
+                    PrintLn(info.Info);
+                }
+            }
+            LogInfos = new List<LogInfo> { };
+        }
+    }
+
+    public static void PrintLn(string text)
 	{
-		if(LogInfos.Count != 0)
-		{
-			foreach (var info in LogInfos)
-			{
-				if (info.IsError)
-				{
-					PrintErr(info.Info);
-				}
-				else
-				{
-					PrintLn(info.Info);
-				}
-			}
-		}
-		LogInfos = new List<LogInfo> { };
-		if (@event is InputEventKey eventKey)
-		{
-			if (eventKey.Pressed && eventKey.IsCommandOrControlPressed() && eventKey.Keycode == Key.F1)
-			{
-				if (visibilityChanged == false)
-				{
-					visibilityChanged = true;
-					Visible = !Visible;
-				}
-			}
-			else
-			{
-				visibilityChanged = false;
-			}
-		}
-	}
-	
-	public static void PrintLn(string text)
-	{
-		Print(text);
+        text = FormatErrorText(text);
+        Print(text);
 	}
 	public static void PrintErr(string text)
 	{
-		Print(text,true);
+		text = FormatErrorText(text);
+        Print(text,true);
 	}
 	private static void Print(string text, bool isError = false)
-	{
-		RichTextLabel labelTemplate = InfoTextTemplate;
-		if (isError){
-			labelTemplate = ErrorTextTemplate;
-		}
-		if(labelTemplate == null)
-		{
-			LogInfos.Add(new LogInfo() { Info = text, IsError = isError });
-			return;
-		}
-		var newLine = labelTemplate.Duplicate() as RichTextLabel;
-		newLine.Text = text;
-		newLine.Visible = true;
-		LoggingParent.AddChild(newLine);
-	}
+    {
+        
+        RichTextLabel labelTemplate = InfoTextTemplate;
+        if (isError)
+        {
+            labelTemplate = ErrorTextTemplate;
+        }
+        if(labelTemplate != null)
+        {
+            FlushBufferedLogs();
+        } else
+        {
+            LogInfos.Add(new LogInfo() { Info = text, IsError = isError });
+            return;
+        }
+        var newLine = labelTemplate.Duplicate() as RichTextLabel;
+        newLine.Text = text;
+        newLine.Visible = true;
+        LoggingParent.AddChild(newLine);
+    }
 
-	private void OnError(string message, string function, string file, int line)
-	{
-		throw new Exception($"Error: {message} in {function} at {file}:{line}");
-	}
+    private static string FormatErrorText(string text)
+    {
+        StackTrace stackTrace = new StackTrace(true);
+        StackFrame frame = stackTrace.GetFrame(2);
+        var method = frame.GetMethod();
+        var lineNumber = frame.GetFileLineNumber();
+        var declaringType = method.DeclaringType;
+        var methodName = method.Name;
+
+        return $"{declaringType}.{methodName}:{lineNumber} >> {text}";
+    }
 }

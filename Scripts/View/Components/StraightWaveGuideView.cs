@@ -39,7 +39,7 @@ namespace ConnectAPIC.LayoutWindow.View
 		public override void _Ready()
 		{
 			base._Ready();
-			if (LightOverlay == null) throw new ArgumentNullException(nameof(LightOverlay));
+			if (LightOverlay == null) CustomLogger.PrintErr(nameof(LightOverlay) + " is not assigned");
 		}
 	   
 	}

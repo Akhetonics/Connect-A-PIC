@@ -61,26 +61,29 @@ namespace ConnectAPIC.LayoutWindow.View
 		public override void _Ready()
 		{
 			base._Ready();
-			if (LightFlowOverlayLeftUpOut == null) CustomLogger.PrintErr(new ArgumentNullException(nameof(LightFlowOverlayLeftUpOut)).ToString());
-			if (LightFlowOverlayLeftDownOut == null) throw new ArgumentNullException(nameof(LightFlowOverlayLeftDownOut));
-			if (LightFlowOverlayRightUpOut == null) throw new ArgumentNullException(nameof(LightFlowOverlayRightUpOut));
-			if (LightFlowOverlayRightDownOut == null) throw new ArgumentNullException(nameof(LightFlowOverlayRightDownOut));
+			if (LightFlowOverlayLeftUpIn == null) CustomLogger.PrintErr(new ArgumentNullException(nameof(LightFlowOverlayLeftUpIn)).ToString());
+			if (LightFlowOverlayLeftDownIn == null) CustomLogger.PrintErr(new ArgumentNullException(nameof(LightFlowOverlayLeftDownIn)).ToString());
+			if (LightFlowOverlayRightUpIn == null) CustomLogger.PrintErr(new ArgumentNullException(nameof(LightFlowOverlayRightUpIn)).ToString());
+			if (LightFlowOverlayRightDownIn == null) CustomLogger.PrintErr(new ArgumentNullException(nameof(LightFlowOverlayRightDownIn)).ToString());
 
-			if (LightFlowOverlayLeftUpIn == null) throw new ArgumentNullException(nameof(LightFlowOverlayLeftUpIn));
-			if (LightFlowOverlayLeftDownIn == null) throw new ArgumentNullException(nameof(LightFlowOverlayLeftDownIn));
-			if (LightFlowOverlayRightUpIn == null) throw new ArgumentNullException(nameof(LightFlowOverlayRightUpIn));
-			if (LightFlowOverlayRightDownIn == null) throw new ArgumentNullException(nameof(LightFlowOverlayRightDownIn));
+			LightFlowOverlayLeftUpOut = LightFlowOverlayLeftUpIn.Duplicate() as AnimatedSprite2D;
+            LightFlowOverlayLeftDownOut = LightFlowOverlayLeftDownIn.Duplicate() as AnimatedSprite2D;
+            LightFlowOverlayRightUpOut = LightFlowOverlayRightUpIn.Duplicate() as AnimatedSprite2D;
+            LightFlowOverlayRightDownOut = LightFlowOverlayRightDownIn.Duplicate() as AnimatedSprite2D;
 		}
 		public override ComponentBaseView Duplicate()
 		{
 			var copy = base.Duplicate() as DirectionalCouplerView;
-			//copy.LightFlowOverlayLeftUp
 
-
-			copy.LightFlowOverlayLeftUpIn = LightFlowOverlayLeftUpIn;
-			if (LightFlowOverlayLeftDownIn == null) throw new ArgumentNullException(nameof(LightFlowOverlayLeftDownIn));
-			if (LightFlowOverlayRightUpIn == null) throw new ArgumentNullException(nameof(LightFlowOverlayRightUpIn));
-			if (LightFlowOverlayRightDownIn == null) throw new ArgumentNullException(nameof(LightFlowOverlayRightDownIn));
+            if (LightFlowOverlayLeftUpIn == null) CustomLogger.PrintErr((nameof(LightFlowOverlayRightDownIn)).ToString());
+            if (LightFlowOverlayLeftDownIn == null) CustomLogger.PrintErr((nameof(LightFlowOverlayLeftDownIn)).ToString());
+            if (LightFlowOverlayRightUpIn == null) CustomLogger.PrintErr((nameof(LightFlowOverlayRightUpIn)).ToString());
+            if (LightFlowOverlayRightDownIn == null) CustomLogger.PrintErr((nameof(LightFlowOverlayRightDownIn)).ToString());
+            
+			copy.LightFlowOverlayLeftUpIn = LightFlowOverlayLeftUpIn.Duplicate() as AnimatedSprite2D;
+			copy.LightFlowOverlayLeftDownIn = LightFlowOverlayLeftDownIn.Duplicate() as AnimatedSprite2D;
+			copy.LightFlowOverlayRightUpIn = LightFlowOverlayRightUpIn.Duplicate() as AnimatedSprite2D;
+			copy.LightFlowOverlayRightDownIn = LightFlowOverlayRightDownIn.Duplicate() as AnimatedSprite2D;
 			return copy;
 		}
 

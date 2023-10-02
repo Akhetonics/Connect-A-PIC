@@ -10,7 +10,7 @@ namespace ConnectAPIC.LayoutWindow.View
 		public override void _Ready()
 		{
 			base._Ready();
-			if (string.IsNullOrEmpty(componentTemplatePath)) throw new ArgumentNullException(nameof(componentTemplatePath));
+			if (string.IsNullOrEmpty(componentTemplatePath)) CustomLogger.PrintErr(nameof(componentTemplatePath));
 			var node = GetNode(componentTemplatePath); // not sure what is wrong here but it cannot convert the node to straightline.
 			componentTemplate = (ComponentBaseView)node;
 			if (componentTemplate == null) GD.PrintErr(new ArgumentNullException(nameof(componentTemplate)));

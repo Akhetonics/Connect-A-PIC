@@ -71,8 +71,8 @@ namespace ConnectAPic.LayoutWindow
 					view = (TextureRect)ExternalOutputTemplate.Duplicate();
 				}
 				view.Visible = true;
-				this.AddChild(view);
-				view.Position = new Vector2(view.Position.X , GridView.GlobalPosition.Y + (TileView.TilePixelSize) * port.TilePositionY);
+				GridViewModel.GridView.DragDropProxy.AddChild(view);
+				view.Position = new Vector2(view.Position.X - GridView.GlobalPosition.X ,  (TileView.TilePixelSize) * port.TilePositionY);
 			}
 		}
 	}
