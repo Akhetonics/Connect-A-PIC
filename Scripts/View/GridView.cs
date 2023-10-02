@@ -12,8 +12,6 @@ namespace ConnectAPIC.LayoutWindow.View
 
 	public partial class GridView : TileMap
 	{
-		public delegate void GridActionHandler(TileView tile);
-		public delegate void GridActionComponentHandler(TileView tile);
 
 		[Export] public DragDropProxy DragDropProxy;
 		private GridViewModel ViewModel;
@@ -60,16 +58,10 @@ namespace ConnectAPIC.LayoutWindow.View
 		{
 			if (data.Obj is ComponentBaseView component)
 			{
-				ShowMultiTileDragPreview(position, component);
+				GridViewModel.ShowMultiTileDragPreview(position, component, DragDropProxy);
 			}
 
 			return true;
-		}
-		protected void ShowMultiTileDragPreview(Vector2 position, ComponentBaseView component)
-		{
-			var newComponent = component.Duplicate();
-			newComponent.Visible = true;
-            DragDropProxy.SetDragPreview(newComponent);
 		}
 		public void _DropData(Vector2 atPosition, Variant data)
 		{

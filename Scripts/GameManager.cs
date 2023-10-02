@@ -13,11 +13,12 @@ namespace ConnectAPic.LayoutWindow
 		[Export] public int FieldWidth { get; set; } = 24;
 
 		[Export] public int FieldHeight { get; set; } = 12;
-		[Export] public TextureRect ExternalOutputTemplate {get;set;}
+        [Export] public TextureRect ExternalOutputTemplate {get;set;}
 		[Export] public TextureRect ExternalInputRedTemplate {get;set;}
 		[Export] public TextureRect ExternalInputGreenTemplate {get;set;}
 		[Export] public TextureRect ExternalInputBlueTemplate {get;set;}
-		public GridView GridView { get; set; }
+        public static int TilePixelSize { get; } = 64;
+        public GridView GridView { get; set; }
 		public Grid Grid { get; set; }
 		public static GameManager instance;
 		public GridViewModel GridViewModel { get; private set; }
@@ -72,7 +73,7 @@ namespace ConnectAPic.LayoutWindow
 				}
 				view.Visible = true;
 				GridViewModel.GridView.DragDropProxy.AddChild(view);
-				view.Position = new Vector2(view.Position.X - GridView.GlobalPosition.X ,  (TileView.TilePixelSize) * port.TilePositionY);
+				view.Position = new Vector2(view.Position.X - GridView.GlobalPosition.X ,  (GameManager.TilePixelSize) * port.TilePositionY);
 			}
 		}
 	}

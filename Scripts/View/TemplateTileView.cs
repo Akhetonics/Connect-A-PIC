@@ -3,7 +3,7 @@ using System;
 
 namespace ConnectAPIC.LayoutWindow.View
 {
-	public partial class TemplateTileView : TileView
+	public partial class TemplateTileView : TextureRect
 	{
 		[Export] private NodePath componentTemplatePath;
 		private ComponentBaseView componentTemplate;

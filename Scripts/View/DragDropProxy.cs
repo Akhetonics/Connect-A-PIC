@@ -17,7 +17,7 @@ public partial class DragDropProxy : Control
     public void Initialize(int widthInTiles , int heightInTiles)
     {
         base._Ready();
-        this.Size = new Vector2(widthInTiles * TileView.TilePixelSize, heightInTiles * TileView.TilePixelSize);
+        this.Size = new Vector2(widthInTiles * GameManager.TilePixelSize, heightInTiles * GameManager.TilePixelSize);
     }
     public override Variant _GetDragData(Vector2 position)
     {

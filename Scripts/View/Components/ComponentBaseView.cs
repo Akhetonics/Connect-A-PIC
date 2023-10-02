@@ -1,6 +1,7 @@
 ﻿using CAP_Core.Component.ComponentHelpers;
 using CAP_Core.Helpers;
 using CAP_Core.Tiles;
+using ConnectAPic.LayoutWindow;
 using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using Godot;
@@ -30,18 +31,18 @@ namespace ConnectAPIC.LayoutWindow.View
             this.GridY = gridY;
             this.ViewModel = viewModel;
             this.RotationDegrees = rotationCounterClockwise.ToDegreesClockwise();
-
-            Position = new Vector2( this.GridX * TileView.TilePixelSize , this.GridY * TileView.TilePixelSize );
+            var tilePixelSize = GameManager.TilePixelSize;
+            Position = new Vector2( this.GridX * tilePixelSize , this.GridY * tilePixelSize );
             switch (rotationCounterClockwise)
             {
                 case DiscreteRotation.R90:
-                    Position += new Vector2(0, HeightInTiles * TileView.TilePixelSize);
+                    Position += new Vector2(0, HeightInTiles * tilePixelSize);
                     break;
                 case DiscreteRotation.R270: // Assuming you have a corresponding enumeration value
-                    Position += new Vector2(WidthInTiles * TileView.TilePixelSize,0);
+                    Position += new Vector2(WidthInTiles * tilePixelSize,0);
                     break;
                 case DiscreteRotation.R180:
-                    Position += new Vector2(WidthInTiles * TileView.TilePixelSize, HeightInTiles * TileView.TilePixelSize);
+                    Position += new Vector2(WidthInTiles * tilePixelSize, HeightInTiles * tilePixelSize);
                     break;
                 
             }
@@ -54,8 +55,8 @@ namespace ConnectAPIC.LayoutWindow.View
             {
                 if ( mouseEvent.Position.X < 0
                     || mouseEvent.Position.Y < 0
-                    || mouseEvent.Position.X > this.WidthInTiles*TileView.TilePixelSize
-                    || mouseEvent.Position.Y > this.HeightInTiles * TileView.TilePixelSize)
+                    || mouseEvent.Position.X > this.WidthInTiles* GameManager.TilePixelSize
+                    || mouseEvent.Position.Y > this.HeightInTiles * GameManager.TilePixelSize)
                 {
                     return;
                 }

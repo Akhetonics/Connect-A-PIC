@@ -1,6 +1,7 @@
 using CAP_Core.Component.ComponentHelpers;
 using CAP_Core.ExternalPorts;
 using CAP_Core.Tiles;
+using ConnectAPic.LayoutWindow;
 using Godot;
 using System.Collections.Generic;
 
@@ -28,19 +29,19 @@ namespace ConnectAPIC.LayoutWindow.View
 		{
 			if (side == RectSide.Right)
 			{
-				this.Position = new Vector2(TileView.TilePixelSize - PinPixelSize, TileView.TilePixelSize / 2 - PinPixelSize / 2);
+				this.Position = new Vector2(GameManager.TilePixelSize - PinPixelSize, GameManager.TilePixelSize / 2 - PinPixelSize / 2);
 			}
 			if (side == RectSide.Down)
 			{
-				Position = new Vector2(TileView.TilePixelSize / 2 - PinPixelSize / 2, TileView.TilePixelSize - PinPixelSize);
+				Position = new Vector2(GameManager.TilePixelSize / 2 - PinPixelSize / 2, GameManager.TilePixelSize - PinPixelSize);
 			}
 			if (side == RectSide.Left)
 			{
-				Position = new Vector2(0, TileView.TilePixelSize / 2 - PinPixelSize / 2);
+				Position = new Vector2(0, GameManager.TilePixelSize / 2 - PinPixelSize / 2);
 			}
 			if (side == RectSide.Up)
 			{
-				Position = new Vector2(TileView.TilePixelSize / 2 - PinPixelSize / 2, 0);
+				Position = new Vector2(GameManager.TilePixelSize / 2 - PinPixelSize / 2, 0);
 			}
 		}
 		public void SetMatterType(MatterType? newMatterType)
