@@ -13,12 +13,12 @@ namespace ConnectAPic.LayoutWindow
 		[Export] public int FieldWidth { get; set; } = 24;
 
 		[Export] public int FieldHeight { get; set; } = 12;
-        [Export] public TextureRect ExternalOutputTemplate {get;set;}
-		[Export] public TextureRect ExternalInputRedTemplate {get;set;}
-		[Export] public TextureRect ExternalInputGreenTemplate {get;set;}
-		[Export] public TextureRect ExternalInputBlueTemplate {get;set;}
-        public static int TilePixelSize { get; } = 64;
-        public GridView GridView { get; set; }
+		[Export] public TextureRect ExternalOutputTemplate { get; set; }
+		[Export] public TextureRect ExternalInputRedTemplate { get; set; }
+		[Export] public TextureRect ExternalInputGreenTemplate { get; set; }
+		[Export] public TextureRect ExternalInputBlueTemplate { get; set; }
+		public static int TilePixelSize { get; private set; } = 64;
+		public GridView GridView { get; set; }
 		public Grid Grid { get; set; }
 		public static GameManager instance;
 		public GridViewModel GridViewModel { get; private set; }
@@ -56,10 +56,11 @@ namespace ConnectAPic.LayoutWindow
 				TextureRect view;
 				if (port is StandardInput input)
 				{
-					if(input.Color == LightColor.Red)
+					if (input.Color == LightColor.Red)
 					{
 						view = (TextureRect)ExternalInputRedTemplate.Duplicate();
-					} else if(input.Color == LightColor.Green)
+					}
+					else if (input.Color == LightColor.Green)
 					{
 						view = (TextureRect)ExternalInputGreenTemplate.Duplicate();
 					}
@@ -67,13 +68,14 @@ namespace ConnectAPic.LayoutWindow
 					{
 						view = (TextureRect)ExternalInputBlueTemplate.Duplicate();
 					}
-				} else
+				}
+				else
 				{
 					view = (TextureRect)ExternalOutputTemplate.Duplicate();
 				}
 				view.Visible = true;
 				GridViewModel.GridView.DragDropProxy.AddChild(view);
-				view.Position = new Vector2(view.Position.X - GridView.GlobalPosition.X ,  (GameManager.TilePixelSize) * port.TilePositionY);
+				view.Position = new Vector2(view.Position.X - GridView.GlobalPosition.X, (GameManager.TilePixelSize) * port.TilePositionY);
 			}
 		}
 	}

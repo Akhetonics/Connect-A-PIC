@@ -37,10 +37,11 @@ namespace ConnectAPIC.LayoutWindow.View
 				// then the phase should change the animation state
 				// we want to create inflow and outflow where outflow changes the animation to run backwards
 				LightFlowOverlayLeftUpIn.Modulate = new Color(light.color.ToGodotColor(), (float)light.lightInFlow.Real);
+				LightFlowOverlayLeftUpIn.Play();
 				LightFlowOverlayLeftUpIn.FrameProgress = light.lightInFlow.NormalizePhase();
 				LightFlowOverlayLeftUpOut.Modulate = new Color(light.color.ToGodotColor(), (float)light.lightOutFlow.Real);
 				LightFlowOverlayLeftUpOut.FrameProgress = 1-(float)light.lightInFlow.Phase;
-				LightFlowOverlayLeftUpOut.SpeedScale *= -1;
+				LightFlowOverlayLeftUpOut.PlayBackwards();
 			}
 		}
 
@@ -67,19 +68,19 @@ namespace ConnectAPIC.LayoutWindow.View
 			if (LightFlowOverlayRightDownIn == null) CustomLogger.PrintErr(new ArgumentNullException(nameof(LightFlowOverlayRightDownIn)).ToString());
 
 			LightFlowOverlayLeftUpOut = LightFlowOverlayLeftUpIn.Duplicate() as AnimatedSprite2D;
-            LightFlowOverlayLeftDownOut = LightFlowOverlayLeftDownIn.Duplicate() as AnimatedSprite2D;
-            LightFlowOverlayRightUpOut = LightFlowOverlayRightUpIn.Duplicate() as AnimatedSprite2D;
-            LightFlowOverlayRightDownOut = LightFlowOverlayRightDownIn.Duplicate() as AnimatedSprite2D;
+			LightFlowOverlayLeftDownOut = LightFlowOverlayLeftDownIn.Duplicate() as AnimatedSprite2D;
+			LightFlowOverlayRightUpOut = LightFlowOverlayRightUpIn.Duplicate() as AnimatedSprite2D;
+			LightFlowOverlayRightDownOut = LightFlowOverlayRightDownIn.Duplicate() as AnimatedSprite2D;
 		}
 		public override ComponentBaseView Duplicate()
 		{
 			var copy = base.Duplicate() as DirectionalCouplerView;
 
-            if (LightFlowOverlayLeftUpIn == null) CustomLogger.PrintErr((nameof(LightFlowOverlayRightDownIn)).ToString());
-            if (LightFlowOverlayLeftDownIn == null) CustomLogger.PrintErr((nameof(LightFlowOverlayLeftDownIn)).ToString());
-            if (LightFlowOverlayRightUpIn == null) CustomLogger.PrintErr((nameof(LightFlowOverlayRightUpIn)).ToString());
-            if (LightFlowOverlayRightDownIn == null) CustomLogger.PrintErr((nameof(LightFlowOverlayRightDownIn)).ToString());
-            
+			if (LightFlowOverlayLeftUpIn == null) CustomLogger.PrintErr((nameof(LightFlowOverlayRightDownIn)).ToString());
+			if (LightFlowOverlayLeftDownIn == null) CustomLogger.PrintErr((nameof(LightFlowOverlayLeftDownIn)).ToString());
+			if (LightFlowOverlayRightUpIn == null) CustomLogger.PrintErr((nameof(LightFlowOverlayRightUpIn)).ToString());
+			if (LightFlowOverlayRightDownIn == null) CustomLogger.PrintErr((nameof(LightFlowOverlayRightDownIn)).ToString());
+			
 			copy.LightFlowOverlayLeftUpIn = LightFlowOverlayLeftUpIn.Duplicate() as AnimatedSprite2D;
 			copy.LightFlowOverlayLeftDownIn = LightFlowOverlayLeftDownIn.Duplicate() as AnimatedSprite2D;
 			copy.LightFlowOverlayRightUpIn = LightFlowOverlayRightUpIn.Duplicate() as AnimatedSprite2D;
