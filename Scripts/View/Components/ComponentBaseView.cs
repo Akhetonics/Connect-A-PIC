@@ -44,7 +44,6 @@ namespace ConnectAPIC.LayoutWindow.View
                 case DiscreteRotation.R180:
                     Position += new Vector2(WidthInTiles * tilePixelSize, HeightInTiles * tilePixelSize);
                     break;
-                
             }
             Visible = true;
         }

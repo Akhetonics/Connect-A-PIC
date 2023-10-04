@@ -7,6 +7,7 @@ using CAP_Core.LightFlow;
 using CAP_Core.Tiles;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
+using ConnectAPIC.Scripts.Helpers;
 using Godot;
 using System;
 using System.Collections.Generic;
@@ -132,38 +133,46 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             List<ComponentBase> components = Grid.GetAllComponents();
             foreach( var componentModel in components)
             {
-                List<LightAtPin> lightAtPins = new();
-
-                for(int offsetX = 0; offsetX < componentModel.WidthInTiles; offsetX++)
-                {
-                    for( int offsetY = 0; offsetY < componentModel.HeightInTiles; offsetY++)
-                    {
-                        var part = componentModel.GetPartAt(offsetX, offsetY);
-                        foreach (var side in Enum.GetValues(typeof(RectSide)).OfType<RectSide>())
-                        {
-                            var pin = part.GetPinAt(side);
-                            if (pin == null) continue;
-                            var lightIntensityIn = lightVector[pin.IDInFlow].Real;
-                            var lightPhaseIn = lightVector[pin.IDInFlow].Phase;
-                            var lightIntensityOut = lightVector[pin.IDOutFlow].Real;
-                            var lightPhaseOut = lightVector[pin.IDOutFlow].Phase;
-
-                            var lightFlow = new LightAtPin(
-                                offsetX,
-                                offsetY,
-                                side,
-                                color,
-                                new Complex(lightIntensityIn, lightPhaseIn),
-                                new Complex(lightIntensityOut, lightPhaseOut)
-                                );
-                            lightAtPins.Add(lightFlow);
-                        }
-                    }
-                }
+                List<LightAtPin> lightAtPins = CalculateLightAtPins(lightVector, color, componentModel);
                 GridComponentViews[componentModel.GridXMainTile, componentModel.GridYMainTile].DisplayLightVector(lightAtPins);
             }
-            
+
         }
+
+        public static List<LightAtPin> CalculateLightAtPins(Dictionary<Guid, Complex> lightVector, LightColor color, ComponentBase componentModel)
+        {
+            List<LightAtPin> lightAtPins = new();
+
+            for (int offsetX = 0; offsetX < componentModel.WidthInTiles; offsetX++)
+            {
+                for (int offsetY = 0; offsetY < componentModel.HeightInTiles; offsetY++)
+                {
+                    var part = componentModel.GetPartAt(offsetX, offsetY);
+                    foreach (var side in Enum.GetValues(typeof(RectSide)).OfType<RectSide>())
+                    {
+                        var pin = part.GetPinAt(side);
+                        if (pin == null) continue;
+                        var lightIntensityIn = lightVector.TryGetVal(pin.IDInFlow).Real;
+                        var lightPhaseIn = lightVector.TryGetVal(pin.IDInFlow).Phase;
+                        var lightIntensityOut = lightVector.TryGetVal(pin.IDOutFlow).Real;
+                        var lightPhaseOut = lightVector.TryGetVal(pin.IDOutFlow).Phase;
+
+                        var lightFlow = new LightAtPin(
+                            offsetX,
+                            offsetY,
+                            side,
+                            color,
+                            new Complex(lightIntensityIn, lightPhaseIn),
+                            new Complex(lightIntensityOut, lightPhaseOut)
+                            );
+                        lightAtPins.Add(lightFlow);
+                    }
+                }
+            }
+
+            return lightAtPins;
+        }
+
 
         public void HideLightPropagation()
         {
