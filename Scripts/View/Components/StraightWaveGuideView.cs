@@ -82,6 +82,7 @@ namespace ConnectAPIC.LayoutWindow.View
 				alpha = (float)lightAtPin.lightOutFlow.Real;
 			}
 			alpha = 1;
+			CustomLogger.PrintLn(lightAtPin.ToString());
 			overlay.Modulate = new Color(lightAtPin.color.ToGodotColor(), alpha);
 			overlay.Autoplay = "default";
 		}

@@ -27,6 +27,7 @@ public partial class DragDropProxy : Control
     }
     public override bool _CanDropData(Vector2 position, Variant data)
     {
+        CustomLogger.PrintLn("position" + position + DateTime.Now);
         if (OnCanDropData == null) return default;
         var canDropData = OnCanDropData(position, data);
         if(data.As<Control>() != null)

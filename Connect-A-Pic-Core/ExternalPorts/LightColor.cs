@@ -24,5 +24,19 @@ namespace CAP_Core.ExternalPorts
                     throw new InvalidOperationException("Unknown LightColor-value");
             }
         }
+        public static string ToReadableString(this LightColor color)
+        {
+            switch (color)
+            {
+                case LightColor.Red:
+                    return "Red";
+                case LightColor.Green:
+                    return "Green";
+                case LightColor.Blue:
+                    return "Blue";
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(color), color, null);
+            }
+        }
     }
 }

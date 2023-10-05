@@ -17,7 +17,7 @@ namespace ConnectAPic.LayoutWindow
 		[Export] public TextureRect ExternalInputRedTemplate { get; set; }
 		[Export] public TextureRect ExternalInputGreenTemplate { get; set; }
 		[Export] public TextureRect ExternalInputBlueTemplate { get; set; }
-		public static int TilePixelSize { get; private set; } = 64;
+		public static int TilePixelSize { get; private set; } = 62;
 		public GridView GridView { get; set; }
 		public Grid Grid { get; set; }
 		public static GameManager instance;
