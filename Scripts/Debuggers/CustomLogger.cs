@@ -99,6 +99,7 @@ public partial class CustomLogger : ScrollContainer
 		newLine.Text = text;
 		newLine.Visible = true;
 		LoggingParent.AddChild(newLine);
+		LoggingParent.MoveChild(newLine, 0);
 	}
 
 	private static string FormatErrorText(string text)

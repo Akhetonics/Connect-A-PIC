@@ -28,7 +28,12 @@ public partial class DragDropProxy : Control
     public override bool _CanDropData(Vector2 position, Variant data)
     {
         if (OnCanDropData == null) return default;
-        return OnCanDropData(position, data);
+        var canDropData = OnCanDropData(position, data);
+        if(data.As<Control>() != null)
+        {
+            ShowComponentDragPreview(position, data.As<Control>(), canDropData);
+        }
+        return canDropData;
     }
     public override void _DropData(Vector2 atPosition, Variant data)
     {
@@ -36,33 +41,37 @@ public partial class DragDropProxy : Control
         DragPreview = null;
         OnDropData(atPosition, data);
     }
-    public void ShowMultiTileDragPreview(Godot.Vector2 position, ComponentBaseView component, bool canDropData = true)
+    public void ShowComponentDragPreview(Godot.Vector2 position, Control data, bool canDropData = true)
     {
+        if (data == null) return;
         CheckIfDragWasResetted();
-
         if (DragPreview == null)
         {
-            DragPreview = component.Duplicate();
+            DragPreview = (Control)data.Duplicate();
             DragPreview.Visible = false;
-            if (canDropData)
-            {
-                DragPreview.Modulate = new Color(0, 1, 0, 0.5f);
-            }
-            else
-            {
-                DragPreview.Modulate = new Color(1, 0, 0, 0.5f);
-            }
         }
         else
         {
             DragPreview.Visible = true;
         }
 
-        DragPreview.Position = position + this.GlobalPosition + component.GetPositionDisplacementAfterRotation();
+        if (canDropData)
+        {
+            DragPreview.Modulate = new Color(0, 1, 0, 0.5f);
+        }
+        else
+        {
+            DragPreview.Modulate = new Color(1, 0, 0, 0.5f);
+        }
+
+        var rotationDisposition = new Vector2(0, 0);
+        if (data is ComponentBaseView component)
+        {
+            rotationDisposition = component.GetPositionDisplacementAfterRotation();
+        }
+            
+        DragPreview.Position = position + this.GlobalPosition + rotationDisposition;
         SetDragPreview(DragPreview);
-
-
-
     }
 
     private void CheckIfDragWasResetted()

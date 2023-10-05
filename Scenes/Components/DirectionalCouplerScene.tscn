@@ -63,7 +63,7 @@ region_rect = Rect2(11.5, 16, 41, 39)
 process_mode = 1
 scale = Vector2(2.09836, 2.09836)
 sprite_frames = SubResource("SpriteFrames_6deer")
-frame_progress = 0.710393
+frame_progress = 0.284406
 speed_scale = 0.925
 centered = false
 

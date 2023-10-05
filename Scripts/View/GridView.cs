@@ -59,12 +59,13 @@ namespace ConnectAPIC.LayoutWindow.View
 		{
 			if (data.Obj is ComponentBaseView component)
 			{
-				
-				bool canDropData = !ViewModel.Grid.IsColliding((int)position.X / GameManager.TilePixelSize, (int)position.Y / GameManager.TilePixelSize, component.WidthInTiles, component.HeightInTiles);
-                DragDropProxy.ShowMultiTileDragPreview(position, component, canDropData);
+				int gridX = (int)position.X / GameManager.TilePixelSize;
+				int gridY = (int)position.Y / GameManager.TilePixelSize;
+                bool canDropData = !ViewModel.Grid.IsColliding(gridX, gridY, component.WidthInTiles, component.HeightInTiles);
+				return canDropData;
 			}
 
-			return true;
+			return false;
 		}
 		public void _DropData(Vector2 atPosition, Variant data)
 		{
