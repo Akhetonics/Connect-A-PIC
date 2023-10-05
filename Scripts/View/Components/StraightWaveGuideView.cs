@@ -83,16 +83,16 @@ namespace ConnectAPIC.LayoutWindow.View
 			}
 			alpha = 1;
 			overlay.Modulate = new Color(lightAtPin.color.ToGodotColor(), alpha);
-            overlay.Autoplay = "default";
-        }
+			overlay.Autoplay = "default";
+		}
 
 		public override void HideLightVector()
 		{
 			foreach(var slot in AnimationSlots)
 			{
-                slot.OverlayInFlow.Autoplay = "";
-                slot.OverlayOutFlow.Autoplay = "";
-                slot.OverlayInFlow.Stop();
+				slot.OverlayInFlow.Autoplay = "";
+				slot.OverlayOutFlow.Autoplay = "";
+				slot.OverlayInFlow.Stop();
 				slot.OverlayOutFlow.Stop();
 				slot.OverlayInFlow.Hide();
 				slot.OverlayOutFlow.Hide();
@@ -107,7 +107,7 @@ namespace ConnectAPIC.LayoutWindow.View
 			//anim.Autoplay = baseAnimation.SpriteFrames.GetAnimationNames().First();
 			LightOverlay.GetParent().AddChild(anim);
 			
-            return anim;
+			return anim;
 		}
 		public override void _Ready()
 		{
