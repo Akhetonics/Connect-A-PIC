@@ -69,14 +69,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
                     componentView.QueueFree();
             }
         }
-        public static void ShowMultiTileDragPreview(Godot.Vector2 position, ComponentBaseView component, Control dragDropParent)
-        {
-            component = component.Duplicate();
-            component.Visible = true;
-            component.Position = new Godot.Vector2(0, 0);
-            component.Modulate = new Color(0, 1, 0, 0.5f);
-            dragDropParent.SetDragPreview(component);
-        }
+        
         public void RegisterComponentView(ComponentBaseView componentView)
         {
             for (int x = componentView.GridX; x < componentView.GridX + componentView.WidthInTiles; x++)

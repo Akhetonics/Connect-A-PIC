@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3 uid="uid://cu6wqy6xwjfo1"]
+[gd_scene load_steps=31 format=3 uid="uid://cu6wqy6xwjfo1"]
 
 [ext_resource type="Script" path="res://Scripts/GameManager.cs" id="1_1g8p6"]
 [ext_resource type="Script" path="res://Scripts/View/GridView.cs" id="1_2pqex"]
@@ -19,8 +19,8 @@
 [ext_resource type="PackedScene" uid="uid://b4ltp4nnviu3" path="res://Scenes/Components/DirectionalCouplerScene.tscn" id="20_uysp3"]
 [ext_resource type="Texture2D" uid="uid://uoowtaubmv1i" path="res://GFX/DirectionalCoupler/DirectionalCoupler.png" id="21_a2v5y"]
 [ext_resource type="Texture2D" uid="uid://jcla22kq5xkl" path="res://GFX/ScreenshotMockUp.png" id="21_opdte"]
-[ext_resource type="Script" path="res://Scripts/Debuggers/CustomLogger.cs" id="24_0nx0f"]
 [ext_resource type="PackedScene" uid="uid://batxcdg720fpl" path="res://Scenes/ExternalInputs/external_input_blue_template.tscn" id="24_57qdu"]
+[ext_resource type="PackedScene" uid="uid://bd8isg4mddv21" path="res://Scenes/InGameConsole/InGameConsole.tscn" id="24_wq416"]
 [ext_resource type="PackedScene" uid="uid://b6do0hy7ny7x2" path="res://Scenes/ExternalInputs/external_input_red_template.tscn" id="25_ns08j"]
 [ext_resource type="PackedScene" uid="uid://c4uqvn0fwc10d" path="res://Scenes/ExternalInputs/external_input_green_template.tscn" id="26_efy1b"]
 [ext_resource type="PackedScene" uid="uid://c0mcgj6g7ik52" path="res://Scenes/ExternalInputs/external_output_template.tscn" id="27_ydf4m"]
@@ -700,25 +700,6 @@ texture_region_size = Vector2i(62, 62)
 tile_size = Vector2i(64, 64)
 sources/0 = SubResource("TileSetAtlasSource_f4md5")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jfvjg"]
-content_margin_left = 4.0
-content_margin_top = 4.0
-content_margin_right = 4.0
-content_margin_bottom = 4.0
-bg_color = Color(0.160784, 0.176471, 0.184314, 0.839216)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.305882, 0.305882, 0.305882, 1)
-corner_radius_top_left = 10
-corner_radius_top_right = 10
-corner_radius_bottom_right = 10
-corner_radius_bottom_left = 10
-shadow_color = Color(0.0588235, 0.0588235, 0.0588235, 0.733333)
-
-[sub_resource type="Theme" id="Theme_76st6"]
-
 [node name="GameManager" type="Node" node_paths=PackedStringArray("ExternalOutputTemplate", "ExternalInputRedTemplate", "ExternalInputGreenTemplate", "ExternalInputBlueTemplate")]
 script = ExtResource("1_1g8p6")
 GridViewPath = NodePath("MapBackground")
@@ -926,40 +907,7 @@ offset_bottom = 429.0
 
 [node name="DirectionalCouplerTemplate" type="Node" parent="."]
 
-[node name="InGameConsole" type="ScrollContainer" parent="."]
-top_level = true
-anchors_preset = 12
-anchor_top = 1.0
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_top = -336.0
-grow_horizontal = 2
-grow_vertical = 0
-theme_override_styles/panel = SubResource("StyleBoxFlat_jfvjg")
-script = ExtResource("24_0nx0f")
-
-[node name="VBoxContainer" type="VBoxContainer" parent="InGameConsole"]
-clip_contents = true
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-theme = SubResource("Theme_76st6")
-
-[node name="InfoText" type="RichTextLabel" parent="InGameConsole/VBoxContainer"]
-visible = false
-layout_mode = 2
-theme_override_colors/default_color = Color(0, 0.792157, 0.317647, 1)
-text = "test text in your est"
-fit_content = true
-scroll_active = false
-
-[node name="ErrorText" type="RichTextLabel" parent="InGameConsole/VBoxContainer"]
-visible = false
-layout_mode = 2
-theme_override_colors/default_color = Color(1, 0.137255, 0.192157, 1)
-text = "test text in your est"
-fit_content = true
-scroll_active = false
+[node name="InGameConsole" parent="." instance=ExtResource("24_wq416")]
 
 [connection signal="pressed" from="btnExportNazca" to="MapBackground" method="_on_btn_export_nazca_pressed"]
 [connection signal="toggled" from="btnShowLightPropagation" to="MapBackground" method="_on_btn_show_light_propagation_toggled"]

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using static System.Net.Mime.MediaTypeNames;
 
 public record LogInfo
 {
@@ -30,6 +31,7 @@ public partial class CustomLogger : ScrollContainer
 	public override void _UnhandledInput(InputEvent @event)
 	{
 		FlushBufferedLogs();
+		
 		if (@event is InputEventKey eventKey)
 		{
 			if (eventKey.Pressed && eventKey.IsCommandOrControlPressed() && eventKey.Keycode == Key.F1)
@@ -49,17 +51,19 @@ public partial class CustomLogger : ScrollContainer
 
 	private static void FlushBufferedLogs()
 	{
-		if (LogInfos.Count != 0)
+		if (LogInfos.Count != 0 && LoggingParent != null)
 		{
 			foreach (var info in LogInfos)
 			{
 				if (info.IsError)
 				{
-					PrintErr(info.Info);
+					var text = FormatErrorText(info.Info);
+					Print(text);
 				}
 				else
 				{
-					PrintLn(info.Info);
+					var text = FormatErrorText(info.Info);
+					Print(text, true);
 				}
 			}
 			LogInfos = new List<LogInfo> { };
@@ -78,13 +82,12 @@ public partial class CustomLogger : ScrollContainer
 	}
 	private static void Print(string text, bool isError = false)
 	{
-		
 		RichTextLabel labelTemplate = InfoTextTemplate;
 		if (isError)
 		{
 			labelTemplate = ErrorTextTemplate;
 		}
-		if(labelTemplate != null)
+		if(labelTemplate != null && LoggingParent != null)
 		{
 			FlushBufferedLogs();
 		} else
@@ -100,13 +103,20 @@ public partial class CustomLogger : ScrollContainer
 
 	private static string FormatErrorText(string text)
 	{
-		StackTrace stackTrace = new StackTrace(true);
-		StackFrame frame = stackTrace.GetFrame(2);
-		var method = frame.GetMethod();
-		var lineNumber = frame.GetFileLineNumber();
-		var declaringType = method.DeclaringType;
-		var methodName = method.Name;
+		try
+		{
+			StackTrace stackTrace = new StackTrace(true);
+			StackFrame frame = stackTrace.GetFrame(2);
+			var method = frame.GetMethod();
+			var lineNumber = frame.GetFileLineNumber();
+			var declaringType = method.DeclaringType;
+			var methodName = method.Name;
 
-		return $"{declaringType}.{methodName}:{lineNumber} >> {text}";
+			return $"{declaringType}.{methodName}:{lineNumber} >> {text}";
+		} catch (Exception ex)
+		{
+			return ex.Message + text;
+		}
+		
 	}
 }

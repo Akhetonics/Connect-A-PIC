@@ -1,6 +1,7 @@
 using CAP_Core;
 using CAP_Core.Component.ComponentHelpers;
 using CAP_Core.ExternalPorts;
+using ConnectAPic.LayoutWindow;
 using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using Godot;
@@ -58,7 +59,9 @@ namespace ConnectAPIC.LayoutWindow.View
 		{
 			if (data.Obj is ComponentBaseView component)
 			{
-				GridViewModel.ShowMultiTileDragPreview(position, component, DragDropProxy);
+				
+				bool canDropData = !ViewModel.Grid.IsColliding((int)position.X / GameManager.TilePixelSize, (int)position.Y / GameManager.TilePixelSize, component.WidthInTiles, component.HeightInTiles);
+                DragDropProxy.ShowMultiTileDragPreview(position, component, canDropData);
 			}
 
 			return true;

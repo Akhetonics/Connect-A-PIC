@@ -31,22 +31,31 @@ namespace ConnectAPIC.LayoutWindow.View
             this.GridY = gridY;
             this.ViewModel = viewModel;
             this.RotationDegrees = rotationCounterClockwise.ToDegreesClockwise();
-            var tilePixelSize = GameManager.TilePixelSize;
-            Position = new Vector2( this.GridX * tilePixelSize , this.GridY * tilePixelSize );
-            switch (rotationCounterClockwise)
-            {
-                case DiscreteRotation.R90:
-                    Position += new Vector2(0, HeightInTiles * tilePixelSize);
-                    break;
-                case DiscreteRotation.R270: // Assuming you have a corresponding enumeration value
-                    Position += new Vector2(WidthInTiles * tilePixelSize,0);
-                    break;
-                case DiscreteRotation.R180:
-                    Position += new Vector2(WidthInTiles * tilePixelSize, HeightInTiles * tilePixelSize);
-                    break;
-            }
+            var rawposition = new Vector2(this.GridX * GameManager.TilePixelSize, this.GridY * GameManager.TilePixelSize);
+            Position = rawposition + GetPositionDisplacementAfterRotation();
             Visible = true;
         }
+
+        public Vector2 GetPositionDisplacementAfterRotation()
+        {
+            var tilePixelSize = GameManager.TilePixelSize;
+            var displacement = new Vector2();
+            int roundedRotation = (int)Math.Round(this.RotationDegrees / 90) * 90;
+            switch (roundedRotation)
+            {
+                case 270:
+                    displacement = new Vector2(0, HeightInTiles * tilePixelSize);
+                    break;
+                case 90: // Assuming you have a corresponding enumeration value
+                    displacement = new Vector2(WidthInTiles * tilePixelSize, 0);
+                    break;
+                case 180:
+                    displacement = new Vector2(WidthInTiles * tilePixelSize, HeightInTiles * tilePixelSize);
+                    break;
+            }
+            return displacement;
+        }
+
         public override void _GuiInput(InputEvent inputEvent)
         {
             base._GuiInput(inputEvent);

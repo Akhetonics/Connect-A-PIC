@@ -13,7 +13,7 @@ namespace ConnectAPIC.LayoutWindow.View
 			if (string.IsNullOrEmpty(componentTemplatePath)) CustomLogger.PrintErr(nameof(componentTemplatePath));
 			var node = GetNode(componentTemplatePath); // not sure what is wrong here but it cannot convert the node to straightline.
 			componentTemplate = (ComponentBaseView)node;
-			if (componentTemplate == null) GD.PrintErr(new ArgumentNullException(nameof(componentTemplate)));
+			if (componentTemplate == null) CustomLogger.PrintErr(new ArgumentNullException(nameof(componentTemplate)).ToString());
 		}
 
 		public override void _DropData(Vector2 position, Variant data)
