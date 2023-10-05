@@ -36,6 +36,13 @@ namespace ConnectAPIC.LayoutWindow.View
             Visible = true;
         }
 
+        public bool IsPlacedOnGrid()
+        {
+            if (ViewModel == null) return false;
+            if (ViewModel.IsInGrid(GridX, GridY, WidthInTiles, HeightInTiles) == false) return false;
+            if (ViewModel.GridComponentViews[this.GridX, this.GridY] != this) return false;
+            return true;
+        }
         public Vector2 GetPositionDisplacementAfterRotation()
         {
             var tilePixelSize = GameManager.TilePixelSize;

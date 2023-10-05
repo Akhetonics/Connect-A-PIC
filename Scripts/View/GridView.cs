@@ -7,6 +7,7 @@ using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Threading;
 
 namespace ConnectAPIC.LayoutWindow.View
 {
@@ -61,7 +62,13 @@ namespace ConnectAPIC.LayoutWindow.View
 			{
 				int gridX = (int)position.X / GameManager.TilePixelSize;
 				int gridY = (int)position.Y / GameManager.TilePixelSize;
-                bool canDropData = !ViewModel.Grid.IsColliding(gridX, gridY, component.WidthInTiles, component.HeightInTiles);
+				ComponentBase model = null;
+				if (component.IsPlacedOnGrid())
+				{
+                    model = ViewModel.Grid.GetComponentAt(component.GridX, component.GridY, component.WidthInTiles, component.HeightInTiles);
+                }
+                bool canDropData = !ViewModel.Grid.IsColliding(gridX, gridY, component.WidthInTiles, component.HeightInTiles, model);
+
 				return canDropData;
 			}
 

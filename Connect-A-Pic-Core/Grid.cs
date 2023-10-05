@@ -2,6 +2,7 @@ using CAP_Core.Component.ComponentHelpers;
 using CAP_Core.ExternalPorts;
 using CAP_Core.Helpers;
 using CAP_Core.Tiles;
+using System.ComponentModel;
 
 namespace CAP_Core
 {
@@ -68,7 +69,7 @@ namespace CAP_Core
             OnGridCreated?.Invoke(Tiles);
         }
 
-        public bool IsColliding(int x, int y, int sizeX, int sizeY)
+        public bool IsColliding(int x, int y, int sizeX, int sizeY , ComponentBase? exception = null)
         {
             if (!IsInGrid(x, y, sizeX, sizeY))
             {
@@ -79,7 +80,8 @@ namespace CAP_Core
             {
                 for (int j = y; j < y + sizeY; j++)
                 {
-                    if (Tiles[i, j]?.Component != null)
+                    var componentInGrid = Tiles[i, j]?.Component;
+                    if (componentInGrid != null && componentInGrid != exception)
                     {
                         return true;
                     }
@@ -90,7 +92,7 @@ namespace CAP_Core
         }
         public bool RotateComponentBy90CounterClockwise(int tileX, int tileY)
         {
-            ComponentBase component = GetComponentAt(tileX, tileY);
+            ComponentBase? component = GetComponentAt(tileX, tileY);
             if (component == null) return false;
             var tile = Tiles[tileX, tileY];
             if (tile == null || tile.Component == null) return false;
@@ -117,13 +119,24 @@ namespace CAP_Core
         {
             return x >= 0 && y >= 0 && x + width <= Width && y + height <= Height;
         }
-        public ComponentBase? GetComponentAt(int x, int y)
+        public ComponentBase? GetComponentAt(int x, int y, int searchAreaWidth = 1 , int searchAreaHeight = 1)
         {
-            if (!IsInGrid(x, y, 1, 1))
+            for (int i = 0; i < searchAreaWidth; i++)
             {
-                return null;
+                for(int j = 0; j < searchAreaHeight; j++)
+                {
+                    int currentX = x + i;
+                    int currentY = y + j;
+                    if (!IsInGrid(currentX , currentY, 1, 1)) return null;
+
+                    var componentFound = Tiles[currentX, currentY].Component;
+                    if (componentFound != null)
+                    {
+                        return componentFound;
+                    }
+                }
             }
-            return Tiles[x, y].Component;
+            return null;
         }
         public List<ComponentBase> GetAllComponents()
         {
@@ -169,7 +182,7 @@ namespace CAP_Core
         }
         public void UnregisterComponentAt(int x, int y)
         {
-            ComponentBase item = GetComponentAt(x, y);
+            ComponentBase? item = GetComponentAt(x, y);
             if (item == null) return;
             x = item.GridXMainTile;
             y = item.GridYMainTile;
@@ -185,7 +198,8 @@ namespace CAP_Core
         }
         public bool MoveComponent(int x, int y, int sourceX, int sourceY)
         {
-            ComponentBase component = GetComponentAt(sourceX, sourceY);
+            ComponentBase? component = GetComponentAt(sourceX, sourceY);
+            if(component == null) return false;
             int oldMainGridx = component.GridXMainTile;
             int oldMainGridy = component.GridYMainTile;
             UnregisterComponentAt(component.GridXMainTile, component.GridYMainTile); // to avoid blocking itself from moving only one tile into its own subtiles
