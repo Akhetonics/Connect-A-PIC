@@ -725,27 +725,7 @@ NotificationBoxScene = ExtResource("12_o0640")
 
 [node name="ComponentTemplates" type="Node" parent="."]
 script = ExtResource("7_x7uef")
-
-[node name="DirectionalCoupler" parent="ComponentTemplates" instance=ExtResource("20_uysp3")]
-visible = false
-offset_left = 219.0
-offset_top = 101.0
-offset_right = 348.0
-offset_bottom = 229.0
-
-[node name="StraightWaveGuideView" parent="ComponentTemplates" instance=ExtResource("12_g1ivk")]
-visible = false
-offset_left = 221.0
-offset_top = 170.0
-offset_right = 285.0
-offset_bottom = 234.0
-
-[node name="GratingCoupler" parent="ComponentTemplates" instance=ExtResource("12_dw85f")]
-visible = false
-offset_left = 227.0
-offset_top = 166.0
-offset_right = 292.0
-offset_bottom = 230.0
+PackedComponentScenes = Array[PackedScene]([ExtResource("20_uysp3"), ExtResource("12_dw85f"), ExtResource("12_g1ivk")])
 
 [node name="btnExportNazca" type="Button" parent="."]
 offset_left = 30.0
@@ -801,7 +781,7 @@ texture = ExtResource("8_gfj5w")
 expand_mode = 1
 stretch_mode = 4
 script = ExtResource("6_ly1br")
-componentTemplatePath = NodePath("../../../ComponentTemplates/StraightWaveGuideView")
+componentTemplatePath = NodePath("")
 
 [node name="GratingCouplerTool" type="TextureRect" parent="ComponentToolBox/ToolBoxGrid"]
 custom_minimum_size = Vector2(60, 60)
@@ -810,7 +790,7 @@ texture = ExtResource("10_m4std")
 expand_mode = 1
 stretch_mode = 4
 script = ExtResource("6_ly1br")
-componentTemplatePath = NodePath("../../../ComponentTemplates/GratingCoupler")
+componentTemplatePath = NodePath("")
 
 [node name="PinRight" type="TextureRect" parent="ComponentToolBox/ToolBoxGrid/GratingCouplerTool"]
 layout_mode = 0
@@ -830,7 +810,7 @@ texture = ExtResource("21_a2v5y")
 expand_mode = 1
 stretch_mode = 4
 script = ExtResource("6_ly1br")
-componentTemplatePath = NodePath("../../../ComponentTemplates/DirectionalCoupler")
+componentTemplatePath = NodePath("")
 
 [node name="PinRight" type="TextureRect" parent="ComponentToolBox/ToolBoxGrid/DirectionalCouplerTool"]
 layout_mode = 0

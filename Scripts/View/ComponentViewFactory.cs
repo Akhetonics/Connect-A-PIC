@@ -6,7 +6,7 @@ namespace ConnectAPIC.LayoutWindow.View
 {
 	public partial class ComponentViewFactory : Node
 	{
-		private List<ComponentBaseView> AllComponentViewBlueprints;
+		[Export] public PackedScene[] PackedComponentScenes;
 		private static ComponentViewFactory instance { get; set; }
 		public static ComponentViewFactory Instance
 		{
@@ -24,34 +24,25 @@ namespace ConnectAPIC.LayoutWindow.View
 				QueueFree(); // delete this object as there is already another GameManager in the scene
 				return;
 			}
-			AllComponentViewBlueprints = GetAllComponentBaseViewNodes();
 		}
 
-		public List<ComponentBaseView> GetAllComponentBaseViewNodes()
-		{
-			List<ComponentBaseView> resultList = new List<ComponentBaseView>(); // this should load all scenes from the components folder
-			foreach (Node child in GetChildren())
-			{
-				if (child is ComponentBaseView componentBase)
-				{
-					resultList.Add(componentBase);
-				}
-			}
-			return resultList;
-		}
 		public ComponentBaseView CreateComponentView(Type ViewTypeListedInFactoryChildren)
 		{
 			if (! typeof(ComponentBaseView).IsAssignableFrom(ViewTypeListedInFactoryChildren)){
 				CustomLogger.PrintErr($"Type is not of ComponentBaseView: {nameof(ViewTypeListedInFactoryChildren) + " " + ViewTypeListedInFactoryChildren.FullName}");
                 throw new ArgumentException(nameof(ViewTypeListedInFactoryChildren));
 			}
-			foreach (ComponentBaseView component in AllComponentViewBlueprints)
+			foreach (PackedScene componentTemplate in PackedComponentScenes)
 			{
-				if (ViewTypeListedInFactoryChildren == component.GetType())
+                ComponentBaseView mainNode = componentTemplate.Instantiate() as ComponentBaseView;
+				if(mainNode == null)
 				{
-					var item = component.Duplicate();
-					item._Ready();
-					return item;
+					CustomLogger.PrintErr($"ComponentTemplate is not of type ComponentBaseView: {componentTemplate.ResourcePath}");
+					continue;
+				}
+				if (ViewTypeListedInFactoryChildren == mainNode.GetType())
+				{
+					return mainNode;
 				}
 			}
 			CustomLogger.PrintErr($"ComponentTemplate is not defined: {ViewTypeListedInFactoryChildren.FullName}");

@@ -1,3 +1,4 @@
+using ConnectAPIC.Scripts.Debuggers;
 using Godot;
 using System;
 using System.Collections.Generic;
@@ -46,6 +47,11 @@ public partial class CustomLogger : ScrollContainer
 			{
 				visibilityChanged = false;
 			}
+
+			if(eventKey.IsReleased() && eventKey.Keycode == Key.F2)
+			{
+				TreePrinter.PrintTree(GetTree().Root, 0);
+            }
 		}
 	}
 
@@ -70,9 +76,12 @@ public partial class CustomLogger : ScrollContainer
 		}
 	}
 
-	public static void PrintLn(string text)
+	public static void PrintLn(string text, bool printRawText = false)
 	{
-		text = FormatErrorText(text);
+		if(!printRawText)
+		{
+            text = FormatErrorText(text);
+        }
 		Print(text);
 	}
 	public static void PrintErr(string text)
