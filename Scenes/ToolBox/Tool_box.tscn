@@ -1,0 +1,309 @@
+[gd_scene load_steps=12 format=3 uid="uid://ch8njrql1cvsv"]
+
+[ext_resource type="Script" path="res://Scenes/ToolBox/ToolBox.cs" id="1_j3t3x"]
+[ext_resource type="Texture2D" uid="uid://jcla22kq5xkl" path="res://GFX/ScreenshotMockUp.png" id="2_5jmcf"]
+[ext_resource type="Texture2D" uid="uid://obrjry10rd00" path="res://GFX/StraightComponent.png" id="3_01b2r"]
+[ext_resource type="Script" path="res://Scripts/View/TemplateTileView.cs" id="4_lra8e"]
+[ext_resource type="Texture2D" uid="uid://b7fnv5qoysp51" path="res://GFX/GratingCoupler.png" id="5_eltxa"]
+[ext_resource type="Texture2D" uid="uid://cd2busn0vvaoq" path="res://GFX/PinLight.png" id="6_p8c05"]
+[ext_resource type="Script" path="res://Scripts/View/PinView.cs" id="7_jdmoo"]
+[ext_resource type="Texture2D" uid="uid://emq4du4tlo3h" path="res://GFX/PinElectric.png" id="8_hdsd8"]
+[ext_resource type="Texture2D" uid="uid://uoowtaubmv1i" path="res://GFX/DirectionalCoupler/DirectionalCoupler.png" id="9_hppae"]
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_f4md5"]
+texture = ExtResource("2_5jmcf")
+margins = Vector2i(0, 11)
+texture_region_size = Vector2i(62, 62)
+0:0/0 = 0
+1:0/0 = 0
+2:0/0 = 0
+3:0/0 = 0
+4:0/0 = 0
+5:0/0 = 0
+6:0/0 = 0
+7:0/0 = 0
+8:0/0 = 0
+9:0/0 = 0
+10:0/0 = 0
+11:0/0 = 0
+12:0/0 = 0
+13:0/0 = 0
+14:0/0 = 0
+0:1/0 = 0
+1:1/0 = 0
+2:1/0 = 0
+3:1/0 = 0
+4:1/0 = 0
+5:1/0 = 0
+6:1/0 = 0
+7:1/0 = 0
+8:1/0 = 0
+9:1/0 = 0
+10:1/0 = 0
+11:1/0 = 0
+12:1/0 = 0
+13:1/0 = 0
+14:1/0 = 0
+0:2/0 = 0
+1:2/0 = 0
+2:2/0 = 0
+3:2/0 = 0
+4:2/0 = 0
+5:2/0 = 0
+6:2/0 = 0
+7:2/0 = 0
+8:2/0 = 0
+9:2/0 = 0
+10:2/0 = 0
+11:2/0 = 0
+12:2/0 = 0
+13:2/0 = 0
+14:2/0 = 0
+0:3/0 = 0
+1:3/0 = 0
+2:3/0 = 0
+3:3/0 = 0
+4:3/0 = 0
+5:3/0 = 0
+6:3/0 = 0
+7:3/0 = 0
+8:3/0 = 0
+9:3/0 = 0
+10:3/0 = 0
+11:3/0 = 0
+12:3/0 = 0
+13:3/0 = 0
+14:3/0 = 0
+0:4/0 = 0
+1:4/0 = 0
+2:4/0 = 0
+3:4/0 = 0
+4:4/0 = 0
+5:4/0 = 0
+6:4/0 = 0
+7:4/0 = 0
+8:4/0 = 0
+9:4/0 = 0
+10:4/0 = 0
+11:4/0 = 0
+12:4/0 = 0
+13:4/0 = 0
+14:4/0 = 0
+0:5/0 = 0
+1:5/0 = 0
+2:5/0 = 0
+3:5/0 = 0
+4:5/0 = 0
+5:5/0 = 0
+6:5/0 = 0
+7:5/0 = 0
+8:5/0 = 0
+9:5/0 = 0
+10:5/0 = 0
+11:5/0 = 0
+12:5/0 = 0
+13:5/0 = 0
+14:5/0 = 0
+0:6/0 = 0
+1:6/0 = 0
+2:6/0 = 0
+3:6/0 = 0
+4:6/0 = 0
+5:6/0 = 0
+6:6/0 = 0
+7:6/0 = 0
+8:6/0 = 0
+9:6/0 = 0
+10:6/0 = 0
+11:6/0 = 0
+12:6/0 = 0
+13:6/0 = 0
+14:6/0 = 0
+0:7/0 = 0
+1:7/0 = 0
+2:7/0 = 0
+3:7/0 = 0
+4:7/0 = 0
+5:7/0 = 0
+6:7/0 = 0
+7:7/0 = 0
+8:7/0 = 0
+9:7/0 = 0
+10:7/0 = 0
+11:7/0 = 0
+12:7/0 = 0
+13:7/0 = 0
+14:7/0 = 0
+0:8/0 = 0
+1:8/0 = 0
+2:8/0 = 0
+3:8/0 = 0
+4:8/0 = 0
+5:8/0 = 0
+6:8/0 = 0
+7:8/0 = 0
+8:8/0 = 0
+9:8/0 = 0
+10:8/0 = 0
+11:8/0 = 0
+12:8/0 = 0
+13:8/0 = 0
+14:8/0 = 0
+0:9/0 = 0
+1:9/0 = 0
+2:9/0 = 0
+3:9/0 = 0
+4:9/0 = 0
+5:9/0 = 0
+6:9/0 = 0
+7:9/0 = 0
+8:9/0 = 0
+9:9/0 = 0
+10:9/0 = 0
+11:9/0 = 0
+12:9/0 = 0
+13:9/0 = 0
+14:9/0 = 0
+15:0/0 = 0
+16:0/0 = 0
+17:0/0 = 0
+18:1/0 = 0
+19:1/0 = 0
+18:2/0 = 0
+17:2/0 = 0
+16:2/0 = 0
+15:2/0 = 0
+17:3/0 = 0
+16:3/0 = 0
+15:3/0 = 0
+18:3/0 = 0
+19:3/0 = 0
+19:4/0 = 0
+18:4/0 = 0
+17:4/0 = 0
+16:4/0 = 0
+15:4/0 = 0
+16:5/0 = 0
+17:5/0 = 0
+15:5/0 = 0
+18:5/0 = 0
+19:5/0 = 0
+19:6/0 = 0
+18:6/0 = 0
+17:6/0 = 0
+16:6/0 = 0
+17:7/0 = 0
+16:7/0 = 0
+15:7/0 = 0
+16:8/0 = 0
+17:8/0 = 0
+18:8/0 = 0
+19:8/0 = 0
+15:8/0 = 0
+19:9/0 = 0
+18:9/0 = 0
+17:9/0 = 0
+16:9/0 = 0
+15:9/0 = 0
+19:7/0 = 0
+19:2/0 = 0
+19:0/0 = 0
+18:0/0 = 0
+15:6/0 = 0
+18:7/0 = 0
+19:10/0 = 0
+18:10/0 = 0
+17:10/0 = 0
+16:10/0 = 0
+15:10/0 = 0
+14:10/0 = 0
+13:10/0 = 0
+12:10/0 = 0
+11:10/0 = 0
+10:10/0 = 0
+
+[sub_resource type="TileSet" id="TileSet_rru74"]
+tile_size = Vector2i(62, 62)
+sources/0 = SubResource("TileSetAtlasSource_f4md5")
+
+[node name="ToolBox" type="Panel" node_paths=PackedStringArray("gridContainer")]
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -282.0
+offset_top = -100.0
+offset_bottom = 100.0
+grow_horizontal = 0
+grow_vertical = 2
+script = ExtResource("1_j3t3x")
+gridContainer = NodePath("Grid")
+metadata/_edit_use_anchors_ = true
+
+[node name="Background" type="TileMap" parent="."]
+position = Vector2(-123.555, -59.865)
+tile_set = SubResource("TileSet_rru74")
+cell_quadrant_size = 64
+format = 2
+layer_0/tile_data = PackedInt32Array(-1, 786432, 3, 65535, 786432, 4, 131071, 786432, 5, 196607, 786432, 6, -65536, 851968, 3, 0, 851968, 4, 65536, 851968, 5, 131072, 851968, 6, -65535, 917504, 3, 1, 917504, 4, 65537, 917504, 5, 131073, 917504, 6, -65534, 983040, 3, 2, 983040, 4, 65538, 983040, 5, 131074, 983040, 6, -65533, 1048576, 3, 3, 1048576, 4, 65539, 1048576, 5, 131075, 1048576, 6, -65532, 1114112, 3, 4, 1114112, 4, 65540, 1114112, 5, 131076, 1114112, 6, -65531, 1179648, 3, 5, 1179648, 4, 65541, 1179648, 5, 131077, 1179648, 6, -65530, 1245184, 3, 6, 1245184, 4, 65542, 1245184, 5, 131078, 1245184, 6, 262143, 786432, 5, 196608, 851968, 5, 196609, 917504, 5, 196610, 983040, 5, 196611, 1048576, 5, 196612, 1114112, 5, 196613, 1179648, 5, 196614, 1245184, 5, 327679, 786432, 5, 262144, 851968, 5, 262145, 917504, 5, 262146, 983040, 5, 262147, 1048576, 5, 262148, 1114112, 5, 262149, 1179648, 5, 262150, 1245184, 5, 393215, 786432, 5, 327680, 851968, 5, 327681, 917504, 5, 327682, 983040, 5, 327683, 1048576, 5, 327684, 1114112, 5, 327685, 1179648, 5, 327686, 1245184, 5, 458751, 786432, 9, 393216, 851968, 9, 393217, 917504, 9, 393218, 983040, 9, 393219, 1048576, 9, 393220, 1114112, 9, 393221, 1179648, 9, 393222, 1245184, 9)
+
+[node name="Grid" type="GridContainer" parent="."]
+layout_mode = 2
+offset_left = -121.865
+offset_top = -59.38
+offset_right = 257.565
+offset_bottom = 328.62
+theme_override_constants/h_separation = 2
+theme_override_constants/v_separation = 2
+columns = 6
+
+[node name="StraightWaveGuideTool" type="TextureRect" parent="Grid"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+texture = ExtResource("3_01b2r")
+expand_mode = 1
+stretch_mode = 4
+script = ExtResource("4_lra8e")
+componentTemplatePath = NodePath("")
+
+[node name="GratingCouplerTool" type="TextureRect" parent="Grid"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+texture = ExtResource("5_eltxa")
+expand_mode = 1
+stretch_mode = 4
+script = ExtResource("4_lra8e")
+componentTemplatePath = NodePath("")
+
+[node name="PinRight" type="TextureRect" parent="Grid/GratingCouplerTool"]
+layout_mode = 0
+offset_top = 28.0
+offset_right = 6.0
+offset_bottom = 34.0
+texture = ExtResource("6_p8c05")
+stretch_mode = 2
+script = ExtResource("7_jdmoo")
+ElectricityPinTexture = ExtResource("8_hdsd8")
+LightPinTexture = ExtResource("6_p8c05")
+
+[node name="DirectionalCouplerTool" type="TextureRect" parent="Grid"]
+custom_minimum_size = Vector2(60, 60)
+layout_mode = 2
+texture = ExtResource("9_hppae")
+expand_mode = 1
+stretch_mode = 4
+script = ExtResource("4_lra8e")
+componentTemplatePath = NodePath("")
+
+[node name="PinRight" type="TextureRect" parent="Grid/DirectionalCouplerTool"]
+layout_mode = 0
+offset_left = 58.0
+offset_top = 28.0
+offset_right = 64.0
+offset_bottom = 34.0
+texture = ExtResource("6_p8c05")
+stretch_mode = 2
+script = ExtResource("7_jdmoo")
+ElectricityPinTexture = ExtResource("8_hdsd8")
+LightPinTexture = ExtResource("6_p8c05")

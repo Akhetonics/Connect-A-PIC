@@ -8,9 +8,10 @@ namespace ConnectAPIC.LayoutWindow.View
 {
 	public partial class ComponentViewFactory : Node
 	{
+        [Signal] public delegate void InitializedEventHandler();
 		private List<PackedScene> PackedComponentScenes;
 		private static ComponentViewFactory instance { get; set; }
-		private Dictionary<Type, ComponentBaseView> ComponentViewCache = new Dictionary<Type, ComponentBaseView>();
+		private Dictionary<Type, PackedScene> packedComponentCache = new();
 		public static ComponentViewFactory Instance
 		{
 			get { return instance; }
@@ -31,17 +32,17 @@ namespace ConnectAPIC.LayoutWindow.View
                     PackedComponentScenes.Add(scene);
                 }
                 CachePackedSceneTypes();
+                EmitSignal(nameof(InitializedEventHandler).Replace("EventHandler",""));
             }
             else
 			{
 				QueueFree(); // delete this object as there is already another GameManager in the scene
-				return;
 			}
 		}
 
         private void CachePackedSceneTypes()
         {
-            ComponentViewCache = new Dictionary<Type, ComponentBaseView>();
+            packedComponentCache = new Dictionary<Type, PackedScene>();
             foreach (PackedScene componentTemplate in PackedComponentScenes)
             {
                 ComponentBaseView mainNode = componentTemplate.Instantiate() as ComponentBaseView;
@@ -50,7 +51,7 @@ namespace ConnectAPIC.LayoutWindow.View
                     CustomLogger.PrintErr($"ComponentTemplate is not of type ComponentBaseView: {componentTemplate.ResourcePath}");
                     continue;
                 }
-                ComponentViewCache.Add(mainNode.GetType(), mainNode);
+                packedComponentCache.Add(mainNode.GetType(), componentTemplate);
                 mainNode.QueueFree();
             }
         }
@@ -61,28 +62,20 @@ namespace ConnectAPIC.LayoutWindow.View
 				CustomLogger.PrintErr($"Type is not of ComponentBaseView: {nameof(ViewTypeListedInFactoryChildren) + " " + ViewTypeListedInFactoryChildren.FullName}");
                 throw new ArgumentException(nameof(ViewTypeListedInFactoryChildren));
 			}
+            try
+            {
+                var packedComponent = packedComponentCache.Single(c => c.Key == ViewTypeListedInFactoryChildren).Value;
+                return packedComponent.Instantiate() as ComponentBaseView;
+            } catch (Exception ex)
+            {
+                CustomLogger.PrintErr($"ComponentTemplate is not or not well defined: {ViewTypeListedInFactoryChildren.FullName} - Exception: {ex.Message}" );
+                throw;
+            }
+        }
 
-			ComponentViewCache.Single(c => c.Key == ViewTypeListedInFactoryChildren);
-
-            foreach (var componentCacheElement in ComponentViewCache)
-			{
-                componentCacheElement)
-                ComponentBaseView mainNode = componentCacheElement.Instantiate() as ComponentBaseView;
-				if(mainNode == null)
-				{
-					CustomLogger.PrintErr($"ComponentTemplate is not of type ComponentBaseView: {componentTemplate.ResourcePath}");
-					continue;
-				}
-				if (ViewTypeListedInFactoryChildren == mainNode.GetType())
-				{
-					return mainNode;
-				} else
-				{
-					mainNode.QueueFree();
-				}
-			}
-			CustomLogger.PrintErr($"ComponentTemplate is not defined: {ViewTypeListedInFactoryChildren.FullName}");
-            throw new ComponentTemplateMissingException(ViewTypeListedInFactoryChildren.FullName);
-		}
+        public List<Type> GetAllComponentTypes()
+        {
+            return packedComponentCache.Keys.ToList();
+        }
 	}
 }
