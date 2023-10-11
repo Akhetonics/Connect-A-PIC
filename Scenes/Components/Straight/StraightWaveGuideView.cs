@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace ConnectAPIC.LayoutWindow.View
 {
-    public partial class StraightWaveGuideView : ComponentBaseView
+	public partial class StraightWaveGuideView : ComponentBaseView
 	{
 
 		[Export] protected AnimatedSprite2D LightOverlay;
@@ -23,37 +23,37 @@ namespace ConnectAPIC.LayoutWindow.View
 		{
 			LightOverlay.Show();
 			LightOverlay.Play();
-            TreePrinter.PrintTree(LightOverlay.GetParent(), 0);
-            //try
-            //{
-            //	var left = lightsAtPins.Single(l => l.side == CAP_Core.Tiles.RectSide.Left);
-            //	StartAnimationOverlay(left);
-            //} catch (Exception ex)
-            //{
-            //	CustomLogger.PrintErr(ex.Message); 
-            //	throw;
-            //}
+			TreePrinter.PrintTree(LightOverlay.GetParent(), 0);
+			//try
+			//{
+			//	var left = lightsAtPins.Single(l => l.side == CAP_Core.Tiles.RectSide.Left);
+			//	StartAnimationOverlay(left);
+			//} catch (Exception ex)
+			//{
+			//	CustomLogger.PrintErr(ex.Message); 
+			//	throw;
+			//}
 
-        }
+		}
 
 		private void StartAnimationOverlay(LightAtPin lightAtPin, bool isOutFlow = false)
 		{
 			var animationSlot = AnimationSlot.FindMatching(AnimationSlots, lightAtPin, true);
 			var overlay = animationSlot.OverlayInFlow;
-            TreePrinter.PrintTree(overlay.GetParent(), 0);
-            overlay.Play("default");
-            float alpha = (float)lightAtPin.lightInFlow.Real;
-            
-            if (isOutFlow)
+			TreePrinter.PrintTree(overlay.GetParent(), 0);
+			overlay.Play("default");
+			float alpha = (float)lightAtPin.lightInFlow.Real;
+			
+			if (isOutFlow)
 			{
 				overlay = animationSlot.OverlayOutFlow;
 				alpha = (float)lightAtPin.lightOutFlow.Real;
-                overlay.PlayBackwards("default");
-            }
+				overlay.PlayBackwards("default");
+			}
 			CustomLogger.PrintLn(lightAtPin.ToString());
 
-            overlay.Show();
-            overlay.Modulate = new Color(lightAtPin.color.ToGodotColor(), alpha);
+			overlay.Show();
+			overlay.Modulate = new Color(lightAtPin.color.ToGodotColor(), alpha);
 		}
 
 		public override void HideLightVector()

@@ -51,7 +51,7 @@ public partial class CustomLogger : ScrollContainer
 			if(eventKey.IsReleased() && eventKey.Keycode == Key.F2)
 			{
 				TreePrinter.PrintTree(GetTree().Root, 0);
-            }
+			}
 		}
 	}
 
@@ -80,8 +80,8 @@ public partial class CustomLogger : ScrollContainer
 	{
 		if(!printRawText)
 		{
-            text = FormatErrorText(text);
-        }
+			text = FormatErrorText(text);
+		}
 		Print(text);
 	}
 	public static void PrintErr(string text)

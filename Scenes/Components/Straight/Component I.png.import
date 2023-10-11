@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c8u8whsex2jym"
-path="res://.godot/imported/Directional Coupler.png-f96d351c4704f3077b69680e93e5f7ee.ctex"
+uid="uid://d3th1vtdpb7mb"
+path="res://.godot/imported/Component I.png-9d98366352961baac1c3a9e0ac1d9d47.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Scenes/Components/Directional Coupler.png"
-dest_files=["res://.godot/imported/Directional Coupler.png-f96d351c4704f3077b69680e93e5f7ee.ctex"]
+source_file="res://Scenes/Components/Straight/Component I.png"
+dest_files=["res://.godot/imported/Component I.png-9d98366352961baac1c3a9e0ac1d9d47.ctex"]
 
 [params]
 

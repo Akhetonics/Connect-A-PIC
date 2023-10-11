@@ -46,18 +46,19 @@ namespace ConnectAPIC.LayoutWindow.View
         public Vector2 GetPositionDisplacementAfterRotation()
         {
             var tilePixelSize = GameManager.TilePixelSize;
+            var borderLeftDown = GameManager.TileBorderLeftDown;
             var displacement = new Vector2();
             int roundedRotation = (int)Math.Round(this.RotationDegrees / 90) * 90;
             switch (roundedRotation)
             {
                 case 270:
-                    displacement = new Vector2(0, HeightInTiles * tilePixelSize);
+                    displacement = new Vector2(0, HeightInTiles * tilePixelSize- borderLeftDown);
                     break;
                 case 90: // Assuming you have a corresponding enumeration value
-                    displacement = new Vector2(WidthInTiles * tilePixelSize, 0);
+                    displacement = new Vector2(WidthInTiles * tilePixelSize - borderLeftDown, 0);
                     break;
                 case 180:
-                    displacement = new Vector2(WidthInTiles * tilePixelSize, HeightInTiles * tilePixelSize);
+                    displacement = new Vector2(WidthInTiles * tilePixelSize - borderLeftDown, HeightInTiles * tilePixelSize - borderLeftDown);
                     break;
             }
             return displacement;
@@ -71,7 +72,8 @@ namespace ConnectAPIC.LayoutWindow.View
                 if ( mouseEvent.Position.X < 0
                     || mouseEvent.Position.Y < 0
                     || mouseEvent.Position.X > this.WidthInTiles* GameManager.TilePixelSize
-                    || mouseEvent.Position.Y > this.HeightInTiles * GameManager.TilePixelSize)
+                    || mouseEvent.Position.Y > this.HeightInTiles * GameManager.TilePixelSize
+                    || ViewModel == null)
                 {
                     return;
                 }

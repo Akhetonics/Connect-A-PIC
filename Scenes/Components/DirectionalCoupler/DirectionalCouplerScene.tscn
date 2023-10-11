@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://b4ltp4nnviu3"]
 
-[ext_resource type="Script" path="res://Scripts/View/Components/DirectionalCouplerView.cs" id="1_4tomk"]
-[ext_resource type="Texture2D" uid="uid://uoowtaubmv1i" path="res://GFX/DirectionalCoupler/DirectionalCoupler.png" id="2_7aex2"]
+[ext_resource type="Script" path="res://Scenes/Components/DirectionalCoupler/DirectionalCouplerView.cs" id="1_4tomk"]
+[ext_resource type="Texture2D" uid="uid://c8u8whsex2jym" path="res://Scenes/Components/DirectionalCoupler/Directional Coupler.png" id="2_80i23"]
 [ext_resource type="Texture2D" uid="uid://cirsar1cf6vkh" path="res://GFX/Components/Directional Coupler/Overlay/Directional Coupler Single Overlay.png" id="6_dik7y"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ka2eo"]
@@ -41,8 +41,11 @@ animations = [{
 }]
 
 [node name="TextureRect" type="TextureRect" node_paths=PackedStringArray("LightFlowOverlayLeftUpIn", "LightFlowOverlayLeftDownIn", "LightFlowOverlayRightUpIn", "LightFlowOverlayRightDownIn")]
-offset_right = 129.0
-offset_bottom = 128.0
+custom_minimum_size = Vector2(122, 122)
+layout_direction = 1
+offset_right = 122.0
+offset_bottom = 122.0
+stretch_mode = 2
 script = ExtResource("1_4tomk")
 LightFlowOverlayLeftUpIn = NodePath("Sprite2D/AnimatedSpriteLeftUpOn")
 LightFlowOverlayLeftDownIn = NodePath("Sprite2D/AnimatedSpriteLeftDown")
@@ -55,13 +58,15 @@ HeightInTiles = 2
 script = ExtResource("1_4tomk")
 
 [node name="DirectionalCoupler00" type="Sprite2D" parent="Sprite2D"]
-texture = ExtResource("2_7aex2")
+scale = Vector2(2, 2)
+texture = ExtResource("2_80i23")
 centered = false
 region_rect = Rect2(11.5, 16, 41, 39)
 
 [node name="AnimatedSpriteLeftUpOn" type="AnimatedSprite2D" parent="Sprite2D"]
 process_mode = 1
-scale = Vector2(2.09836, 2.09836)
+visible = false
+scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_6deer")
 frame_progress = 0.284406
 speed_scale = 0.925
@@ -70,7 +75,7 @@ centered = false
 [node name="AnimatedSpriteRightUp" type="AnimatedSprite2D" parent="Sprite2D"]
 process_mode = 1
 visible = false
-scale = Vector2(2.09836, 2.09836)
+scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_6deer")
 speed_scale = 0.925
 centered = false
@@ -79,9 +84,9 @@ flip_h = true
 [node name="AnimatedSpriteLeftDown" type="AnimatedSprite2D" parent="Sprite2D"]
 process_mode = 1
 visible = false
-position = Vector2(128, 128)
+position = Vector2(122, 122)
 rotation = -3.14159
-scale = Vector2(2.09836, 2.09836)
+scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_6deer")
 speed_scale = 0.925
 centered = false
@@ -90,19 +95,9 @@ flip_h = true
 [node name="AnimatedSpriteRightDown" type="AnimatedSprite2D" parent="Sprite2D"]
 process_mode = 1
 visible = false
-position = Vector2(128, 128)
+position = Vector2(122, 122)
 rotation = -3.14159
-scale = Vector2(2.09836, 2.09836)
+scale = Vector2(2, 2)
 sprite_frames = SubResource("SpriteFrames_6deer")
 speed_scale = 0.925
 centered = false
-
-[node name="RichTextLabel" type="RichTextLabel" parent="."]
-layout_mode = 0
-offset_left = 20.0
-offset_top = 97.0
-offset_right = 118.0
-offset_bottom = 134.0
-mouse_filter = 1
-theme_override_colors/default_color = Color(0.0901961, 0.2, 0.286275, 1)
-text = "Dir. Coupler"

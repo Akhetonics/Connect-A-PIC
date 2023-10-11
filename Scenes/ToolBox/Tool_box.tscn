@@ -1,14 +1,7 @@
-[gd_scene load_steps=12 format=3 uid="uid://ch8njrql1cvsv"]
+[gd_scene load_steps=5 format=3 uid="uid://ch8njrql1cvsv"]
 
 [ext_resource type="Script" path="res://Scenes/ToolBox/ToolBox.cs" id="1_j3t3x"]
 [ext_resource type="Texture2D" uid="uid://jcla22kq5xkl" path="res://GFX/ScreenshotMockUp.png" id="2_5jmcf"]
-[ext_resource type="Texture2D" uid="uid://obrjry10rd00" path="res://GFX/StraightComponent.png" id="3_01b2r"]
-[ext_resource type="Script" path="res://Scripts/View/TemplateTileView.cs" id="4_lra8e"]
-[ext_resource type="Texture2D" uid="uid://b7fnv5qoysp51" path="res://GFX/GratingCoupler.png" id="5_eltxa"]
-[ext_resource type="Texture2D" uid="uid://cd2busn0vvaoq" path="res://GFX/PinLight.png" id="6_p8c05"]
-[ext_resource type="Script" path="res://Scripts/View/PinView.cs" id="7_jdmoo"]
-[ext_resource type="Texture2D" uid="uid://emq4du4tlo3h" path="res://GFX/PinElectric.png" id="8_hdsd8"]
-[ext_resource type="Texture2D" uid="uid://uoowtaubmv1i" path="res://GFX/DirectionalCoupler/DirectionalCoupler.png" id="9_hppae"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_f4md5"]
 texture = ExtResource("2_5jmcf")
@@ -227,11 +220,13 @@ tile_size = Vector2i(62, 62)
 sources/0 = SubResource("TileSetAtlasSource_f4md5")
 
 [node name="ToolBox" type="Panel" node_paths=PackedStringArray("gridContainer")]
-anchors_preset = 6
-anchor_left = 1.0
-anchor_top = 0.5
-anchor_right = 1.0
-anchor_bottom = 0.5
+clip_contents = true
+custom_minimum_size = Vector2(4.705, 2.95)
+anchors_preset = -1
+anchor_left = 0.99566
+anchor_top = 0.486111
+anchor_right = 1.13455
+anchor_bottom = 0.853395
 offset_left = -282.0
 offset_top = -100.0
 offset_bottom = 100.0
@@ -242,7 +237,7 @@ gridContainer = NodePath("Grid")
 metadata/_edit_use_anchors_ = true
 
 [node name="Background" type="TileMap" parent="."]
-position = Vector2(-123.555, -59.865)
+position = Vector2(34, 32)
 tile_set = SubResource("TileSet_rru74")
 cell_quadrant_size = 64
 format = 2
@@ -250,60 +245,10 @@ layer_0/tile_data = PackedInt32Array(-1, 786432, 3, 65535, 786432, 4, 131071, 78
 
 [node name="Grid" type="GridContainer" parent="."]
 layout_mode = 2
-offset_left = -121.865
-offset_top = -59.38
-offset_right = 257.565
-offset_bottom = 328.62
+offset_left = 36.0
+offset_top = 33.0
+offset_right = 411.0
+offset_bottom = 416.0
 theme_override_constants/h_separation = 2
 theme_override_constants/v_separation = 2
 columns = 6
-
-[node name="StraightWaveGuideTool" type="TextureRect" parent="Grid"]
-custom_minimum_size = Vector2(60, 60)
-layout_mode = 2
-texture = ExtResource("3_01b2r")
-expand_mode = 1
-stretch_mode = 4
-script = ExtResource("4_lra8e")
-componentTemplatePath = NodePath("")
-
-[node name="GratingCouplerTool" type="TextureRect" parent="Grid"]
-custom_minimum_size = Vector2(60, 60)
-layout_mode = 2
-texture = ExtResource("5_eltxa")
-expand_mode = 1
-stretch_mode = 4
-script = ExtResource("4_lra8e")
-componentTemplatePath = NodePath("")
-
-[node name="PinRight" type="TextureRect" parent="Grid/GratingCouplerTool"]
-layout_mode = 0
-offset_top = 28.0
-offset_right = 6.0
-offset_bottom = 34.0
-texture = ExtResource("6_p8c05")
-stretch_mode = 2
-script = ExtResource("7_jdmoo")
-ElectricityPinTexture = ExtResource("8_hdsd8")
-LightPinTexture = ExtResource("6_p8c05")
-
-[node name="DirectionalCouplerTool" type="TextureRect" parent="Grid"]
-custom_minimum_size = Vector2(60, 60)
-layout_mode = 2
-texture = ExtResource("9_hppae")
-expand_mode = 1
-stretch_mode = 4
-script = ExtResource("4_lra8e")
-componentTemplatePath = NodePath("")
-
-[node name="PinRight" type="TextureRect" parent="Grid/DirectionalCouplerTool"]
-layout_mode = 0
-offset_left = 58.0
-offset_top = 28.0
-offset_right = 64.0
-offset_bottom = 34.0
-texture = ExtResource("6_p8c05")
-stretch_mode = 2
-script = ExtResource("7_jdmoo")
-ElectricityPinTexture = ExtResource("8_hdsd8")
-LightPinTexture = ExtResource("6_p8c05")

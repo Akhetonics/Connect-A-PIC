@@ -79,7 +79,7 @@ namespace ConnectAPIC.LayoutWindow.View
 			Vector2I GridXY = LocalToMap(atPosition);
 			if (data.Obj is ComponentBaseView componentView)
 			{
-				if (!componentView.Visible)
+				if (!componentView.IsPlacedOnGrid())
 				{
 					ViewModel.CreateComponentCommand.Execute(new CreateComponentArgs(componentView.GetType(), GridXY.X, GridXY.Y, (DiscreteRotation)(componentView.RotationDegrees /90)));
 				}

@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://b0uafxekt6a6m"
-path="res://.godot/imported/Grating Coupler.png-09ae9d0857185b1543fb743ba1f865c7.ctex"
+uid="uid://c8u8whsex2jym"
+path="res://.godot/imported/Directional Coupler.png-a0dfb5108ba036773ca769031fccd6eb.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Scenes/Components/Grating Coupler.png"
-dest_files=["res://.godot/imported/Grating Coupler.png-09ae9d0857185b1543fb743ba1f865c7.ctex"]
+source_file="res://Scenes/Components/DirectionalCoupler/Directional Coupler.png"
+dest_files=["res://.godot/imported/Directional Coupler.png-a0dfb5108ba036773ca769031fccd6eb.ctex"]
 
 [params]
 

@@ -54,7 +54,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         private void Grid_OnComponentPlacedOnTile(ComponentBase component, int gridX, int gridY)
         {
             Type componentViewType = ComponentViewModelTypeConverter.ToView(component.GetType());
-            CreateComponentViewByType(gridX, gridY, component.Rotation90CounterClock, componentViewType, component);
+            CreateComponentViewOfType(gridX, gridY, component.Rotation90CounterClock, componentViewType, component);
         }
         public bool IsInGrid(int x, int y, int width, int height)
         {
@@ -98,7 +98,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
                 }
             }
         }
-        public ComponentBaseView CreateComponentViewByType(int gridx, int gridy, DiscreteRotation rotationCounterClockwise, Type componentViewType, ComponentBase componentModel)
+        public ComponentBaseView CreateComponentViewOfType(int gridx, int gridy, DiscreteRotation rotationCounterClockwise, Type componentViewType, ComponentBase componentModel)
         {
             var ComponentView = ComponentViewFactory.Instance.CreateComponentView(componentViewType);
             ComponentView.Initialize(gridx, gridy, rotationCounterClockwise , this);
