@@ -12,35 +12,26 @@ namespace ConnectAPIC.LayoutWindow.View
 	{
 
 		[Export] protected AnimatedSprite2D LightOverlay;
-		[Export] protected PinView LeftPin;
-		[Export] protected PinView RightPin;
 		private List<AnimationSlot> AnimationSlots;
-		public StraightWaveGuideView()
-		{
-		}
 
 		public override void DisplayLightVector(List<LightAtPin> lightsAtPins)
 		{
-			LightOverlay.Show();
-			LightOverlay.Play();
-			TreePrinter.PrintTree(LightOverlay.GetParent(), 0);
-			//try
-			//{
-			//	var left = lightsAtPins.Single(l => l.side == CAP_Core.Tiles.RectSide.Left);
-			//	StartAnimationOverlay(left);
-			//} catch (Exception ex)
-			//{
-			//	CustomLogger.PrintErr(ex.Message); 
-			//	throw;
-			//}
+			try
+			{
+				var left = lightsAtPins.Single(l => l.side == CAP_Core.Tiles.RectSide.Left);
+				StartAnimationOverlay(left);
+			}
+			catch (Exception ex)
+			{
+				CustomLogger.PrintErr(ex.Message);
+			}
 
 		}
 
 		private void StartAnimationOverlay(LightAtPin lightAtPin, bool isOutFlow = false)
 		{
-			var animationSlot = AnimationSlot.FindMatching(AnimationSlots, lightAtPin, true);
+			var animationSlot = AnimationSlot.TryFindMatching(AnimationSlots, lightAtPin, true); 
 			var overlay = animationSlot.OverlayInFlow;
-			TreePrinter.PrintTree(overlay.GetParent(), 0);
 			overlay.Play("default");
 			float alpha = (float)lightAtPin.lightInFlow.Real;
 			
@@ -81,15 +72,14 @@ namespace ConnectAPIC.LayoutWindow.View
 		public override void _Ready()
 		{
 			base._Ready();
-			//if (LightOverlay == null) CustomLogger.PrintErr(nameof(LightOverlay) + " is not assigned");
+			if (LightOverlay == null) CustomLogger.PrintErr(nameof(LightOverlay) + " is not assigned");
 
-			AnimationSlots = new List<AnimationSlot>();
-			//AnimationSlots = new List<AnimationSlot>()
-			//{
-			//	new AnimationSlot(LightColor.Red, 0, 0, default, CreateAnimation(LightOverlay), CreateAnimation(LightOverlay)),
-			//	new AnimationSlot(LightColor.Green, 0, 0,default, CreateAnimation(LightOverlay), CreateAnimation(LightOverlay)),
-			//	new AnimationSlot(LightColor.Blue, 0, 0,default, CreateAnimation(LightOverlay), CreateAnimation(LightOverlay))
-			//};
+			AnimationSlots = new List<AnimationSlot>()
+			{
+				new AnimationSlot(LightColor.Red, 0, 0, default, CreateAnimation(LightOverlay), CreateAnimation(LightOverlay)),
+				new AnimationSlot(LightColor.Green, 0, 0,default, CreateAnimation(LightOverlay), CreateAnimation(LightOverlay)),
+				new AnimationSlot(LightColor.Blue, 0, 0,default, CreateAnimation(LightOverlay), CreateAnimation(LightOverlay))
+			};
 
 		}
 

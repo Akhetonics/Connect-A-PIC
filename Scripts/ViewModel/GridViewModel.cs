@@ -129,7 +129,6 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
                 List<LightAtPin> lightAtPins = CalculateLightAtPins(lightVector, color, componentModel);
                 GridComponentViews[componentModel.GridXMainTile, componentModel.GridYMainTile].DisplayLightVector(lightAtPins);
             }
-
         }
 
         public static List<LightAtPin> CalculateLightAtPins(Dictionary<Guid, Complex> lightVector, LightColor color, ComponentBase componentModel)

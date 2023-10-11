@@ -25,11 +25,11 @@ namespace ConnectAPIC.LayoutWindow.View
 			if (Color != lightVector.color) return false;
 			return true;
 		}
-		public static AnimationSlot FindMatching(List<AnimationSlot> slots, LightAtPin lightVector, bool ignoreSide = false)
+		public static AnimationSlot TryFindMatching(List<AnimationSlot> slots, LightAtPin lightVector, bool ignoreSide = false)
 		{
 			try
 			{
-				return slots.Single(s => s.IsMatchingWithLightVector(lightVector, ignoreSide));
+				return slots.SingleOrDefault(s => s.IsMatchingWithLightVector(lightVector, ignoreSide));
 			}
 			catch (Exception ex)
 			{
