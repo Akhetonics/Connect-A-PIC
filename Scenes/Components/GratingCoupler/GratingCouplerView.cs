@@ -1,4 +1,6 @@
 using CAP_Core.ExternalPorts;
+using CAP_Core.Tiles;
+using ConnectAPIC.Scripts.Helpers;
 using Godot;
 using System;
 using System.Collections.Generic;
@@ -9,28 +11,12 @@ namespace ConnectAPIC.LayoutWindow.View
 	public partial class GratingCouplerView : ComponentBaseView
 	{
 		[Export] protected AnimatedSprite2D LightOverlay;
-		public GratingCouplerView()
-		{
-			
-		}
 		public override void _Ready()
 		{
 			base._Ready();
 			if (LightOverlay == null) CustomLogger.PrintErr(nameof(LightOverlay) + " is null");
-			
-		}
-		public override void DisplayLightVector(List<LightAtPin> lightsAtPins)
-		{
-			var lightIntensity = lightsAtPins.First(l => l.color == LightColor.Red).lightInFlow;
-			LightOverlay.Visible = true;
-			LightOverlay.Play();
-			var alpha = (float)lightIntensity.Real;
-			LightOverlay.Modulate = new Color(1, 1, 1, alpha);
+			AnimationSlots = CreateTriColorAnimSlot(0, 0, RectSide.Left, LightOverlay);
 		}
 
-		public override void HideLightVector()
-		{
-			LightOverlay.Visible = false;
-		}
 	}
 }

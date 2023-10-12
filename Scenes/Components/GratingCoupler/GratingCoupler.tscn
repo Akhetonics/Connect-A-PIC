@@ -4,36 +4,36 @@
 [ext_resource type="Script" path="res://Scenes/Components/GratingCoupler/GratingCouplerView.cs" id="2_vegh3"]
 [ext_resource type="Texture2D" uid="uid://dyrox274yolv2" path="res://Scenes/Components/GratingCoupler/Grating Coupler Overlay.png" id="3_y2tlx"]
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_vakro"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_d3ekw"]
 atlas = ExtResource("3_y2tlx")
-region = Rect2(0, 0, 30, 30)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_04rcs"]
-atlas = ExtResource("3_y2tlx")
-region = Rect2(30, 0, 30, 30)
+region = Rect2(90, 0, 30, 30)
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_hwosr"]
 atlas = ExtResource("3_y2tlx")
 region = Rect2(60, 0, 30, 30)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_d3ekw"]
+[sub_resource type="AtlasTexture" id="AtlasTexture_04rcs"]
 atlas = ExtResource("3_y2tlx")
-region = Rect2(90, 0, 30, 30)
+region = Rect2(30, 0, 30, 30)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vakro"]
+atlas = ExtResource("3_y2tlx")
+region = Rect2(0, 0, 30, 30)
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_mbca4"]
 animations = [{
 "frames": [{
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_vakro")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_04rcs")
+"texture": SubResource("AtlasTexture_d3ekw")
 }, {
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_hwosr")
 }, {
 "duration": 1.0,
-"texture": SubResource("AtlasTexture_d3ekw")
+"texture": SubResource("AtlasTexture_04rcs")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vakro")
 }],
 "loop": true,
 "name": &"default",
@@ -41,25 +41,23 @@ animations = [{
 }]
 
 [node name="TextureRect" type="TextureRect" node_paths=PackedStringArray("LightOverlay")]
-custom_minimum_size = Vector2(60, 60)
 offset_right = 60.0
 offset_bottom = 60.0
-scale = Vector2(2, 2)
-texture = ExtResource("1_r641d")
 stretch_mode = 2
 script = ExtResource("2_vegh3")
-LightOverlay = NodePath("LightOverlays/AnimatedSpriteLeftUpOn")
+LightOverlay = NodePath("BaseTexture/AnimatedSprite")
 WidthInTiles = 1
 HeightInTiles = 1
 
-[node name="LightOverlays" type="Sprite2D" parent="."]
+[node name="BaseTexture" type="Sprite2D" parent="."]
+scale = Vector2(2, 2)
+texture = ExtResource("1_r641d")
+centered = false
 
-[node name="AnimatedSpriteLeftUpOn" type="AnimatedSprite2D" parent="LightOverlays"]
+[node name="AnimatedSprite" type="AnimatedSprite2D" parent="BaseTexture"]
 process_mode = 1
 visible = false
-scale = Vector2(0.983333, 0.983333)
+scale = Vector2(1, 1)
 sprite_frames = SubResource("SpriteFrames_mbca4")
-frame = 3
-frame_progress = 0.151726
-speed_scale = 0.925
+frame_progress = 0.333298
 centered = false

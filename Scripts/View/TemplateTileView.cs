@@ -13,8 +13,8 @@ namespace ConnectAPIC.LayoutWindow.View
 		public override Variant _GetDragData(Vector2 position)
 		{
 			var template = GetChild(0);
-            var componentType = (template as ComponentBaseView)?.GetType();
-            var newComponent = ComponentViewFactory.Instance.CreateComponentView(componentType);
+			var componentType = (template as ComponentBaseView)?.GetType();
+			var newComponent = ComponentViewFactory.Instance.CreateComponentView(componentType);
 			return newComponent;
 		}
 

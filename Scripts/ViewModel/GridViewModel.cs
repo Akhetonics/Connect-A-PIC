@@ -109,7 +109,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
 
         public Dictionary<Guid, Complex> GetLightVector(LightColor color)
         {
-            MatrixAnalyzer ??= new GridSMatrixAnalyzer(this.Grid);
+            MatrixAnalyzer = new GridSMatrixAnalyzer(this.Grid);
             return MatrixAnalyzer.CalculateLightPropagation(color);
         }
 
@@ -126,8 +126,14 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             List<ComponentBase> components = Grid.GetAllComponents();
             foreach( var componentModel in components)
             {
-                List<LightAtPin> lightAtPins = CalculateLightAtPins(lightVector, color, componentModel);
-                GridComponentViews[componentModel.GridXMainTile, componentModel.GridYMainTile].DisplayLightVector(lightAtPins);
+                try
+                {
+                    List<LightAtPin> lightAtPins = CalculateLightAtPins(lightVector, color, componentModel);
+                    GridComponentViews[componentModel.GridXMainTile, componentModel.GridYMainTile].DisplayLightVector(lightAtPins);
+                } catch (Exception ex) {
+                    CustomLogger.PrintEx(ex);
+                }
+                
             }
         }
 
@@ -140,9 +146,9 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
                 for (int offsetY = 0; offsetY < componentModel.HeightInTiles; offsetY++)
                 {
                     var part = componentModel.GetPartAt(offsetX, offsetY);
-                    foreach (var side in Enum.GetValues(typeof(RectSide)).OfType<RectSide>())
+                    foreach (var localSide in Enum.GetValues(typeof(RectSide)).OfType<RectSide>())
                     {
-                        var pin = part.GetPinAt(side);
+                        var pin = part.GetPinAt(localSide, false);
                         if (pin == null) continue;
                         var lightIntensityIn = lightVector.TryGetVal(pin.IDInFlow).Real;
                         var lightPhaseIn = lightVector.TryGetVal(pin.IDInFlow).Phase;
@@ -152,7 +158,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
                         var lightFlow = new LightAtPin(
                             offsetX,
                             offsetY,
-                            side,
+                            localSide,
                             color,
                             new Complex(lightIntensityIn, lightPhaseIn),
                             new Complex(lightIntensityOut, lightPhaseOut)

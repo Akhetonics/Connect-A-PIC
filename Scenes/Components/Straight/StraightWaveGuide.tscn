@@ -59,5 +59,4 @@ visible = false
 scale = Vector2(0.9375, 0.921875)
 sprite_frames = SubResource("SpriteFrames_nuc17")
 frame_progress = 0.997298
-speed_scale = 0.925
 centered = false

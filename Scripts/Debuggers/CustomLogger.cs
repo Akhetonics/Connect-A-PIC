@@ -89,6 +89,11 @@ public partial class CustomLogger : ScrollContainer
 		text = FormatErrorText(text);
 		Print(text,true);
 	}
+	public static void PrintEx(Exception ex)
+	{
+		var text = FormatErrorText("msg: " + ex.Message + " stck: " + ex.StackTrace + " inner: " + ex.InnerException);
+		Print(text, true);
+	}
 	private static void Print(string text, bool isError = false)
 	{
 		RichTextLabel labelTemplate = InfoTextTemplate;

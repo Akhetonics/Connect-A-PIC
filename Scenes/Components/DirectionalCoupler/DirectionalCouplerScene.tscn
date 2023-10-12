@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://b4ltp4nnviu3"]
+[gd_scene load_steps=11 format=3 uid="uid://b4ltp4nnviu3"]
 
 [ext_resource type="Script" path="res://Scenes/Components/DirectionalCoupler/DirectionalCouplerView.cs" id="1_4tomk"]
 [ext_resource type="Texture2D" uid="uid://c8u8whsex2jym" path="res://Scenes/Components/DirectionalCoupler/Directional Coupler.png" id="2_80i23"]
@@ -19,6 +19,46 @@ region = Rect2(122, 0, 61, 30)
 [sub_resource type="AtlasTexture" id="AtlasTexture_3st3g"]
 atlas = ExtResource("6_dik7y")
 region = Rect2(183, 0, 61, 30)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_btglm"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ka2eo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p7x50")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s2c4y")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3st3g")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_0kbob"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ka2eo")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_p7x50")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_s2c4y")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3st3g")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_6deer"]
 animations = [{
@@ -47,57 +87,49 @@ offset_right = 122.0
 offset_bottom = 122.0
 stretch_mode = 2
 script = ExtResource("1_4tomk")
-LightFlowOverlayLeftUpIn = NodePath("Sprite2D/AnimatedSpriteLeftUpOn")
-LightFlowOverlayLeftDownIn = NodePath("Sprite2D/AnimatedSpriteLeftDown")
-LightFlowOverlayRightUpIn = NodePath("Sprite2D/AnimatedSpriteRightUp")
-LightFlowOverlayRightDownIn = NodePath("Sprite2D/AnimatedSpriteRightDown")
+LightFlowOverlayLeftUpIn = NodePath("Sprite2D/BackgroundImage/AnimatedSpriteLeftUp")
+LightFlowOverlayLeftDownIn = NodePath("Sprite2D/BackgroundImage/AnimatedSpriteLeftDown")
+LightFlowOverlayRightUpIn = NodePath("Sprite2D/BackgroundImage/AnimatedSpriteRightUp")
+LightFlowOverlayRightDownIn = NodePath("Sprite2D/BackgroundImage/AnimatedSpriteRightDown")
 WidthInTiles = 2
 HeightInTiles = 2
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-script = ExtResource("1_4tomk")
 
-[node name="DirectionalCoupler00" type="Sprite2D" parent="Sprite2D"]
+[node name="BackgroundImage" type="Sprite2D" parent="Sprite2D"]
 scale = Vector2(2, 2)
 texture = ExtResource("2_80i23")
 centered = false
 region_rect = Rect2(11.5, 16, 41, 39)
 
-[node name="AnimatedSpriteLeftUpOn" type="AnimatedSprite2D" parent="Sprite2D"]
+[node name="AnimatedSpriteRightUp" type="AnimatedSprite2D" parent="Sprite2D/BackgroundImage"]
 process_mode = 1
 visible = false
-scale = Vector2(2, 2)
-sprite_frames = SubResource("SpriteFrames_6deer")
-frame_progress = 0.284406
-speed_scale = 0.925
-centered = false
-
-[node name="AnimatedSpriteRightUp" type="AnimatedSprite2D" parent="Sprite2D"]
-process_mode = 1
-visible = false
-scale = Vector2(2, 2)
-sprite_frames = SubResource("SpriteFrames_6deer")
-speed_scale = 0.925
+sprite_frames = SubResource("SpriteFrames_btglm")
+frame = 2
 centered = false
 flip_h = true
 
-[node name="AnimatedSpriteLeftDown" type="AnimatedSprite2D" parent="Sprite2D"]
+[node name="AnimatedSpriteRightDown" type="AnimatedSprite2D" parent="Sprite2D/BackgroundImage"]
 process_mode = 1
 visible = false
-position = Vector2(122, 122)
+position = Vector2(61, 61)
 rotation = -3.14159
-scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_0kbob")
+frame = 2
+centered = false
+
+[node name="AnimatedSpriteLeftUp" type="AnimatedSprite2D" parent="Sprite2D/BackgroundImage"]
+process_mode = 1
+visible = false
 sprite_frames = SubResource("SpriteFrames_6deer")
-speed_scale = 0.925
+centered = false
+
+[node name="AnimatedSpriteLeftDown" type="AnimatedSprite2D" parent="Sprite2D/BackgroundImage"]
+process_mode = 1
+visible = false
+position = Vector2(61, 61)
+rotation = -3.14159
+sprite_frames = SubResource("SpriteFrames_6deer")
 centered = false
 flip_h = true
-
-[node name="AnimatedSpriteRightDown" type="AnimatedSprite2D" parent="Sprite2D"]
-process_mode = 1
-visible = false
-position = Vector2(122, 122)
-rotation = -3.14159
-scale = Vector2(2, 2)
-sprite_frames = SubResource("SpriteFrames_6deer")
-speed_scale = 0.925
-centered = false
