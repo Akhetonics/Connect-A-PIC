@@ -1,8 +1,9 @@
-[gd_scene load_steps=9 format=3 uid="uid://b3bif06mnx8qd"]
+[gd_scene load_steps=10 format=3 uid="uid://b3bif06mnx8qd"]
 
 [ext_resource type="Texture2D" uid="uid://d3th1vtdpb7mb" path="res://Scenes/Components/Straight/Component I.png" id="1_3hlav"]
 [ext_resource type="Script" path="res://Scenes/Components/Straight/StraightWaveGuideView.cs" id="2_4ru4l"]
 [ext_resource type="Texture2D" uid="uid://vo2omgmg5xjq" path="res://GFX/Components/Component I/Overlay/StraightLineAnimationsheet.png" id="3_0ourh"]
+[ext_resource type="Material" uid="uid://dmd5v2e75qpv3" path="res://Scenes/Components/LightOverlayStandard.tres" id="3_hq4bb"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_55yrf"]
 atlas = ExtResource("3_0ourh")
@@ -56,6 +57,7 @@ HeightInTiles = 1
 [node name="AnimatedSpriteLeftUpOn" type="AnimatedSprite2D" parent="LightOverlays"]
 process_mode = 3
 visible = false
+material = ExtResource("3_hq4bb")
 scale = Vector2(0.9375, 0.921875)
 sprite_frames = SubResource("SpriteFrames_nuc17")
 frame_progress = 0.997298

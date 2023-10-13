@@ -1,3 +1,5 @@
+using CAP_Core.Component.ComponentHelpers;
+
 namespace CAP_Core.Helpers
 {
     public static class ArrayExtensions
@@ -35,5 +37,6 @@ namespace CAP_Core.Helpers
 
             return rotatedArray;
         }
+
     }
 }

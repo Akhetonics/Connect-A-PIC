@@ -551,8 +551,6 @@ offset_top = 365.0
 offset_right = 154.48
 offset_bottom = 429.0
 
-[node name="DirectionalCouplerTemplate" type="Node" parent="."]
-
 [node name="InGameConsole" parent="." instance=ExtResource("24_wq416")]
 
 [connection signal="pressed" from="btnExportNazca" to="MapBackground" method="_on_btn_export_nazca_pressed"]

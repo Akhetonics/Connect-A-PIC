@@ -1,7 +1,8 @@
-[gd_scene load_steps=11 format=3 uid="uid://b4ltp4nnviu3"]
+[gd_scene load_steps=12 format=3 uid="uid://b4ltp4nnviu3"]
 
 [ext_resource type="Script" path="res://Scenes/Components/DirectionalCoupler/DirectionalCouplerView.cs" id="1_4tomk"]
 [ext_resource type="Texture2D" uid="uid://c8u8whsex2jym" path="res://Scenes/Components/DirectionalCoupler/Directional Coupler.png" id="2_80i23"]
+[ext_resource type="Material" uid="uid://dmd5v2e75qpv3" path="res://Scenes/Components/LightOverlayStandard.tres" id="3_dwcdr"]
 [ext_resource type="Texture2D" uid="uid://cirsar1cf6vkh" path="res://GFX/Components/Directional Coupler/Overlay/Directional Coupler Single Overlay.png" id="6_dik7y"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_ka2eo"]
@@ -80,7 +81,7 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="TextureRect" type="TextureRect" node_paths=PackedStringArray("LightFlowOverlayLeftUpIn", "LightFlowOverlayLeftDownIn", "LightFlowOverlayRightUpIn", "LightFlowOverlayRightDownIn")]
+[node name="DirectionalCoupler" type="TextureRect" node_paths=PackedStringArray("LightFlowOverlayLeftUpIn", "LightFlowOverlayLeftDownIn", "LightFlowOverlayRightUpIn", "LightFlowOverlayRightDownIn")]
 custom_minimum_size = Vector2(122, 122)
 layout_direction = 1
 offset_right = 122.0
@@ -105,14 +106,17 @@ region_rect = Rect2(11.5, 16, 41, 39)
 [node name="AnimatedSpriteRightUp" type="AnimatedSprite2D" parent="Sprite2D/BackgroundImage"]
 process_mode = 1
 visible = false
+material = ExtResource("3_dwcdr")
 sprite_frames = SubResource("SpriteFrames_btglm")
 frame = 2
+frame_progress = 0.153534
 centered = false
 flip_h = true
 
 [node name="AnimatedSpriteRightDown" type="AnimatedSprite2D" parent="Sprite2D/BackgroundImage"]
 process_mode = 1
 visible = false
+material = ExtResource("3_dwcdr")
 position = Vector2(61, 61)
 rotation = -3.14159
 sprite_frames = SubResource("SpriteFrames_0kbob")
@@ -122,12 +126,14 @@ centered = false
 [node name="AnimatedSpriteLeftUp" type="AnimatedSprite2D" parent="Sprite2D/BackgroundImage"]
 process_mode = 1
 visible = false
+material = ExtResource("3_dwcdr")
 sprite_frames = SubResource("SpriteFrames_6deer")
 centered = false
 
 [node name="AnimatedSpriteLeftDown" type="AnimatedSprite2D" parent="Sprite2D/BackgroundImage"]
 process_mode = 1
 visible = false
+material = ExtResource("3_dwcdr")
 position = Vector2(61, 61)
 rotation = -3.14159
 sprite_frames = SubResource("SpriteFrames_6deer")

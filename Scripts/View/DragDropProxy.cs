@@ -47,7 +47,7 @@ public partial class DragDropProxy : Control
         CheckIfDragWasResetted();
         if (DragPreview == null)
         {
-            DragPreview = (Control)data.Duplicate();
+            DragPreview = ((ComponentBaseView)data).Duplicate();
             DragPreview.Visible = false;
         }
         else

@@ -7,8 +7,9 @@ namespace CAP_Core.Helpers
     {
         public static int CalculateCyclesTillTargetRotation(this DiscreteRotation currentRotation, DiscreteRotation targetRotation)
         {
-            int rotationIntervals = ((int)targetRotation - (int)currentRotation) % ((int)DiscreteRotation.R270 + 1);
-            while (rotationIntervals < 0) rotationIntervals += (int)DiscreteRotation.R270 + 1;
+            int maxCycles = ((int)DiscreteRotation.R270 + 1);
+            int rotationIntervals = ((int)targetRotation - (int)currentRotation) % maxCycles;
+            while (rotationIntervals < 0) rotationIntervals += maxCycles;
             return rotationIntervals;
         }
         public static DiscreteRotation RotateBy90CounterC(this DiscreteRotation currentRotation)

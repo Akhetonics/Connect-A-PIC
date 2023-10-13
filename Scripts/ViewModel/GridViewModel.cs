@@ -148,7 +148,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
                     var part = componentModel.GetPartAt(offsetX, offsetY);
                     foreach (var localSide in Enum.GetValues(typeof(RectSide)).OfType<RectSide>())
                     {
-                        var pin = part.GetPinAt(localSide, false);
+                        var pin = part.GetPinAt(localSide);
                         if (pin == null) continue;
                         var lightIntensityIn = lightVector.TryGetVal(pin.IDInFlow).Real;
                         var lightPhaseIn = lightVector.TryGetVal(pin.IDInFlow).Phase;

@@ -28,6 +28,7 @@ namespace ConnectAPIC.LayoutWindow.View
 			if (LightFlowOverlayRightUpIn == null) CustomLogger.PrintErr(new ArgumentNullException(nameof(LightFlowOverlayRightUpIn)).ToString());
 			if (LightFlowOverlayRightDownIn == null) CustomLogger.PrintErr(new ArgumentNullException(nameof(LightFlowOverlayRightDownIn)).ToString());
 
+			AnimationSlots = new();
 			AnimationSlots.AddRange(CreateTriColorAnimSlot(0,0, RectSide.Left, LightFlowOverlayLeftUpIn));
 			AnimationSlots.AddRange(CreateTriColorAnimSlot(0,1, RectSide.Left, LightFlowOverlayLeftDownIn));
 			AnimationSlots.AddRange(CreateTriColorAnimSlot(1,0, RectSide.Right, LightFlowOverlayRightUpIn));

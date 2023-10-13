@@ -1,7 +1,8 @@
-[gd_scene load_steps=9 format=3 uid="uid://bm3jaqj5in510"]
+[gd_scene load_steps=10 format=3 uid="uid://bm3jaqj5in510"]
 
 [ext_resource type="Texture2D" uid="uid://b0uafxekt6a6m" path="res://Scenes/Components/GratingCoupler/Grating Coupler.png" id="1_r641d"]
 [ext_resource type="Script" path="res://Scenes/Components/GratingCoupler/GratingCouplerView.cs" id="2_vegh3"]
+[ext_resource type="Material" uid="uid://dmd5v2e75qpv3" path="res://Scenes/Components/LightOverlayStandard.tres" id="3_rwbn4"]
 [ext_resource type="Texture2D" uid="uid://dyrox274yolv2" path="res://Scenes/Components/GratingCoupler/Grating Coupler Overlay.png" id="3_y2tlx"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_d3ekw"]
@@ -57,7 +58,7 @@ centered = false
 [node name="AnimatedSprite" type="AnimatedSprite2D" parent="BaseTexture"]
 process_mode = 1
 visible = false
-scale = Vector2(1, 1)
+material = ExtResource("3_rwbn4")
 sprite_frames = SubResource("SpriteFrames_mbca4")
 frame_progress = 0.333298
 centered = false
