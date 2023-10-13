@@ -14,9 +14,8 @@ namespace ConnectAPIC.LayoutWindow.View
 
 		[Export] protected AnimatedSprite2D LightOverlay;
 
-		public override void _Ready()
+		public override void InitializeAnimationSlots()
 		{
-			base._Ready();
 			if (LightOverlay == null) CustomLogger.PrintErr(nameof(LightOverlay) + " is not assigned");
 			AnimationSlots = CreateTriColorAnimSlot(0, 0, RectSide.Left, LightOverlay);
 		}

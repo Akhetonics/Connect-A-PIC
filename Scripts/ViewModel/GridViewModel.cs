@@ -50,11 +50,21 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         private void Grid_OnComponentRemoved(ComponentBase component, int x, int y)
         {
             ResetTilesAt(x,y,component.WidthInTiles, component.HeightInTiles);
+            if (GridView.lightPropagationIsPressed)
+            {
+                HideLightPropagation();
+                ShowLightPropagation();
+            }
         }
         private void Grid_OnComponentPlacedOnTile(ComponentBase component, int gridX, int gridY)
         {
             Type componentViewType = ComponentViewModelTypeConverter.ToView(component.GetType());
             CreateComponentViewOfType(gridX, gridY, component.Rotation90CounterClock, componentViewType, component);
+            if (GridView.lightPropagationIsPressed)
+            {
+                HideLightPropagation();
+                ShowLightPropagation();
+            }
         }
         public bool IsInGrid(int x, int y, int width, int height)
         {
@@ -113,8 +123,11 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             return MatrixAnalyzer.CalculateLightPropagation(color);
         }
 
-        public void ShowLightPropagation(Dictionary<Guid, Complex> lightVectorRed, Dictionary<Guid, Complex> lightVectorGreen, Dictionary<Guid, Complex> lightVectorBlue)
+        public void ShowLightPropagation()
         {
+            var lightVectorRed = GetLightVector(LightColor.Red);
+            var lightVectorGreen = GetLightVector(LightColor.Green);
+            var lightVectorBlue = GetLightVector(LightColor.Blue);
             // go through the whole grid and send all 
             AssignLightToComponentViews(lightVectorRed, LightColor.Red);
             AssignLightToComponentViews(lightVectorGreen, LightColor.Green);
@@ -170,7 +183,6 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
 
             return lightAtPins;
         }
-
 
         public void HideLightPropagation()
         {

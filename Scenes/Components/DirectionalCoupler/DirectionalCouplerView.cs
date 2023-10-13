@@ -19,10 +19,8 @@ namespace ConnectAPIC.LayoutWindow.View
 		[Export] private AnimatedSprite2D LightFlowOverlayRightDownIn;
 		private AnimatedSprite2D LightFlowOverlayRightDownOut;
 
-		public override void _Ready()
+		public override void InitializeAnimationSlots()
 		{
-			base._Ready();
-
 			if (LightFlowOverlayLeftUpIn == null) CustomLogger.PrintErr(new ArgumentNullException(nameof(LightFlowOverlayLeftUpIn)).ToString());
 			if (LightFlowOverlayLeftDownIn == null) CustomLogger.PrintErr(new ArgumentNullException(nameof(LightFlowOverlayLeftDownIn)).ToString());
 			if (LightFlowOverlayRightUpIn == null) CustomLogger.PrintErr(new ArgumentNullException(nameof(LightFlowOverlayRightUpIn)).ToString());

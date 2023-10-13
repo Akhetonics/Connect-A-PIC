@@ -24,12 +24,13 @@ namespace ConnectAPIC.LayoutWindow.View
         public GridViewModel ViewModel { get; private set; }
         public int GridX { get; set; }
         public int GridY { get; set; }
-        protected List<AnimationSlot> AnimationSlots;
+        protected List<AnimationSlot> AnimationSlots = new();
         private new float RotationDegrees { get => base.RotationDegrees; set => base.RotationDegrees = value; }
         private new float Rotation { get => base.Rotation; set => base.Rotation = value; }
+        public abstract void InitializeAnimationSlots();
         private DiscreteRotation _rotationCC;
-        public DiscreteRotation RotationCC { 
-            get => _rotationCC; 
+        public DiscreteRotation RotationCC {
+            get => _rotationCC;
             set { 
                 _rotationCC = value;
                 AnimationSlots?.ForEach(a => a.RotateAttachedComponentCC(value));
@@ -40,18 +41,11 @@ namespace ConnectAPIC.LayoutWindow.View
         public override void _Ready()
         {
             base._Ready();
-            CallDeferred(nameof(RefreshRotation));
-        }
-        public void RefreshRotation()
-        {
+            InitializeAnimationSlots();
             RotationCC = RotationCC;
         }
         public void Initialize(int gridX, int gridY, DiscreteRotation rotationCounterClockwise, GridViewModel viewModel)
         {
-            if(AnimationSlots == null)
-            {
-                _Ready();
-            }
             if (WidthInTiles == 0) CustomLogger.PrintErr($"{nameof(WidthInTiles)} cannot be 0");
             if (HeightInTiles == 0) CustomLogger.PrintErr($"{nameof(HeightInTiles)} cannot be 0");
             this.GridX = gridX;
@@ -76,7 +70,6 @@ namespace ConnectAPIC.LayoutWindow.View
             var borderLeftDown = GameManager.TileBorderLeftDown;
             var displacement = new Vector2();
             int roundedRotation = (int)Math.Round(RotationDegrees / 90) * 90;
-            CustomLogger.PrintLn("rotation: " + roundedRotation + " Rotdisc " + RotationCC );
             switch (roundedRotation)
             {
                 case 270:
@@ -91,10 +84,9 @@ namespace ConnectAPIC.LayoutWindow.View
             }
             return displacement;
         }
-        protected static AnimatedSprite2D CreateAnimation(AnimatedSprite2D baseAnimation)
+        protected static AnimatedSprite2D DuplicateAnimation(AnimatedSprite2D baseAnimation)
         {
             var anim = baseAnimation.Duplicate() as AnimatedSprite2D;
-            anim.Autoplay = baseAnimation.SpriteFrames.GetAnimationNames().First();
             baseAnimation.GetParent().AddChild(anim);
             anim.Hide();
             return anim;
@@ -140,11 +132,6 @@ namespace ConnectAPIC.LayoutWindow.View
         protected void PlayOverlayAnimation(LightAtPin lightAtPin, AnimatedSprite2D overlay, float alpha, float playspeed)
         {
             overlay.Play(null, playspeed);
-            if(playspeed == -1)
-            {
-                CustomLogger.PrintLn(lightAtPin.ToString());
-            }
-            
             overlay.Show();
             overlay.Modulate += new Godot.Color(lightAtPin.color.ToGodotColor(), alpha);
         }
@@ -191,11 +178,12 @@ namespace ConnectAPIC.LayoutWindow.View
         {
             Vector2I sizeInTiles = new Vector2I(WidthInTiles, HeightInTiles);
             Vector2I offset = new Vector2I(offsetx, offsety);
+            animDraft.Hide();
             List<AnimationSlot> animSlots = new()
             {
-                new AnimationSlot(LightColor.Red, offset, side, CreateAnimation(animDraft), CreateAnimation(animDraft) , sizeInTiles),
-                new AnimationSlot(LightColor.Green, offset, side, CreateAnimation(animDraft), CreateAnimation(animDraft), sizeInTiles),
-                new AnimationSlot(LightColor.Blue, offset, side, CreateAnimation(animDraft), CreateAnimation(animDraft), sizeInTiles)
+                new AnimationSlot(LightColor.Red, offset, side, animDraft, DuplicateAnimation(animDraft) , sizeInTiles),
+                new AnimationSlot(LightColor.Green, offset, side, DuplicateAnimation(animDraft), DuplicateAnimation(animDraft), sizeInTiles),
+                new AnimationSlot(LightColor.Blue, offset, side, DuplicateAnimation(animDraft), DuplicateAnimation(animDraft), sizeInTiles)
             };
             return animSlots;
         }

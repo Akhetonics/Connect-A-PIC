@@ -42,21 +42,23 @@ namespace ConnectAPIC.LayoutWindow.View
 				}
 			});
 		}
+		public bool lightPropagationIsPressed;
 		private void _on_btn_show_light_propagation_toggled(bool button_pressed)
 		{
-			if (button_pressed)
-			{
-				var LightVectorRed = ViewModel.GetLightVector(LightColor.Red);
-				var LightVectorGreen = ViewModel.GetLightVector(LightColor.Green);
-				var LightVectorBlue = ViewModel.GetLightVector(LightColor.Blue);
-				ViewModel.ShowLightPropagation(LightVectorRed, LightVectorGreen, LightVectorBlue);
-			} else
+            lightPropagationIsPressed = button_pressed;
+
+            if (button_pressed)
+            {
+                ViewModel.HideLightPropagation();
+                ViewModel.ShowLightPropagation();
+            }
+            else
 			{
 				ViewModel.HideLightPropagation();
 			}
 		}
 
-		public bool _CanDropData(Vector2 position, Variant data)
+        public bool _CanDropData(Vector2 position, Variant data)
 		{
 			if (data.Obj is ComponentBaseView component)
 			{

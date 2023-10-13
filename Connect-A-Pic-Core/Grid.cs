@@ -48,9 +48,12 @@ namespace CAP_Core
                     if (IsInGrid(0, inputY) == false) continue;
                     if (Tiles[0, inputY] == null) continue;
                     if (Tiles[0, inputY].Component == null) continue;
-                    if (Tiles[0, inputY].Component.Parts[0, 0].GetPinAt(RectSide.Left) == null) continue;
                     var connectedPartOfComponent = Tiles[0, inputY].Component.GetPartAtGridXY(0, inputY);
-                    Guid pinId = connectedPartOfComponent.GetPinAt(RectSide.Left).IDInFlow;
+                    if (connectedPartOfComponent == null) continue;
+                    Pin componentPin = connectedPartOfComponent.GetPinAt(RectSide.Left);
+                    if(componentPin.MatterType != MatterType.Light) continue; // if the component does not have a connected pin, then we ignore it.
+                    Guid pinId = componentPin.IDInFlow;
+                    
                     inputsFound.Add(new UsedStandardInput() { AttachedComponentPinId = pinId, Input = input });
                 }
             }

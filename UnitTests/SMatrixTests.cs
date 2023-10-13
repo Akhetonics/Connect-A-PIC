@@ -40,14 +40,17 @@ namespace UnitTests
         public void TestSMatrixForGrid()
         {
             var straight = new StraightWaveGuide();
+            var rotatedStraight = new StraightWaveGuide();
             var directionalCoupler = new DirectionalCoupler();
             var Grating = new GratingCoupler();
 
+            rotatedStraight.RotateBy90CounterClockwise();
             var grid = new Grid(20, 10);
             var inputPort = grid.ExternalPorts[0];
             grid.PlaceComponent(0, inputPort.TilePositionY, straight);
             grid.PlaceComponent(1, inputPort.TilePositionY, directionalCoupler);
             grid.PlaceComponent(3, inputPort.TilePositionY, Grating);
+            grid.PlaceComponent(0, inputPort.TilePositionY + 1, rotatedStraight);
 
             var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid);
             var lightValues = gridSMatrixAnalyzer.CalculateLightPropagation(inputPort.Color);
