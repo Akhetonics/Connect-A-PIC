@@ -41,7 +41,7 @@ namespace CAP_Core
         /// <param name="side"></param>
         /// <param name="absoluteOrientation"></param>
         /// <returns></returns>
-        public Pin GetPinAt(RectSide side, bool absoluteOrientation = true)
+        public Pin? GetPinAt(RectSide side, bool absoluteOrientation = true)
         {
             if (absoluteOrientation)
                 side = side.RotateSideClockwise(Rotation90);

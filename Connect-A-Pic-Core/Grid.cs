@@ -34,6 +34,8 @@ namespace CAP_Core
                     new StandardOutput("io3",5),
                     new StandardOutput("io4",6),
                     new StandardOutput("io5",7),
+                    new StandardOutput("io6",8),
+                    new StandardOutput("io7",9),
                 };
             GenerateAllTiles();
         }
@@ -51,7 +53,7 @@ namespace CAP_Core
                     var connectedPartOfComponent = Tiles[0, inputY].Component.GetPartAtGridXY(0, inputY);
                     if (connectedPartOfComponent == null) continue;
                     Pin componentPin = connectedPartOfComponent.GetPinAt(RectSide.Left);
-                    if(componentPin.MatterType != MatterType.Light) continue; // if the component does not have a connected pin, then we ignore it.
+                    if(componentPin?.MatterType != MatterType.Light) continue; // if the component does not have a connected pin, then we ignore it.
                     Guid pinId = componentPin.IDInFlow;
                     
                     inputsFound.Add(new UsedStandardInput() { AttachedComponentPinId = pinId, Input = input });
