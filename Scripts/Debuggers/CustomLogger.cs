@@ -13,6 +13,7 @@ public record LogInfo
 }
 public partial class CustomLogger : ScrollContainer
 {
+	private static ScrollContainer console;
 	[Export] private Node _LoggingParent { get; set; }
 	[Export] private RichTextLabel _InfoText { get; set; }
 	[Export] private RichTextLabel _ErrorText { get; set; }
@@ -26,6 +27,7 @@ public partial class CustomLogger : ScrollContainer
 		LoggingParent = _LoggingParent;
 		InfoTextTemplate = _InfoText;
 		ErrorTextTemplate = _ErrorText;
+		console = this;
 		Visible = false;
 	}
 
@@ -82,17 +84,22 @@ public partial class CustomLogger : ScrollContainer
 		{
 			text = FormatErrorText(text);
 		}
+		GD.Print(text);
 		Print(text);
 	}
 	public static void PrintErr(string text)
 	{
 		text = FormatErrorText(text);
 		Print(text,true);
+		GD.PrintErr(text);
+		console.Show();
 	}
 	public static void PrintEx(Exception ex)
 	{
 		var text = FormatErrorText("msg: " + ex.Message + " stck: " + ex.StackTrace + " inner: " + ex.InnerException);
 		Print(text, true);
+		GD.PrintErr(text);
+		console.Show();
 	}
 	private static void Print(string text, bool isError = false)
 	{

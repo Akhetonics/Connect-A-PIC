@@ -13,6 +13,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             { typeof(ComponentBase), typeof(ComponentBaseView) },
             { typeof(StraightWaveGuide), typeof(StraightWaveGuideView) },
             { typeof(GratingCoupler), typeof(GratingCouplerView) },
+            { typeof(Bend), typeof(BendView) },
             { typeof(DirectionalCoupler), typeof(DirectionalCouplerView) },
         };
         public static Type ToModel(Type ComponentViewType) {

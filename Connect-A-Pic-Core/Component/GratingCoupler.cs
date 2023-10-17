@@ -5,13 +5,13 @@ using System.Numerics;
 
 namespace CAP_Core.Component
 {
-    public partial class GratingCoupler : ComponentBase
+    public class GratingCoupler : ComponentBase
     {
 
         public GratingCoupler()
         {
             Parts = new Part[1, 1];
-            Parts[0, 0] = Parts[0, 0] = CreatePart(RectSide.Left);
+            Parts[0, 0] = CreatePart(RectSide.Left);
 
             var leftIn = PinIdLeftIn();
             var leftOut = PinIdLeftOut();
@@ -29,6 +29,6 @@ namespace CAP_Core.Component
         }
 
         public override string NazcaFunctionName { get; set; } = "placeCell_GratingCoupler";
-        public override string NazcaFunctionParameters { get; }
+        public override string NazcaFunctionParameters { get; } = "";
     }
 }

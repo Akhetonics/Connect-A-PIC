@@ -1,0 +1,65 @@
+[gd_scene load_steps=10 format=3 uid="uid://xuxk7b4m2bt1"]
+
+[ext_resource type="Texture2D" uid="uid://qhk7bdcbkh6d" path="res://Scenes/Components/Bend/Component L.png" id="1_h05ny"]
+[ext_resource type="Script" path="res://Scenes/Components/Bend/BendView.cs" id="2_w7y6r"]
+[ext_resource type="Texture2D" uid="uid://5bxbe1gcdfif" path="res://Scenes/Components/Bend/Component L_Overlay.png" id="3_f2wga"]
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_0nfdj"]
+blend_mode = 1
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_yxehv"]
+atlas = ExtResource("3_f2wga")
+region = Rect2(0, 0, 30, 30)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_xdgix"]
+atlas = ExtResource("3_f2wga")
+region = Rect2(30, 0, 30, 30)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4nh76"]
+atlas = ExtResource("3_f2wga")
+region = Rect2(60, 0, 30, 30)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_7vub1"]
+atlas = ExtResource("3_f2wga")
+region = Rect2(90, 0, 30, 30)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_655t7"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_yxehv")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_xdgix")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4nh76")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_7vub1")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="TextureRect" type="TextureRect" node_paths=PackedStringArray("LightOverlay")]
+custom_minimum_size = Vector2(60, 60)
+offset_right = 60.0
+offset_bottom = 60.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+texture = ExtResource("1_h05ny")
+flip_h = true
+script = ExtResource("2_w7y6r")
+LightOverlay = NodePath("AnimatedSprite2D")
+WidthInTiles = 1
+HeightInTiles = 1
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+visible = false
+material = SubResource("CanvasItemMaterial_0nfdj")
+scale = Vector2(2, 2)
+sprite_frames = SubResource("SpriteFrames_655t7")
+centered = false
+flip_v = true

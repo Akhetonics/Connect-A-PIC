@@ -7,8 +7,6 @@ namespace CAP_Core.Component
 {
     public class DirectionalCoupler : ComponentBase
     {
-        private Dictionary<(Guid, Guid), Complex> Connectionweights;
-
         public int deltaLength { get; set; } = 50;
         public override string NazcaFunctionName { get; set; } = "placeCell_DirectionalCoupler";
         public override string NazcaFunctionParameters { get => $"deltaLength = {deltaLength}"; }
@@ -49,7 +47,7 @@ namespace CAP_Core.Component
                 rightDownOut,
             };
             Connections = new SMatrix(allPins);
-            Connectionweights = new Dictionary<(Guid, Guid), Complex>()
+            var Connectionweights = new Dictionary<(Guid, Guid), Complex>()
             {
                 { (leftUpIn, rightUpOut), new Complex(0.5, 0) },
                 { (leftUpIn, rightDownOut), new Complex(0.5, 0) },

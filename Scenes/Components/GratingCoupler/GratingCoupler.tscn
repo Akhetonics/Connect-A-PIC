@@ -60,5 +60,5 @@ process_mode = 1
 visible = false
 material = ExtResource("3_rwbn4")
 sprite_frames = SubResource("SpriteFrames_mbca4")
-frame_progress = 0.333298
+frame_progress = 0.128069
 centered = false

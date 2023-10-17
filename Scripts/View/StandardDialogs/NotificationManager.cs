@@ -20,7 +20,7 @@ namespace ConnectAPIC.LayoutWindow.View
             {
                 _instance = this;
             }
-            if (NotificationBoxScene != null) GD.PrintErr($"{nameof(NotificationBoxScene)} is not attached to node");
+            if (NotificationBoxScene == null) GD.PrintErr($"{nameof(NotificationBoxScene)} is not attached to node");
         }
 
         public void Notify(string message, bool isError = false)

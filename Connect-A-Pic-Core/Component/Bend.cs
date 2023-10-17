@@ -5,33 +5,33 @@ using System.Numerics;
 
 namespace CAP_Core.Component
 {
-    public class StraightWaveGuide : ComponentBase
+    public class Bend: ComponentBase
     {
 
-        public override string NazcaFunctionName { get; set; } = "placeCell_StraightWG";
+        public override string NazcaFunctionName { get; set; } = "placeCell_BendWG";
         public override string NazcaFunctionParameters { get; } = "";
 
-        public StraightWaveGuide()
+        public Bend()
         {
             Parts = new Part[1, 1];
-            Parts[0, 0] = CreatePart(RectSide.Left, RectSide.Right);
+            Parts[0, 0] = CreatePart(RectSide.Down, RectSide.Left);
 
+            var downIn = PinIdDownIn();
+            var downOut = PinIdDownOut();
             var leftIn = PinIdLeftIn();
             var leftOut = PinIdLeftOut();
-            var rightIn = PinIdRightIn();
-            var rightOut = PinIdRightOut();
             // setting up the SMatrix
             var allPins = new List<Guid> {
                 leftIn,
                 leftOut,
-                rightIn,
-                rightOut
+                downIn,
+                downOut
             };
             Connections = new SMatrix(allPins);
             var connectionweights = new Dictionary<(Guid, Guid), Complex>
             {
-                { (leftIn, rightOut ), new Complex(1, 0) },
-                { (rightIn, leftOut ), new Complex(1, 0) },
+                { (leftIn, downOut ), new Complex(1, 0) },
+                { (downIn, leftOut ), new Complex(1, 0) },
             };
 
             Connections.SetValues(connectionweights);

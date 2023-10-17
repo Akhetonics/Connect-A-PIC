@@ -46,8 +46,8 @@ namespace ConnectAPIC.LayoutWindow.View
         }
         public void Initialize(int gridX, int gridY, DiscreteRotation rotationCounterClockwise, GridViewModel viewModel)
         {
-            if (WidthInTiles == 0) CustomLogger.PrintErr($"{nameof(WidthInTiles)} cannot be 0");
-            if (HeightInTiles == 0) CustomLogger.PrintErr($"{nameof(HeightInTiles)} cannot be 0");
+            if (WidthInTiles == 0) CustomLogger.PrintErr(nameof(WidthInTiles) + " of this element is not set in the ComponentScene: " + this.GetType().Name);
+            if (HeightInTiles == 0) CustomLogger.PrintErr(nameof(HeightInTiles) + " of this element is not set in the ComponentScene: " + this.GetType().Name);
             this.GridX = gridX;
             this.GridY = gridY;
             this.ViewModel = viewModel;
@@ -174,16 +174,16 @@ namespace ConnectAPIC.LayoutWindow.View
             return copy;
         }
 
-        protected List<AnimationSlot> CreateTriColorAnimSlot(int offsetx, int offsety, RectSide side, AnimatedSprite2D animDraft)
+        protected List<AnimationSlot> CreateTriColorAnimSlot(int offsetx, int offsety, RectSide inflowSide, AnimatedSprite2D animDraft)
         {
             Vector2I sizeInTiles = new Vector2I(WidthInTiles, HeightInTiles);
             Vector2I offset = new Vector2I(offsetx, offsety);
             animDraft.Hide();
             List<AnimationSlot> animSlots = new()
             {
-                new AnimationSlot(LightColor.Red, offset, side, animDraft, DuplicateAnimation(animDraft) , sizeInTiles),
-                new AnimationSlot(LightColor.Green, offset, side, DuplicateAnimation(animDraft), DuplicateAnimation(animDraft), sizeInTiles),
-                new AnimationSlot(LightColor.Blue, offset, side, DuplicateAnimation(animDraft), DuplicateAnimation(animDraft), sizeInTiles)
+                new AnimationSlot(LightColor.Red, offset, inflowSide, animDraft, DuplicateAnimation(animDraft) , sizeInTiles),
+                new AnimationSlot(LightColor.Green, offset, inflowSide, DuplicateAnimation(animDraft), DuplicateAnimation(animDraft), sizeInTiles),
+                new AnimationSlot(LightColor.Blue, offset, inflowSide, DuplicateAnimation(animDraft), DuplicateAnimation(animDraft), sizeInTiles)
             };
             return animSlots;
         }
