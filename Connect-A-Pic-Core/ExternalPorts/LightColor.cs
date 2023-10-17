@@ -8,6 +8,7 @@ namespace CAP_Core.ExternalPorts
         Green,
         Blue
     }
+
     public static class LightColorExtensions
     {
         public static Color ToColor(this LightColor lc)

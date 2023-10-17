@@ -125,12 +125,14 @@ namespace ConnectAPIC.LayoutWindow.View
         {
             var animationSlot = AnimationSlot.TryFindMatching(AnimationSlots, light);
             if (animationSlot == null) return;
-            PlayOverlayAnimation(light, animationSlot.OverlayInFlow , (float)light.lightInFlow.Real  ,  1);
-            PlayOverlayAnimation(light, animationSlot.OverlayOutFlow, (float)light.lightOutFlow.Real , -1);
+            PlayOverlayAnimation(light, animationSlot.OverlayInFlow , (float)light.lightInFlow.Magnitude  ,  1, (float)light.lightInFlow.NormalizePhase());
+            PlayOverlayAnimation(light, animationSlot.OverlayOutFlow, (float)light.lightOutFlow.Magnitude, -1, 1- (float)light.lightInFlow.NormalizePhase());
+            CustomLogger.PrintLn($"magnitude: {(float)light.lightInFlow.Magnitude} real: {(float)light.lightInFlow.Real} phase: {(float)light.lightInFlow.Phase} normalizedPhase: {(float)light.lightInFlow.NormalizePhase()}");
         }
 
-        protected void PlayOverlayAnimation(LightAtPin lightAtPin, AnimatedSprite2D overlay, float alpha, float playspeed)
+        protected void PlayOverlayAnimation(LightAtPin lightAtPin, AnimatedSprite2D overlay, float alpha, float playspeed, float startpoint)
         {
+            overlay.FrameProgress = startpoint;
             overlay.Play(null, playspeed);
             overlay.Show();
             overlay.Modulate += new Godot.Color(lightAtPin.color.ToGodotColor(), alpha);

@@ -28,13 +28,17 @@ namespace CAP_Core.Component
                 rightOut
             };
             Connections = new SMatrix(allPins);
+            double phaseShift = PhaseShiftCalculator.Calc(WidthInTiles);
+
             var connectionweights = new Dictionary<(Guid, Guid), Complex>
             {
-                { (leftIn, rightOut ), new Complex(1, 0) },
-                { (rightIn, leftOut ), new Complex(1, 0) },
+                { (leftIn, rightOut ), Complex.FromPolarCoordinates(1, 0) },
+                { (rightIn, leftOut ), Complex.FromPolarCoordinates(1, 0) },
             };
 
             Connections.SetValues(connectionweights);
         }
+
+        
     }
 }
