@@ -29,7 +29,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         public int Height { get => GridComponentViews.GetLength(1); }
         public Grid Grid { get; set; }
         public GridView GridView { get; set; }
-        private GridSMatrixAnalyzer MatrixAnalyzer;
+        public GridSMatrixAnalyzer MatrixAnalyzer { get; private set; }
         public int MaxTileCount { get => Width * Height; }
         public GridViewModel(GridView gridview, Grid grid)
         {
@@ -163,18 +163,13 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
                     {
                         var pin = part.GetPinAt(localSide);
                         if (pin == null) continue;
-                        var lightIntensityIn = lightVector.TryGetVal(pin.IDInFlow).Real;
-                        var lightPhaseIn = lightVector.TryGetVal(pin.IDInFlow).Phase;
-                        var lightIntensityOut = lightVector.TryGetVal(pin.IDOutFlow).Real;
-                        var lightPhaseOut = lightVector.TryGetVal(pin.IDOutFlow).Phase;
-
                         var lightFlow = new LightAtPin(
                             offsetX,
                             offsetY,
                             localSide,
                             color,
-                            new Complex(lightIntensityIn, lightPhaseIn),
-                            new Complex(lightIntensityOut, lightPhaseOut)
+                            lightVector.TryGetVal(pin.IDInFlow),
+                            lightVector.TryGetVal(pin.IDOutFlow)
                             );
                         lightAtPins.Add(lightFlow);
                     }

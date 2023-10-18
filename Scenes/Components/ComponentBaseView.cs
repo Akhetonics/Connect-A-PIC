@@ -105,7 +105,7 @@ namespace ConnectAPIC.LayoutWindow.View
                 slot.OverlayOutFlow.Hide();
             }
         }
-        public void DisplayLightVector(List<LightAtPin> lightsAtPins)
+        public virtual void DisplayLightVector(List<LightAtPin> lightsAtPins)
         {
             try
             {
@@ -125,17 +125,16 @@ namespace ConnectAPIC.LayoutWindow.View
         {
             var animationSlot = AnimationSlot.TryFindMatching(AnimationSlots, light);
             if (animationSlot == null) return;
-            PlayOverlayAnimation(light, animationSlot.OverlayInFlow , (float)light.lightInFlow.Magnitude  ,  1, (float)light.lightInFlow.NormalizePhase());
-            PlayOverlayAnimation(light, animationSlot.OverlayOutFlow, (float)light.lightOutFlow.Magnitude, -1, 1- (float)light.lightInFlow.NormalizePhase());
-            CustomLogger.PrintLn($"magnitude: {(float)light.lightInFlow.Magnitude} real: {(float)light.lightInFlow.Real} phase: {(float)light.lightInFlow.Phase} normalizedPhase: {(float)light.lightInFlow.NormalizePhase()}");
+            PlayOverlayAnimation(light, animationSlot.OverlayInFlow, light.lightInFlow.Magnitude, 1, light.lightInFlow.NormalizePhase());
+            PlayOverlayAnimation(light, animationSlot.OverlayOutFlow, light.lightOutFlow.Magnitude, -1, 1- light.lightOutFlow.NormalizePhase());
         }
 
-        protected void PlayOverlayAnimation(LightAtPin lightAtPin, AnimatedSprite2D overlay, float alpha, float playspeed, float startpoint)
+        protected void PlayOverlayAnimation(LightAtPin lightAtPin, AnimatedSprite2D overlay, double alpha, double playspeed, double startpoint)
         {
-            overlay.FrameProgress = startpoint;
-            overlay.Play(null, playspeed);
+            overlay.FrameProgress = (float)startpoint;
+            overlay.Play(null, (float)playspeed);
             overlay.Show();
-            overlay.Modulate += new Godot.Color(lightAtPin.color.ToGodotColor(), alpha);
+            overlay.Modulate += new Godot.Color(lightAtPin.color.ToGodotColor(), (float)alpha);
         }
         public override void _GuiInput(InputEvent inputEvent)
         {

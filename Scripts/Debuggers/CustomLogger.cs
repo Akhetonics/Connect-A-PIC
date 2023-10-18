@@ -1,3 +1,5 @@
+using CAP_Core.LightFlow;
+using ConnectAPic.LayoutWindow;
 using ConnectAPIC.Scripts.Debuggers;
 using Godot;
 using System;
@@ -54,6 +56,11 @@ public partial class CustomLogger : ScrollContainer
 			{
 				TreePrinter.PrintTree(GetTree().Root, 0);
 			}
+			if (eventKey.IsReleased() && eventKey.Keycode == Key.F3)
+			{
+				var matrixPrinter = new GridSMatrixPrinter(GameManager.instance.GridViewModel.MatrixAnalyzer);
+				Print(matrixPrinter.ToString().Replace('\t',' '));
+			}
 		}
 	}
 
@@ -72,6 +79,7 @@ public partial class CustomLogger : ScrollContainer
 				{
 					var text = FormatErrorText(info.Info);
 					Print(text, true);
+					console?.Show();
 				}
 			}
 			LogInfos = new List<LogInfo> { };
@@ -92,14 +100,14 @@ public partial class CustomLogger : ScrollContainer
 		text = FormatErrorText(text);
 		Print(text,true);
 		GD.PrintErr(text);
-		console.Show();
+		console?.Show();
 	}
 	public static void PrintEx(Exception ex)
 	{
 		var text = FormatErrorText("msg: " + ex.Message + " stck: " + ex.StackTrace + " inner: " + ex.InnerException);
 		Print(text, true);
 		GD.PrintErr(text);
-		console.Show();
+		console?.Show();
 	}
 	private static void Print(string text, bool isError = false)
 	{

@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://b3bif06mnx8qd"]
+[gd_scene load_steps=11 format=3 uid="uid://b3bif06mnx8qd"]
 
 [ext_resource type="Texture2D" uid="uid://d3th1vtdpb7mb" path="res://Scenes/Components/Straight/Component I.png" id="1_3hlav"]
 [ext_resource type="Script" path="res://Scenes/Components/Straight/StraightWaveGuideView.cs" id="2_4ru4l"]
@@ -42,13 +42,22 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="TextureRect" type="TextureRect" node_paths=PackedStringArray("LightOverlay")]
+[sub_resource type="SystemFont" id="SystemFont_r1od1"]
+font_weight = 375
+font_stretch = 75
+generate_mipmaps = true
+msdf_pixel_range = 14
+msdf_size = 44
+
+[node name="TextureRect" type="TextureRect" node_paths=PackedStringArray("LightOverlay", "leftComlex", "rightComplex")]
 custom_minimum_size = Vector2(60, 60)
 offset_right = 60.0
 offset_bottom = 60.0
 texture = ExtResource("1_3hlav")
 script = ExtResource("2_4ru4l")
 LightOverlay = NodePath("LightOverlays/AnimatedSpriteLeftUpOn")
+leftComlex = NodePath("LabelL")
+rightComplex = NodePath("LabelR")
 WidthInTiles = 1
 HeightInTiles = 1
 
@@ -62,3 +71,25 @@ scale = Vector2(0.9375, 0.921875)
 sprite_frames = SubResource("SpriteFrames_nuc17")
 frame_progress = 0.997298
 centered = false
+
+[node name="LabelL" type="Label" parent="."]
+layout_mode = 0
+offset_top = 1.0
+offset_right = 40.0
+offset_bottom = 59.0
+theme_override_fonts/font = SubResource("SystemFont_r1od1")
+theme_override_font_sizes/font_size = 11
+text = "i: 
+R:
+A:"
+
+[node name="LabelR" type="Label" parent="."]
+offset_left = 27.0
+offset_top = 1.0
+offset_right = 67.0
+offset_bottom = 59.0
+theme_override_fonts/font = SubResource("SystemFont_r1od1")
+theme_override_font_sizes/font_size = 11
+text = "i
+R:
+A:"

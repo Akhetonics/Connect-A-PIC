@@ -108,8 +108,6 @@ process_mode = 1
 visible = false
 material = ExtResource("3_dwcdr")
 sprite_frames = SubResource("SpriteFrames_btglm")
-frame = 2
-frame_progress = 0.153534
 centered = false
 flip_h = true
 
@@ -120,7 +118,6 @@ material = ExtResource("3_dwcdr")
 position = Vector2(61, 61)
 rotation = -3.14159
 sprite_frames = SubResource("SpriteFrames_0kbob")
-frame = 2
 centered = false
 
 [node name="AnimatedSpriteLeftUp" type="AnimatedSprite2D" parent="Sprite2D/BackgroundImage"]

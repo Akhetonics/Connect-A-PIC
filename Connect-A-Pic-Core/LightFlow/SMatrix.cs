@@ -78,7 +78,7 @@ namespace CAP_Core.LightFlow
         }
 
         // n is the number of timesteps to move forward "steps=3" would return the light propagation after 3 steps.
-        public Dictionary<Guid, Complex> GetLightPropagation(MathNet.Numerics.LinearAlgebra.Vector<Complex> inputVector, int maxSteps)
+        public Dictionary<Guid, Complex>? GetLightPropagation(MathNet.Numerics.LinearAlgebra.Vector<Complex> inputVector, int maxSteps)
         {
             if (maxSteps < 1) return null;
             var inputAfterSteps = SMat * inputVector;
