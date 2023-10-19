@@ -5,7 +5,7 @@ using System;
 
 public partial class BendView : ComponentBaseView
 {
-	[Export] protected AnimatedSprite2D LightOverlay;
+	[Export] protected Sprite2D LightOverlay;
 
 	public override void InitializeAnimationSlots()
 	{

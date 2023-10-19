@@ -435,6 +435,7 @@ sources/1 = SubResource("TileSetAtlasSource_5h74f")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_03ckl"]
 resource_local_to_scene = true
+render_priority = 0
 shader = ExtResource("13_nlker")
 
 [node name="GameManager" type="Node" node_paths=PackedStringArray("ExternalOutputTemplate", "ExternalInputRedTemplate", "ExternalInputGreenTemplate", "ExternalInputBlueTemplate")]

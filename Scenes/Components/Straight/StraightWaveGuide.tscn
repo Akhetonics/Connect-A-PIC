@@ -84,6 +84,7 @@ R:
 A:"
 
 [node name="LabelR" type="Label" parent="."]
+layout_mode = 0
 offset_left = 27.0
 offset_top = 1.0
 offset_right = 67.0

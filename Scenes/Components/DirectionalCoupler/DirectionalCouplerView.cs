@@ -10,14 +10,14 @@ namespace ConnectAPIC.LayoutWindow.View
 {
 	public partial class DirectionalCouplerView : ComponentBaseView
 	{
-		[Export] private AnimatedSprite2D LightFlowOverlayLeftUpIn;
-		private AnimatedSprite2D LightFlowOverlayLeftUpOut;
-		[Export] private AnimatedSprite2D LightFlowOverlayLeftDownIn;
-		private AnimatedSprite2D LightFlowOverlayLeftDownOut;
-		[Export] private AnimatedSprite2D LightFlowOverlayRightUpIn;
-		private AnimatedSprite2D LightFlowOverlayRightUpOut;
-		[Export] private AnimatedSprite2D LightFlowOverlayRightDownIn;
-		private AnimatedSprite2D LightFlowOverlayRightDownOut;
+		[Export] private Sprite2D LightFlowOverlayLeftUpIn;
+		private Sprite2D LightFlowOverlayLeftUpOut;
+		[Export] private Sprite2D LightFlowOverlayLeftDownIn;
+		private Sprite2D LightFlowOverlayLeftDownOut;
+		[Export] private Sprite2D LightFlowOverlayRightUpIn;
+		private Sprite2D LightFlowOverlayRightUpOut;
+		[Export] private Sprite2D LightFlowOverlayRightDownIn;
+		private Sprite2D LightFlowOverlayRightDownOut;
 
 		public override void InitializeAnimationSlots()
 		{

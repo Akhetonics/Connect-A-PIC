@@ -13,7 +13,7 @@ namespace ConnectAPIC.LayoutWindow.View
 	public partial class StraightWaveGuideView : ComponentBaseView
 	{
 
-		[Export] protected AnimatedSprite2D LightOverlay;
+		[Export] protected Sprite2D LightOverlay;
 		[Export] protected Label leftComlex;
 		[Export] protected Label rightComplex;
 

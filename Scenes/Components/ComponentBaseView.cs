@@ -84,9 +84,10 @@ namespace ConnectAPIC.LayoutWindow.View
             }
             return displacement;
         }
-        protected static AnimatedSprite2D DuplicateAnimation(AnimatedSprite2D baseAnimation)
+        protected static Sprite2D DuplicateAnimation(Sprite2D baseAnimation)
         {
-            var anim = baseAnimation.Duplicate() as AnimatedSprite2D;
+            var anim = baseAnimation.Duplicate() as Sprite2D;
+            (baseAnimation.Material as ShaderMaterial).SetShaderParameter("laserColor", );
             baseAnimation.GetParent().AddChild(anim);
             anim.Hide();
             return anim;
@@ -95,14 +96,7 @@ namespace ConnectAPIC.LayoutWindow.View
         {
             foreach (var slot in AnimationSlots)
             {
-                slot.OverlayInFlow.Modulate = new Godot.Color(0, 0, 0, 0);
-                slot.OverlayOutFlow.Modulate = new Godot.Color(0, 0, 0, 0);
-                slot.OverlayInFlow.Autoplay = "";
-                slot.OverlayOutFlow.Autoplay = "";
-                slot.OverlayInFlow.Stop();
-                slot.OverlayOutFlow.Stop();
-                slot.OverlayInFlow.Hide();
-                slot.OverlayOutFlow.Hide();
+                slot.ShaderOverlay.Hide();
             }
         }
         public virtual void DisplayLightVector(List<LightAtPin> lightsAtPins)
@@ -118,23 +112,34 @@ namespace ConnectAPIC.LayoutWindow.View
             {
                 CustomLogger.PrintErr(ex.Message);
             }
-
         }
 
         private void StartAnimationForLight(LightAtPin light)
         {
             var animationSlot = AnimationSlot.TryFindMatching(AnimationSlots, light);
             if (animationSlot == null) return;
-            PlayOverlayAnimation(light, animationSlot.OverlayInFlow, light.lightInFlow.Magnitude, 1, light.lightInFlow.NormalizePhase());
+            PlayOverlayAnimation(light, animationSlot.ShaderOverlay, light.lightInFlow.Magnitude, 1, light.lightInFlow.NormalizePhase());
             PlayOverlayAnimation(light, animationSlot.OverlayOutFlow, light.lightOutFlow.Magnitude, -1, 1- light.lightOutFlow.NormalizePhase());
         }
 
-        protected void PlayOverlayAnimation(LightAtPin lightAtPin, AnimatedSprite2D overlay, double alpha, double playspeed, double startpoint)
+        protected void PlayOverlayAnimation(LightAtPin lightAtPin, Sprite2D overlay, double alpha, double playspeed, double startpoint)
         {
-            overlay.FrameProgress = (float)startpoint;
-            overlay.Play(null, (float)playspeed);
+            (overlay.Material as ShaderMaterial).SetShaderParameter("", 0);
             overlay.Show();
             overlay.Modulate += new Godot.Color(lightAtPin.color.ToGodotColor(), (float)alpha);
+        }
+        protected List<AnimationSlot> CreateTriColorAnimSlot(int offsetx, int offsety, RectSide inflowSide, Sprite2D animDraft)
+        {
+            Vector2I sizeInTiles = new Vector2I(WidthInTiles, HeightInTiles);
+            Vector2I offset = new Vector2I(offsetx, offsety);
+            animDraft.Hide();
+            List<AnimationSlot> animSlots = new()
+            {
+                new AnimationSlot(LightColor.Red, offset, inflowSide, animDraft , sizeInTiles),
+                new AnimationSlot(LightColor.Green, offset, inflowSide, DuplicateAnimation(animDraft), sizeInTiles),
+                new AnimationSlot(LightColor.Blue, offset, inflowSide, DuplicateAnimation(animDraft), sizeInTiles)
+            };
+            return animSlots;
         }
         public override void _GuiInput(InputEvent inputEvent)
         {
@@ -175,18 +180,6 @@ namespace ConnectAPIC.LayoutWindow.View
             return copy;
         }
 
-        protected List<AnimationSlot> CreateTriColorAnimSlot(int offsetx, int offsety, RectSide inflowSide, AnimatedSprite2D animDraft)
-        {
-            Vector2I sizeInTiles = new Vector2I(WidthInTiles, HeightInTiles);
-            Vector2I offset = new Vector2I(offsetx, offsety);
-            animDraft.Hide();
-            List<AnimationSlot> animSlots = new()
-            {
-                new AnimationSlot(LightColor.Red, offset, inflowSide, animDraft, DuplicateAnimation(animDraft) , sizeInTiles),
-                new AnimationSlot(LightColor.Green, offset, inflowSide, DuplicateAnimation(animDraft), DuplicateAnimation(animDraft), sizeInTiles),
-                new AnimationSlot(LightColor.Blue, offset, inflowSide, DuplicateAnimation(animDraft), DuplicateAnimation(animDraft), sizeInTiles)
-            };
-            return animSlots;
-        }
+        
     }
 }

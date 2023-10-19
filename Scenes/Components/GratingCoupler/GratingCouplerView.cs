@@ -10,7 +10,7 @@ namespace ConnectAPIC.LayoutWindow.View
 {
 	public partial class GratingCouplerView : ComponentBaseView
 	{
-		[Export] protected AnimatedSprite2D LightOverlay;
+		[Export] protected Sprite2D LightOverlay;
 		public override void InitializeAnimationSlots()
 		{
 			if (LightOverlay == null) CustomLogger.PrintErr(nameof(LightOverlay) + " is null");
