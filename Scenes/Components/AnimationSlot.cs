@@ -11,17 +11,19 @@ namespace ConnectAPIC.LayoutWindow.View
 {
     public class AnimationSlot
 	{
-		public AnimationSlot(LightColor color, Vector2I offsetXY, RectSide side, Sprite2D overlayIn , Vector2I componentSizeInTiles) {
+		public AnimationSlot(LightColor color, Vector2I tileOffsetXY, RectSide side, Sprite2D baseOverlaySprite, Texture texture , Vector2I componentSizeInTiles , Vector2 textureOffset) {
 			this.Color = color;
-            Offset = offsetXY;
+            TileOffset = tileOffsetXY;
 			Side = side;
-			this.ShaderOverlay = overlayIn;
+            BaseOverlaySprite = baseOverlaySprite;
+            this.Texture = texture;
             ComponentSizeInTiles = componentSizeInTiles;
+            TextureOffset = textureOffset;
         }
 		public bool IsMatchingWithLightVector(LightAtPin lightVector )
 		{
-			if (Offset.X != lightVector.partOffsetX) return false;
-			if (Offset.Y != lightVector.partOffsetY) return false;
+			if (TileOffset.X != lightVector.partOffsetX) return false;
+			if (TileOffset.Y != lightVector.partOffsetY) return false;
 			if (Side != lightVector.side) return false;
 			if (Color != lightVector.color) return false;
 			return true;
@@ -57,14 +59,16 @@ namespace ConnectAPIC.LayoutWindow.View
 		{
 			Rotation = Rotation.RotateBy90CounterC();
 			Side = Side.RotateSideCounterClockwise(DiscreteRotation.R90);
-			Offset = RotateOffsetBy90CounterClockwise(Offset);
+			TileOffset = RotateOffsetBy90CounterClockwise(TileOffset);
 		}
 
 		public LightColor Color { get; }
-        public Vector2I Offset { get; private set; }
+        public Vector2I TileOffset { get; private set; }
         public DiscreteRotation Rotation { get; set; }
 		public RectSide Side { get; private set; }
-		public Sprite2D ShaderOverlay { get; }
+        public Sprite2D BaseOverlaySprite { get; }
+        public Texture Texture { get; }
         public Vector2I ComponentSizeInTiles { get; }
+        public Vector2 TextureOffset { get; }
     }
 }

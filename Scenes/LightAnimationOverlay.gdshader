@@ -4,22 +4,22 @@ render_mode blend_add;
 
 uniform vec4 laserColor;
 
-uniform vec2 lightInFlow1; // x = intensity, y = phase - können auch 2 floats sein 
-uniform vec2 lightOutFlow1;
-uniform vec2 lightInFlow2; 
-uniform vec2 lightOutFlow2;
-uniform vec2 lightInFlow3; 
-uniform vec2 lightOutFlow3;
-uniform vec2 lightInFlow4;
-uniform vec2 lightOutFlow4;
-uniform vec2 lightInFlow5;
-uniform vec2 lightOutFlow5;
-uniform vec2 lightInFlow6;
-uniform vec2 lightOutFlow6;
-uniform vec2 lightInFlow7;
-uniform vec2 lightOutFlow7;
-uniform vec2 lightInFlow8;
-uniform vec2 lightOutFlow8;
+uniform vec4 lightInFlow1; // x = intensity, y = phase, z = offsetx, w = offsety
+uniform vec4 lightOutFlow1;
+uniform vec4 lightInFlow2; 
+uniform vec4 lightOutFlow2;
+uniform vec4 lightInFlow3; 
+uniform vec4 lightOutFlow3;
+uniform vec4 lightInFlow4;
+uniform vec4 lightOutFlow4;
+uniform vec4 lightInFlow5;
+uniform vec4 lightOutFlow5;
+uniform vec4 lightInFlow6;
+uniform vec4 lightOutFlow6;
+uniform vec4 lightInFlow7;
+uniform vec4 lightOutFlow7;
+uniform vec4 lightInFlow8;
+uniform vec4 lightOutFlow8;
 // ... so viele wie man lustig ist. Am Besten 16 (8 in, 8 out) oder sowas, damit man nur einen einzigen Shader braucht für alle
 
 uniform sampler2D animation1;
@@ -32,7 +32,7 @@ uniform sampler2D animation7;
 uniform sampler2D animation8;
 // ... die hälfte von oben, also 8 (in/out ist ja nur umgedreht in der Zeit)
 
-vec4 getColorOfAnimation(sampler2D animation, vec2 curUV, float animationTime, float animationspeed , vec2 lightFlow){
+vec4 getColorOfAnimation(sampler2D animation, vec2 curUV, float animationTime, float animationspeed , vec4 lightFlow){
 	float phaseShiftDisplacement = float(int(animationTime + round(lightFlow.y * animationspeed)) % 4) /4.0;
 	vec2 animatedUvPosition = vec2( curUV.x /4.0 + phaseShiftDisplacement, curUV.y);
 	return texture(animation, animatedUvPosition );

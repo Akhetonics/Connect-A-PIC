@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cirsar1cf6vkh"
-path="res://.godot/imported/Directional Coupler Single Overlay.png-ef2c21b63db4f80d4eaa880e5e8b8354.ctex"
+uid="uid://b8r7q5o86dey3"
+path="res://.godot/imported/Directional Coupler RightUp.png-bf79748fc62eea60f016eafb58b88204.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://GFX/Components/Directional Coupler/Overlay/Directional Coupler Single Overlay.png"
-dest_files=["res://.godot/imported/Directional Coupler Single Overlay.png-ef2c21b63db4f80d4eaa880e5e8b8354.ctex"]
+source_file="res://Scenes/Components/DirectionalCoupler/Directional Coupler RightUp.png"
+dest_files=["res://.godot/imported/Directional Coupler RightUp.png-bf79748fc62eea60f016eafb58b88204.ctex"]
 
 [params]
 

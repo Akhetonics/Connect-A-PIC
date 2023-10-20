@@ -16,8 +16,7 @@ namespace UnitTests
     {
 
         [Fact]
-
-        public static void ComplexFactorTest(string[] args)
+        public static void ComplexFactorTest()
         {
             // Beispiel für die Berechnung für zwei Bauteile
             Complex factor1 = PhaseShiftCalculator.Calc(1); // Angenommen, die widthInTiles ist 1 für das erste Bauteil

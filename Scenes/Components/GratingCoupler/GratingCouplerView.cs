@@ -10,12 +10,11 @@ namespace ConnectAPIC.LayoutWindow.View
 {
 	public partial class GratingCouplerView : ComponentBaseView
 	{
-		[Export] protected Sprite2D LightOverlay;
+		[Export] protected Texture OverlayAnimTexture;
 		public override void InitializeAnimationSlots()
 		{
-			if (LightOverlay == null) CustomLogger.PrintErr(nameof(LightOverlay) + " is null");
-			AnimationSlots = CreateTriColorAnimSlot(0, 0, RectSide.Left, LightOverlay);
+			this.CheckForNull(x => x.OverlayAnimTexture);
+			AnimationSlots.AddRange(CreateRGBAnimSlots(RectSide.Left,OverlayAnimTexture));
 		}
-
 	}
 }

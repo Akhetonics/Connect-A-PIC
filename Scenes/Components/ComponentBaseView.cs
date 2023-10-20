@@ -20,7 +20,10 @@ namespace ConnectAPIC.LayoutWindow.View
     {
         [Export] public int WidthInTiles { get; private set; }
         [Export] public int HeightInTiles { get; private set; }
-
+        [Export] public Sprite2D OverlayRed { get; private set; }
+        public Sprite2D OverlayGreen { get; private set; }
+        public Sprite2D OverlayBlue { get; private set; }
+        private List<Sprite2D> OverlaySprites { get; set; } = new ();
         public GridViewModel ViewModel { get; private set; }
         public int GridX { get; set; }
         public int GridY { get; set; }
@@ -43,11 +46,21 @@ namespace ConnectAPIC.LayoutWindow.View
             base._Ready();
             InitializeAnimationSlots();
             RotationCC = RotationCC;
+            this.CheckForNull(x => x.OverlayRed);
+            if (OverlayRed == null) return;
+            var oldOverlayRed = OverlayRed;
+            OverlayRed = DuplicateOverlay(OverlayRed, LightColor.Red.ToGodotColor());
+            OverlayGreen = DuplicateOverlay(OverlayRed, LightColor.Green.ToGodotColor());
+            OverlayBlue = DuplicateOverlay(OverlayRed, LightColor.Blue.ToGodotColor());
+            oldOverlayRed.QueueFree();
+            OverlaySprites.Add(OverlayRed);
+            OverlaySprites.Add(OverlayGreen);
+            OverlaySprites.Add(OverlayBlue);
+            if (WidthInTiles == 0) CustomLogger.PrintErr(nameof(WidthInTiles) + " of this element is not set in the ComponentScene: " + this.GetType().Name);
+            if (HeightInTiles == 0) CustomLogger.PrintErr(nameof(HeightInTiles) + " of this element is not set in the ComponentScene: " + this.GetType().Name);
         }
         public void Initialize(int gridX, int gridY, DiscreteRotation rotationCounterClockwise, GridViewModel viewModel)
         {
-            if (WidthInTiles == 0) CustomLogger.PrintErr(nameof(WidthInTiles) + " of this element is not set in the ComponentScene: " + this.GetType().Name);
-            if (HeightInTiles == 0) CustomLogger.PrintErr(nameof(HeightInTiles) + " of this element is not set in the ComponentScene: " + this.GetType().Name);
             this.GridX = gridX;
             this.GridY = gridY;
             this.ViewModel = viewModel;
@@ -55,6 +68,7 @@ namespace ConnectAPIC.LayoutWindow.View
             var rawposition = new Vector2(this.GridX * GameManager.TilePixelSize, this.GridY * GameManager.TilePixelSize);
             Position = rawposition + GetPositionDisplacementAfterRotation();
             Visible = true;
+            HideLightVector();
         }
 
         public bool IsPlacedOnGrid()
@@ -84,63 +98,63 @@ namespace ConnectAPIC.LayoutWindow.View
             }
             return displacement;
         }
-        protected static Sprite2D DuplicateAnimation(Sprite2D baseAnimation)
+        protected static Sprite2D DuplicateOverlay(Sprite2D baseOverlay, Godot.Color laserColor)
         {
-            var anim = baseAnimation.Duplicate() as Sprite2D;
-            (baseAnimation.Material as ShaderMaterial).SetShaderParameter("laserColor", );
-            baseAnimation.GetParent().AddChild(anim);
+            var anim = baseOverlay.Duplicate() as Sprite2D;
+            baseOverlay.GetParent().AddChild(anim);
             anim.Hide();
+            if (anim.Material != null && anim.Material is ShaderMaterial materialDraft)
+            {
+                baseOverlay.Material = materialDraft.Duplicate(true) as ShaderMaterial;
+                (baseOverlay.Material as ShaderMaterial).SetShaderParameter("laserColor", laserColor);
+            }
             return anim;
         }
         public void HideLightVector()
         {
-            foreach (var slot in AnimationSlots)
-            {
-                slot.ShaderOverlay.Hide();
-            }
+            OverlayRed?.Hide();
+            OverlayGreen?.Hide();
+            OverlayBlue?.Hide();
         }
         public virtual void DisplayLightVector(List<LightAtPin> lightsAtPins)
         {
             try
             {
+                int shaderAnimNumber = 1;
                 foreach (LightAtPin light in lightsAtPins)
                 {
-                    StartAnimationForLight(light);
+                    var animationSlot = AnimationSlot.TryFindMatching(AnimationSlots, light);
+                    if (animationSlot == null) continue;
+                    AssignInAndOutFlowShaderData(animationSlot, light, shaderAnimNumber);
+                    shaderAnimNumber += 2;
                 }
+                OverlayRed?.Show();
+                OverlayGreen?.Show();
+                OverlayBlue?.Show();
             }
             catch (Exception ex)
             {
                 CustomLogger.PrintErr(ex.Message);
             }
         }
-
-        private void StartAnimationForLight(LightAtPin light)
+        protected void AssignInAndOutFlowShaderData(AnimationSlot slot , LightAtPin lightAtPin, int shaderAnimationNumber )
         {
-            var animationSlot = AnimationSlot.TryFindMatching(AnimationSlots, light);
-            if (animationSlot == null) return;
-            PlayOverlayAnimation(light, animationSlot.ShaderOverlay, light.lightInFlow.Magnitude, 1, light.lightInFlow.NormalizePhase());
-            PlayOverlayAnimation(light, animationSlot.OverlayOutFlow, light.lightOutFlow.Magnitude, -1, 1- light.lightOutFlow.NormalizePhase());
-        }
-
-        protected void PlayOverlayAnimation(LightAtPin lightAtPin, Sprite2D overlay, double alpha, double playspeed, double startpoint)
-        {
-            (overlay.Material as ShaderMaterial).SetShaderParameter("", 0);
-            overlay.Show();
-            overlay.Modulate += new Godot.Color(lightAtPin.color.ToGodotColor(), (float)alpha);
-        }
-        protected List<AnimationSlot> CreateTriColorAnimSlot(int offsetx, int offsety, RectSide inflowSide, Sprite2D animDraft)
-        {
-            Vector2I sizeInTiles = new Vector2I(WidthInTiles, HeightInTiles);
-            Vector2I offset = new Vector2I(offsetx, offsety);
-            animDraft.Hide();
-            List<AnimationSlot> animSlots = new()
+            if(slot?.BaseOverlaySprite?.Material is  ShaderMaterial shaderMat)
             {
-                new AnimationSlot(LightColor.Red, offset, inflowSide, animDraft , sizeInTiles),
-                new AnimationSlot(LightColor.Green, offset, inflowSide, DuplicateAnimation(animDraft), sizeInTiles),
-                new AnimationSlot(LightColor.Blue, offset, inflowSide, DuplicateAnimation(animDraft), sizeInTiles)
-            };
-            return animSlots;
+                // set lightInFlow
+                var InFlowDataAndPosition = new Godot.Vector4((float)lightAtPin.lightInFlow.Magnitude, (float)lightAtPin.lightInFlow.Phase, slot.TextureOffset.X, slot.TextureOffset.Y);
+                shaderMat.SetShaderParameter("lightInFlow" + shaderAnimationNumber, InFlowDataAndPosition);
+                shaderMat.SetShaderParameter("lightInFlow" + shaderAnimationNumber, InFlowDataAndPosition);
+                shaderMat.SetShaderParameter("animation" + shaderAnimationNumber, slot.Texture);
+                // set lightOutFlow
+                shaderAnimationNumber += 1;
+                var outFlowDataAndPosition = new Vector4((float)lightAtPin.lightOutFlow.Magnitude, (float)lightAtPin.lightOutFlow.Phase, slot.TextureOffset.X, slot.TextureOffset.Y);
+                shaderMat.SetShaderParameter("lightOutFlow" + shaderAnimationNumber, outFlowDataAndPosition);
+                shaderMat.SetShaderParameter("lightOutFlow" + shaderAnimationNumber, outFlowDataAndPosition);
+                shaderMat.SetShaderParameter("animation" + shaderAnimationNumber, slot.Texture);
+            }
         }
+
         public override void _GuiInput(InputEvent inputEvent)
         {
             base._GuiInput(inputEvent);
@@ -178,6 +192,18 @@ namespace ConnectAPIC.LayoutWindow.View
             var copy = base.Duplicate() as ComponentBaseView;
             copy.RotationCC = this.RotationCC;
             return copy;
+        }
+
+        protected List<AnimationSlot> CreateRGBAnimSlots( RectSide inflowSide, Texture overlayAnimTexture, int tileOffsetX = 0, int tileOffsetY = 0, Vector2? textureOffset = default)
+        {
+            textureOffset ??=Vector2.Zero;
+            var tileOffset = new Vector2I(tileOffsetX, tileOffsetY);
+            return new List<AnimationSlot>()
+            {
+                new AnimationSlot(LightColor.Red, tileOffset, RectSide.Left, OverlayRed, overlayAnimTexture,new Vector2I(WidthInTiles, HeightInTiles), (Vector2) textureOffset),
+                new AnimationSlot(LightColor.Green,tileOffset, RectSide.Left, OverlayGreen, overlayAnimTexture, new Vector2I(WidthInTiles, HeightInTiles),(Vector2) textureOffset),
+                new AnimationSlot(LightColor.Blue,tileOffset, RectSide.Left, OverlayBlue, overlayAnimTexture, new Vector2I(WidthInTiles, HeightInTiles),(Vector2) textureOffset),
+            };
         }
 
         

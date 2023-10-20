@@ -1,5 +1,6 @@
 using CAP_Core.ExternalPorts;
 using CAP_Core.Tiles;
+using ConnectAPic.LayoutWindow;
 using ConnectAPIC.Scripts.Helpers;
 using Godot;
 using System;
@@ -10,28 +11,23 @@ namespace ConnectAPIC.LayoutWindow.View
 {
 	public partial class DirectionalCouplerView : ComponentBaseView
 	{
-		[Export] private Sprite2D LightFlowOverlayLeftUpIn;
-		private Sprite2D LightFlowOverlayLeftUpOut;
-		[Export] private Sprite2D LightFlowOverlayLeftDownIn;
-		private Sprite2D LightFlowOverlayLeftDownOut;
-		[Export] private Sprite2D LightFlowOverlayRightUpIn;
-		private Sprite2D LightFlowOverlayRightUpOut;
-		[Export] private Sprite2D LightFlowOverlayRightDownIn;
-		private Sprite2D LightFlowOverlayRightDownOut;
+		[Export] private Texture LightFlowOverlayLeftUpIn;
+		[Export] private Texture LightFlowOverlayLeftDownIn;
+		[Export] private Texture LightFlowOverlayRightUpIn;
+		[Export] private Texture LightFlowOverlayRightDownIn;
 
-		public override void InitializeAnimationSlots()
-		{
-			if (LightFlowOverlayLeftUpIn == null) CustomLogger.PrintErr(new ArgumentNullException(nameof(LightFlowOverlayLeftUpIn)).ToString());
-			if (LightFlowOverlayLeftDownIn == null) CustomLogger.PrintErr(new ArgumentNullException(nameof(LightFlowOverlayLeftDownIn)).ToString());
-			if (LightFlowOverlayRightUpIn == null) CustomLogger.PrintErr(new ArgumentNullException(nameof(LightFlowOverlayRightUpIn)).ToString());
-			if (LightFlowOverlayRightDownIn == null) CustomLogger.PrintErr(new ArgumentNullException(nameof(LightFlowOverlayRightDownIn)).ToString());
+        public override void InitializeAnimationSlots()
+        {
+            this.CheckForNull(x => x.LightFlowOverlayLeftUpIn);
+            this.CheckForNull(x => x.LightFlowOverlayLeftDownIn);
+            this.CheckForNull(x => x.LightFlowOverlayRightUpIn);
+            this.CheckForNull(x => x.LightFlowOverlayRightDownIn);
+            var textOffsetX = GameManager.TilePixelSize;
+            AnimationSlots.AddRange(CreateRGBAnimSlots(RectSide.Left, LightFlowOverlayLeftUpIn));
+            AnimationSlots.AddRange(CreateRGBAnimSlots(RectSide.Left, LightFlowOverlayLeftDownIn,0,1));
+            AnimationSlots.AddRange(CreateRGBAnimSlots(RectSide.Left, LightFlowOverlayRightUpIn,1,0,new Vector2()));
+            AnimationSlots.AddRange(CreateRGBAnimSlots(RectSide.Left, LightFlowOverlayRightDownIn));
+        }
 
-			AnimationSlots = new();
-			AnimationSlots.AddRange(CreateTriColorAnimSlot(0,0, RectSide.Left, LightFlowOverlayLeftUpIn));
-			AnimationSlots.AddRange(CreateTriColorAnimSlot(0,1, RectSide.Left, LightFlowOverlayLeftDownIn));
-			AnimationSlots.AddRange(CreateTriColorAnimSlot(1,0, RectSide.Right, LightFlowOverlayRightUpIn));
-			AnimationSlots.AddRange(CreateTriColorAnimSlot(1,1, RectSide.Right, LightFlowOverlayRightDownIn));
-		}
-
-	}
+    }
 }

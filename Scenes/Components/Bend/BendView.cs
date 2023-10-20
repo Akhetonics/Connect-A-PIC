@@ -1,15 +1,17 @@
+using CAP_Core.ExternalPorts;
 using CAP_Core.Tiles;
 using ConnectAPIC.LayoutWindow.View;
+using ConnectAPIC.Scripts.Helpers;
 using Godot;
 using System;
 
 public partial class BendView : ComponentBaseView
 {
-	[Export] protected Sprite2D LightOverlay;
+	[Export] public Texture OverlayAnimTexture { get; set; }
 
 	public override void InitializeAnimationSlots()
 	{
-		if (LightOverlay == null) CustomLogger.PrintErr(nameof(LightOverlay) + " is not assigned");
-		AnimationSlots = CreateTriColorAnimSlot(0, 0, RectSide.Left, LightOverlay);
+		this.CheckForNull(x => x.OverlayAnimTexture);
+		AnimationSlots.AddRange(CreateRGBAnimSlots(RectSide.Left, OverlayAnimTexture));
 	}
 }
