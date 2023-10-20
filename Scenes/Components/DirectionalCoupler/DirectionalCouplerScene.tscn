@@ -173,14 +173,14 @@ load_path = "res://.godot/imported/Directional Coupler RightDown.png-284ab112c37
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_is3a8"]
 shader = SubResource("Shader_3pehe")
 shader_parameter/laserColor = Vector4(2, 0, 0, 2)
-shader_parameter/lightInFlow1 = Vector4(2, 0, 19.165, 22)
-shader_parameter/lightOutFlow1 = Vector4(2, 0, 22, 22)
-shader_parameter/lightInFlow2 = Vector4(2, 2, 22, 0)
-shader_parameter/lightOutFlow2 = Vector4(2, 2, 22, 0)
-shader_parameter/lightInFlow3 = Vector4(2, 0, 22, 0)
-shader_parameter/lightOutFlow3 = Vector4(2, 0, 22, 0)
-shader_parameter/lightInFlow4 = Vector4(2, 0, 22, 0)
-shader_parameter/lightOutFlow4 = Vector4(22, 0, 0, 0)
+shader_parameter/lightInFlow1 = Vector4(2, 0, 0, 0)
+shader_parameter/lightOutFlow1 = Vector4(0, 0, 0, 0)
+shader_parameter/lightInFlow2 = Vector4(0, 0, 0, 0)
+shader_parameter/lightOutFlow2 = Vector4(0, 0, 0, 0)
+shader_parameter/lightInFlow3 = Vector4(0, 0, 0, 0)
+shader_parameter/lightOutFlow3 = Vector4(0, 0, 0, 0)
+shader_parameter/lightInFlow4 = Vector4(0, 0, 0, 0)
+shader_parameter/lightOutFlow4 = Vector4(0, 0, 0, 0)
 shader_parameter/lightInFlow5 = null
 shader_parameter/lightOutFlow5 = null
 shader_parameter/lightInFlow6 = null
@@ -194,17 +194,21 @@ shader_parameter/animation2 = SubResource("CompressedTexture2D_v33cd")
 shader_parameter/animation3 = SubResource("CompressedTexture2D_yn5qk")
 shader_parameter/animation4 = SubResource("CompressedTexture2D_qco0p")
 
-[node name="DirectionalCoupler" type="TextureRect" node_paths=PackedStringArray("LightFlowOverlayLeftUpIn", "LightFlowOverlayLeftDownIn", "LightFlowOverlayRightUpIn", "LightFlowOverlayRightDownIn")]
+[node name="DirectionalCoupler" type="TextureRect"]
 custom_minimum_size = Vector2(122, 122)
 layout_direction = 1
 offset_right = 122.0
 offset_bottom = 122.0
 stretch_mode = 2
 script = ExtResource("1_4tomk")
-LightFlowOverlayLeftUpIn = NodePath("Sprite2D/BackgroundImage/AnimatedSpriteLeftUp")
-LightFlowOverlayLeftDownIn = NodePath("Sprite2D/BackgroundImage/AnimatedSpriteLeftDown")
-LightFlowOverlayRightUpIn = NodePath("Sprite2D/BackgroundImage/AnimatedSpriteRightUp")
-LightFlowOverlayRightDownIn = NodePath("Sprite2D/BackgroundImage/AnimatedSpriteRightDown")
+LightFlowOverlayLeftUpIn = Object(AnimatedSprite2D,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":1,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"editor_description":"","visible":false,"modulate":Color(1, 1, 1, 1),"self_modulate":Color(1, 1, 1, 1),"show_behind_parent":false,"top_level":false,"clip_children":0,"light_mask":1,"visibility_layer":1,"z_index":0,"z_as_relative":true,"y_sort_enabled":false,"texture_filter":0,"texture_repeat":0,"material":ExtResource("3_dwcdr"),"use_parent_material":false,"position":Vector2(0, 0),"rotation":0.0,"scale":Vector2(1, 1),"skew":0.0,"sprite_frames":SubResource("SpriteFrames_6deer"),"animation":&"default","autoplay":"","frame":0,"frame_progress":0.0,"speed_scale":1.0,"centered":false,"offset":Vector2(0, 0),"flip_h":false,"flip_v":false,"script":null)
+
+LightFlowOverlayLeftDownIn = Object(AnimatedSprite2D,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":1,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"editor_description":"","visible":false,"modulate":Color(1, 1, 1, 1),"self_modulate":Color(1, 1, 1, 1),"show_behind_parent":false,"top_level":false,"clip_children":0,"light_mask":1,"visibility_layer":1,"z_index":0,"z_as_relative":true,"y_sort_enabled":false,"texture_filter":0,"texture_repeat":0,"material":ExtResource("3_dwcdr"),"use_parent_material":false,"position":Vector2(61, 61),"rotation":-3.14159,"scale":Vector2(1, 1),"skew":0.0,"sprite_frames":SubResource("SpriteFrames_6deer"),"animation":&"default","autoplay":"","frame":0,"frame_progress":0.0,"speed_scale":1.0,"centered":false,"offset":Vector2(0, 0),"flip_h":true,"flip_v":false,"script":null)
+
+LightFlowOverlayRightUpIn = Object(AnimatedSprite2D,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":1,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"editor_description":"","visible":false,"modulate":Color(1, 1, 1, 1),"self_modulate":Color(1, 1, 1, 1),"show_behind_parent":false,"top_level":false,"clip_children":0,"light_mask":1,"visibility_layer":1,"z_index":0,"z_as_relative":true,"y_sort_enabled":false,"texture_filter":0,"texture_repeat":0,"material":ExtResource("3_dwcdr"),"use_parent_material":false,"position":Vector2(0, 0),"rotation":0.0,"scale":Vector2(1, 1),"skew":0.0,"sprite_frames":SubResource("SpriteFrames_btglm"),"animation":&"default","autoplay":"","frame":0,"frame_progress":0.0,"speed_scale":1.0,"centered":false,"offset":Vector2(0, 0),"flip_h":true,"flip_v":false,"script":null)
+
+LightFlowOverlayRightDownIn = Object(AnimatedSprite2D,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":1,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"editor_description":"","visible":false,"modulate":Color(1, 1, 1, 1),"self_modulate":Color(1, 1, 1, 1),"show_behind_parent":false,"top_level":false,"clip_children":0,"light_mask":1,"visibility_layer":1,"z_index":0,"z_as_relative":true,"y_sort_enabled":false,"texture_filter":0,"texture_repeat":0,"material":ExtResource("3_dwcdr"),"use_parent_material":false,"position":Vector2(61, 61),"rotation":-3.14159,"scale":Vector2(1, 1),"skew":0.0,"sprite_frames":SubResource("SpriteFrames_0kbob"),"animation":&"default","autoplay":"","frame":0,"frame_progress":0.0,"speed_scale":1.0,"centered":false,"offset":Vector2(0, 0),"flip_h":false,"flip_v":false,"script":null)
+
 WidthInTiles = 2
 HeightInTiles = 2
 
