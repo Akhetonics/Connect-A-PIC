@@ -1,80 +1,11 @@
-[gd_scene load_steps=17 format=3 uid="uid://b4ltp4nnviu3"]
+[gd_scene load_steps=9 format=3 uid="uid://b4ltp4nnviu3"]
 
 [ext_resource type="Script" path="res://Scenes/Components/DirectionalCoupler/DirectionalCouplerView.cs" id="1_4tomk"]
+[ext_resource type="Texture2D" uid="uid://cirsar1cf6vkh" path="res://Scenes/Components/DirectionalCoupler/Directional Coupler LeftUpIn.png" id="2_1cs17"]
 [ext_resource type="Texture2D" uid="uid://c8u8whsex2jym" path="res://Scenes/Components/DirectionalCoupler/Directional Coupler.png" id="2_80i23"]
-[ext_resource type="Material" uid="uid://dmd5v2e75qpv3" path="res://Scenes/Components/LightOverlayStandard.tres" id="3_dwcdr"]
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_ka2eo"]
-region = Rect2(0, 0, 61, 30)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_p7x50"]
-region = Rect2(61, 0, 61, 30)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_s2c4y"]
-region = Rect2(122, 0, 61, 30)
-
-[sub_resource type="AtlasTexture" id="AtlasTexture_3st3g"]
-region = Rect2(183, 0, 61, 30)
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_btglm"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_ka2eo")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_p7x50")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_s2c4y")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_3st3g")
-}],
-"loop": true,
-"name": &"default",
-"speed": 5.0
-}]
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_0kbob"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_ka2eo")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_p7x50")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_s2c4y")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_3st3g")
-}],
-"loop": true,
-"name": &"default",
-"speed": 5.0
-}]
-
-[sub_resource type="SpriteFrames" id="SpriteFrames_6deer"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_ka2eo")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_p7x50")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_s2c4y")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_3st3g")
-}],
-"loop": true,
-"name": &"default",
-"speed": 5.0
-}]
+[ext_resource type="Texture2D" uid="uid://dl3wi88wuky6e" path="res://Scenes/Components/DirectionalCoupler/Directional Coupler LeftDown.png" id="3_jbild"]
+[ext_resource type="Texture2D" uid="uid://b8r7q5o86dey3" path="res://Scenes/Components/DirectionalCoupler/Directional Coupler RightUp.png" id="4_sgbp3"]
+[ext_resource type="Texture2D" uid="uid://crhu1ftb6mi8q" path="res://Scenes/Components/DirectionalCoupler/Directional Coupler RightDown.png" id="5_hqp3p"]
 
 [sub_resource type="Shader" id="Shader_3pehe"]
 code = "// Laser Farbe
@@ -82,6 +13,7 @@ shader_type canvas_item;
 render_mode blend_add;
 
 uniform vec4 laserColor;
+uniform vec2 sizeInTiles;
 
 uniform vec4 lightInFlow1; // x = intensity, y = phase, z = offsetx, w = offsety
 uniform vec4 lightOutFlow1;
@@ -113,7 +45,8 @@ uniform sampler2D animation8;
 
 vec4 getColorOfAnimation(sampler2D animation, vec2 curUV, float animationTime, float animationspeed , vec4 lightFlowAndPos){
 	float phaseShiftDisplacement = float(int(animationTime + round(lightFlowAndPos.y * animationspeed)) % 4) /4.0;
-	vec2 animatedUvPosition = vec2( curUV.x /4.0 + phaseShiftDisplacement + lightFlowAndPos.z, curUV.y + lightFlowAndPos.w);
+	vec2 animatedUvPosition = vec2( (curUV.x /4.0 + phaseShiftDisplacement ) , curUV.y);
+	
 	return texture(animation, animatedUvPosition );
 }
 
@@ -155,24 +88,13 @@ void fragment(){
 		getIntensityOfLight( col_anim8in, lightInFlow8.x) + getIntensityOfLight( col_anim8out, lightOutFlow8.x);
 
 
-  COLOR =  laserColor * abs(intensity);
+  COLOR = laserColor * abs(intensity);
 }"
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_de0si"]
-load_path = "res://.godot/imported/Directional Coupler Single Overlay.png-6bba9641a96be4a278396740694f46cd.ctex"
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_v33cd"]
-load_path = "res://.godot/imported/Directional Coupler LeftDown.png-41cb60ca829c414e429f1c6e303f10f0.ctex"
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_yn5qk"]
-load_path = "res://.godot/imported/Directional Coupler RightUp.png-bf79748fc62eea60f016eafb58b88204.ctex"
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_qco0p"]
-load_path = "res://.godot/imported/Directional Coupler RightDown.png-284ab112c3725996e371c17110aa6383.ctex"
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_is3a8"]
 shader = SubResource("Shader_3pehe")
-shader_parameter/laserColor = Vector4(2, 0, 0, 2)
+shader_parameter/laserColor = Vector4(1, 0, 0, 1)
+shader_parameter/sizeInTiles = Vector2(2, 2)
 shader_parameter/lightInFlow1 = Vector4(2, 0, 0, 0)
 shader_parameter/lightOutFlow1 = Vector4(0, 0, 0, 0)
 shader_parameter/lightInFlow2 = Vector4(0, 0, 0, 0)
@@ -189,70 +111,31 @@ shader_parameter/lightInFlow7 = null
 shader_parameter/lightOutFlow7 = null
 shader_parameter/lightInFlow8 = null
 shader_parameter/lightOutFlow8 = null
-shader_parameter/animation1 = SubResource("CompressedTexture2D_de0si")
-shader_parameter/animation2 = SubResource("CompressedTexture2D_v33cd")
-shader_parameter/animation3 = SubResource("CompressedTexture2D_yn5qk")
-shader_parameter/animation4 = SubResource("CompressedTexture2D_qco0p")
+shader_parameter/animation1 = ExtResource("2_1cs17")
+shader_parameter/animation2 = ExtResource("3_jbild")
+shader_parameter/animation3 = ExtResource("4_sgbp3")
+shader_parameter/animation4 = ExtResource("5_hqp3p")
 
-[node name="DirectionalCoupler" type="TextureRect"]
+[node name="DirectionalCoupler" type="TextureRect" node_paths=PackedStringArray("OverlayRed")]
 custom_minimum_size = Vector2(122, 122)
 layout_direction = 1
 offset_right = 122.0
 offset_bottom = 122.0
 stretch_mode = 2
 script = ExtResource("1_4tomk")
-LightFlowOverlayLeftUpIn = Object(AnimatedSprite2D,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":1,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"editor_description":"","visible":false,"modulate":Color(1, 1, 1, 1),"self_modulate":Color(1, 1, 1, 1),"show_behind_parent":false,"top_level":false,"clip_children":0,"light_mask":1,"visibility_layer":1,"z_index":0,"z_as_relative":true,"y_sort_enabled":false,"texture_filter":0,"texture_repeat":0,"material":ExtResource("3_dwcdr"),"use_parent_material":false,"position":Vector2(0, 0),"rotation":0.0,"scale":Vector2(1, 1),"skew":0.0,"sprite_frames":SubResource("SpriteFrames_6deer"),"animation":&"default","autoplay":"","frame":0,"frame_progress":0.0,"speed_scale":1.0,"centered":false,"offset":Vector2(0, 0),"flip_h":false,"flip_v":false,"script":null)
-
-LightFlowOverlayLeftDownIn = Object(AnimatedSprite2D,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":1,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"editor_description":"","visible":false,"modulate":Color(1, 1, 1, 1),"self_modulate":Color(1, 1, 1, 1),"show_behind_parent":false,"top_level":false,"clip_children":0,"light_mask":1,"visibility_layer":1,"z_index":0,"z_as_relative":true,"y_sort_enabled":false,"texture_filter":0,"texture_repeat":0,"material":ExtResource("3_dwcdr"),"use_parent_material":false,"position":Vector2(61, 61),"rotation":-3.14159,"scale":Vector2(1, 1),"skew":0.0,"sprite_frames":SubResource("SpriteFrames_6deer"),"animation":&"default","autoplay":"","frame":0,"frame_progress":0.0,"speed_scale":1.0,"centered":false,"offset":Vector2(0, 0),"flip_h":true,"flip_v":false,"script":null)
-
-LightFlowOverlayRightUpIn = Object(AnimatedSprite2D,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":1,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"editor_description":"","visible":false,"modulate":Color(1, 1, 1, 1),"self_modulate":Color(1, 1, 1, 1),"show_behind_parent":false,"top_level":false,"clip_children":0,"light_mask":1,"visibility_layer":1,"z_index":0,"z_as_relative":true,"y_sort_enabled":false,"texture_filter":0,"texture_repeat":0,"material":ExtResource("3_dwcdr"),"use_parent_material":false,"position":Vector2(0, 0),"rotation":0.0,"scale":Vector2(1, 1),"skew":0.0,"sprite_frames":SubResource("SpriteFrames_btglm"),"animation":&"default","autoplay":"","frame":0,"frame_progress":0.0,"speed_scale":1.0,"centered":false,"offset":Vector2(0, 0),"flip_h":true,"flip_v":false,"script":null)
-
-LightFlowOverlayRightDownIn = Object(AnimatedSprite2D,"_import_path":NodePath(""),"unique_name_in_owner":false,"process_mode":1,"process_priority":0,"process_physics_priority":0,"process_thread_group":0,"editor_description":"","visible":false,"modulate":Color(1, 1, 1, 1),"self_modulate":Color(1, 1, 1, 1),"show_behind_parent":false,"top_level":false,"clip_children":0,"light_mask":1,"visibility_layer":1,"z_index":0,"z_as_relative":true,"y_sort_enabled":false,"texture_filter":0,"texture_repeat":0,"material":ExtResource("3_dwcdr"),"use_parent_material":false,"position":Vector2(61, 61),"rotation":-3.14159,"scale":Vector2(1, 1),"skew":0.0,"sprite_frames":SubResource("SpriteFrames_0kbob"),"animation":&"default","autoplay":"","frame":0,"frame_progress":0.0,"speed_scale":1.0,"centered":false,"offset":Vector2(0, 0),"flip_h":false,"flip_v":false,"script":null)
-
+LightFlowOverlayLeftUpIn = ExtResource("2_1cs17")
+LightFlowOverlayLeftDownIn = ExtResource("3_jbild")
+LightFlowOverlayRightUpIn = ExtResource("4_sgbp3")
+LightFlowOverlayRightDownIn = ExtResource("5_hqp3p")
 WidthInTiles = 2
 HeightInTiles = 2
+OverlayRed = NodePath("OverlayRed")
 
-[node name="Sprite2D" type="Sprite2D" parent="."]
-
-[node name="BackgroundImage" type="Sprite2D" parent="Sprite2D"]
+[node name="BackgroundImage" type="Sprite2D" parent="."]
 scale = Vector2(2, 2)
 texture = ExtResource("2_80i23")
 centered = false
 region_rect = Rect2(11.5, 16, 41, 39)
-
-[node name="AnimatedSpriteRightUp" type="AnimatedSprite2D" parent="Sprite2D/BackgroundImage"]
-process_mode = 1
-visible = false
-material = ExtResource("3_dwcdr")
-sprite_frames = SubResource("SpriteFrames_btglm")
-centered = false
-flip_h = true
-
-[node name="AnimatedSpriteRightDown" type="AnimatedSprite2D" parent="Sprite2D/BackgroundImage"]
-process_mode = 1
-visible = false
-material = ExtResource("3_dwcdr")
-position = Vector2(61, 61)
-rotation = -3.14159
-sprite_frames = SubResource("SpriteFrames_0kbob")
-centered = false
-
-[node name="AnimatedSpriteLeftUp" type="AnimatedSprite2D" parent="Sprite2D/BackgroundImage"]
-process_mode = 1
-visible = false
-material = ExtResource("3_dwcdr")
-sprite_frames = SubResource("SpriteFrames_6deer")
-centered = false
-
-[node name="AnimatedSpriteLeftDown" type="AnimatedSprite2D" parent="Sprite2D/BackgroundImage"]
-process_mode = 1
-visible = false
-material = ExtResource("3_dwcdr")
-position = Vector2(61, 61)
-rotation = -3.14159
-sprite_frames = SubResource("SpriteFrames_6deer")
-centered = false
-flip_h = true
 
 [node name="OverlayRed" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_is3a8")

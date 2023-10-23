@@ -435,8 +435,24 @@ sources/1 = SubResource("TileSetAtlasSource_5h74f")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_03ckl"]
 resource_local_to_scene = true
-render_priority = 0
 shader = ExtResource("13_nlker")
+shader_parameter/laserColor = null
+shader_parameter/lightInFlow1 = null
+shader_parameter/lightOutFlow1 = null
+shader_parameter/lightInFlow2 = null
+shader_parameter/lightOutFlow2 = null
+shader_parameter/lightInFlow3 = null
+shader_parameter/lightOutFlow3 = null
+shader_parameter/lightInFlow4 = null
+shader_parameter/lightOutFlow4 = null
+shader_parameter/lightInFlow5 = null
+shader_parameter/lightOutFlow5 = null
+shader_parameter/lightInFlow6 = null
+shader_parameter/lightOutFlow6 = null
+shader_parameter/lightInFlow7 = null
+shader_parameter/lightOutFlow7 = null
+shader_parameter/lightInFlow8 = null
+shader_parameter/lightOutFlow8 = null
 
 [node name="GameManager" type="Node" node_paths=PackedStringArray("ExternalOutputTemplate", "ExternalInputRedTemplate", "ExternalInputGreenTemplate", "ExternalInputBlueTemplate")]
 script = ExtResource("1_1g8p6")

@@ -1,49 +1,113 @@
-[gd_scene load_steps=10 format=3 uid="uid://xuxk7b4m2bt1"]
+[gd_scene load_steps=6 format=3 uid="uid://xuxk7b4m2bt1"]
 
 [ext_resource type="Texture2D" uid="uid://qhk7bdcbkh6d" path="res://Scenes/Components/Bend/Component L.png" id="1_h05ny"]
 [ext_resource type="Script" path="res://Scenes/Components/Bend/BendView.cs" id="2_w7y6r"]
 [ext_resource type="Texture2D" uid="uid://5bxbe1gcdfif" path="res://Scenes/Components/Bend/Component L_Overlay.png" id="3_f2wga"]
 
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_0nfdj"]
-blend_mode = 1
+[sub_resource type="Shader" id="Shader_irf6e"]
+code = "// Laser Farbe
+shader_type canvas_item;
+render_mode blend_add;
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_yxehv"]
-atlas = ExtResource("3_f2wga")
-region = Rect2(0, 0, 30, 30)
+uniform vec4 laserColor;
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_xdgix"]
-atlas = ExtResource("3_f2wga")
-region = Rect2(30, 0, 30, 30)
+uniform vec2 lightInFlow1; // x = intensity, y = phase - können auch 2 floats sein 
+uniform vec2 lightOutFlow1;
+uniform vec2 lightInFlow2; 
+uniform vec2 lightOutFlow2;
+uniform vec2 lightInFlow3; 
+uniform vec2 lightOutFlow3;
+uniform vec2 lightInFlow4;
+uniform vec2 lightOutFlow4;
+uniform vec2 lightInFlow5;
+uniform vec2 lightOutFlow5;
+uniform vec2 lightInFlow6;
+uniform vec2 lightOutFlow6;
+uniform vec2 lightInFlow7;
+uniform vec2 lightOutFlow7;
+uniform vec2 lightInFlow8;
+uniform vec2 lightOutFlow8;
+// ... so viele wie man lustig ist. Am Besten 16 (8 in, 8 out) oder sowas, damit man nur einen einzigen Shader braucht für alle
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_4nh76"]
-atlas = ExtResource("3_f2wga")
-region = Rect2(60, 0, 30, 30)
+uniform sampler2D animation1;
+uniform sampler2D animation2;
+uniform sampler2D animation3;
+uniform sampler2D animation4;
+uniform sampler2D animation5;
+uniform sampler2D animation6;
+uniform sampler2D animation7;
+uniform sampler2D animation8;
+// ... die hälfte von oben, also 8 (in/out ist ja nur umgedreht in der Zeit)
 
-[sub_resource type="AtlasTexture" id="AtlasTexture_7vub1"]
-atlas = ExtResource("3_f2wga")
-region = Rect2(90, 0, 30, 30)
+vec4 getColorOfAnimation(sampler2D animation, vec2 curUV, float animationTime, float animationspeed , vec2 lightFlow){
+	float phaseShiftDisplacement = float(int(animationTime + round(lightFlow.y * animationspeed)) % 4) /4.0;
+	vec2 animatedUvPosition = vec2( curUV.x /4.0 + phaseShiftDisplacement, curUV.y);
+	return texture(animation, animatedUvPosition );
+}
 
-[sub_resource type="SpriteFrames" id="SpriteFrames_655t7"]
-animations = [{
-"frames": [{
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_yxehv")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_xdgix")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_4nh76")
-}, {
-"duration": 1.0,
-"texture": SubResource("AtlasTexture_7vub1")
-}],
-"loop": true,
-"name": &"default",
-"speed": 5.0
-}]
+float getIntensityOfLight(vec4 currentInflowColor, float lightInflowIntensity){
+	
+	return currentInflowColor.a *(currentInflowColor.r - currentInflowColor.b) * lightInflowIntensity;
+}
+void fragment(){
+	float animationspeed = 2.0f;
+	float animationTime = round(TIME * animationspeed);
+	
+	vec4 col_baseTexture = texture(TEXTURE, UV);
+	vec4 col_anim1in  = getColorOfAnimation(animation1,UV,animationTime,animationspeed, lightInFlow1);
+	vec4 col_anim1out = getColorOfAnimation(animation1,UV,animationTime,-animationspeed, lightOutFlow1);
+    vec4 col_anim2in  = getColorOfAnimation(animation2,UV,animationTime,animationspeed, lightInFlow2);
+	vec4 col_anim2out = getColorOfAnimation(animation2,UV,animationTime,-animationspeed, lightOutFlow2);
+    vec4 col_anim3in  = getColorOfAnimation(animation3,UV,animationTime,animationspeed, lightInFlow3);
+	vec4 col_anim3out = getColorOfAnimation(animation3,UV,animationTime,-animationspeed, lightOutFlow3);
+    vec4 col_anim4in  = getColorOfAnimation(animation4,UV,animationTime,animationspeed, lightInFlow4);
+	vec4 col_anim4out = getColorOfAnimation(animation4,UV,animationTime,-animationspeed, lightOutFlow4);
+    vec4 col_anim5in  = getColorOfAnimation(animation5,UV,animationTime,animationspeed, lightInFlow5);
+	vec4 col_anim5out = getColorOfAnimation(animation5,UV,animationTime,-animationspeed, lightOutFlow5);
+    vec4 col_anim6in  = getColorOfAnimation(animation6,UV,animationTime,animationspeed, lightInFlow6);
+	vec4 col_anim6out = getColorOfAnimation(animation6,UV,animationTime,-animationspeed, lightOutFlow6);
+    vec4 col_anim7in  = getColorOfAnimation(animation7,UV,animationTime,animationspeed, lightInFlow7);
+	vec4 col_anim7out = getColorOfAnimation(animation7,UV,animationTime,-animationspeed, lightOutFlow7);
+    vec4 col_anim8in  = getColorOfAnimation(animation8,UV,animationTime,animationspeed, lightInFlow8);
+	vec4 col_anim8out = getColorOfAnimation(animation8,UV,animationTime,-animationspeed, lightOutFlow8);
+    
+  // Der rot Kanal = höhen, z.B.
+  // Der blau Kanal = tiefen
+  float intensity = getIntensityOfLight( col_anim1in, lightInFlow1.x) + getIntensityOfLight( col_anim1out, lightOutFlow1.x) +
+		getIntensityOfLight( col_anim2in, lightInFlow2.x) + getIntensityOfLight( col_anim2out, lightOutFlow2.x) + 
+		getIntensityOfLight( col_anim3in, lightInFlow3.x) + getIntensityOfLight( col_anim3out, lightOutFlow3.x) + 
+		getIntensityOfLight( col_anim4in, lightInFlow4.x) + getIntensityOfLight( col_anim4out, lightOutFlow4.x) + 
+		getIntensityOfLight( col_anim5in, lightInFlow5.x) + getIntensityOfLight( col_anim5out, lightOutFlow5.x) + 
+		getIntensityOfLight( col_anim6in, lightInFlow6.x) + getIntensityOfLight( col_anim6out, lightOutFlow6.x) + 
+		getIntensityOfLight( col_anim7in, lightInFlow7.x) + getIntensityOfLight( col_anim7out, lightOutFlow7.x) + 
+		getIntensityOfLight( col_anim8in, lightInFlow8.x) + getIntensityOfLight( col_anim8out, lightOutFlow8.x);
 
-[node name="TextureRect" type="TextureRect" node_paths=PackedStringArray("LightOverlay")]
+
+  COLOR =  laserColor * abs(intensity);
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jbr3n"]
+shader = SubResource("Shader_irf6e")
+shader_parameter/laserColor = Vector4(2, 0, 0, 2)
+shader_parameter/lightInFlow1 = Vector2(1, 0)
+shader_parameter/lightOutFlow1 = Vector2(0, 0)
+shader_parameter/lightInFlow2 = Vector2(0, 0)
+shader_parameter/lightOutFlow2 = Vector2(0, 0)
+shader_parameter/lightInFlow3 = null
+shader_parameter/lightOutFlow3 = null
+shader_parameter/lightInFlow4 = null
+shader_parameter/lightOutFlow4 = null
+shader_parameter/lightInFlow5 = null
+shader_parameter/lightOutFlow5 = null
+shader_parameter/lightInFlow6 = null
+shader_parameter/lightOutFlow6 = null
+shader_parameter/lightInFlow7 = null
+shader_parameter/lightOutFlow7 = null
+shader_parameter/lightInFlow8 = null
+shader_parameter/lightOutFlow8 = null
+shader_parameter/animation1 = ExtResource("3_f2wga")
+
+[node name="TextureRect" type="TextureRect" node_paths=PackedStringArray("OverlayRed")]
 custom_minimum_size = Vector2(60, 60)
 offset_right = 60.0
 offset_bottom = 60.0
@@ -52,14 +116,20 @@ size_flags_vertical = 0
 texture = ExtResource("1_h05ny")
 flip_h = true
 script = ExtResource("2_w7y6r")
-LightOverlay = NodePath("AnimatedSprite2D")
+OverlayAnimTexture = ExtResource("3_f2wga")
 WidthInTiles = 1
 HeightInTiles = 1
+OverlayRed = NodePath("OverlayRed")
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
-visible = false
-material = SubResource("CanvasItemMaterial_0nfdj")
+[node name="Background" type="Sprite2D" parent="."]
 scale = Vector2(2, 2)
-sprite_frames = SubResource("SpriteFrames_655t7")
+texture = ExtResource("1_h05ny")
 centered = false
+flip_h = true
 flip_v = true
+
+[node name="OverlayRed" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_jbr3n")
+scale = Vector2(2, 2)
+texture = ExtResource("1_h05ny")
+centered = false
