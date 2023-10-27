@@ -18,7 +18,7 @@ namespace CAP_Core.ExternalPorts
                 case LightColor.Red:
                     return Color.Red;
                 case LightColor.Green:
-                    return Color.Green;
+                    return Color.FromArgb(0,255,0);
                 case LightColor.Blue:
                     return Color.Blue;
                 default:

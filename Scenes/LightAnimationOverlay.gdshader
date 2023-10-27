@@ -3,6 +3,7 @@ shader_type canvas_item;
 render_mode blend_add;
 
 uniform vec4 laserColor;
+uniform vec2 sizeInTiles;
 
 uniform vec4 lightInFlow1; // x = intensity, y = phase, z = offsetx, w = offsety
 uniform vec4 lightOutFlow1;
@@ -32,9 +33,10 @@ uniform sampler2D animation7;
 uniform sampler2D animation8;
 // ... die hälfte von oben, also 8 (in/out ist ja nur umgedreht in der Zeit)
 
-vec4 getColorOfAnimation(sampler2D animation, vec2 curUV, float animationTime, float animationspeed , vec4 lightFlow){
-	float phaseShiftDisplacement = float(int(animationTime + round(lightFlow.y * animationspeed)) % 4) /4.0;
-	vec2 animatedUvPosition = vec2( curUV.x /4.0 + phaseShiftDisplacement, curUV.y);
+vec4 getColorOfAnimation(sampler2D animation, vec2 curUV, float animationTime, float animationspeed , vec4 lightFlowAndPos){
+	float phaseShiftDisplacement = float(int(animationTime + round(lightFlowAndPos.y * animationspeed)) % 4) /4.0;
+	vec2 animatedUvPosition = vec2( (curUV.x /4.0 + phaseShiftDisplacement ) , curUV.y);
+	
 	return texture(animation, animatedUvPosition );
 }
 
@@ -76,5 +78,5 @@ void fragment(){
 		getIntensityOfLight( col_anim8in, lightInFlow8.x) + getIntensityOfLight( col_anim8out, lightOutFlow8.x);
 
 
-  COLOR =  laserColor * abs(intensity);
+  COLOR = laserColor * abs(2.0* intensity);
 }

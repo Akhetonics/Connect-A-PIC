@@ -43,23 +43,32 @@ namespace ConnectAPIC.LayoutWindow.View
         
         public override void _Ready()
         {
-            base._Ready();
-            RotationCC = RotationCC;
-            if (WidthInTiles == 0) CustomLogger.PrintErr(nameof(WidthInTiles) + " of this element is not set in the ComponentScene: " + this.GetType().Name);
-            if (HeightInTiles == 0) CustomLogger.PrintErr(nameof(HeightInTiles) + " of this element is not set in the ComponentScene: " + this.GetType().Name);
-            InitializeLightOverlays();
-            if (OverlayRed == null) return;
-            InitializeAnimationSlots();
+            try
+            {
+                base._Ready();
+                RotationCC = RotationCC;
+                if (WidthInTiles == 0) CustomLogger.PrintErr(nameof(WidthInTiles) + " of this element is not set in the ComponentScene: " + this.GetType().Name);
+                if (HeightInTiles == 0) CustomLogger.PrintErr(nameof(HeightInTiles) + " of this element is not set in the ComponentScene: " + this.GetType().Name);
+                InitializeLightOverlays();
+                if (OverlayRed == null) return;
+                InitializeAnimationSlots();
+            } catch (Exception ex)
+            {
+                CustomLogger.PrintErr(ex.ToString());
+            }
+            
         }
 
         private void InitializeLightOverlays()
         {
             this.CheckForNull(x => x.OverlayRed);
             var overlayDraft = OverlayRed;
+
             OverlayRed = DuplicateOverlay(overlayDraft, LightColor.Red.ToGodotColor());
             OverlayGreen = DuplicateOverlay(overlayDraft, LightColor.Green.ToGodotColor());
             OverlayBlue = DuplicateOverlay(overlayDraft, LightColor.Blue.ToGodotColor());
             overlayDraft.QueueFree();
+
             OverlaySprites.Add(OverlayRed);
             OverlaySprites.Add(OverlayGreen);
             OverlaySprites.Add(OverlayBlue);
@@ -80,7 +89,7 @@ namespace ConnectAPIC.LayoutWindow.View
         public bool IsPlacedOnGrid()
         {
             if (ViewModel == null) return false;
-            if (ViewModel.IsInGrid(GridX, GridY, WidthInTiles, HeightInTiles) == false) return false;
+            if (ViewModel.IsInGrid(GridX, GridY, WidthInTiles, HeightInTiles)) return false;
             if (ViewModel.GridComponentViews[this.GridX, this.GridY] != this) return false;
             return true;
         }
@@ -109,11 +118,10 @@ namespace ConnectAPIC.LayoutWindow.View
             var anim = baseOverlay.Duplicate() as Sprite2D;
             baseOverlay.GetParent().AddChild(anim);
             anim.Hide();
-            if (anim.Material != null && anim.Material is ShaderMaterial materialDraft)
+            if (anim.Material is ShaderMaterial materialDraft)
             {
                 baseOverlay.Material = materialDraft.Duplicate(true) as ShaderMaterial;
                 (baseOverlay.Material as ShaderMaterial).SetShaderParameter("laserColor", laserColor);
-                (baseOverlay.Material as ShaderMaterial).SetShaderParameter("sizeInTiles", new Vector2I(WidthInTiles,HeightInTiles));
             }
             return anim;
         }
@@ -153,6 +161,7 @@ namespace ConnectAPIC.LayoutWindow.View
                 shaderMat.SetShaderParameter("lightInFlow" + shaderAnimationNumber, InFlowDataAndPosition);
                 shaderMat.SetShaderParameter("lightOutFlow" + shaderAnimationNumber, outFlowDataAndPosition);
                 shaderMat.SetShaderParameter("animation" + shaderAnimationNumber, slot.Texture);
+                shaderMat.SetShaderParameter("lightColor", slot.Color.ToGodotColor());
             }
         }
 

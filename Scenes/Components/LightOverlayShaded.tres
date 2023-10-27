@@ -37,7 +37,8 @@ uniform sampler2D animation8;
 
 vec4 getColorOfAnimation(sampler2D animation, vec2 curUV, float animationTime, float animationspeed , vec4 lightFlowAndPos){
 	float phaseShiftDisplacement = float(int(animationTime + round(lightFlowAndPos.y * animationspeed)) % 4) /4.0;
-	vec2 animatedUvPosition = vec2( curUV.x /4.0 + phaseShiftDisplacement + lightFlowAndPos.z, curUV.y + lightFlowAndPos.w);
+	vec2 animatedUvPosition = vec2( (curUV.x /4.0 + phaseShiftDisplacement ) , curUV.y);
+	
 	return texture(animation, animatedUvPosition );
 }
 
@@ -79,5 +80,5 @@ void fragment(){
 		getIntensityOfLight( col_anim8in, lightInFlow8.x) + getIntensityOfLight( col_anim8out, lightOutFlow8.x);
 
 
-  COLOR =  laserColor * abs(intensity);
+  COLOR = laserColor * abs(2.0* intensity);
 }"

@@ -437,6 +437,7 @@ sources/1 = SubResource("TileSetAtlasSource_5h74f")
 resource_local_to_scene = true
 shader = ExtResource("13_nlker")
 shader_parameter/laserColor = null
+shader_parameter/sizeInTiles = null
 shader_parameter/lightInFlow1 = null
 shader_parameter/lightOutFlow1 = null
 shader_parameter/lightInFlow2 = null
