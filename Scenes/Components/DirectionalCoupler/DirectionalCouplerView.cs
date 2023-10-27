@@ -22,11 +22,11 @@ namespace ConnectAPIC.LayoutWindow.View
 			this.CheckForNull(x => x.LightFlowOverlayLeftDownIn);
 			this.CheckForNull(x => x.LightFlowOverlayRightUpIn);
 			this.CheckForNull(x => x.LightFlowOverlayRightDownIn);
-			var textureOffset = GameManager.TilePixelSize;
+
 			AnimationSlots.AddRange(CreateRGBAnimSlots(RectSide.Left, LightFlowOverlayLeftUpIn));
 			AnimationSlots.AddRange(CreateRGBAnimSlots(RectSide.Left, LightFlowOverlayLeftDownIn,0,1));
-			AnimationSlots.AddRange(CreateRGBAnimSlots(RectSide.Right, LightFlowOverlayRightUpIn,1,0,new Vector2(textureOffset, 0)));
-			AnimationSlots.AddRange(CreateRGBAnimSlots(RectSide.Right, LightFlowOverlayRightDownIn,1,1,new Vector2(textureOffset, textureOffset)));
+			AnimationSlots.AddRange(CreateRGBAnimSlots(RectSide.Right, LightFlowOverlayRightUpIn,1,0));
+			AnimationSlots.AddRange(CreateRGBAnimSlots(RectSide.Right, LightFlowOverlayRightDownIn,1,1));
 		}
 
 	}

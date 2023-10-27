@@ -20,10 +20,11 @@ namespace ConnectAPIC.LayoutWindow.View
     {
         [Export] public int WidthInTiles { get; private set; }
         [Export] public int HeightInTiles { get; private set; }
-        [Export] public Sprite2D OverlayRed { get; private set; }
+        [Export] private Sprite2D OverlayBluePrint { get; set; }
+        public Sprite2D OverlayRed { get; private set; }
         public Sprite2D OverlayGreen { get; private set; }
         public Sprite2D OverlayBlue { get; private set; }
-        private List<Sprite2D> OverlaySprites { get; set; } = new ();
+        private List<Sprite2D> OverlaySprites { get; set; } = new();
         public GridViewModel ViewModel { get; private set; }
         public int GridX { get; set; }
         public int GridY { get; set; }
@@ -32,42 +33,35 @@ namespace ConnectAPIC.LayoutWindow.View
         private new float Rotation { get => base.Rotation; set => base.Rotation = value; }
         public abstract void InitializeAnimationSlots();
         private DiscreteRotation _rotationCC;
-        public DiscreteRotation RotationCC {
+        public DiscreteRotation RotationCC
+        {
             get => _rotationCC;
-            set { 
+            set
+            {
                 _rotationCC = value;
                 AnimationSlots?.ForEach(a => a.RotateAttachedComponentCC(value));
-                RotationDegrees = value.ToDegreesClockwise(); 
-            } 
+                RotationDegrees = value.ToDegreesClockwise();
+            }
         }
-        
+
         public override void _Ready()
         {
-            try
-            {
-                base._Ready();
-                RotationCC = RotationCC;
-                if (WidthInTiles == 0) CustomLogger.PrintErr(nameof(WidthInTiles) + " of this element is not set in the ComponentScene: " + this.GetType().Name);
-                if (HeightInTiles == 0) CustomLogger.PrintErr(nameof(HeightInTiles) + " of this element is not set in the ComponentScene: " + this.GetType().Name);
-                InitializeLightOverlays();
-                if (OverlayRed == null) return;
-                InitializeAnimationSlots();
-            } catch (Exception ex)
-            {
-                CustomLogger.PrintErr(ex.ToString());
-            }
-            
+            base._Ready();
+            if (WidthInTiles == 0) CustomLogger.PrintErr(nameof(WidthInTiles) + " of this element is not set in the ComponentScene: " + this.GetType().Name);
+            if (HeightInTiles == 0) CustomLogger.PrintErr(nameof(HeightInTiles) + " of this element is not set in the ComponentScene: " + this.GetType().Name);
+            InitializeLightOverlays();
+            InitializeAnimationSlots();
+            RotationCC = _rotationCC;
         }
 
         private void InitializeLightOverlays()
         {
-            this.CheckForNull(x => x.OverlayRed);
-            var overlayDraft = OverlayRed;
-
-            OverlayRed = DuplicateOverlay(overlayDraft, LightColor.Red.ToGodotColor());
-            OverlayGreen = DuplicateOverlay(overlayDraft, LightColor.Green.ToGodotColor());
-            OverlayBlue = DuplicateOverlay(overlayDraft, LightColor.Blue.ToGodotColor());
-            overlayDraft.QueueFree();
+            this.CheckForNull(x => x.OverlayBluePrint);
+            if (OverlayBluePrint == null) return;
+            OverlayBluePrint.Hide();
+            OverlayRed = DuplicateAndConfigureOverlay(OverlayBluePrint, LightColor.Red.ToGodotColor());
+            OverlayGreen = DuplicateAndConfigureOverlay(OverlayBluePrint, LightColor.Green.ToGodotColor());
+            OverlayBlue = DuplicateAndConfigureOverlay(OverlayBluePrint, LightColor.Blue.ToGodotColor());
 
             OverlaySprites.Add(OverlayRed);
             OverlaySprites.Add(OverlayGreen);
@@ -89,7 +83,7 @@ namespace ConnectAPIC.LayoutWindow.View
         public bool IsPlacedOnGrid()
         {
             if (ViewModel == null) return false;
-            if (ViewModel.IsInGrid(GridX, GridY, WidthInTiles, HeightInTiles)) return false;
+            if (!ViewModel.IsInGrid(GridX, GridY, WidthInTiles, HeightInTiles)) return false;
             if (ViewModel.GridComponentViews[this.GridX, this.GridY] != this) return false;
             return true;
         }
@@ -113,17 +107,17 @@ namespace ConnectAPIC.LayoutWindow.View
             }
             return displacement;
         }
-        protected Sprite2D DuplicateOverlay(Sprite2D baseOverlay, Godot.Color laserColor)
+        protected Sprite2D DuplicateAndConfigureOverlay(Sprite2D overlayDraft, Godot.Color laserColor)
         {
-            var anim = baseOverlay.Duplicate() as Sprite2D;
-            baseOverlay.GetParent().AddChild(anim);
-            anim.Hide();
-            if (anim.Material is ShaderMaterial materialDraft)
+            var newOverlay = overlayDraft.Duplicate() as Sprite2D;
+            overlayDraft.GetParent().AddChild(newOverlay);
+            newOverlay.Hide();
+            if (overlayDraft.Material is ShaderMaterial materialDraft)
             {
-                baseOverlay.Material = materialDraft.Duplicate(true) as ShaderMaterial;
-                (baseOverlay.Material as ShaderMaterial).SetShaderParameter("laserColor", laserColor);
+                newOverlay.Material = materialDraft.Duplicate(true) as ShaderMaterial;
+                (newOverlay.Material as ShaderMaterial).SetShaderParameter("laserColor", laserColor);
             }
-            return anim;
+            return newOverlay;
         }
         public void HideLightVector()
         {
@@ -152,12 +146,12 @@ namespace ConnectAPIC.LayoutWindow.View
                 CustomLogger.PrintErr(ex.Message);
             }
         }
-        protected void AssignInAndOutFlowShaderData(AnimationSlot slot , LightAtPin lightAtPin, int shaderAnimationNumber )
+        protected void AssignInAndOutFlowShaderData(AnimationSlot slot, LightAtPin lightAtPin, int shaderAnimationNumber)
         {
-            if(slot?.BaseOverlaySprite?.Material is  ShaderMaterial shaderMat)
+            if (slot?.BaseOverlaySprite?.Material is ShaderMaterial shaderMat)
             {
-                var InFlowDataAndPosition = new Godot.Vector4((float)lightAtPin.lightInFlow.Magnitude, (float)lightAtPin.lightInFlow.Phase, slot.TextureOffset.X, slot.TextureOffset.Y);
-                var outFlowDataAndPosition = new Vector4((float)lightAtPin.lightOutFlow.Magnitude, (float)lightAtPin.lightOutFlow.Phase, slot.TextureOffset.X, slot.TextureOffset.Y);
+                var InFlowDataAndPosition = new Godot.Vector4((float)lightAtPin.lightInFlow.Magnitude, (float)lightAtPin.lightInFlow.Phase,0,0);
+                var outFlowDataAndPosition = new Vector4((float)lightAtPin.lightOutFlow.Magnitude, (float)lightAtPin.lightOutFlow.Phase,0,0);
                 shaderMat.SetShaderParameter("lightInFlow" + shaderAnimationNumber, InFlowDataAndPosition);
                 shaderMat.SetShaderParameter("lightOutFlow" + shaderAnimationNumber, outFlowDataAndPosition);
                 shaderMat.SetShaderParameter("animation" + shaderAnimationNumber, slot.Texture);
@@ -204,18 +198,17 @@ namespace ConnectAPIC.LayoutWindow.View
             return copy;
         }
 
-        protected List<AnimationSlot> CreateRGBAnimSlots( RectSide inflowSide, Texture overlayAnimTexture, int tileOffsetX = 0, int tileOffsetY = 0, Vector2? textureOffset = default)
+        protected List<AnimationSlot> CreateRGBAnimSlots(RectSide inflowSide, Texture overlayAnimTexture, int tileOffsetX = 0, int tileOffsetY = 0)
         {
-            textureOffset ??=Vector2.Zero;
             var tileOffset = new Vector2I(tileOffsetX, tileOffsetY);
             return new List<AnimationSlot>()
             {
-                new AnimationSlot(LightColor.Red, tileOffset, RectSide.Left, OverlayRed, overlayAnimTexture,new Vector2I(WidthInTiles, HeightInTiles), (Vector2) textureOffset),
-                new AnimationSlot(LightColor.Green,tileOffset, RectSide.Left, OverlayGreen, overlayAnimTexture, new Vector2I(WidthInTiles, HeightInTiles),(Vector2) textureOffset),
-                new AnimationSlot(LightColor.Blue,tileOffset, RectSide.Left, OverlayBlue, overlayAnimTexture, new Vector2I(WidthInTiles, HeightInTiles),(Vector2) textureOffset),
+                new AnimationSlot(LightColor.Red, tileOffset, inflowSide, OverlayRed, overlayAnimTexture,new Vector2I(WidthInTiles, HeightInTiles)),
+                new AnimationSlot(LightColor.Green,tileOffset, inflowSide, OverlayGreen, overlayAnimTexture, new Vector2I(WidthInTiles, HeightInTiles)),
+                new AnimationSlot(LightColor.Blue,tileOffset, inflowSide, OverlayBlue, overlayAnimTexture, new Vector2I(WidthInTiles, HeightInTiles)),
             };
         }
 
-        
+
     }
 }

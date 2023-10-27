@@ -49,7 +49,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
 
         private void Grid_OnComponentRemoved(ComponentBase component, int x, int y)
         {
-            ResetTilesAt(x,y,component.WidthInTiles, component.HeightInTiles);
+            ResetTilesAt(x, y, component.WidthInTiles, component.HeightInTiles);
             if (GridView.lightPropagationIsPressed)
             {
                 HideLightPropagation();
@@ -75,27 +75,27 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         {
             foreach (var componentView in GridComponentViews)
             {
-                if(componentView?.IsQueuedForDeletion() == false)
+                if (componentView?.IsQueuedForDeletion() == false)
                     componentView.QueueFree();
             }
         }
-        
+
         public void RegisterComponentView(ComponentBaseView componentView)
         {
             for (int x = componentView.GridX; x < componentView.GridX + componentView.WidthInTiles; x++)
             {
                 for (int y = componentView.GridY; y < componentView.GridY + componentView.HeightInTiles; y++)
                 {
-                    if (!IsInGrid(x, y, 1, 1)) continue;                    
+                    if (!IsInGrid(x, y, 1, 1)) continue;
                     GridComponentViews[x, y] = componentView;
                 }
             }
         }
         public void ResetTilesAt(int startX, int startY, int width, int height)
         {
-            for (int x = startX;  x < startX + width; x++)
+            for (int x = startX; x < startX + width; x++)
             {
-                for (int y = startY; y < startY +height; y++)
+                for (int y = startY; y < startY + height; y++)
                 {
                     if (!IsInGrid(x, y, 1, 1)) continue;
                     var oldComponent = GridComponentViews[x, y];
@@ -111,7 +111,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         public ComponentBaseView CreateComponentViewOfType(int gridx, int gridy, DiscreteRotation rotationCounterClockwise, Type componentViewType, ComponentBase componentModel)
         {
             var ComponentView = ComponentViewFactory.Instance.CreateComponentView(componentViewType);
-            ComponentView.RegisterInGrid(gridx, gridy, rotationCounterClockwise , this);
+            ComponentView.RegisterInGrid(gridx, gridy, rotationCounterClockwise, this);
             RegisterComponentView(ComponentView);
             GridView.DragDropProxy.AddChild(ComponentView); // it has to be the child of the DragDropArea to be displayed
             return ComponentView;
@@ -137,16 +137,18 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         private void AssignLightToComponentViews(Dictionary<Guid, Complex> lightVector, LightColor color)
         {
             List<ComponentBase> components = Grid.GetAllComponents();
-            foreach( var componentModel in components)
+            foreach (var componentModel in components)
             {
                 try
                 {
                     List<LightAtPin> lightAtPins = CalculateLightAtPins(lightVector, color, componentModel);
                     GridComponentViews[componentModel.GridXMainTile, componentModel.GridYMainTile].DisplayLightVector(lightAtPins);
-                } catch (Exception ex) {
+                }
+                catch (Exception ex)
+                {
                     CustomLogger.PrintEx(ex);
                 }
-                
+
             }
         }
 
@@ -181,13 +183,21 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
 
         public void HideLightPropagation()
         {
-            for (int x = 0; x < Grid.Width; x++)
+            try
             {
-                for (int y = 0; y < Grid.Height; y++)
+                for (int x = 0; x < Grid.Width; x++)
                 {
-                    GridComponentViews[x, y]?.HideLightVector();
+                    for (int y = 0; y < Grid.Height; y++)
+                    {
+                        GridComponentViews[x, y]?.HideLightVector();
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                CustomLogger.PrintEx(ex);
+            }
+
         }
     }
 }

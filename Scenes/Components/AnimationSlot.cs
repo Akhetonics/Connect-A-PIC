@@ -11,14 +11,13 @@ namespace ConnectAPIC.LayoutWindow.View
 {
     public class AnimationSlot
 	{
-		public AnimationSlot(LightColor color, Vector2I tileOffsetXY, RectSide side, Sprite2D baseOverlaySprite, Texture texture , Vector2I componentSizeInTiles , Vector2 textureOffset) {
+		public AnimationSlot(LightColor color, Vector2I tileOffsetXY, RectSide side, Sprite2D baseOverlaySprite, Texture texture , Vector2I componentSizeInTiles ) {
 			this.Color = color;
             TileOffset = tileOffsetXY;
 			Side = side;
             BaseOverlaySprite = baseOverlaySprite;
             this.Texture = texture;
             ComponentSizeInTiles = componentSizeInTiles;
-            TextureOffset = textureOffset;
         }
 		public bool IsMatchingWithLightVector(LightAtPin lightVector )
 		{
@@ -69,6 +68,5 @@ namespace ConnectAPIC.LayoutWindow.View
         public Sprite2D BaseOverlaySprite { get; }
         public Texture Texture { get; }
         public Vector2I ComponentSizeInTiles { get; }
-        public Vector2 TextureOffset { get; }
     }
 }

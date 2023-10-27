@@ -8,7 +8,6 @@
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_jbr3n"]
 shader = ExtResource("4_jqo6x")
 shader_parameter/laserColor = Vector4(1, 0, 0, 1)
-shader_parameter/sizeInTiles = Vector2(1, 1)
 shader_parameter/lightInFlow1 = null
 shader_parameter/lightOutFlow1 = null
 shader_parameter/lightInFlow2 = null
@@ -27,7 +26,7 @@ shader_parameter/lightInFlow8 = null
 shader_parameter/lightOutFlow8 = null
 shader_parameter/animation1 = ExtResource("3_f2wga")
 
-[node name="TextureRect" type="TextureRect" node_paths=PackedStringArray("OverlayRed")]
+[node name="TextureRect" type="TextureRect" node_paths=PackedStringArray("OverlayBluePrint")]
 custom_minimum_size = Vector2(60, 60)
 offset_right = 60.0
 offset_bottom = 60.0
@@ -39,7 +38,7 @@ script = ExtResource("2_w7y6r")
 OverlayAnimTexture = ExtResource("3_f2wga")
 WidthInTiles = 1
 HeightInTiles = 1
-OverlayRed = NodePath("OverlayRed")
+OverlayBluePrint = NodePath("OverlayRed")
 
 [node name="Background" type="Sprite2D" parent="."]
 scale = Vector2(2, 2)

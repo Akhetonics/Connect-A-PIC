@@ -33,7 +33,7 @@ shader_parameter/lightInFlow8 = null
 shader_parameter/lightOutFlow8 = null
 shader_parameter/animation1 = ExtResource("3_0fxxl")
 
-[node name="TextureRect" type="TextureRect" node_paths=PackedStringArray("leftComplex", "rightComplex", "OverlayRed")]
+[node name="TextureRect" type="TextureRect" node_paths=PackedStringArray("leftComplex", "rightComplex", "OverlayBluePrint")]
 custom_minimum_size = Vector2(60, 60)
 offset_right = 60.0
 offset_bottom = 60.0
@@ -44,7 +44,7 @@ leftComplex = NodePath("LabelL")
 rightComplex = NodePath("LabelR")
 WidthInTiles = 1
 HeightInTiles = 1
-OverlayRed = NodePath("OverlayRed")
+OverlayBluePrint = NodePath("OverlayRed")
 
 [node name="LabelL" type="Label" parent="."]
 layout_mode = 0

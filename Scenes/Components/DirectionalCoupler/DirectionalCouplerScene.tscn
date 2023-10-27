@@ -10,16 +10,15 @@
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_efdvx"]
 shader = ExtResource("7_mjn6h")
-shader_parameter/laserColor = null
-shader_parameter/sizeInTiles = Vector2(2, 2)
-shader_parameter/lightInFlow1 = null
-shader_parameter/lightOutFlow1 = null
-shader_parameter/lightInFlow2 = null
-shader_parameter/lightOutFlow2 = null
-shader_parameter/lightInFlow3 = null
-shader_parameter/lightOutFlow3 = null
-shader_parameter/lightInFlow4 = null
-shader_parameter/lightOutFlow4 = null
+shader_parameter/laserColor = Vector4(1, 0, 0, 1)
+shader_parameter/lightInFlow1 = Vector4(0, 0, 0, 0)
+shader_parameter/lightOutFlow1 = Vector4(1, 0.945, 0, 0)
+shader_parameter/lightInFlow2 = Vector4(0, 0, 0, 0)
+shader_parameter/lightOutFlow2 = Vector4(1, 2, 0, 0)
+shader_parameter/lightInFlow3 = Vector4(0, 0, 0, 0)
+shader_parameter/lightOutFlow3 = Vector4(1, 23, 0, 0)
+shader_parameter/lightInFlow4 = Vector4(0, 0, 0, 0)
+shader_parameter/lightOutFlow4 = Vector4(1, 12, 0, 0)
 shader_parameter/lightInFlow5 = null
 shader_parameter/lightOutFlow5 = null
 shader_parameter/lightInFlow6 = null
@@ -28,8 +27,12 @@ shader_parameter/lightInFlow7 = null
 shader_parameter/lightOutFlow7 = null
 shader_parameter/lightInFlow8 = null
 shader_parameter/lightOutFlow8 = null
+shader_parameter/animation1 = ExtResource("2_1cs17")
+shader_parameter/animation2 = ExtResource("3_jbild")
+shader_parameter/animation3 = ExtResource("4_sgbp3")
+shader_parameter/animation4 = ExtResource("5_hqp3p")
 
-[node name="DirectionalCoupler" type="TextureRect" node_paths=PackedStringArray("OverlayRed")]
+[node name="DirectionalCoupler" type="TextureRect" node_paths=PackedStringArray("OverlayBluePrint")]
 custom_minimum_size = Vector2(122, 122)
 layout_direction = 1
 offset_right = 122.0
@@ -42,7 +45,7 @@ LightFlowOverlayRightUpIn = ExtResource("4_sgbp3")
 LightFlowOverlayRightDownIn = ExtResource("5_hqp3p")
 WidthInTiles = 2
 HeightInTiles = 2
-OverlayRed = NodePath("OverlayRed")
+OverlayBluePrint = NodePath("OverlayRed")
 
 [node name="BackgroundImage" type="Sprite2D" parent="."]
 scale = Vector2(2, 2)
