@@ -34,13 +34,19 @@ uniform sampler2D animation6;
 uniform sampler2D animation7;
 uniform sampler2D animation8;
 // ... die hälfte von oben, also 8 (in/out ist ja nur umgedreht in der Zeit)
-
-vec4 getAnimationFrameColor(sampler2D animationTexture, vec2 uvCoord, float elapsedTime, float speed, vec4 lightAttributes) {
+uniform float numAnimationColumns = 4.0;
+vec4 getAnimationFrameColor(sampler2D animationTexture, vec2 uvCoord, float elapsedTim2e, float speed, vec4 lightAttributes) {
+	float elapsedTime = round(TIME * speed);
     float lightPhase = lightAttributes.y;
-    float animationOffset = elapsedTime + round(lightPhase * speed);
-    int currentFrameIndex = int(animationOffset) % 4;
-    float frameShift = float(currentFrameIndex) / 4.0;
-    vec2 adjustedUV = vec2((uvCoord.x / 4.0 + frameShift), uvCoord.y);
+	float animationOffset = elapsedTime + round(lightPhase * speed);
+	    
+    int currentFrameIndex = int(animationOffset) % int(numAnimationColumns);
+    float frameShift = float(currentFrameIndex) / numAnimationColumns;
+	if(speed < 0.0)
+	{
+		 frameShift = 1.0 -abs(frameShift- 1.0/numAnimationColumns);
+	}
+    vec2 adjustedUV = vec2((uvCoord.x / numAnimationColumns + frameShift), uvCoord.y);
     return texture(animationTexture, adjustedUV);
 }
 
@@ -72,15 +78,23 @@ void fragment(){
     
   // Der rot Kanal = höhen, z.B.
   // Der blau Kanal = tiefen
-  float intensity = getIntensityOfLight( col_anim1in, lightInFlow1.x) + getIntensityOfLight( col_anim1out, lightOutFlow1.x) +
-		getIntensityOfLight( col_anim2in, lightInFlow2.x) + getIntensityOfLight( col_anim2out, lightOutFlow2.x) + 
-		getIntensityOfLight( col_anim3in, lightInFlow3.x) + getIntensityOfLight( col_anim3out, lightOutFlow3.x) + 
-		getIntensityOfLight( col_anim4in, lightInFlow4.x) + getIntensityOfLight( col_anim4out, lightOutFlow4.x) + 
-		getIntensityOfLight( col_anim5in, lightInFlow5.x) + getIntensityOfLight( col_anim5out, lightOutFlow5.x) + 
-		getIntensityOfLight( col_anim6in, lightInFlow6.x) + getIntensityOfLight( col_anim6out, lightOutFlow6.x) + 
-		getIntensityOfLight( col_anim7in, lightInFlow7.x) + getIntensityOfLight( col_anim7out, lightOutFlow7.x) + 
-		getIntensityOfLight( col_anim8in, lightInFlow8.x) + getIntensityOfLight( col_anim8out, lightOutFlow8.x);
+  
+  float intensity = getIntensityOfLight( col_anim1in, lightInFlow1.x) +
+		getIntensityOfLight( col_anim2in, lightInFlow2.x) +
+		getIntensityOfLight( col_anim3in, lightInFlow3.x) +
+		getIntensityOfLight( col_anim4in, lightInFlow4.x) +
+		getIntensityOfLight( col_anim5in, lightInFlow5.x) +
+		getIntensityOfLight( col_anim6in, lightInFlow6.x) +
+		getIntensityOfLight( col_anim7in, lightInFlow7.x) +
+		getIntensityOfLight( col_anim8in, lightInFlow8.x) +
+		getIntensityOfLight( col_anim1out, lightOutFlow1.x) +
+		getIntensityOfLight( col_anim2out, lightOutFlow2.x) +
+		getIntensityOfLight( col_anim3out, lightOutFlow3.x) +
+		getIntensityOfLight( col_anim4out, lightOutFlow4.x) +
+		getIntensityOfLight( col_anim5out, lightOutFlow5.x) +
+		getIntensityOfLight( col_anim6out, lightOutFlow6.x) +
+		getIntensityOfLight( col_anim7out, lightOutFlow7.x) +
+		getIntensityOfLight( col_anim8out, lightOutFlow8.x);
 
-
-  COLOR = laserColor * abs(2.0* intensity);
+  COLOR = laserColor * 2.5 * abs(intensity);
 }"

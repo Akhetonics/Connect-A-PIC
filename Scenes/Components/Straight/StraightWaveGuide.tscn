@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://d3th1vtdpb7mb" path="res://Scenes/Components/Straight/Component I.png" id="1_3hlav"]
 [ext_resource type="Script" path="res://Scenes/Components/Straight/StraightWaveGuideView.cs" id="2_4ru4l"]
 [ext_resource type="Texture2D" uid="uid://dodssmnu1iubn" path="res://Scenes/Components/Straight/Component I_Horizontal_Overlay.png" id="3_0fxxl"]
-[ext_resource type="Shader" uid="uid://cl06n8nroabam" path="res://Scenes/Components/LightOverlayShaded.tres" id="4_5kpar"]
+[ext_resource type="Shader" uid="uid://cl06n8nroabam" path="res://Scenes/Components/LightOverlayShaded.tres" id="4_4nh6w"]
 
 [sub_resource type="SystemFont" id="SystemFont_r1od1"]
 font_weight = 375
@@ -13,9 +13,9 @@ msdf_pixel_range = 14
 msdf_size = 44
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ljv2j"]
-shader = ExtResource("4_5kpar")
-shader_parameter/laserColor = Vector4(1, 1, 1, 1)
-shader_parameter/lightInFlow1 = null
+shader = ExtResource("4_4nh6w")
+shader_parameter/laserColor = Vector4(1, 0, 0, 1)
+shader_parameter/lightInFlow1 = Vector4(1, 0, 0, 0)
 shader_parameter/lightOutFlow1 = null
 shader_parameter/lightInFlow2 = null
 shader_parameter/lightOutFlow2 = null
@@ -31,6 +31,7 @@ shader_parameter/lightInFlow7 = null
 shader_parameter/lightOutFlow7 = null
 shader_parameter/lightInFlow8 = null
 shader_parameter/lightOutFlow8 = null
+shader_parameter/numAnimationColumns = 4.0
 shader_parameter/animation1 = ExtResource("3_0fxxl")
 
 [node name="TextureRect" type="TextureRect" node_paths=PackedStringArray("leftComplex", "rightComplex", "OverlayBluePrint")]

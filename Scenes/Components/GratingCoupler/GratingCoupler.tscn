@@ -11,7 +11,7 @@ load_path = "res://.godot/imported/Grating Coupler Overlay.png-c93f279024ef4e949
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_1ai6y"]
 shader = ExtResource("4_7uyjf")
 shader_parameter/laserColor = Vector4(1, 0, 0, 1)
-shader_parameter/lightInFlow1 = null
+shader_parameter/lightInFlow1 = Vector4(1, 0, 0, 0)
 shader_parameter/lightOutFlow1 = null
 shader_parameter/lightInFlow2 = null
 shader_parameter/lightOutFlow2 = null
@@ -27,6 +27,7 @@ shader_parameter/lightInFlow7 = null
 shader_parameter/lightOutFlow7 = null
 shader_parameter/lightInFlow8 = null
 shader_parameter/lightOutFlow8 = null
+shader_parameter/numAnimationColumns = 4.0
 shader_parameter/animation1 = SubResource("CompressedTexture2D_k3gdy")
 
 [node name="TextureRect" type="TextureRect" node_paths=PackedStringArray("OverlayBluePrint")]
