@@ -124,6 +124,19 @@ namespace ConnectAPIC.LayoutWindow.View
             OverlayRed?.Hide();
             OverlayGreen?.Hide();
             OverlayBlue?.Hide();
+            int shaderAnimationNumber = 1;
+            var emptyTexture = new Texture();
+            foreach ( AnimationSlot slot in AnimationSlots)
+            {
+                if (slot?.BaseOverlaySprite?.Material is ShaderMaterial shaderMat)
+                {
+                    shaderMat.SetShaderParameter("lightInFlow" + shaderAnimationNumber, new Vector4());
+                    shaderMat.SetShaderParameter("lightOutFlow" + shaderAnimationNumber, new Vector4());
+                    shaderMat.SetShaderParameter("animation" + shaderAnimationNumber, emptyTexture);
+                    shaderMat.SetShaderParameter("lightColor", new Godot.Color(1,0,0));
+                }
+                shaderAnimationNumber++;
+            }
         }
         public virtual void DisplayLightVector(List<LightAtPin> lightsAtPins)
         {

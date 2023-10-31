@@ -39,13 +39,13 @@ namespace ConnectAPIC.LayoutWindow.View
 				throw;
 			}
 		}
-        private Vector2I RotateOffsetBy90CounterClockwise(Vector2I offset)
+        private Vector2I RotateOffsetBy90Clockwise(Vector2I offset)
         {
             return new Vector2I(ComponentSizeInTiles.Y - 1 - offset.Y, offset.X);
         }
-        private Vector2I RotateOffsetBy90Clockwise(Vector2I offset)
+        private Vector2I RotateOffsetBy90CounterClockwise(Vector2I offset)
         {
-            return new Vector2I(offset.Y, ComponentSizeInTiles.X - 1 - offset.Y);
+            return new Vector2I(offset.Y, ComponentSizeInTiles.X - 1 - offset.X);
         }
         public void RotateAttachedComponentCC(DiscreteRotation targetRotationCC ) {
             var cycles = this.Rotation.CalculateCyclesTillTargetRotation(targetRotationCC);
