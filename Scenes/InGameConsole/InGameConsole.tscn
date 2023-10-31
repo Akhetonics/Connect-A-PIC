@@ -1,0 +1,59 @@
+[gd_scene load_steps=4 format=3 uid="uid://bd8isg4mddv21"]
+
+[ext_resource type="Script" path="res://Scripts/Debuggers/CustomLogger.cs" id="1_in1qc"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jfvjg"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.160784, 0.176471, 0.184314, 0.839216)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.305882, 0.305882, 0.305882, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0.0588235, 0.0588235, 0.0588235, 0.733333)
+
+[sub_resource type="Theme" id="Theme_76st6"]
+
+[node name="InGameConsole" type="ScrollContainer" node_paths=PackedStringArray("_LoggingParent", "_InfoText", "_ErrorText")]
+top_level = true
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -336.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBoxFlat_jfvjg")
+script = ExtResource("1_in1qc")
+_LoggingParent = NodePath("VBoxContainer")
+_InfoText = NodePath("VBoxContainer/InfoText")
+_ErrorText = NodePath("VBoxContainer/ErrorText")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = SubResource("Theme_76st6")
+
+[node name="ErrorText" type="RichTextLabel" parent="VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_colors/default_color = Color(1, 0.137255, 0.192157, 1)
+text = "test text in your est"
+fit_content = true
+scroll_active = false
+
+[node name="InfoText" type="RichTextLabel" parent="VBoxContainer"]
+visible = false
+layout_mode = 2
+theme_override_colors/default_color = Color(0, 0.792157, 0.317647, 1)
+text = "test text in your est"
+fit_content = true
+scroll_active = false

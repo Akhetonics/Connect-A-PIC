@@ -1,0 +1,36 @@
+﻿<Project Sdk="Godot.NET.Sdk/4.1.0">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <RootNamespace>ConnectAPIC</RootNamespace>
+    <StartAction>Program</StartAction>
+    <StartProgram>C:\Program Files\Godot_v4.1\Godot_v4.1.exe</StartProgram>
+    <StartArguments>--path C:\dev\Akhetonics\Connect-A-PIC\</StartArguments>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Remove="Connect-A-Pic-Core\**" />
+    <Compile Remove="libraries\**" />
+    <Compile Remove="PDK\**" />
+    <Compile Remove="Tests\**" />
+    <EmbeddedResource Remove="Connect-A-Pic-Core\**" />
+    <EmbeddedResource Remove="libraries\**" />
+    <EmbeddedResource Remove="PDK\**" />
+    <EmbeddedResource Remove="Tests\**" />
+    <Compile Remove="UnitTests\**" />
+    <EmbeddedResource Remove="UnitTests\**" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="Scenes\Program.cs" />
+    <Compile Remove="Scenes\Tests.cs" />
+    <Compile Remove="Scenes\Scenes.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="MathNet.Numerics.dll" />
+    <None Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="Connect-A-Pic-Core\CAP-Core.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,12 +1,8 @@
-﻿using ConnectAPIC.LayoutWindow.ViewModel.Commands;
-using ConnectAPIC.Scenes.Component;
-using ConnectAPIC.Scenes.Tiles;
-using Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using CAP_Core;
+using CAP_Core.Component;
+using CAP_Core.Component.ComponentHelpers;
+using CAP_Core.Tiles;
+using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 
 namespace UnitTests
 {

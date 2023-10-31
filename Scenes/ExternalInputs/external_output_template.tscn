@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://c0mcgj6g7ik52"]
+
+[ext_resource type="Texture2D" uid="uid://bj1u105ivy4eu" path="res://GFX/ExternalOutput.png" id="1_wgkqj"]
+
+[node name="ExternalOutputTemplate" type="TextureRect"]
+custom_minimum_size = Vector2(64, 64)
+offset_right = 148.48
+offset_bottom = 64.0
+texture = ExtResource("1_wgkqj")
+expand_mode = 5
