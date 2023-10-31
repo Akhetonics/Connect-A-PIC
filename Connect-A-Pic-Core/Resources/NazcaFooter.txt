@@ -1,0 +1,4 @@
+    return fullLayoutInner
+
+nd.print_warning = False
+nd.export_gds(topcells=FullDesign("Akhetonics_ConnectAPIC"), filename="ReplaceThisFileName.gds")

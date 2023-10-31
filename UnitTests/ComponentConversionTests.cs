@@ -1,8 +1,7 @@
+using CAP_Core.Component;
+using CAP_Core.Component.ComponentHelpers;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel;
-using ConnectAPIC.Scenes.Component;
-using ConnectAPIC.Scenes.Tiles;
-using Tiles;
 
 namespace UnitTests
 {

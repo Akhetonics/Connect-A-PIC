@@ -1,4 +1,4 @@
-﻿<Project Sdk="Godot.NET.Sdk/4.1.0">
+﻿<Project Sdk="Godot.NET.Sdk/4.1.1">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>ConnectAPIC</RootNamespace>
@@ -7,7 +7,13 @@
     <StartArguments>--path C:\dev\Akhetonics\Connect-A-PIC\</StartArguments>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="Connect-A-Pic-Core\**" />
+    <Compile Remove="libraries\**" />
+    <Compile Remove="PDK\**" />
     <Compile Remove="Tests\**" />
+    <EmbeddedResource Remove="Connect-A-Pic-Core\**" />
+    <EmbeddedResource Remove="libraries\**" />
+    <EmbeddedResource Remove="PDK\**" />
     <EmbeddedResource Remove="Tests\**" />
     <Compile Remove="UnitTests\**" />
     <EmbeddedResource Remove="UnitTests\**" />
@@ -18,18 +24,13 @@
     <Compile Remove="Scenes\Scenes.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="LayoutWindow\View\StandardDialogs\" />
-    <Folder Include="Scenes\" />
+    <None Include="MathNet.Numerics.dll" />
+    <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="MathNet.Numerics.dll" />
-    <None Include="PDK\TestPDK.py" />
-    <ContentWithTargetPath Include="MathNet.Numerics.dll">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>MathNet.Numerics.dll</TargetPath>
-    </ContentWithTargetPath>
+    <ProjectReference Include="Connect-A-Pic-Core\CAP-Core.csproj" />
   </ItemGroup>
 </Project>

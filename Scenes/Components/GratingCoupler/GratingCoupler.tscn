@@ -1,0 +1,52 @@
+[gd_scene load_steps=7 format=3 uid="uid://bm3jaqj5in510"]
+
+[ext_resource type="Texture2D" uid="uid://b0uafxekt6a6m" path="res://Scenes/Components/GratingCoupler/Grating Coupler.png" id="1_r641d"]
+[ext_resource type="Texture2D" uid="uid://dyrox274yolv2" path="res://Scenes/Components/GratingCoupler/Grating Coupler Overlay.png" id="2_slx5p"]
+[ext_resource type="Script" path="res://Scenes/Components/GratingCoupler/GratingCouplerView.cs" id="2_vegh3"]
+[ext_resource type="Shader" uid="uid://cl06n8nroabam" path="res://Scenes/Components/LightOverlayShaded.tres" id="4_7uyjf"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_k3gdy"]
+load_path = "res://.godot/imported/Grating Coupler Overlay.png-c93f279024ef4e9499b100c6ae537c74.ctex"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1ai6y"]
+shader = ExtResource("4_7uyjf")
+shader_parameter/laserColor = Vector4(1, 0, 0, 1)
+shader_parameter/lightInFlow1 = Vector4(1, 0, 0, 0)
+shader_parameter/lightOutFlow1 = null
+shader_parameter/lightInFlow2 = null
+shader_parameter/lightOutFlow2 = null
+shader_parameter/lightInFlow3 = null
+shader_parameter/lightOutFlow3 = null
+shader_parameter/lightInFlow4 = null
+shader_parameter/lightOutFlow4 = null
+shader_parameter/lightInFlow5 = null
+shader_parameter/lightOutFlow5 = null
+shader_parameter/lightInFlow6 = null
+shader_parameter/lightOutFlow6 = null
+shader_parameter/lightInFlow7 = null
+shader_parameter/lightOutFlow7 = null
+shader_parameter/lightInFlow8 = null
+shader_parameter/lightOutFlow8 = null
+shader_parameter/numAnimationColumns = 4.0
+shader_parameter/animation1 = SubResource("CompressedTexture2D_k3gdy")
+
+[node name="TextureRect" type="TextureRect" node_paths=PackedStringArray("OverlayBluePrint")]
+offset_right = 60.0
+offset_bottom = 60.0
+stretch_mode = 2
+script = ExtResource("2_vegh3")
+OverlayAnimTexture = ExtResource("2_slx5p")
+WidthInTiles = 1
+HeightInTiles = 1
+OverlayBluePrint = NodePath("OverlayRed")
+
+[node name="Background" type="Sprite2D" parent="."]
+scale = Vector2(2, 2)
+texture = ExtResource("1_r641d")
+centered = false
+
+[node name="OverlayRed" type="Sprite2D" parent="."]
+material = SubResource("ShaderMaterial_1ai6y")
+scale = Vector2(2, 2)
+texture = ExtResource("1_r641d")
+centered = false
