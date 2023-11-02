@@ -52,7 +52,7 @@ namespace CAP_Core.LightFlow
         public List<SMatrix> GetAllComponentsSMatrices()
         {
             var components = Grid.GetAllComponents();
-            return Grid.GetAllComponents().Select(c => c.Connections).ToList();   
+            return Grid.GetAllComponents().Select(c => c.Connections).ToList();
         }
         private void CalcAllConnectionsBetweenComponents()
         {

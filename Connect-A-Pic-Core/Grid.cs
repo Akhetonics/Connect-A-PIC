@@ -153,24 +153,11 @@ namespace CAP_Core
             }
             return components.Distinct().ToList();
         }
-        public ComponentBase? PlaceComponentByType(int x, int y, Type componentType)
-        {
-            ComponentBase component = ComponentFactory.Instance.CreateComponent(componentType);
-            if (IsColliding(x, y, component.WidthInTiles, component.HeightInTiles))
-            {
-                var blockingComponent = GetComponentAt(x, y);
-                throw new ComponentCannotBePlacedException(component, blockingComponent);
-            }
-            PlaceComponent(x, y, component);
-            return component;
-        }
-
         public void PlaceComponent(int x, int y, ComponentBase component)
         {
             if (IsColliding(x, y, component.WidthInTiles, component.HeightInTiles))
             {
                 var blockingComponent = GetComponentAt(x, y);
-                IsColliding(x, y, component.WidthInTiles, component.HeightInTiles);
                 throw new ComponentCannotBePlacedException(component, blockingComponent);
             }
             component.RegisterPositionInGrid(x, y);

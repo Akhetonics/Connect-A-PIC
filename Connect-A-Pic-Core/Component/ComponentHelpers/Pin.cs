@@ -2,6 +2,7 @@ using CAP_Core.Tiles;
 using System.ComponentModel;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 
 namespace CAP_Core.Component.ComponentHelpers
 {
@@ -11,8 +12,8 @@ namespace CAP_Core.Component.ComponentHelpers
         public string Name { get; set; } // the nazca name like b0, a0, a1}
         public Guid IDInFlow { get; set; }
         public Guid IDOutFlow { get; set; }
-        public Complex LightInflow { get; set; } // the light flowing into this component at this pin
-        public Complex LightOutflow { get; set; } // the light exiting this component at this pin
+        [JsonIgnore] public Complex LightInflow { get; set; } // the light flowing into this component at this pin
+        [JsonIgnore] public Complex LightOutflow { get; set; } // the light exiting this component at this pin
         private RectSide _side;
         public RectSide Side
         {

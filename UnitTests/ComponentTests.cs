@@ -3,11 +3,18 @@ using CAP_Core.Component;
 using CAP_Core.Component.ComponentHelpers;
 using CAP_Core.Tiles;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
+using Newtonsoft.Json;
 
 namespace UnitTests
 {
     public class ComponentTests
     {
+        [Fact]
+        public void TestDirectionalCouplerSerialization()
+        {
+            DirectionalCoupler coupler = new DirectionalCoupler();
+            var couplerText = JsonConvert.SerializeObject(coupler);
+        }
         [Fact]
         public void TestComponentRotation()
         {

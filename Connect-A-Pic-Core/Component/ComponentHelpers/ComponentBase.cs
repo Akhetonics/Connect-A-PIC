@@ -1,6 +1,7 @@
 using CAP_Core.Helpers;
 using CAP_Core.LightFlow;
 using CAP_Core.Tiles;
+using System.Text.Json.Serialization;
 
 namespace CAP_Core.Component.ComponentHelpers
 {
@@ -8,9 +9,9 @@ namespace CAP_Core.Component.ComponentHelpers
     {
         public int WidthInTiles => Parts.GetLength(0);
         public int HeightInTiles => Parts.GetLength(1);
-        public bool IsPlacedInGrid { get; private set; }
-        public int GridXMainTile { get; protected set; }
-        public int GridYMainTile { get; protected set; }
+        private bool IsPlacedInGrid { get; set; }
+        [JsonIgnore] public int GridXMainTile { get; protected set; }
+        [JsonIgnore] public int GridYMainTile { get; protected set; }
         public virtual Part[,] Parts { get; protected set; }
         public SMatrix Connections { get; protected set; }
         public abstract string NazcaFunctionName { get; set; }

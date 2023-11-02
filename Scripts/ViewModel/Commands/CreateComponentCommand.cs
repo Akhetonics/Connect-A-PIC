@@ -36,7 +36,8 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             if (CanExecute(parameter) == false) return;
             var compParams = (CreateComponentArgs)parameter;
             var newComponentType = ComponentViewModelTypeConverter.ToModel(compParams.ComponentViewType);
-            GridModel.PlaceComponentByType(compParams.Gridx, compParams.Gridy, newComponentType);
+            ComponentBase component = ComponentFactory.Instance.CreateComponent(newComponentType);
+            GridModel.PlaceComponent(compParams.Gridx, compParams.Gridy, component);
         }
     }
     public class CreateComponentArgs

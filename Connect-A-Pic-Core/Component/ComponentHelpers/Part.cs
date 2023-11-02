@@ -1,12 +1,11 @@
-using CAP_Core.Component.ComponentHelpers;
 using CAP_Core.Helpers;
 using CAP_Core.Tiles;
 
-namespace CAP_Core
+namespace CAP_Core.Component.ComponentHelpers
 {
     public class Part
     {
-        protected List<Pin> Pins;
+        public readonly List<Pin> Pins;
         public DiscreteRotation Rotation90 { get; set; }
         public Part()
         {

@@ -4,6 +4,7 @@ using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel;
 using Godot;
 using System.Collections.Generic;
+using System.Reflection;
 
 namespace ConnectAPic.LayoutWindow
 {
@@ -44,7 +45,15 @@ namespace ConnectAPic.LayoutWindow
 				QueueFree(); // delete this object as there is already another GameManager in the scene
 			}
 		}
+		public void LoadAllComponentPCKs()
+		{
+			var dll = Assembly.LoadFile("mod.dll");
 
+		}
+		public void LoadComponentPCK( string path)
+		{
+
+		}
 		private void InitializeExternalPortViews(List<ExternalPort> StandardPorts)
 		{
 			ExternalInputRedTemplate.Visible = false;
