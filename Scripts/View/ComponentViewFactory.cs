@@ -24,8 +24,7 @@ namespace ConnectAPIC.LayoutWindow.View
                 instance = this;
                 PackedComponentScenes = new List<PackedScene>();
                 var folderPath = "Scenes\\Components";
-                string[] sceneFiles = Directory.GetFiles(folderPath, "*.tscn", SearchOption.AllDirectories);
-                foreach (string sceneFile in sceneFiles)
+                foreach (string sceneFile in Directory.EnumerateFiles(folderPath, "*.tscn", SearchOption.AllDirectories))
                 {
                     string godotPath = sceneFile.Replace(folderPath, "res://Scenes/Components").Replace("\\", "/");
                     PackedScene scene = GD.Load<PackedScene>(godotPath);
@@ -45,7 +44,8 @@ namespace ConnectAPIC.LayoutWindow.View
             packedComponentCache = new Dictionary<Type, PackedScene>();
             foreach (PackedScene componentTemplate in PackedComponentScenes)
             {
-                ComponentBaseView mainNode = componentTemplate.Instantiate() as ComponentBaseView;
+                var mainNode = componentTemplate.Instantiate();
+                mainNode.SetScript(new ComponentBaseView());
                 if (mainNode == null)
                 {
                     CustomLogger.PrintErr($"ComponentTemplate is not of type ComponentBaseView: {componentTemplate.ResourcePath}");

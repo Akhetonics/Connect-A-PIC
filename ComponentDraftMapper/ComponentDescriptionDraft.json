@@ -1,0 +1,37 @@
+{
+	"component": {
+		"fileFormatVersion": 1,
+		"identifier": "GratingCoupler",
+		"nazcaFunctionParameters": "",
+		"nazcaFunctionName": "",
+		"deltaLength": 0,
+		"widthInTiles": 1,
+		"heightInTiles": 1,
+		"pins": [
+			{
+				"number": 0,
+				"name": "west0",
+				"matterType": 1,
+				"side": 2,
+				"partX": 0,
+				"partY": 0
+			}
+		],
+		"connections": [
+			{
+				"fromPinNr": 1,
+				"toPinNr": 2,
+				"magnitude": 0,
+				"phaseInDegrees": 0
+			}
+		],
+		"overlays": [
+			{
+				"overlayAnimTexturePath": "res://Scenes/Components/GratingCoupler/Grating Coupler Overlay.png",
+				"rectSide": "Left",
+				"tileOffsetX": 0,
+				"tileOffsetY": 0
+			}
+		]
+	}
+}

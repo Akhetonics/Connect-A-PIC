@@ -1,5 +1,6 @@
 using CAP_Core;
 using CAP_Core.ExternalPorts;
+using ConnectAPIC.ComponentDrafts;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel;
 using Godot;
@@ -39,20 +40,12 @@ namespace ConnectAPic.LayoutWindow
 				GridViewModel = new GridViewModel(GridView, Grid);
 				GridView.Initialize(GridViewModel);
 				InitializeExternalPortViews(Grid.ExternalPorts);
+				var componentDrafts = ComponentImporter.ImportAllComponents();
 			}
 			else
 			{
 				QueueFree(); // delete this object as there is already another GameManager in the scene
 			}
-		}
-		public void LoadAllComponentPCKs()
-		{
-			var dll = Assembly.LoadFile("mod.dll");
-
-		}
-		public void LoadComponentPCK( string path)
-		{
-
 		}
 		private void InitializeExternalPortViews(List<ExternalPort> StandardPorts)
 		{

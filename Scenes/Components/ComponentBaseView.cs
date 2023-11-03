@@ -16,7 +16,14 @@ using System.Runtime.CompilerServices;
 
 namespace ConnectAPIC.LayoutWindow.View
 {
-    public abstract partial class ComponentBaseView : TextureRect
+    public record AnimationSlotOverlayData
+    {
+        public Texture LightFlowOverlay;
+        public RectSide Side;
+        public int OffsetX;
+        public int OffsetY;
+    }
+    public partial class ComponentBaseView : TextureRect
     {
         [Export] public int WidthInTiles { get; private set; }
         [Export] public int HeightInTiles { get; private set; }
@@ -31,7 +38,6 @@ namespace ConnectAPIC.LayoutWindow.View
         protected List<AnimationSlot> AnimationSlots = new();
         private new float RotationDegrees { get => base.RotationDegrees; set => base.RotationDegrees = value; }
         private new float Rotation { get => base.Rotation; set => base.Rotation = value; }
-        public abstract void InitializeAnimationSlots();
         private DiscreteRotation _rotationCC;
         public DiscreteRotation RotationCC
         {
@@ -54,6 +60,14 @@ namespace ConnectAPIC.LayoutWindow.View
             RotationCC = _rotationCC;
         }
 
+        private void InitializeAnimationSlots(List<AnimationSlotOverlayData> slotDatas)
+        {
+            foreach (var slotData in slotDatas)
+            {
+                this.CheckForNull(x => slotData.LightFlowOverlay);
+                AnimationSlots.AddRange(CreateRGBAnimSlots(slotData.Side, slotData.LightFlowOverlay, slotData.OffsetX, slotData.OffsetY));
+            }
+        }
         private void InitializeLightOverlays()
         {
             this.CheckForNull(x => x.OverlayBluePrint);
