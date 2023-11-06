@@ -25,9 +25,9 @@ namespace ConnectAPIC.LayoutWindow.View
     }
     public partial class ComponentBaseView : TextureRect
     {
-        [Export] public int WidthInTiles { get; private set; }
-        [Export] public int HeightInTiles { get; private set; }
-        [Export] private Sprite2D OverlayBluePrint { get; set; }
+        public int WidthInTiles { get; private set; }
+        public int HeightInTiles { get; private set; }
+        private Sprite2D OverlayBluePrint { get; set; }
         public Sprite2D OverlayRed { get; private set; }
         public Sprite2D OverlayGreen { get; private set; }
         public Sprite2D OverlayBlue { get; private set; }
@@ -53,24 +53,28 @@ namespace ConnectAPIC.LayoutWindow.View
         public override void _Ready()
         {
             base._Ready();
-            if (WidthInTiles == 0) CustomLogger.PrintErr(nameof(WidthInTiles) + " of this element is not set in the ComponentScene: " + this.GetType().Name);
-            if (HeightInTiles == 0) CustomLogger.PrintErr(nameof(HeightInTiles) + " of this element is not set in the ComponentScene: " + this.GetType().Name);
-            InitializeLightOverlays();
-            InitializeAnimationSlots();
             RotationCC = _rotationCC;
+            OverlayBluePrint = FindChild("Overlay", true) as Sprite2D;
+            this.CheckForNull(x => x.OverlayBluePrint);
         }
 
-        private void InitializeAnimationSlots(List<AnimationSlotOverlayData> slotDatas)
+        public void InitializeComponent(List<AnimationSlotOverlayData> slotDatas, int widthIntiles, int heightInTiles)
         {
+            if (WidthInTiles == 0) CustomLogger.PrintErr(nameof(WidthInTiles) + " of this element is not set in the ComponentScene: " + this.GetType().Name);
+            if (HeightInTiles == 0) CustomLogger.PrintErr(nameof(HeightInTiles) + " of this element is not set in the ComponentScene: " + this.GetType().Name);
+
             foreach (var slotData in slotDatas)
             {
                 this.CheckForNull(x => slotData.LightFlowOverlay);
                 AnimationSlots.AddRange(CreateRGBAnimSlots(slotData.Side, slotData.LightFlowOverlay, slotData.OffsetX, slotData.OffsetY));
             }
+            this.WidthInTiles = widthIntiles;
+            this.HeightInTiles= heightInTiles;
+            InitializeLightOverlays();
+            RotationCC = _rotationCC;
         }
         private void InitializeLightOverlays()
         {
-            this.CheckForNull(x => x.OverlayBluePrint);
             if (OverlayBluePrint == null) return;
             OverlayBluePrint.Hide();
             OverlayRed = DuplicateAndConfigureOverlay(OverlayBluePrint, LightColor.Red.ToGodotColor());

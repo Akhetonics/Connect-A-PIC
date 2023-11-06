@@ -24,6 +24,10 @@ namespace CAP_Core.Component.ComponentHelpers
             return (ComponentBase)Activator.CreateInstance(T);
         }
 
+        public void InitializeComponentDrafts(List<ComponentBase> componentDrafts)
+        {
+            throw new NotImplementedException();
+        }
         public ComponentBase LoadComponent(string yamlOfSBBComponent)
         {
             SBB sbb = SBBBuilder.createSBB(yamlOfSBBComponent);

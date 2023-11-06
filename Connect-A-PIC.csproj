@@ -24,7 +24,7 @@
     <Compile Remove="Scenes\Scenes.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ComponentDraftMapper\ComponentDescriptionDraft.json" />
+    <Content Include="Scripts\ViewModel\ComponentDraftMapper\ComponentDescriptionDraft.json" />
   </ItemGroup>
   <ItemGroup>
     <None Include="MathNet.Numerics.dll" />

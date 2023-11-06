@@ -38,7 +38,7 @@ scale = Vector2(2, 2)
 texture = ExtResource("1_r641d")
 centered = false
 
-[node name="OverlayRed" type="Sprite2D" parent="."]
+[node name="Overlay" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_1ai6y")
 scale = Vector2(2, 2)
 texture = ExtResource("1_r641d")

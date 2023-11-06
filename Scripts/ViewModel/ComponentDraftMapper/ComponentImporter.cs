@@ -1,19 +1,14 @@
-﻿using CAP_Core.Component.ComponentDraftMapper;
-using CAP_Core.Component.ComponentDraftMapper.DTOs;
+﻿using ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper.DTOs;
 using Godot;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace ConnectAPIC.ComponentDrafts
+namespace ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper
 {
     public class ComponentImporter
     {
         public const string ComponentFolderPath = "ref:/Scenes/Components";
-        private void LoadAllPCKFiles(string startFolderPath)
+        public static void CopyAllComponentsFromPCKtoJson(string startFolderPath)
         {
             // Convert Godot to system Paths
             var systemFolderPath = ProjectSettings.GlobalizePath(startFolderPath);
@@ -38,7 +33,7 @@ namespace ConnectAPIC.ComponentDrafts
                 CustomLogger.PrintErr($"Konnte den Ordner nicht öffnen: {startFolderPath}");
             }
         }
-        public static List<ComponentDraft> ImportAllComponents()
+        public static List<ComponentDraft> ImportAllJsonComponents()
         {
             var globalCompPath = ProjectSettings.LocalizePath(ComponentFolderPath);
             List<ComponentDraft> drafts = new();
@@ -49,13 +44,14 @@ namespace ConnectAPIC.ComponentDrafts
                     var draft = ComponentDraftFileReader.Read(filePath);
                     drafts.Add(draft);
                 }
-            } else
+            }
+            else
             {
                 CustomLogger.PrintErr($"Konnte den Ordner nicht öffnen {ComponentFolderPath}");
             }
 
             return drafts;
-            // it should go into the folder, search for all JSON files
+            // it should go into the folder, search for all PCK files
             // import them, then search for all JSON files inside of the Scenes/Components folder that should have been populated by this
             // import the components, register the views and models so that they are visible in the toolbox window
         }

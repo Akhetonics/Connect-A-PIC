@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CAP_Core.Component.ComponentDraftMapper.DTOs
+namespace ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper.DTOs
 {
     public class ComponentDraft
     {
@@ -19,6 +19,6 @@ namespace CAP_Core.Component.ComponentDraftMapper.DTOs
         public List<Connection> connections { get; set; }
         public List<Overlay> overlays { get; set; }
         public string sceneResPath { get; set; }
-        
+
     }
 }

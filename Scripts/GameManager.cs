@@ -1,15 +1,15 @@
 using CAP_Core;
 using CAP_Core.ExternalPorts;
-using ConnectAPIC.ComponentDrafts;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel;
+using ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper;
 using Godot;
 using System.Collections.Generic;
 using System.Reflection;
 
 namespace ConnectAPic.LayoutWindow
 {
-	public partial class GameManager : Node
+    public partial class GameManager : Node
 	{
 		[Export] public NodePath GridViewPath { get; set; }
 		[Export] public int FieldWidth { get; set; } = 24;
@@ -40,14 +40,24 @@ namespace ConnectAPic.LayoutWindow
 				GridViewModel = new GridViewModel(GridView, Grid);
 				GridView.Initialize(GridViewModel);
 				InitializeExternalPortViews(Grid.ExternalPorts);
-				var componentDrafts = ComponentImporter.ImportAllComponents();
+				
 			}
 			else
 			{
 				QueueFree(); // delete this object as there is already another GameManager in the scene
 			}
 		}
-		private void InitializeExternalPortViews(List<ExternalPort> StandardPorts)
+
+		private void InitializeAllComponentDrafts()
+		{
+            ComponentImporter.CopyAllComponentsFromPCKtoJson(ComponentImporter.ComponentFolderPath);
+            var componentDrafts = ComponentImporter.ImportAllJsonComponents();
+			GridView.CompoonentViewFactory.Instantiate() // ComponentViewFactory should be part of Gridview in my opinion.. 
+            // convert CompnentDrafts to scenefiles so that they can be instantiated
+            // also convert ComponentDrafts to Model.Components and add those drafts to both Factories
+            //
+        }
+        private void InitializeExternalPortViews(List<ExternalPort> StandardPorts)
 		{
 			ExternalInputRedTemplate.Visible = false;
 			ExternalInputGreenTemplate.Visible = false;
