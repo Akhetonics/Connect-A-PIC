@@ -6,6 +6,8 @@ namespace ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper
 {
     public class ComponentDraftFileReader
     {
+        public static readonly int CurrentFileVersion = 1;
+
         public static ComponentDraft Read(string filePath)
         {
             if (File.Exists(filePath))

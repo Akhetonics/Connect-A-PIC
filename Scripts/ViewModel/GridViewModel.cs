@@ -8,6 +8,7 @@ using CAP_Core.Tiles;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scripts.Helpers;
+using ConnectAPIC.Scripts.ViewModel.ComponentFactory;
 using Godot;
 using System;
 using System.Collections.Generic;

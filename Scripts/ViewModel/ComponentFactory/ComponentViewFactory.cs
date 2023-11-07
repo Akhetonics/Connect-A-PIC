@@ -13,7 +13,7 @@ namespace ConnectAPIC.LayoutWindow.View
         [Export] private Script ComponentBaseScriptPath;
 		private List<PackedScene> PackedComponentScenes;
 		private static ComponentViewFactory instance { get; set; }
-		private Dictionary<Type, PackedScene> packedComponentCache = new();
+		private Dictionary<int, (PackedScene scene, ComponentDraft componentDraft)> packedComponentCache = new();
 		public static ComponentViewFactory Instance
 		{
 			get { return instance; }
@@ -24,16 +24,8 @@ namespace ConnectAPIC.LayoutWindow.View
 			if (instance == null)
             {
                 instance = this;
-                PackedComponentScenes = new List<PackedScene>();
-                var folderPath = "Scenes\\Components";
-                
-                foreach (string sceneFile in Directory.EnumerateFiles(folderPath, "*.tscn", SearchOption.AllDirectories))
-                {
-                    string godotPath = sceneFile.Replace(folderPath, "res://Scenes/Components").Replace("\\", "/");
-                    PackedScene scene = GD.Load<PackedScene>(godotPath);
-                    PackedComponentScenes.Add(scene);
-                }
-                EmitSignal(nameof(InitializedEventHandler).Replace("EventHandler",""));
+                LoadAllScenesFromSceneFolder();
+                EmitSignal(nameof(InitializedEventHandler).Replace("EventHandler", ""));
             }
             else
 			{
@@ -41,21 +33,28 @@ namespace ConnectAPIC.LayoutWindow.View
 			}
 		}
 
-        public static void ValidateComponentDraft(ComponentDraft draft)
+        public void LoadAllScenesFromSceneFolder(string scenePath )
         {
-            if (ResourceLoader.Exists(draft.sceneResPath) == false) 
-                CustomLogger.PrintErr($"resource does not exist at path: {draft.sceneResPath}");
+            PackedComponentScenes = new List<PackedScene>();
+            var folderPath = "Scenes\\Components";
+
+            foreach (string sceneFile in Directory.EnumerateFiles(folderPath, "*.tscn", SearchOption.AllDirectories))
+            {
+                string godotPath = sceneFile.Replace(folderPath, "res://Scenes/Components").Replace("\\", "/");
+                PackedScene scene = GD.Load<PackedScene>(godotPath);
+                PackedComponentScenes.Add(scene);
+            }
         }
-        private void InitializeComponentDrafts(Dictionary<int, (PackedScene, ComponentDraft)> packedComponentScenes)
+
+        public void InitializeComponentDrafts(Dictionary<int, ComponentSceneAndDraft> packedComponentScenes)
         {
             // die Factories müssen bestückt werden mit einer gemeinsamen ID für die zu erstellenden Components und mit einer Schablone um zu wissen, was sie erstellen sollen.
             // im Falle der View wäre dsa eine PackedScene, einer int und auch der Data die in der PackedScene eingestellt werden muss. 
             
             foreach (var componentTemplate in packedComponentScenes)
             {
-                var draftPackedScene = componentTemplate.Value.Item1;
-                var draftData = componentTemplate.Value.Item2;
-                ValidateComponentDraft(draftData);
+                var draftPackedScene = componentTemplate.Value.Scene;
+                var draftData = componentTemplate.Value.ComponentDraft;
                 var mainNode = draftPackedScene.Instantiate();
                 mainNode.SetScript(ComponentBaseScriptPath);
 
@@ -109,4 +108,16 @@ namespace ConnectAPIC.LayoutWindow.View
             return packedComponentCache.Keys.ToList();
         }
 	}
+    public record struct ComponentSceneAndDraft(PackedScene Scene, ComponentDraft ComponentDraft)
+    {
+        public static implicit operator (PackedScene scene, ComponentDraft componentDraft)(ComponentSceneAndDraft value)
+        {
+            return (value.Scene, value.ComponentDraft);
+        }
+
+        public static implicit operator ComponentSceneAndDraft((PackedScene scene, ComponentDraft componentDraft) value)
+        {
+            return new ComponentSceneAndDraft(value.scene, value.componentDraft);
+        }
+    }
 }

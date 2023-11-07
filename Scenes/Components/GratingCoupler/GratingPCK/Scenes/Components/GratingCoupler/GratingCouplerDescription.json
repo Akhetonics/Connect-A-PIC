@@ -2,7 +2,7 @@
   "fileFormatVersion": 1,
   "identifier": "GratingCoupler",
   "nazcaFunctionParameters": "",
-  "nazcaFunctionName": "",
+  "nazcaFunctionName": "placeCell_GratingCoupler",
   "deltaLength": 0,
   "widthInTiles": 1,
   "heightInTiles": 1,
@@ -17,12 +17,6 @@
 	}
   ],
   "connections": [
-	{
-	  "fromPinNr": 1,
-	  "toPinNr": 2,
-	  "magnitude": 0,
-	  "phaseInDegrees": 0
-	}
   ],
   "overlays": [
 	{

@@ -4,7 +4,7 @@
     {
         public int fromPinNr { get; set; }
         public int toPinNr { get; set; }
-        public int magnitude { get; set; }
-        public int phaseInDegrees { get; set; }
+        public float magnitude { get; set; }
+        public float phaseInDegrees { get; set; }
     }
 }

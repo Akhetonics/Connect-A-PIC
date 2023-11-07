@@ -5,11 +5,12 @@ using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper;
 using Godot;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 
 namespace ConnectAPic.LayoutWindow
 {
-    public partial class GameManager : Node
+	public partial class GameManager : Node
 	{
 		[Export] public NodePath GridViewPath { get; set; }
 		[Export] public int FieldWidth { get; set; } = 24;
@@ -50,14 +51,23 @@ namespace ConnectAPic.LayoutWindow
 
 		private void InitializeAllComponentDrafts()
 		{
-            ComponentImporter.CopyAllComponentsFromPCKtoJson(ComponentImporter.ComponentFolderPath);
-            var componentDrafts = ComponentImporter.ImportAllJsonComponents();
-			GridView.CompoonentViewFactory.Instantiate() // ComponentViewFactory should be part of Gridview in my opinion.. 
-            // convert CompnentDrafts to scenefiles so that they can be instantiated
-            // also convert ComponentDrafts to Model.Components and add those drafts to both Factories
-            //
-        }
-        private void InitializeExternalPortViews(List<ExternalPort> StandardPorts)
+			ComponentImporter.CopyAllComponentsFromPCKtoJson(ComponentImporter.ComponentFolderPath);
+			var componentDrafts = ComponentImporter.ImportAllJsonComponents();
+			
+			var componentDraftDict = new Dictionary<int, ComponentSceneAndDraft>();
+			for(int i = 0; i < componentDrafts.Count; i++)
+			{
+				componentDraftDict.Add(i, new ComponentSceneAndDraft()
+				{
+					Scene = componentDrafts
+				});
+			}
+			ComponentViewFactory.Instance.InitializeComponentDrafts(// ComponentViewFactory should be part of Gridview in my opinion.. 
+			// convert CompnentDrafts to scenefiles so that they can be instantiated
+			// also convert ComponentDrafts to Model.Components and add those drafts to both Factories
+			//
+		}
+		private void InitializeExternalPortViews(List<ExternalPort> StandardPorts)
 		{
 			ExternalInputRedTemplate.Visible = false;
 			ExternalInputGreenTemplate.Visible = false;
