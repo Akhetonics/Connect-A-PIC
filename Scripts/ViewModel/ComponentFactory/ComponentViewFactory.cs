@@ -8,32 +8,32 @@ using System.Linq;
 namespace ConnectAPIC.LayoutWindow.View
 {
     public partial class ComponentViewFactory : Node
-	{
+    {
         [Signal] public delegate void InitializedEventHandler();
         [Export] private Script ComponentBaseScriptPath;
-		private List<PackedScene> PackedComponentScenes;
-		private static ComponentViewFactory instance { get; set; }
-		private Dictionary<int, (PackedScene scene, ComponentDraft componentDraft)> packedComponentCache = new();
-		public static ComponentViewFactory Instance
-		{
-			get { return instance; }
-		}
+        private List<PackedScene> PackedComponentScenes;
+        private static ComponentViewFactory instance { get; set; }
+        private Dictionary<int, ComponentSceneAndDraft> packedComponentCache = new();
+        public static ComponentViewFactory Instance
+        {
+            get { return instance; }
+        }
 
-		public override void _Ready()
-		{
-			if (instance == null)
+        public override void _Ready()
+        {
+            if (instance == null)
             {
                 instance = this;
                 LoadAllScenesFromSceneFolder();
                 EmitSignal(nameof(InitializedEventHandler).Replace("EventHandler", ""));
             }
             else
-			{
-				QueueFree(); // delete this object as there is already another GameManager in the scene
-			}
-		}
+            {
+                QueueFree(); // delete this object as there is already another GameManager in the scene
+            }
+        }
 
-        public void LoadAllScenesFromSceneFolder(string scenePath )
+        public List<PackedScene> LoadAllScenesFromSceneFolder()
         {
             PackedComponentScenes = new List<PackedScene>();
             var folderPath = "Scenes\\Components";
@@ -44,33 +44,47 @@ namespace ConnectAPIC.LayoutWindow.View
                 PackedScene scene = GD.Load<PackedScene>(godotPath);
                 PackedComponentScenes.Add(scene);
             }
+            return PackedComponentScenes;
         }
 
-        public void InitializeComponentDrafts(Dictionary<int, ComponentSceneAndDraft> packedComponentScenes)
+        public void InitializeComponentDrafts(List<ComponentDraft> drafts)
         {
-            // die Factories müssen bestückt werden mit einer gemeinsamen ID für die zu erstellenden Components und mit einer Schablone um zu wissen, was sie erstellen sollen.
-            // im Falle der View wäre dsa eine PackedScene, einer int und auch der Data die in der PackedScene eingestellt werden muss. 
-            
-            foreach (var componentTemplate in packedComponentScenes)
-            {
-                var draftPackedScene = componentTemplate.Value.Scene;
-                var draftData = componentTemplate.Value.ComponentDraft;
-                var mainNode = draftPackedScene.Instantiate();
-                mainNode.SetScript(ComponentBaseScriptPath);
+            Dictionary<int, ComponentSceneAndDraft> packedComponentScenes = new();
 
-                
-                packedComponentCache.Add(mainNode.GetType(), componentTemplate);
-                mainNode.QueueFree();
+            int componentNumber = 0;
+            foreach (var componentDraft in drafts)
+            {
+                PackedScene packedScene;
+                try {
+                    packedScene = GD.Load<PackedScene>(componentDraft.sceneResPath);
+                } catch( Exception ex)
+                {
+                    CustomLogger.PrintErr($"Error Loading PackedScene '{componentDraft.sceneResPath}' of Comopnent: {componentDraft.identifier} ex: {ex.Message} )");
+                    continue;
+                }
+                packedComponentScenes.Add(componentNumber, new ComponentSceneAndDraft()
+                {
+                    Draft = componentDraft,
+                    Scene = packedScene
+                });
+                componentNumber++;
             }
+            packedComponentCache = packedComponentScenes;
         }
 
-        public ComponentBaseView CreateComponentView(int componentNR )
-		{
-            var mainNode = packedComponentCache[componentNR];
-            if (mainNode is ComponentBaseView view)
+        public ComponentBaseView CreateComponentView(int componentNR)
+        {
+            if (!packedComponentCache.ContainsKey(componentNR))
             {
-                var slotDataSets = new List<AnimationSlotOverlayData>();
-                foreach (Overlay overlay in draftData.overlays)
+                CustomLogger.PrintErr("Key does not exist in ComponentCache of ComponentviewFactory: " + componentNR);
+            }
+            var draft = packedComponentCache[componentNR].Draft;
+            var packedScene = packedComponentCache[componentNR].Scene;
+            var slotDataSets = new List<AnimationSlotOverlayData>();
+
+            try
+            {
+                foreach (Overlay overlay in draft.overlays)
                 {
                     slotDataSets.Add(new AnimationSlotOverlayData()
                     {
@@ -80,44 +94,20 @@ namespace ConnectAPIC.LayoutWindow.View
                         Side = overlay.rectSide
                     });
                 }
-                view.InitializeComponent(slotDataSets, draftData.widthInTiles, draftData.heightInTiles);
+                var view = packedScene.Instantiate() as ComponentBaseView;
+                view.InitializeComponent(slotDataSets, draft.widthInTiles, draft.heightInTiles);
+                return view;
             }
-            else
+            catch (Exception ex)
             {
-                CustomLogger.PrintErr($"ComponentTemplate is not of type ComponentBaseView: {draftData.identifier} {draftData.}");
-                continue;
-            }
-            
-            if (! typeof(ComponentBaseView).IsAssignableFrom(ViewTypeListedInFactoryChildren)){
-				CustomLogger.PrintErr($"Type is not of ComponentBaseView: {nameof(ViewTypeListedInFactoryChildren) + " " + ViewTypeListedInFactoryChildren.FullName}");
-                throw new ArgumentException(nameof(ViewTypeListedInFactoryChildren));
-			}
-            try
-            {
-                var packedComponent = packedComponentCache.Single(c => c.Key == ViewTypeListedInFactoryChildren).Value;
-                return packedComponent.Instantiate() as ComponentBaseView;
-            } catch (Exception ex)
-            {
-                CustomLogger.PrintErr($"ComponentTemplate is not or not well defined: {ViewTypeListedInFactoryChildren.FullName} - Exception: {ex.Message}" );
+                CustomLogger.PrintErr($"ComponentTemplate is not or not well defined: {draft?.identifier} - Exception: {ex.Message}");
                 throw;
             }
         }
-
-        public List<Type> GetAllComponentTypes()
+    
+        public List<int> GetAllComponentIDs()
         {
             return packedComponentCache.Keys.ToList();
-        }
-	}
-    public record struct ComponentSceneAndDraft(PackedScene Scene, ComponentDraft ComponentDraft)
-    {
-        public static implicit operator (PackedScene scene, ComponentDraft componentDraft)(ComponentSceneAndDraft value)
-        {
-            return (value.Scene, value.ComponentDraft);
-        }
-
-        public static implicit operator ComponentSceneAndDraft((PackedScene scene, ComponentDraft componentDraft) value)
-        {
-            return new ComponentSceneAndDraft(value.scene, value.componentDraft);
         }
     }
 }

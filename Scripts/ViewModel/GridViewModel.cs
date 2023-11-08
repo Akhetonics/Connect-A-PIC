@@ -2,14 +2,11 @@
 using CAP_Core.CodeExporter;
 using CAP_Core.Component.ComponentHelpers;
 using CAP_Core.ExternalPorts;
-using CAP_Core.Helpers;
 using CAP_Core.LightFlow;
 using CAP_Core.Tiles;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scripts.Helpers;
-using ConnectAPIC.Scripts.ViewModel.ComponentFactory;
-using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,8 +56,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         }
         private void Grid_OnComponentPlacedOnTile(ComponentBase component, int gridX, int gridY)
         {
-            Type componentViewType = ComponentViewModelTypeConverter.ToView(component.GetType());
-            CreateComponentViewOfType(gridX, gridY, component.Rotation90CounterClock, componentViewType, component);
+            CreateComponentView(gridX, gridY, component.Rotation90CounterClock, component.TypeNumber, component);
             if (GridView.lightPropagationIsPressed)
             {
                 HideLightPropagation();
@@ -81,7 +77,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             }
         }
 
-        public void RegisterComponentView(ComponentBaseView componentView)
+        public void RegisterComponentViewInGridView(ComponentBaseView componentView)
         {
             for (int x = componentView.GridX; x < componentView.GridX + componentView.WidthInTiles; x++)
             {
@@ -109,11 +105,11 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
                 }
             }
         }
-        public ComponentBaseView CreateComponentViewOfType(int gridx, int gridy, DiscreteRotation rotationCounterClockwise, Type componentViewType, ComponentBase componentModel)
+        public ComponentBaseView CreateComponentView(int gridx, int gridy, DiscreteRotation rotationCounterClockwise, int componentTypeNumber, ComponentBase componentModel)
         {
-            var ComponentView = ComponentViewFactory.Instance.CreateComponentView(componentViewType);
+            var ComponentView = ComponentViewFactory.Instance.CreateComponentView(componentTypeNumber);
             ComponentView.RegisterInGrid(gridx, gridy, rotationCounterClockwise, this);
-            RegisterComponentView(ComponentView);
+            RegisterComponentViewInGridView(ComponentView);
             GridView.DragDropProxy.AddChild(ComponentView); // it has to be the child of the DragDropArea to be displayed
             return ComponentView;
         }

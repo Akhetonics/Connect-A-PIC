@@ -14,7 +14,7 @@ public partial class ToolBox : Node
 
 	public void LoadAllComponentsAsTools()
 	{
-		var allComponentTypes = ComponentViewFactory.Instance.GetAllComponentTypes();
+		var allComponentTypes = ComponentViewFactory.Instance.GetAllComponentIDs();
 		foreach (Type componentType in allComponentTypes)
 		{
 			var bordersize = gridContainer.GetThemeConstant("h_separation");

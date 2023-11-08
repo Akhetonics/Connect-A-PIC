@@ -1,4 +1,5 @@
 using CAP_Core;
+using CAP_Core.Component.ComponentHelpers;
 using CAP_Core.ExternalPorts;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel;
@@ -41,8 +42,8 @@ namespace ConnectAPic.LayoutWindow
 				GridViewModel = new GridViewModel(GridView, Grid);
 				GridView.Initialize(GridViewModel);
 				InitializeExternalPortViews(Grid.ExternalPorts);
-				
-			}
+				InitializeAllComponentDrafts();
+            }
 			else
 			{
 				QueueFree(); // delete this object as there is already another GameManager in the scene
@@ -51,21 +52,11 @@ namespace ConnectAPic.LayoutWindow
 
 		private void InitializeAllComponentDrafts()
 		{
-			ComponentImporter.CopyAllComponentsFromPCKtoJson(ComponentImporter.ComponentFolderPath);
+			ComponentImporter.ImportAllPCKComponents(ComponentImporter.ComponentFolderPath);
 			var componentDrafts = ComponentImporter.ImportAllJsonComponents();
-			
-			var componentDraftDict = new Dictionary<int, ComponentSceneAndDraft>();
-			for(int i = 0; i < componentDrafts.Count; i++)
-			{
-				componentDraftDict.Add(i, new ComponentSceneAndDraft()
-				{
-					Scene = componentDrafts
-				});
-			}
-			ComponentViewFactory.Instance.InitializeComponentDrafts(// ComponentViewFactory should be part of Gridview in my opinion.. 
-			// convert CompnentDrafts to scenefiles so that they can be instantiated
-			// also convert ComponentDrafts to Model.Components and add those drafts to both Factories
-			//
+			ComponentViewFactory.Instance.InitializeComponentDrafts(componentDrafts);// ComponentViewFactory should be part of Gridview in my opinion.. 
+			var modelComponents = new List<ComponentBase>();
+			ComponentFactory.Instance.InitializeComponentDrafts(componentDrafts);
 		}
 		private void InitializeExternalPortViews(List<ExternalPort> StandardPorts)
 		{

@@ -5,17 +5,18 @@ using System.Text.Json.Serialization;
 
 namespace CAP_Core.Component.ComponentHelpers
 {
-    public abstract class ComponentBase
+    public class ComponentBase
     {
         public int WidthInTiles => Parts.GetLength(0);
         public int HeightInTiles => Parts.GetLength(1);
+        public int TypeNumber { get; set; }
         private bool IsPlacedInGrid { get; set; }
         [JsonIgnore] public int GridXMainTile { get; protected set; }
         [JsonIgnore] public int GridYMainTile { get; protected set; }
-        public virtual Part[,] Parts { get; protected set; }
+        public Part[,] Parts { get; protected set; }
         public SMatrix Connections { get; protected set; }
-        public abstract string NazcaFunctionName { get; set; }
-        public abstract string NazcaFunctionParameters { get; }
+        public string NazcaFunctionName { get; set; }
+        public string NazcaFunctionParameters { get; set; }
         private DiscreteRotation _discreteRotation;
         public DiscreteRotation Rotation90CounterClock
         {
@@ -29,10 +30,14 @@ namespace CAP_Core.Component.ComponentHelpers
                 }
             }
         }
-        protected ComponentBase()
+        public ComponentBase(SMatrix connections, string nazcaFunctionName, string nazcaFunctionParameters, Part[,] parts, int typeNumber)
         {
-            Parts = new Part[1, 1];
+            Parts = parts;
+            TypeNumber = typeNumber;
             _discreteRotation = DiscreteRotation.R0;
+            Connections = connections;
+            NazcaFunctionName = nazcaFunctionName;
+            NazcaFunctionParameters = nazcaFunctionParameters;
         }
 
         public void RegisterPositionInGrid(int gridX, int gridY)
@@ -124,5 +129,7 @@ namespace CAP_Core.Component.ComponentHelpers
                    $"Parts Length: {Parts?.Length} \n" +
                    $"Connections PinReferences Count: {Connections?.PinReference?.Count}";
         }
+
+        
     }
 }

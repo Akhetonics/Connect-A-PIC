@@ -8,7 +8,7 @@ namespace ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper
     public class ComponentImporter
     {
         public const string ComponentFolderPath = "ref:/Scenes/Components";
-        public static void CopyAllComponentsFromPCKtoJson(string startFolderPath)
+        public static void ImportAllPCKComponents(string startFolderPath)
         {
             // Convert Godot to system Paths
             var systemFolderPath = ProjectSettings.GlobalizePath(startFolderPath);
@@ -20,17 +20,17 @@ namespace ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper
                     var globalFilePath = ProjectSettings.LocalizePath(filePath);
                     if (ProjectSettings.LoadResourcePack(globalFilePath))
                     {
-                        CustomLogger.PrintLn($"PCK geladen: {globalFilePath}");
+                        CustomLogger.PrintLn($"PCK loaded successfully: {globalFilePath}");
                     }
                     else
                     {
-                        CustomLogger.PrintErr($"Fehler beim Laden von PCK: {globalFilePath}");
+                        CustomLogger.PrintErr($"Error while loading PCK: {globalFilePath}");
                     }
                 }
             }
             else
             {
-                CustomLogger.PrintErr($"Konnte den Ordner nicht öffnen: {startFolderPath}");
+                CustomLogger.PrintErr($"Could not open folder: {startFolderPath}");
             }
         }
         public static List<ComponentDraft> ImportAllJsonComponents()
@@ -47,13 +47,10 @@ namespace ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper
             }
             else
             {
-                CustomLogger.PrintErr($"Konnte den Ordner nicht öffnen {ComponentFolderPath}");
+                CustomLogger.PrintErr($"Could not open folder: {ComponentFolderPath}");
             }
 
             return drafts;
-            // it should go into the folder, search for all PCK files
-            // import them, then search for all JSON files inside of the Scenes/Components folder that should have been populated by this
-            // import the components, register the views and models so that they are visible in the toolbox window
         }
     }
 }
