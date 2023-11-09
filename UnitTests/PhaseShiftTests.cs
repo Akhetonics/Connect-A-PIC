@@ -19,8 +19,8 @@ namespace UnitTests
         public static void ComplexFactorTest()
         {
             // Beispiel für die Berechnung für zwei Bauteile
-            Complex factor1 = PhaseShiftCalculator.GetDegrees(PhaseShiftCalculator.TileWidthInNM); // Angenommen, die widthInTiles ist 1 für das erste Bauteil
-            Complex factor2 = PhaseShiftCalculator.GetDegrees(PhaseShiftCalculator.TileWidthInNM); // Angenommen, die widthInTiles ist 1 für das zweite Bauteil
+            Complex factor1 = PhaseShiftCalculator.GetDegrees(PhaseShiftCalculator.TileWidthInNM, PhaseShiftCalculator.laserWaveLengthRedNM); // Angenommen, die widthInTiles ist 1 für das erste Bauteil
+            Complex factor2 = PhaseShiftCalculator.GetDegrees(PhaseShiftCalculator.TileWidthInNM, PhaseShiftCalculator.laserWaveLengthRedNM); // Angenommen, die widthInTiles ist 1 für das zweite Bauteil
 
             Complex result = factor1 * factor2; // Multiplizieren der Faktoren der beiden Bauteile
 
@@ -31,12 +31,12 @@ namespace UnitTests
             Grid grid = new(24, 12);
             var inputs = grid.ExternalPorts.Where(p => p.GetType() == typeof(StandardInput)).ToList();
             int inputHeight = inputs.FirstOrDefault()?.TilePositionY ?? throw new Exception("there is no StandardInput defined");
-            var firstComponent = new DirectionalCoupler();
+            var firstComponent = new Component();
             grid.PlaceComponent(0, inputHeight, firstComponent);
             var secondComponent = ExportNazcaTests.PlaceAndConcatenateComponent(grid, firstComponent);
             var thirdComponent = ExportNazcaTests.PlaceAndConcatenateComponent(grid, secondComponent);
             var fourthComponent = ExportNazcaTests.PlaceAndConcatenateComponent(grid, thirdComponent);
-            var orphant = new DirectionalCoupler();
+            var orphant = new Component();
             grid.PlaceComponent(10, 5, orphant);
 
             NazcaExporter exporter = new();
