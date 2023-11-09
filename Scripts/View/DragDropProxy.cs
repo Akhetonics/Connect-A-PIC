@@ -47,7 +47,7 @@ public partial class DragDropProxy : Control
         CheckIfDragWasResetted();
         if (DragPreview == null)
         {
-            DragPreview = ((ComponentBaseView)data).Duplicate();
+            DragPreview = ((ComponentView)data).Duplicate();
             DragPreview.Visible = false;
         }
         else
@@ -65,7 +65,7 @@ public partial class DragDropProxy : Control
         }
 
         var rotationDisposition = new Vector2(0, 0);
-        if (data is ComponentBaseView component)
+        if (data is ComponentView component)
         {
             rotationDisposition = component.GetPositionDisplacementAfterRotation();
         }

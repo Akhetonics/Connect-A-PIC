@@ -39,6 +39,8 @@
     <ProjectReference Include="Connect-A-Pic-Core\CAP-Core.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="Scenes\Components\Bend\BendPCK\Scenes\Components\Bend\" />
+    <Folder Include="Scenes\Components\DirectionalCoupler\DirectionalCouplerPCK\Scenes\Components\DirectionalCoupler\" />
     <Folder Include="Scenes\Components\GratingCoupler\GratingPCK\" />
   </ItemGroup>
 </Project>

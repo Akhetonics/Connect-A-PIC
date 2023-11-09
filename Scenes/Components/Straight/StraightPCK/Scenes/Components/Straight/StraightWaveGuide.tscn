@@ -1,9 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://b3bif06mnx8qd"]
+[gd_scene load_steps=6 format=3 uid="uid://b3bif06mnx8qd"]
 
 [ext_resource type="Texture2D" uid="uid://d3th1vtdpb7mb" path="res://Scenes/Components/Straight/Component I.png" id="1_3hlav"]
-[ext_resource type="Script" path="res://Scenes/Components/Straight/StraightWaveGuideView.cs" id="2_4ru4l"]
 [ext_resource type="Texture2D" uid="uid://dodssmnu1iubn" path="res://Scenes/Components/Straight/Component I_Horizontal_Overlay.png" id="3_0fxxl"]
-[ext_resource type="Shader" uid="uid://cl06n8nroabam" path="res://Scenes/Components/LightOverlayShaded.tres" id="4_4nh6w"]
+[ext_resource type="Shader" path="res://Scenes/Components/Straight/LightOverlayShaded.tres" id="4_4nh6w"]
 
 [sub_resource type="SystemFont" id="SystemFont_r1od1"]
 font_weight = 375
@@ -34,18 +33,11 @@ shader_parameter/lightOutFlow8 = null
 shader_parameter/numAnimationColumns = 4.0
 shader_parameter/animation1 = ExtResource("3_0fxxl")
 
-[node name="TextureRect" type="TextureRect" node_paths=PackedStringArray("leftComplex", "rightComplex", "OverlayBluePrint")]
+[node name="TextureRect" type="TextureRect"]
 custom_minimum_size = Vector2(60, 60)
 offset_right = 60.0
 offset_bottom = 60.0
 texture = ExtResource("1_3hlav")
-script = ExtResource("2_4ru4l")
-OverlayAnimTexture = ExtResource("3_0fxxl")
-leftComplex = NodePath("LabelL")
-rightComplex = NodePath("LabelR")
-WidthInTiles = 1
-HeightInTiles = 1
-OverlayBluePrint = NodePath("OverlayRed")
 
 [node name="LabelL" type="Label" parent="."]
 layout_mode = 0
@@ -70,7 +62,7 @@ text = "i
 R:
 A:"
 
-[node name="OverlayRed" type="Sprite2D" parent="."]
+[node name="Overlay" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_ljv2j")
 scale = Vector2(2, 2)
 texture = ExtResource("1_3hlav")

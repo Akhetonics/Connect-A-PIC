@@ -1,0 +1,119 @@
+{
+  "fileFormatVersion": 1,
+  "identifier": "DirectionalCoupler",
+  "nazcaFunctionParameters": "deltaLength = 50",
+  "nazcaFunctionName": "placeCell_DirectionalCoupler",
+  "sceneResPath": "res://Scenes/Components/DirectionalCoupler/DirectionalCoupler.tscn",
+  "deltaLength": 50,
+  "widthInTiles": 2,
+  "heightInTiles": 2,
+  "pins": [
+	{
+	  "number": 0,
+	  "name": "west0",
+	  "matterType": 1,
+	  "side": 2,
+	  "partX": 0,
+	  "partY": 0
+	},
+	{
+	  "number": 1,
+	  "name": "east0",
+	  "matterType": 1,
+	  "side": 0,
+	  "partX": 1,
+	  "partY": 0
+	},
+	{
+	  "number": 2,
+	  "name": "west1",
+	  "matterType": 1,
+	  "side": 2,
+	  "partX": 0,
+	  "partY": 1
+	},
+	{
+	  "number": 3,
+	  "name": "east1",
+	  "matterType": 1,
+	  "side": 0,
+	  "partX": 1,
+	  "partY": 1
+	}
+  ],
+  "connections": [
+	{
+	  "fromPinNr": 0,
+	  "toPinNr": 1,
+	  "magnitude": 0.5,
+	  "wireLengthNM": 0
+	},
+	{
+	  "fromPinNr": 1,
+	  "toPinNr": 0,
+	  "magnitude": 0.5,
+	  "wireLengthNM": 0
+	},
+	{
+	  "fromPinNr": 0,
+	  "toPinNr": 3,
+	  "magnitude": 0.5,
+	  "wireLengthNM": 0
+	},
+	{
+	  "fromPinNr": 3,
+	  "toPinNr": 0,
+	  "magnitude": 0.5,
+	  "wireLengthNM": 0
+	}
+	,
+	
+	{
+	  "fromPinNr": 2,
+	  "toPinNr": 1,
+	  "magnitude": 0.5,
+	  "wireLengthNM": 0
+	},
+	{
+	  "fromPinNr": 1,
+	  "toPinNr": 2,
+	  "magnitude": 0.5,
+	  "wireLengthNM": 0
+	},
+	{
+	  "fromPinNr": 2,
+	  "toPinNr": 3,
+	  "magnitude": 0.5,
+	  "wireLengthNM": 0
+	},
+	{
+	  "fromPinNr": 3,
+	  "toPinNr": 2,
+	  "magnitude": 0.5,
+	  "wireLengthNM": 0
+	}
+  ],
+  "overlays": [
+	{
+	  "overlayAnimTexturePath": "res://Scenes/Components/DirectionalCoupler/Directional Coupler LeftUpIn.png",
+	  "rectSide": "Left",
+	  "tileOffsetX": 0,
+	  "tileOffsetY": 0
+	},{
+	  "overlayAnimTexturePath": "res://Scenes/Components/DirectionalCoupler/Directional Coupler LeftDown.png",
+	  "rectSide": "Left",
+	  "tileOffsetX": 0,
+	  "tileOffsetY": 1
+	},{
+	  "overlayAnimTexturePath": "res://Scenes/Components/DirectionalCoupler/Directional Coupler RightUp.png",
+	  "rectSide": "Right",
+	  "tileOffsetX": 1,
+	  "tileOffsetY": 0
+	},{
+	  "overlayAnimTexturePath": "res://Scenes/Components/DirectionalCoupler/Directional Coupler RightDown.png",
+	  "rectSide": "Right",
+	  "tileOffsetX": 1,
+	  "tileOffsetY": 1
+	}
+  ]
+}

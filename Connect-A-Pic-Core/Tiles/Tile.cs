@@ -8,7 +8,7 @@ namespace CAP_Core.Tiles
     public class Tile
     {
         private const string PythonFunctionIndention = "        ";
-        public ComponentBase Component { get; set; }
+        public Component.ComponentHelpers.Component Component { get; set; }
         public int GridX { get; private set; }
         public int GridY { get; private set; }
 

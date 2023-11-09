@@ -3,7 +3,7 @@ using CAP_Core.Tiles;
 
 namespace ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper.DTOs
 {
-    public class Pin
+    public class PinDraft
     {
         public int number { get; set; }
         public string name { get; set; }

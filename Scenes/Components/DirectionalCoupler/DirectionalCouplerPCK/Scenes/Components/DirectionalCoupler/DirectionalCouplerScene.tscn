@@ -1,12 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://b4ltp4nnviu3"]
+[gd_scene load_steps=8 format=3 uid="uid://b4ltp4nnviu3"]
 
-[ext_resource type="Script" path="res://Scenes/Components/DirectionalCoupler/DirectionalCouplerView.cs" id="1_4tomk"]
 [ext_resource type="Texture2D" uid="uid://cirsar1cf6vkh" path="res://Scenes/Components/DirectionalCoupler/Directional Coupler LeftUpIn.png" id="2_1cs17"]
 [ext_resource type="Texture2D" uid="uid://c8u8whsex2jym" path="res://Scenes/Components/DirectionalCoupler/Directional Coupler.png" id="2_80i23"]
 [ext_resource type="Texture2D" uid="uid://dl3wi88wuky6e" path="res://Scenes/Components/DirectionalCoupler/Directional Coupler LeftDown.png" id="3_jbild"]
 [ext_resource type="Texture2D" uid="uid://b8r7q5o86dey3" path="res://Scenes/Components/DirectionalCoupler/Directional Coupler RightUp.png" id="4_sgbp3"]
 [ext_resource type="Texture2D" uid="uid://crhu1ftb6mi8q" path="res://Scenes/Components/DirectionalCoupler/Directional Coupler RightDown.png" id="5_hqp3p"]
-[ext_resource type="Shader" uid="uid://cl06n8nroabam" path="res://Scenes/Components/LightOverlayShaded.tres" id="7_qypia"]
+[ext_resource type="Shader" uid="uid://cl06n8nroabam" path="res://Scenes/Components/DirectionalCoupler/LightOverlayShaded.tres" id="7_qypia"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_efdvx"]
 shader = ExtResource("7_qypia")
@@ -33,20 +32,12 @@ shader_parameter/animation2 = ExtResource("3_jbild")
 shader_parameter/animation3 = ExtResource("4_sgbp3")
 shader_parameter/animation4 = ExtResource("5_hqp3p")
 
-[node name="DirectionalCoupler" type="TextureRect" node_paths=PackedStringArray("OverlayBluePrint")]
+[node name="DirectionalCoupler" type="TextureRect"]
 custom_minimum_size = Vector2(122, 122)
 layout_direction = 1
 offset_right = 122.0
 offset_bottom = 122.0
 stretch_mode = 2
-script = ExtResource("1_4tomk")
-LightFlowOverlayLeftUpIn = ExtResource("2_1cs17")
-LightFlowOverlayLeftDownIn = ExtResource("3_jbild")
-LightFlowOverlayRightUpIn = ExtResource("4_sgbp3")
-LightFlowOverlayRightDownIn = ExtResource("5_hqp3p")
-WidthInTiles = 2
-HeightInTiles = 2
-OverlayBluePrint = NodePath("OverlayRed")
 
 [node name="BackgroundImage" type="Sprite2D" parent="."]
 scale = Vector2(2, 2)
@@ -54,7 +45,7 @@ texture = ExtResource("2_80i23")
 centered = false
 region_rect = Rect2(11.5, 16, 41, 39)
 
-[node name="OverlayRed" type="Sprite2D" parent="."]
+[node name="Overlay" type="Sprite2D" parent="."]
 material = SubResource("ShaderMaterial_efdvx")
 scale = Vector2(2, 2)
 texture = ExtResource("2_80i23")

@@ -23,7 +23,7 @@ namespace ConnectAPIC.LayoutWindow.View
         public int OffsetX;
         public int OffsetY;
     }
-    public partial class ComponentBaseView : TextureRect
+    public partial class ComponentView : TextureRect
     {
         public int WidthInTiles { get; private set; }
         public int HeightInTiles { get; private set; }
@@ -222,9 +222,9 @@ namespace ConnectAPIC.LayoutWindow.View
                 }
             }
         }
-        public virtual ComponentBaseView Duplicate()
+        public virtual ComponentView Duplicate()
         {
-            var copy = base.Duplicate() as ComponentBaseView;
+            var copy = base.Duplicate() as ComponentView;
             copy.RotationCC = this.RotationCC;
             return copy;
         }

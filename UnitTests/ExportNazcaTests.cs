@@ -63,9 +63,9 @@ namespace UnitTests
             Assert.Contains(firstComponentMainTile, grid.GetConnectedNeighboursOfComponent(secondComponent).Select(b => b.Child));
         }
         
-        public static ComponentBase PlaceAndConcatenateComponent(Grid grid, ComponentBase parentComponent)
+        public static Component PlaceAndConcatenateComponent(Grid grid, Component parentComponent)
         {
-            ComponentBase newComponent = new StraightWaveGuide();
+            Component newComponent = new StraightWaveGuide();
             var GridXSecondComponent = parentComponent.GridXMainTile + parentComponent.WidthInTiles;
             var GridYSecondComponent = parentComponent.GridYMainTile + parentComponent.HeightInTiles-1;
             grid.PlaceComponent(GridXSecondComponent, GridYSecondComponent, newComponent);

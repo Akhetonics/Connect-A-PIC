@@ -103,7 +103,7 @@ namespace CAP_Core.Component.ComponentDraftMapper
             }
             return errorMsg;
         }
-        private static string ValidatePin(Pin pin, int widthInTiles, int heightInTiles)
+        private static string ValidatePin(PinDraft pin, int widthInTiles, int heightInTiles)
         {
             string errorMsg = "";
             if (pin.partX < 0 )
@@ -124,7 +124,7 @@ namespace CAP_Core.Component.ComponentDraftMapper
             }
             return errorMsg;
         }
-        private static string ValidatePinNumbersAreUnique( List<Pin> pins)
+        private static string ValidatePinNumbersAreUnique( List<PinDraft> pins)
         {
             var duplicateNumbers = pins
                 .GroupBy(p => p.number)
@@ -134,11 +134,11 @@ namespace CAP_Core.Component.ComponentDraftMapper
             if (duplicateNumbers.Count() > 0)
             {
                 string numbers = String.Join(',', duplicateNumbers);
-                return ErrorPinNumberDuplicated + $" Each Pin must have a unique {nameof(Pin.number)}, but '{numbers}' had been used twice\n";
+                return ErrorPinNumberDuplicated + $" Each Pin must have a unique {nameof(PinDraft.number)}, but '{numbers}' had been used twice\n";
             }
             return "";
         }
-        private static string ValidateConnection(List<Pin> pins, Connection connection)
+        private static string ValidateConnection(List<PinDraft> pins, Connection connection)
         {
             string errorMsg = "";
             // the pinIDs on the connections should exist

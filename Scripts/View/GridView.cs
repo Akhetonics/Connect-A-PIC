@@ -60,11 +60,11 @@ namespace ConnectAPIC.LayoutWindow.View
 
         public bool _CanDropData(Vector2 position, Variant data)
 		{
-			if (data.Obj is ComponentBaseView component)
+			if (data.Obj is ComponentView component)
 			{
 				int gridX = (int)position.X / GameManager.TilePixelSize;
 				int gridY = (int)position.Y / GameManager.TilePixelSize;
-				ComponentBase model = null;
+				Component model = null;
 				if (component.IsPlacedOnGrid())
 				{
                     model = ViewModel.Grid.GetComponentAt(component.GridX, component.GridY, component.WidthInTiles, component.HeightInTiles);
@@ -79,7 +79,7 @@ namespace ConnectAPIC.LayoutWindow.View
 		public void _DropData(Vector2 atPosition, Variant data)
 		{
 			Vector2I GridXY = LocalToMap(atPosition);
-			if (data.Obj is ComponentBaseView componentView)
+			if (data.Obj is ComponentView componentView)
 			{
 				if (!componentView.IsPlacedOnGrid())
 				{

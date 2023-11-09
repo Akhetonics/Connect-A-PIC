@@ -5,7 +5,7 @@ namespace CAP_Core.Component.ComponentHelpers
     public class ComponentFactory
     {
         private static ComponentFactory instance;
-        public static List<ComponentBase> components = new List<ComponentBase>();
+        public static List<Component> components = new List<Component>();
         public static ComponentFactory Instance
         {
             get
@@ -14,20 +14,20 @@ namespace CAP_Core.Component.ComponentHelpers
                 return instance;
             }
         }
-        public ComponentBase CreateComponent(int componentTypeNumber)
+        public Component CreateComponent(int componentTypeNumber)
         {
 
-            return (ComponentBase)Activator.CreateInstance(componentTypeNumber);
+            return (Component)Activator.CreateInstance(componentTypeNumber);
         }
 
-        public void InitializeComponentDrafts(List<ComponentBase> componentDrafts)
+        public void InitializeComponentDrafts(List<Component> componentDrafts)
         {
             throw new NotImplementedException();
         }
-        public ComponentBase LoadComponent(string yamlOfSBBComponent)
+        public Component LoadComponent(string yamlOfSBBComponent)
         {
             SBB sbb = SBBBuilder.createSBB(yamlOfSBBComponent);
-            ComponentBase newComponent;
+            Component newComponent;
             // create Component from sbb
             throw new NotImplementedException();
         }

@@ -1,12 +1,16 @@
 using CAP_Core;
 using CAP_Core.Component.ComponentHelpers;
 using CAP_Core.ExternalPorts;
+using CAP_Core.LightFlow;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper;
+using ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper.DTOs;
 using Godot;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Reflection;
 
 namespace ConnectAPic.LayoutWindow
@@ -43,7 +47,7 @@ namespace ConnectAPic.LayoutWindow
 				GridView.Initialize(GridViewModel);
 				InitializeExternalPortViews(Grid.ExternalPorts);
 				InitializeAllComponentDrafts();
-            }
+			}
 			else
 			{
 				QueueFree(); // delete this object as there is already another GameManager in the scene
@@ -54,9 +58,71 @@ namespace ConnectAPic.LayoutWindow
 		{
 			ComponentImporter.ImportAllPCKComponents(ComponentImporter.ComponentFolderPath);
 			var componentDrafts = ComponentImporter.ImportAllJsonComponents();
-			ComponentViewFactory.Instance.InitializeComponentDrafts(componentDrafts);// ComponentViewFactory should be part of Gridview in my opinion.. 
-			var modelComponents = new List<ComponentBase>();
-			ComponentFactory.Instance.InitializeComponentDrafts(componentDrafts);
+			ComponentViewFactory.Instance.InitializeComponentDrafts(componentDrafts);
+			var modelComponents = new List<Component>();
+			int typeNumber = 0;
+			foreach ( var draft in componentDrafts)
+			{
+				// convert PinDrafts to Model Pins
+				Dictionary<(int x, int y), List<PinDraft>> PinDraftsByXY = new();
+				foreach (var p in draft.pins)
+				{
+					if (PinDraftsByXY.ContainsKey((p.partX, p.partY)))
+					{
+						PinDraftsByXY[(p.partX, p.partY)].Add(p);
+					}
+					else
+					{
+						PinDraftsByXY.Add((p.partX, p.partY), new List<PinDraft>() { p });
+					}
+				}
+
+				// Create Model Parts
+				Part[,] parts = new Part[draft.widthInTiles, draft.heightInTiles];
+				foreach (var pinDraft in PinDraftsByXY)
+				{
+					var realPins = pinDraft.Value.Select(pinDraft => new Pin(pinDraft.name, pinDraft.matterType, pinDraft.side)).ToList();
+					parts[pinDraft.Key.x, pinDraft.Key.y] = new Part(realPins);
+				}
+
+				// Create Smatrix Connections
+				// get all real Pins
+				Dictionary<Guid, Pin> ModelPins = new();
+				foreach (Part part in parts)
+				{
+					part.Pins.ForEach(p => ModelPins.Add(p.IDInFlow, p));
+					part.Pins.ForEach(p => ModelPins.Add(p.IDOutFlow, p));
+				}
+
+				Dictionary<int, PinDraft> PinDraftsByNumber = new();
+				draft.pins.ForEach(p => PinDraftsByNumber.Add(p.number, p));
+				List<Guid> allPinGuids = new();
+				allPinGuids.AddRange(ModelPins.Values.Select(p=>p.IDInFlow).Distinct());
+				allPinGuids.AddRange(ModelPins.Values.Select(p=>p.IDOutFlow).Distinct());
+				var componentConnectionsRed = new SMatrix(allPinGuids);
+				var componentConnectionsGreen = new SMatrix(allPinGuids);
+				var componentConnectionsBlue = new SMatrix(allPinGuids);
+				var connectionWeightsRed = new Dictionary<(Guid, Guid), Complex>();
+				var connectionWeightsGreen = new Dictionary<(Guid, Guid), Complex>();
+				var connectionWeightsBlue = new Dictionary<(Guid, Guid), Complex>();
+				foreach (Connection connectionDraft in draft.connections)
+				{
+					var fromPin = PinDraftsByNumber[connectionDraft.fromPinNr];
+					var fromModelPin = parts[fromPin.partX, fromPin.partY].Pins.Single(p => p.Side == fromPin.side && p.MatterType == fromPin.matterType);
+					var toPin = PinDraftsByNumber[connectionDraft.toPinNr];
+					var toModelPin = parts[fromPin.partX, fromPin.partY].Pins.Single(p => p.Side == fromPin.side && p.MatterType == fromPin.matterType);
+					var phaseShiftDegreesRed = PhaseShiftCalculator.GetDegrees(connectionDraft.wireLengthNM, PhaseShiftCalculator.laserWaveLengthRedNM);
+                    connectionWeightsRed.Add((fromModelPin.IDInFlow, toModelPin.IDOutFlow), Complex.FromPolarCoordinates(connectionDraft.magnitude, phaseShiftDegreesRed));
+				};
+
+				componentConnectionsRed.SetValues(connectionWeightsRed);
+				// at the moment we pretend that every light is redlaser, but in the future any laserwavelength should be applicable
+
+				modelComponents.Add( new Component(componentConnectionsRed,draft.nazcaFunctionName, draft.nazcaFunctionParameters, parts, typeNumber, DiscreteRotation.R0 ));
+				typeNumber++;
+			}
+			
+			ComponentFactory.Instance.InitializeComponentDrafts(modelComponents);
 		}
 		private void InitializeExternalPortViews(List<ExternalPort> StandardPorts)
 		{
@@ -89,7 +155,7 @@ namespace ConnectAPic.LayoutWindow
 				}
 				view.Visible = true;
 				GridViewModel.GridView.DragDropProxy.AddChild(view);
-				view.Position = new Vector2(view.Position.X - GridView.GlobalPosition.X, (GameManager.TilePixelSize) * port.TilePositionY);
+				view.Position = new Godot.Vector2(view.Position.X - GridView.GlobalPosition.X, (GameManager.TilePixelSize) * port.TilePositionY);
 			}
 		}
 	}

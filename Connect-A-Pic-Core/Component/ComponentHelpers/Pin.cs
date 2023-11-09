@@ -38,7 +38,7 @@ namespace CAP_Core.Component.ComponentHelpers
         {
             MatterType = newMatterType;
         }
-        public Pin(string Name, RectSide side)
+        protected Pin(string Name, RectSide side)
         {
             Side = side;
             this.Name = Name;

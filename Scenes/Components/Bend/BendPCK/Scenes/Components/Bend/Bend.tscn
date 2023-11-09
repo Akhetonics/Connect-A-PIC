@@ -1,9 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://xuxk7b4m2bt1"]
+[gd_scene load_steps=5 format=3 uid="uid://xuxk7b4m2bt1"]
 
 [ext_resource type="Texture2D" uid="uid://qhk7bdcbkh6d" path="res://Scenes/Components/Bend/Component L.png" id="1_h05ny"]
-[ext_resource type="Script" path="res://Scenes/Components/Bend/BendView.cs" id="2_w7y6r"]
 [ext_resource type="Texture2D" uid="uid://5bxbe1gcdfif" path="res://Scenes/Components/Bend/Component L_Overlay.png" id="3_f2wga"]
-[ext_resource type="Shader" uid="uid://cl06n8nroabam" path="res://Scenes/Components/LightOverlayShaded.tres" id="4_3tfpu"]
+[ext_resource type="Shader" uid="uid://cl06n8nroabam" path="res://Scenes/Components/Bend/LightOverlayShaded.tres" id="4_3tfpu"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_jbr3n"]
 shader = ExtResource("4_3tfpu")
@@ -27,7 +26,7 @@ shader_parameter/lightOutFlow8 = null
 shader_parameter/numAnimationColumns = 4.0
 shader_parameter/animation1 = ExtResource("3_f2wga")
 
-[node name="TextureRect" type="TextureRect" node_paths=PackedStringArray("OverlayBluePrint")]
+[node name="TextureRect" type="TextureRect"]
 custom_minimum_size = Vector2(60, 60)
 offset_right = 60.0
 offset_bottom = 60.0
@@ -35,11 +34,6 @@ size_flags_horizontal = 0
 size_flags_vertical = 0
 texture = ExtResource("1_h05ny")
 flip_h = true
-script = ExtResource("2_w7y6r")
-OverlayAnimTexture = ExtResource("3_f2wga")
-WidthInTiles = 1
-HeightInTiles = 1
-OverlayBluePrint = NodePath("OverlayRed")
 
 [node name="Background" type="Sprite2D" parent="."]
 scale = Vector2(2, 2)
@@ -47,7 +41,8 @@ texture = ExtResource("1_h05ny")
 centered = false
 flip_h = true
 
-[node name="OverlayRed" type="Sprite2D" parent="."]
+[node name="Overlay" type="Sprite2D" parent="."]
+unique_name_in_owner = true
 material = SubResource("ShaderMaterial_jbr3n")
 scale = Vector2(2, 2)
 texture = ExtResource("1_h05ny")

@@ -3,6 +3,7 @@
   "identifier": "GratingCoupler",
   "nazcaFunctionParameters": "",
   "nazcaFunctionName": "placeCell_GratingCoupler",
+  "sceneResPath": "res://Scenes/Components/GratingCoupler/GratingCoupler.tscn",
   "deltaLength": 0,
   "widthInTiles": 1,
   "heightInTiles": 1,

@@ -10,10 +10,10 @@ config_version=5
 
 [application]
 
-config/name="ComponentGratingCoupler"
+config/name="Bend Pck"
 config/features=PackedStringArray("4.1", "Forward Plus")
 config/icon="res://icon.svg"
 
 [dotnet]
 
-project/assembly_name="Connect A Pic Test"
+project/assembly_name="Bend Pck"

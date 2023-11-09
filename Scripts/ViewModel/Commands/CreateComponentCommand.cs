@@ -21,7 +21,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
         {
             if( parameter is CreateComponentArgs args)
             {
-                ComponentBaseView comp = ComponentViewFactory.Instance.CreateComponentView(args.ComponentViewType);
+                ComponentView comp = ComponentViewFactory.Instance.CreateComponentView(args.ComponentViewType);
                 int width = comp.WidthInTiles;
                 int height = comp.HeightInTiles;
                 comp.QueueFree();
@@ -37,7 +37,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             if (CanExecute(parameter) == false) return;
             var compParams = (CreateComponentArgs)parameter;
             var newComponentType = ComponentViewModelTypeConverter.ToModel(compParams.ComponentViewType);
-            ComponentBase component = ComponentFactory.Instance.CreateComponent(newComponentType);
+            Component component = ComponentFactory.Instance.CreateComponent(newComponentType);
             GridModel.PlaceComponent(compParams.Gridx, compParams.Gridy, component);
         }
     }

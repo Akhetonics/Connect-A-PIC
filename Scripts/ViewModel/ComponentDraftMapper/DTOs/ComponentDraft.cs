@@ -15,7 +15,7 @@ namespace ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper.DTOs
         public int deltaLength { get; set; }
         public int widthInTiles { get; set; }
         public int heightInTiles { get; set; }
-        public List<Pin> pins { get; set; }
+        public List<PinDraft> pins { get; set; }
         public List<Connection> connections { get; set; }
         public List<Overlay> overlays { get; set; }
         public string sceneResPath { get; set; }

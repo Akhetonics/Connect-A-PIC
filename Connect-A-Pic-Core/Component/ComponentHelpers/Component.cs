@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace CAP_Core.Component.ComponentHelpers
 {
-    public class ComponentBase
+    public class Component
     {
         public int WidthInTiles => Parts.GetLength(0);
         public int HeightInTiles => Parts.GetLength(1);
@@ -30,11 +30,11 @@ namespace CAP_Core.Component.ComponentHelpers
                 }
             }
         }
-        public ComponentBase(SMatrix connections, string nazcaFunctionName, string nazcaFunctionParameters, Part[,] parts, int typeNumber)
+        public Component(SMatrix connections ,string nazcaFunctionName, string nazcaFunctionParameters, Part[,] parts, int typeNumber, DiscreteRotation discreteRotationCounterClock)
         {
             Parts = parts;
             TypeNumber = typeNumber;
-            _discreteRotation = DiscreteRotation.R0;
+            _discreteRotation = discreteRotationCounterClock;
             Connections = connections;
             NazcaFunctionName = nazcaFunctionName;
             NazcaFunctionParameters = nazcaFunctionParameters;

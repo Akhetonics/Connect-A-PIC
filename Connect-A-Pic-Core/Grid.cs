@@ -9,7 +9,7 @@ namespace CAP_Core
     public class Grid
     {
         public delegate void OnGridCreatedHandler(Tile[,] Tiles);
-        public delegate void OnComponentChangedEventHandler(ComponentBase component, int x, int y);
+        public delegate void OnComponentChangedEventHandler(Component.ComponentHelpers.Component component, int x, int y);
         public event OnGridCreatedHandler OnGridCreated;
         public event OnComponentChangedEventHandler OnComponentPlacedOnTile;
         public event OnComponentChangedEventHandler OnComponentRemoved;
@@ -74,7 +74,7 @@ namespace CAP_Core
             OnGridCreated?.Invoke(Tiles);
         }
 
-        public bool IsColliding(int x, int y, int sizeX, int sizeY , ComponentBase? exception = null)
+        public bool IsColliding(int x, int y, int sizeX, int sizeY , Component.ComponentHelpers.Component? exception = null)
         {
             if (!IsInGrid(x, y, sizeX, sizeY))
             {
@@ -97,7 +97,7 @@ namespace CAP_Core
         }
         public bool RotateComponentBy90CounterClockwise(int tileX, int tileY)
         {
-            ComponentBase? component = GetComponentAt(tileX, tileY);
+            Component.ComponentHelpers.Component? component = GetComponentAt(tileX, tileY);
             if (component == null) return false;
             var tile = Tiles[tileX, tileY];
             if (tile == null || tile.Component == null) return false;
@@ -124,7 +124,7 @@ namespace CAP_Core
         {
             return x >= 0 && y >= 0 && x + width <= Width && y + height <= Height;
         }
-        public ComponentBase? GetComponentAt(int x, int y, int searchAreaWidth = 1 , int searchAreaHeight = 1)
+        public Component.ComponentHelpers.Component? GetComponentAt(int x, int y, int searchAreaWidth = 1 , int searchAreaHeight = 1)
         {
             for (int i = 0; i < searchAreaWidth; i++)
             {
@@ -143,9 +143,9 @@ namespace CAP_Core
             }
             return null;
         }
-        public List<ComponentBase> GetAllComponents()
+        public List<Component.ComponentHelpers.Component> GetAllComponents()
         {
-            List<ComponentBase> components = new();
+            List<Component.ComponentHelpers.Component> components = new();
             foreach(Tile tile in Tiles)
             {
                 if (tile.Component == null) continue;
@@ -153,7 +153,7 @@ namespace CAP_Core
             }
             return components.Distinct().ToList();
         }
-        public void PlaceComponent(int x, int y, ComponentBase component)
+        public void PlaceComponent(int x, int y, Component.ComponentHelpers.Component component)
         {
             if (IsColliding(x, y, component.WidthInTiles, component.HeightInTiles))
             {
@@ -174,7 +174,7 @@ namespace CAP_Core
         }
         public void UnregisterComponentAt(int x, int y)
         {
-            ComponentBase? item = GetComponentAt(x, y);
+            Component.ComponentHelpers.Component? item = GetComponentAt(x, y);
             if (item == null) return;
             x = item.GridXMainTile;
             y = item.GridYMainTile;
@@ -190,7 +190,7 @@ namespace CAP_Core
         }
         public bool MoveComponent(int x, int y, int sourceX, int sourceY)
         {
-            ComponentBase? component = GetComponentAt(sourceX, sourceY);
+            Component.ComponentHelpers.Component? component = GetComponentAt(sourceX, sourceY);
             if(component == null) return false;
             int oldMainGridx = component.GridXMainTile;
             int oldMainGridy = component.GridYMainTile;
@@ -208,7 +208,7 @@ namespace CAP_Core
             return false;
         }
 
-        public List<ParentAndChildTile> GetConnectedNeighboursOfComponent(ComponentBase component)
+        public List<ParentAndChildTile> GetConnectedNeighboursOfComponent(Component.ComponentHelpers.Component component)
         {
             if (component is null) return new List<ParentAndChildTile>();
             // connectedNeighbours should get all neighbours of the component, shouldn't it?

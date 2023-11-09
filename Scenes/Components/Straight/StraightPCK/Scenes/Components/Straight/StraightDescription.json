@@ -1,8 +1,9 @@
 {
   "fileFormatVersion": 1,
-  "identifier": "GratingCoupler",
+  "identifier": "Straight",
   "nazcaFunctionParameters": "",
-  "nazcaFunctionName": "",
+  "nazcaFunctionName": "placeCell_StraightWG",
+  "sceneResPath": "res://Scenes/Components/Straight/Straight.tscn",
   "deltaLength": 0,
   "widthInTiles": 1,
   "heightInTiles": 1,
@@ -14,14 +15,27 @@
 	  "side": 2,
 	  "partX": 0,
 	  "partY": 0
+	},{
+	  "number": 1,
+	  "name": "east0",
+	  "matterType": 1,
+	  "side": 0,
+	  "partX": 0,
+	  "partY": 0
 	}
   ],
   "connections": [
 	{
+	  "fromPinNr": 0,
+	  "toPinNr": 1,
+	  "magnitude": 1,
+	  "wireLengthNM" : 250000.0
+	},
+	{
 	  "fromPinNr": 1,
-	  "toPinNr": 2,
-	  "magnitude": 0,
-	  "phaseInDegrees": 0
+	  "toPinNr": 0,
+	  "magnitude": 1,
+	  "wireLengthNM" : 250000.0
 	}
   ],
   "overlays": [

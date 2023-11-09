@@ -17,10 +17,10 @@ namespace UnitTests
                 sceneResPath = "invalid/path", // trigger ErrorSceneResPathNotExist
                 widthInTiles = 0, // trigger ErrorWidthInTilesSmaller0
                 heightInTiles = 0, // trigger ErrorHeightInTilesSmaller0
-                pins = new List<Pin>
+                pins = new List<PinDraft>
             {
-                new Pin { number = 1, partX = -1 }, // trigger ErrorPinPartXSmaller0
-                new Pin { number = 1, partY = -1 }, // trigger ErrorPinPartYSmaller0 and ErrorPinNumberDuplicated
+                new PinDraft { number = 1, partX = -1 }, // trigger ErrorPinPartXSmaller0
+                new PinDraft { number = 1, partY = -1 }, // trigger ErrorPinPartYSmaller0 and ErrorPinNumberDuplicated
             },
                 overlays = new List<Overlay>
             {
@@ -76,9 +76,9 @@ namespace UnitTests
                     }
                 },
                 fileFormatVersion = ComponentDraftFileReader.CurrentFileVersion,
-                pins = new List<Pin>
+                pins = new List<PinDraft>
                 {
-                    new Pin {
+                    new PinDraft {
                         number = 1,
                         partX = 0,
                         partY = 0,
@@ -86,7 +86,7 @@ namespace UnitTests
                         side = RectSide.Left,
                         name = "west0",
                     },
-                    new Pin {
+                    new PinDraft {
                         number = 2,
                         partX = 1,
                         partY = 0,

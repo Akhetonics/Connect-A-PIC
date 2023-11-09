@@ -22,7 +22,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         public ICommand DeleteComponentCommand { get; set; }
         public ICommand RotateComponentCommand { get; set; }
         public ICommand ExportToNazcaCommand { get; set; }
-        public ComponentBaseView[,] GridComponentViews { get; private set; }
+        public ComponentView[,] GridComponentViews { get; private set; }
         public int Width { get => GridComponentViews.GetLength(0); }
         public int Height { get => GridComponentViews.GetLength(1); }
         public Grid Grid { get; set; }
@@ -34,7 +34,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             this.GridView = gridview;
             this.Grid = grid;
             //this.GridView.Columns = grid.Width;
-            this.GridComponentViews = new ComponentBaseView[grid.Width, grid.Height];
+            this.GridComponentViews = new ComponentView[grid.Width, grid.Height];
             CreateComponentCommand = new CreateComponentCommand(grid);
             DeleteComponentCommand = new DeleteComponentCommand(grid);
             RotateComponentCommand = new RotateComponentCommand(grid);
@@ -45,7 +45,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             this.Grid.OnComponentRemoved += Grid_OnComponentRemoved;
         }
 
-        private void Grid_OnComponentRemoved(ComponentBase component, int x, int y)
+        private void Grid_OnComponentRemoved(Component component, int x, int y)
         {
             ResetTilesAt(x, y, component.WidthInTiles, component.HeightInTiles);
             if (GridView.lightPropagationIsPressed)
@@ -54,7 +54,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
                 ShowLightPropagation();
             }
         }
-        private void Grid_OnComponentPlacedOnTile(ComponentBase component, int gridX, int gridY)
+        private void Grid_OnComponentPlacedOnTile(Component component, int gridX, int gridY)
         {
             CreateComponentView(gridX, gridY, component.Rotation90CounterClock, component.TypeNumber, component);
             if (GridView.lightPropagationIsPressed)
@@ -77,7 +77,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             }
         }
 
-        public void RegisterComponentViewInGridView(ComponentBaseView componentView)
+        public void RegisterComponentViewInGridView(ComponentView componentView)
         {
             for (int x = componentView.GridX; x < componentView.GridX + componentView.WidthInTiles; x++)
             {
@@ -105,7 +105,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
                 }
             }
         }
-        public ComponentBaseView CreateComponentView(int gridx, int gridy, DiscreteRotation rotationCounterClockwise, int componentTypeNumber, ComponentBase componentModel)
+        public ComponentView CreateComponentView(int gridx, int gridy, DiscreteRotation rotationCounterClockwise, int componentTypeNumber, Component componentModel)
         {
             var ComponentView = ComponentViewFactory.Instance.CreateComponentView(componentTypeNumber);
             ComponentView.RegisterInGrid(gridx, gridy, rotationCounterClockwise, this);
@@ -133,7 +133,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
 
         private void AssignLightToComponentViews(Dictionary<Guid, Complex> lightVector, LightColor color)
         {
-            List<ComponentBase> components = Grid.GetAllComponents();
+            List<Component> components = Grid.GetAllComponents();
             foreach (var componentModel in components)
             {
                 try
@@ -149,7 +149,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             }
         }
 
-        public static List<LightAtPin> CalculateLightAtPins(Dictionary<Guid, Complex> lightVector, LightColor color, ComponentBase componentModel)
+        public static List<LightAtPin> CalculateLightAtPins(Dictionary<Guid, Complex> lightVector, LightColor color, Component componentModel)
         {
             List<LightAtPin> lightAtPins = new();
 

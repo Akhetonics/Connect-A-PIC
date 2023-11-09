@@ -72,7 +72,7 @@ namespace ConnectAPIC.LayoutWindow.View
             packedComponentCache = packedComponentScenes;
         }
 
-        public ComponentBaseView CreateComponentView(int componentNR)
+        public ComponentView CreateComponentView(int componentNR)
         {
             if (!packedComponentCache.ContainsKey(componentNR))
             {
@@ -94,7 +94,7 @@ namespace ConnectAPIC.LayoutWindow.View
                         Side = overlay.rectSide
                     });
                 }
-                var view = packedScene.Instantiate() as ComponentBaseView;
+                var view = packedScene.Instantiate() as ComponentView;
                 view.InitializeComponent(slotDataSets, draft.widthInTiles, draft.heightInTiles);
                 return view;
             }
