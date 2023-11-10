@@ -1,5 +1,6 @@
 ﻿using ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper.DTOs;
 using Godot;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -7,7 +8,7 @@ namespace ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper
 {
     public class ComponentImporter
     {
-        public const string ComponentFolderPath = "ref:/Scenes/Components";
+        public const string ComponentFolderPath = "res://Scenes/Components";
         public static void ImportAllPCKComponents(string startFolderPath)
         {
             // Convert Godot to system Paths
@@ -35,14 +36,21 @@ namespace ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper
         }
         public static List<ComponentDraft> ImportAllJsonComponents()
         {
-            var globalCompPath = ProjectSettings.LocalizePath(ComponentFolderPath);
+            var globalCompPath = ProjectSettings.GlobalizePath(ComponentFolderPath);
             List<ComponentDraft> drafts = new();
             if (Directory.Exists(globalCompPath))
             {
                 foreach (var filePath in Directory.EnumerateFiles(globalCompPath, "*.json", SearchOption.AllDirectories))
                 {
-                    var draft = ComponentDraftFileReader.Read(filePath);
-                    drafts.Add(draft);
+                    try
+                    {
+                        var draft = ComponentDraftFileReader.Read(filePath);
+                        drafts.Add(draft);
+                    } catch (Exception ex)
+                    {
+                        CustomLogger.PrintEx(ex);
+                        continue;
+                    }
                 }
             }
             else

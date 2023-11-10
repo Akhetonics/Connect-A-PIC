@@ -4,6 +4,7 @@ using CAP_Core.Component;
 using CAP_Core.Component.ComponentHelpers;
 using CAP_Core.ExternalPorts;
 using CAP_Core.Tiles;
+using ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper;
 
 namespace UnitTests
 {
@@ -15,12 +16,12 @@ namespace UnitTests
             Grid grid = new(24,12);
             var inputs = grid.ExternalPorts.Where(p => p.GetType() == typeof(StandardInput)).ToList();
             int inputHeight = inputs.FirstOrDefault()?.TilePositionY ?? throw new Exception("there is no StandardInput defined");
-            var firstComponent = new DirectionalCoupler();
+            var firstComponent = TestComponentFactory.CreateDirectionalCoupler();
             grid.PlaceComponent(0, inputHeight, firstComponent);
             var secondComponent = PlaceAndConcatenateComponent(grid, firstComponent);
             var thirdComponent = PlaceAndConcatenateComponent(grid, secondComponent);
             var fourthComponent = PlaceAndConcatenateComponent(grid, thirdComponent);
-            var orphant = new DirectionalCoupler();
+            var orphant = TestComponentFactory.CreateDirectionalCoupler();
             grid.PlaceComponent(10, 5, orphant);
             
             NazcaExporter exporter = new();
@@ -47,7 +48,7 @@ namespace UnitTests
             var firstInput = inputs.FirstOrDefault();
             if (firstInput == null) throw new Exception("Inputs not found, they seem not to be declared in the grid. Please do that now");
             var inputHeight = firstInput.TilePositionY;
-            var firstComponent = new StraightWaveGuide();
+            var firstComponent = TestComponentFactory.CreateStraightWaveGuide();
             // add grid components and tiles
             grid.PlaceComponent(0, inputHeight, firstComponent);
             var secondComponent = PlaceAndConcatenateComponent(grid, firstComponent);
@@ -65,7 +66,7 @@ namespace UnitTests
         
         public static Component PlaceAndConcatenateComponent(Grid grid, Component parentComponent)
         {
-            Component newComponent = new StraightWaveGuide();
+            Component newComponent = TestComponentFactory.CreateStraightWaveGuide();
             var GridXSecondComponent = parentComponent.GridXMainTile + parentComponent.WidthInTiles;
             var GridYSecondComponent = parentComponent.GridYMainTile + parentComponent.HeightInTiles-1;
             grid.PlaceComponent(GridXSecondComponent, GridYSecondComponent, newComponent);

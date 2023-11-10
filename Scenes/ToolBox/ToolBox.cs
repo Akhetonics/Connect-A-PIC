@@ -14,12 +14,12 @@ public partial class ToolBox : Node
 
 	public void LoadAllComponentsAsTools()
 	{
-		var allComponentTypes = ComponentViewFactory.Instance.GetAllComponentIDs();
-		foreach (Type componentType in allComponentTypes)
+		var allComponentTypesNRs = ComponentViewFactory.Instance.GetAllComponentIDs();
+		foreach (int typeNumber in allComponentTypesNRs)
 		{
 			var bordersize = gridContainer.GetThemeConstant("h_separation");
 			var toolPixelSize = GameManager.TilePixelSize - bordersize;
-			var componentInstance = ComponentViewFactory.Instance.CreateComponentView(componentType);
+			var componentInstance = ComponentViewFactory.Instance.CreateComponentView(typeNumber);
 			componentInstance.CustomMinimumSize = new Vector2 (toolPixelSize, toolPixelSize);
 			var componentSizeCorrection = (componentInstance.Size / toolPixelSize);
 			var biggestScaleFactor = Math.Max(componentSizeCorrection.X, componentSizeCorrection.Y);

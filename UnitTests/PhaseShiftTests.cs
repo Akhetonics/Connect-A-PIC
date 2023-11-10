@@ -31,12 +31,12 @@ namespace UnitTests
             Grid grid = new(24, 12);
             var inputs = grid.ExternalPorts.Where(p => p.GetType() == typeof(StandardInput)).ToList();
             int inputHeight = inputs.FirstOrDefault()?.TilePositionY ?? throw new Exception("there is no StandardInput defined");
-            var firstComponent = new Component();
+            var firstComponent = TestComponentFactory.CreateStraightWaveGuide();
             grid.PlaceComponent(0, inputHeight, firstComponent);
             var secondComponent = ExportNazcaTests.PlaceAndConcatenateComponent(grid, firstComponent);
             var thirdComponent = ExportNazcaTests.PlaceAndConcatenateComponent(grid, secondComponent);
             var fourthComponent = ExportNazcaTests.PlaceAndConcatenateComponent(grid, thirdComponent);
-            var orphant = new Component();
+            var orphant = TestComponentFactory.CreateStraightWaveGuide();
             grid.PlaceComponent(10, 5, orphant);
 
             NazcaExporter exporter = new();

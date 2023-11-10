@@ -1,4 +1,4 @@
-﻿<Project Sdk="Godot.NET.Sdk/4.1.0">
+﻿<Project Sdk="Godot.NET.Sdk/4.1.1">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>ConnectAPIC</RootNamespace>
@@ -10,10 +10,12 @@
     <Compile Remove="Connect-A-Pic-Core\**" />
     <Compile Remove="libraries\**" />
     <Compile Remove="PDK\**" />
+    <Compile Remove="Scenes\Components\GratingCoupler\GratingPCK\Scenes\**" />
     <Compile Remove="Tests\**" />
     <EmbeddedResource Remove="Connect-A-Pic-Core\**" />
     <EmbeddedResource Remove="libraries\**" />
     <EmbeddedResource Remove="PDK\**" />
+    <EmbeddedResource Remove="Scenes\Components\GratingCoupler\GratingPCK\Scenes\**" />
     <EmbeddedResource Remove="Tests\**" />
     <Compile Remove="UnitTests\**" />
     <EmbeddedResource Remove="UnitTests\**" />
@@ -24,6 +26,9 @@
     <Compile Remove="Scenes\Scenes.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Scripts\ViewModel\ComponentDraftMapper\ComponentDescriptionDraft.json" />
+  </ItemGroup>
+  <ItemGroup>
     <None Include="MathNet.Numerics.dll" />
     <None Include="README.md" />
   </ItemGroup>
@@ -32,5 +37,10 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Connect-A-Pic-Core\CAP-Core.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Scenes\Components\Bend\BendPCK\Scenes\Components\Bend\" />
+    <Folder Include="Scenes\Components\DirectionalCoupler\DirectionalCouplerPCK\Scenes\Components\DirectionalCoupler\" />
+    <Folder Include="Scenes\Components\GratingCoupler\GratingPCK\" />
   </ItemGroup>
 </Project>

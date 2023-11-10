@@ -1,25 +1,29 @@
 ﻿using CAP_Core;
 using CAP_Core.Component;
 using CAP_Core.Component.ComponentHelpers;
+using CAP_Core.LightFlow;
 using CAP_Core.Tiles;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
+using ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper.DTOs;
 using Newtonsoft.Json;
+using System.Numerics;
 
 namespace UnitTests
 {
     public class ComponentTests
     {
+        
         [Fact]
         public void TestDirectionalCouplerSerialization()
         {
-            DirectionalCoupler coupler = new DirectionalCoupler();
+            var coupler = TestComponentFactory.CreateDirectionalCoupler();
             var couplerText = JsonConvert.SerializeObject(coupler);
         }
         [Fact]
         public void TestComponentRotation()
         {
             var grid = new Grid(10, 10);
-            var component = new DirectionalCoupler();
+            var component = TestComponentFactory.CreateDirectionalCoupler();
             grid.PlaceComponent(0, 0, component);
             var command = new RotateComponentCommand(grid);
             var args = new RotateComponentArgs(0, 0);

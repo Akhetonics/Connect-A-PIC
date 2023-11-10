@@ -53,12 +53,14 @@ namespace ConnectAPic.LayoutWindow
 				QueueFree(); // delete this object as there is already another GameManager in the scene
 			}
 		}
-
+		
 		private void InitializeAllComponentDrafts()
 		{
 			ComponentImporter.ImportAllPCKComponents(ComponentImporter.ComponentFolderPath);
 			var componentDrafts = ComponentImporter.ImportAllJsonComponents();
 			ComponentViewFactory.Instance.InitializeComponentDrafts(componentDrafts);
+			
+			
 			var modelComponents = new List<Component>();
 			int typeNumber = 0;
 			foreach ( var draft in componentDrafts)

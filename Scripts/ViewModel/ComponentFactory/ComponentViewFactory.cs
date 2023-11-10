@@ -1,5 +1,6 @@
 using ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper.DTOs;
 using Godot;
+using MathNet.Numerics;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -95,7 +96,7 @@ namespace ConnectAPIC.LayoutWindow.View
                     });
                 }
                 var view = packedScene.Instantiate() as ComponentView;
-                view.InitializeComponent(slotDataSets, draft.widthInTiles, draft.heightInTiles);
+                view.InitializeComponent(componentNR, slotDataSets, draft.widthInTiles, draft.heightInTiles);
                 return view;
             }
             catch (Exception ex)
@@ -105,6 +106,15 @@ namespace ConnectAPIC.LayoutWindow.View
             }
         }
     
+        public Vector2I GetComponentDimensions(int componentTypeNumber)
+        {
+            if(packedComponentCache.TryGetValue(componentTypeNumber, out var component))
+            {
+                return new Vector2I(component.Draft.widthInTiles, component.Draft.heightInTiles);
+            }
+            CustomLogger.PrintErr($"ComponentTypeNumber {componentTypeNumber} does not exist in ComponentViewFactory");
+            throw new KeyNotFoundException( $"ComponentTypeNumber {componentTypeNumber} does not exist in ComponentViewFactory");
+        }
         public List<int> GetAllComponentIDs()
         {
             return packedComponentCache.Keys.ToList();

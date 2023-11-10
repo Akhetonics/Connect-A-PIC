@@ -5,7 +5,7 @@ using System.Text.Json.Serialization;
 
 namespace CAP_Core.Component.ComponentHelpers
 {
-    public class Component
+    public class Component : ICloneable
     {
         public int WidthInTiles => Parts.GetLength(0);
         public int HeightInTiles => Parts.GetLength(1);
@@ -84,38 +84,6 @@ namespace CAP_Core.Component.ComponentHelpers
             }
             return part;
         }
-        public Guid PinIdRightIn(int offsetX = 0, int offsetY = 0)
-        {
-            return Parts[offsetX, offsetY].GetPinAt(RectSide.Right).IDInFlow;
-        }
-        public Guid PinIdRightOut(int offsetX = 0, int offsetY = 0)
-        {
-            return Parts[offsetX, offsetY].GetPinAt(RectSide.Right).IDOutFlow;
-        }
-        public Guid PinIdDownIn(int offsetX = 0, int offsetY = 0)
-        {
-            return Parts[offsetX, offsetY].GetPinAt(RectSide.Down).IDInFlow;
-        }
-        public Guid PinIdDownOut(int offsetX = 0, int offsetY = 0)
-        {
-            return Parts[offsetX, offsetY].GetPinAt(RectSide.Down).IDOutFlow;
-        }
-        public Guid PinIdLeftIn(int offsetX = 0, int offsetY = 0)
-        {
-            return Parts[offsetX, offsetY].GetPinAt(RectSide.Left).IDInFlow;
-        }
-        public Guid PinIdLeftOut(int offsetX = 0, int offsetY = 0)
-        {
-            return Parts[offsetX, offsetY].GetPinAt(RectSide.Left).IDOutFlow;
-        }
-        public Guid PinIdUpIn(int offsetX = 0, int offsetY = 0)
-        {
-            return Parts[offsetX, offsetY].GetPinAt(RectSide.Up).IDInFlow;
-        }
-        public Guid PinIdUpOut(int offsetX = 0, int offsetY = 0)
-        {
-            return Parts[offsetX, offsetY].GetPinAt(RectSide.Up).IDOutFlow;
-        }
         public override string ToString()
         {
             return $"Nazca Name: {NazcaFunctionName} \n" +
@@ -129,7 +97,24 @@ namespace CAP_Core.Component.ComponentHelpers
                    $"Parts Length: {Parts?.Length} \n" +
                    $"Connections PinReferences Count: {Connections?.PinReference?.Count}";
         }
+        private Part[,] CloneParts()
+        {
+            Part[,] clonedParts = new Part[Parts.GetLength(0), Parts.GetLength(1)];
 
-        
+            for (int i = 0; i < Parts.GetLength(0); i++)
+            {
+                for (int j = 0; j < Parts.GetLength(1); j++)
+                {
+                    clonedParts[i, j] = Parts[i, j]?.Clone() as Part;
+                }
+            }
+
+            return clonedParts;
+        }
+        public object Clone()
+        {
+            var newComponent = new Component((SMatrix)Connections.Clone(), NazcaFunctionName, NazcaFunctionParameters, CloneParts(), TypeNumber, Rotation90CounterClock);
+            return newComponent;
+        }
     }
 }

@@ -4,7 +4,7 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace CAP_Core.LightFlow
 {
-    public class SMatrix
+    public class SMatrix : ICloneable
     {
         public Matrix<Complex> SMat;
         public readonly List<Guid> PinReference;
@@ -138,6 +138,13 @@ namespace CAP_Core.LightFlow
             }
 
             return result.ToString();
+        }
+
+        public object Clone()
+        {
+            var clonedSMatrix = new SMatrix(PinReference);
+            clonedSMatrix.SetValues(GetNonNullValues());
+            return clonedSMatrix;
         }
     }
 }

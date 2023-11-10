@@ -1,7 +1,6 @@
 ﻿using CAP_Core;
 using CAP_Core.Component.ComponentHelpers;
 using ConnectAPIC.LayoutWindow.View;
-using ConnectAPIC.Scripts.ViewModel.ComponentFactory;
 using System;
 using System.Windows.Input;
 
@@ -21,11 +20,9 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
         {
             if( parameter is CreateComponentArgs args)
             {
-                ComponentView comp = ComponentViewFactory.Instance.CreateComponentView(args.ComponentViewType);
-                int width = comp.WidthInTiles;
-                int height = comp.HeightInTiles;
-                comp.QueueFree();
-                if (GridModel != null && GridModel.IsColliding(args.Gridx, args.Gridy, width, height) ==false){
+                var dimensions = ComponentViewFactory.Instance.GetComponentDimensions(args.ComponentTypeNumber);
+                if (GridModel != null && !GridModel.IsColliding(args.Gridx, args.Gridy, dimensions.X, dimensions.Y))
+                {
                     return true;
                 }
             }
@@ -34,23 +31,22 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 
         public void Execute(object parameter)
         {
-            if (CanExecute(parameter) == false) return;
+            if ( !CanExecute(parameter) ) return;
             var compParams = (CreateComponentArgs)parameter;
-            var newComponentType = ComponentViewModelTypeConverter.ToModel(compParams.ComponentViewType);
-            Component component = ComponentFactory.Instance.CreateComponent(newComponentType);
+            Component component = ComponentFactory.Instance.CreateComponent(compParams.ComponentTypeNumber);
             GridModel.PlaceComponent(compParams.Gridx, compParams.Gridy, component);
         }
     }
     public class CreateComponentArgs
     {
-        public readonly Type ComponentViewType;
+        public readonly int ComponentTypeNumber;
         public readonly int Gridx;
         public readonly int Gridy;
         public readonly DiscreteRotation Rotation;
 
-        public CreateComponentArgs(Type componentViewType, int gridx, int gridy, DiscreteRotation rotation)
+        public CreateComponentArgs(int componentTypeNumber, int gridx, int gridy, DiscreteRotation rotation)
         {
-            this.ComponentViewType = componentViewType;
+            this.ComponentTypeNumber = componentTypeNumber;
             this.Gridx = gridx;
             this.Gridy = gridy;
             this.Rotation = rotation;

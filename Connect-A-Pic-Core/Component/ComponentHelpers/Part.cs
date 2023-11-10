@@ -3,7 +3,7 @@ using CAP_Core.Tiles;
 
 namespace CAP_Core.Component.ComponentHelpers
 {
-    public class Part
+    public class Part : ICloneable
     {
         public readonly List<Pin> Pins;
         public DiscreteRotation Rotation90 { get; set; }
@@ -51,6 +51,13 @@ namespace CAP_Core.Component.ComponentHelpers
         {
             // Filter pins that have MatterType of None and then join them as string
             return string.Join(", ", Pins.Where(pin => pin.MatterType != MatterType.None));
+        }
+
+        public object Clone()
+        {
+            var clonedPins = Pins.Select(pin => (Pin)pin.Clone()).ToList();
+            var clonedPart = new Part(clonedPins);
+            return clonedPart;
         }
     }
 }

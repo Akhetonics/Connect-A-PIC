@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 
 namespace CAP_Core.Component.ComponentHelpers
 {
-    public class Pin : INotifyPropertyChanged
+    public class Pin : INotifyPropertyChanged, ICloneable
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public string Name { get; set; } // the nazca name like b0, a0, a1}
@@ -56,11 +56,6 @@ namespace CAP_Core.Component.ComponentHelpers
             SetMatterType(MatterType.None);
             Name = "";
         }
-        public Pin Duplicate()
-        {
-            var duplicatedPin = new Pin(Name, MatterType, Side);
-            return duplicatedPin;
-        }
         private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -68,6 +63,12 @@ namespace CAP_Core.Component.ComponentHelpers
         public override string ToString()
         {
             return $"{Name}: {MatterType}";
+        }
+
+        public object Clone()
+        {
+            var clonedPin = new Pin(Name, MatterType, Side);
+            return clonedPin;
         }
     }
 }

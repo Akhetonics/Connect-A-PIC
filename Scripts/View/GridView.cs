@@ -83,7 +83,7 @@ namespace ConnectAPIC.LayoutWindow.View
 			{
 				if (!componentView.IsPlacedOnGrid())
 				{
-					ViewModel.CreateComponentCommand.Execute(new CreateComponentArgs(componentView.GetType(), GridXY.X, GridXY.Y, (DiscreteRotation)(componentView.RotationDegrees /90)));
+					ViewModel.CreateComponentCommand.Execute(new CreateComponentArgs(componentView.TypeNumber, GridXY.X, GridXY.Y, (DiscreteRotation)(componentView.RotationDegrees /90)));
 				}
 				else
 				{

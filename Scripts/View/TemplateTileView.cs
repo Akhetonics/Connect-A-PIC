@@ -12,10 +12,16 @@ namespace ConnectAPIC.LayoutWindow.View
 
 		public override Variant _GetDragData(Vector2 position)
 		{
-			var template = GetChild(0);
-			var componentType = (template as ComponentView)?.GetType();
-			var newComponent = ComponentViewFactory.Instance.CreateComponentView(componentType);
-			return newComponent;
+			if( GetChild(0) is ComponentView template)
+			{
+                var newComponent = ComponentViewFactory.Instance.CreateComponentView(template.TypeNumber);
+                return newComponent;
+            } else
+			{
+				var exceptionText = "child of _GetDragData() is not of type ComponentView even though it should be";
+                CustomLogger.PrintErr(exceptionText);
+				throw new DataMisalignedException(exceptionText);
+			}
 		}
 
 		public override void _GuiInput(InputEvent inputEvent)

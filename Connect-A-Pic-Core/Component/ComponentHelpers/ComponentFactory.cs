@@ -4,8 +4,8 @@ namespace CAP_Core.Component.ComponentHelpers
 {
     public class ComponentFactory
     {
+        private List<Component> ComponentDrafts = new List<Component>();
         private static ComponentFactory instance;
-        public static List<Component> components = new List<Component>();
         public static ComponentFactory Instance
         {
             get
@@ -16,20 +16,13 @@ namespace CAP_Core.Component.ComponentHelpers
         }
         public Component CreateComponent(int componentTypeNumber)
         {
-
-            return (Component)Activator.CreateInstance(componentTypeNumber);
+            var newComponent = ComponentDrafts.Single(component => component.TypeNumber == componentTypeNumber);
+            return (Component)newComponent.Clone();
         }
 
         public void InitializeComponentDrafts(List<Component> componentDrafts)
         {
-            throw new NotImplementedException();
-        }
-        public Component LoadComponent(string yamlOfSBBComponent)
-        {
-            SBB sbb = SBBBuilder.createSBB(yamlOfSBBComponent);
-            Component newComponent;
-            // create Component from sbb
-            throw new NotImplementedException();
+            this.ComponentDrafts = componentDrafts;
         }
     }
 }

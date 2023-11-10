@@ -27,6 +27,7 @@ namespace ConnectAPIC.LayoutWindow.View
     {
         public int WidthInTiles { get; private set; }
         public int HeightInTiles { get; private set; }
+        public int TypeNumber { get; set; }
         private Sprite2D OverlayBluePrint { get; set; }
         public Sprite2D OverlayRed { get; private set; }
         public Sprite2D OverlayGreen { get; private set; }
@@ -58,11 +59,12 @@ namespace ConnectAPIC.LayoutWindow.View
             this.CheckForNull(x => x.OverlayBluePrint);
         }
 
-        public void InitializeComponent(List<AnimationSlotOverlayData> slotDatas, int widthIntiles, int heightInTiles)
+        public void InitializeComponent(int componentTypeNumber, List<AnimationSlotOverlayData> slotDatas, int widthIntiles, int heightInTiles)
         {
             if (WidthInTiles == 0) CustomLogger.PrintErr(nameof(WidthInTiles) + " of this element is not set in the ComponentScene: " + this.GetType().Name);
             if (HeightInTiles == 0) CustomLogger.PrintErr(nameof(HeightInTiles) + " of this element is not set in the ComponentScene: " + this.GetType().Name);
 
+            this.TypeNumber = componentTypeNumber;
             foreach (var slotData in slotDatas)
             {
                 this.CheckForNull(x => slotData.LightFlowOverlay);
@@ -221,12 +223,6 @@ namespace ConnectAPIC.LayoutWindow.View
 
                 }
             }
-        }
-        public virtual ComponentView Duplicate()
-        {
-            var copy = base.Duplicate() as ComponentView;
-            copy.RotationCC = this.RotationCC;
-            return copy;
         }
 
         protected List<AnimationSlot> CreateRGBAnimSlots(RectSide inflowSide, Texture overlayAnimTexture, int tileOffsetX = 0, int tileOffsetY = 0)

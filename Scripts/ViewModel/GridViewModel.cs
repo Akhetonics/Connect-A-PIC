@@ -56,7 +56,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         }
         private void Grid_OnComponentPlacedOnTile(Component component, int gridX, int gridY)
         {
-            CreateComponentView(gridX, gridY, component.Rotation90CounterClock, component.TypeNumber, component);
+            CreateComponentView(gridX, gridY, component.Rotation90CounterClock, component.TypeNumber);
             if (GridView.lightPropagationIsPressed)
             {
                 HideLightPropagation();
@@ -105,7 +105,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
                 }
             }
         }
-        public ComponentView CreateComponentView(int gridx, int gridy, DiscreteRotation rotationCounterClockwise, int componentTypeNumber, Component componentModel)
+        public ComponentView CreateComponentView(int gridx, int gridy, DiscreteRotation rotationCounterClockwise, int componentTypeNumber)
         {
             var ComponentView = ComponentViewFactory.Instance.CreateComponentView(componentTypeNumber);
             ComponentView.RegisterInGrid(gridx, gridy, rotationCounterClockwise, this);

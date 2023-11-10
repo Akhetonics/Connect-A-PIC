@@ -62,7 +62,7 @@ namespace UnitTests
             // Arrange
             var draft = new ComponentDraft
             {
-                sceneResPath = "res://icon.svg",
+                sceneResPath = "res://testhost.exe",
                 widthInTiles = 2,
                 heightInTiles = 1,
                 identifier = "test",
@@ -70,7 +70,7 @@ namespace UnitTests
                 overlays = new List<Overlay>
                 {
                     new Overlay {
-                        overlayAnimTexturePath = "res://icon.svg",
+                        overlayAnimTexturePath = "res://testhost.exe",
                         tileOffsetX = 0,
                         tileOffsetY = 0,
                     }
@@ -102,14 +102,14 @@ namespace UnitTests
                         fromPinNr = 1,
                         toPinNr = 2,
                         magnitude = 1,
-                        phaseInDegrees = 0.02f,
+                        wireLengthNM = 0.02f,
                     },
                     new Connection()
                     {
                         fromPinNr = 2,
                         toPinNr = 1,
                         magnitude = 1,
-                        phaseInDegrees = 0.02f,
+                        wireLengthNM = 0.02f,
                     },
                 },
             };
@@ -118,7 +118,8 @@ namespace UnitTests
             var (isValid, errorMsg) = ComponentDraftValidator.Validate(draft);
 
             // Assert
-            Assert.True(isValid, "The draft should be valid when all conditions are met.");
+            string currentDir = Directory.GetCurrentDirectory();
+            Assert.True(isValid, "The draft should be valid when all conditions are met, but those aren't: " + errorMsg);
             Assert.Equal(string.Empty, errorMsg);
         }
     }
