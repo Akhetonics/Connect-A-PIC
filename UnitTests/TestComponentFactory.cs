@@ -14,13 +14,15 @@ namespace UnitTests
 
             Part[,] parts = new Part[widthInTiles, heightInTiles];
 
-            parts[0, 0] = new Part(new List<Pin>() { new Pin("west0", MatterType.Light, RectSide.Left) });
-            parts[1, 0] = new Part(new List<Pin>() { new Pin("east0", MatterType.Light, RectSide.Right) });
+            parts[0, 0] = new Part(new List<Pin>() { 
+                new Pin("west0", MatterType.Light, RectSide.Left), 
+                new Pin("east0", MatterType.Light, RectSide.Right)
+            });
 
             var leftUpIn = parts[0, 0].GetPinAt(RectSide.Left).IDInFlow;
             var leftUpOut = parts[0, 0].GetPinAt(RectSide.Left).IDOutFlow;
-            var rightUpIn = parts[1, 0].GetPinAt(RectSide.Right).IDInFlow;
-            var rightUpOut = parts[1, 0].GetPinAt(RectSide.Right).IDOutFlow;
+            var rightUpIn = parts[0, 0].GetPinAt(RectSide.Right).IDInFlow;
+            var rightUpOut = parts[0, 0].GetPinAt(RectSide.Right).IDOutFlow;
             // setting up the SMatrix
             var allPins = new List<Guid> {
                 leftUpIn,
@@ -48,8 +50,8 @@ namespace UnitTests
 
             parts[0, 0] = new Part(new List<Pin>() { new Pin("west0", MatterType.Light, RectSide.Left) });
             parts[1, 0] = new Part(new List<Pin>() { new Pin("east0", MatterType.Light, RectSide.Right) });
-            parts[1, 1] = new Part(new List<Pin>() { new Pin("west1", MatterType.Light, RectSide.Left) });
-            parts[0, 1] = new Part(new List<Pin>() { new Pin("east1", MatterType.Light, RectSide.Right) });
+            parts[1, 1] = new Part(new List<Pin>() { new Pin("east1", MatterType.Light, RectSide.Right) });
+            parts[0, 1] = new Part(new List<Pin>() { new Pin("west1", MatterType.Light, RectSide.Left) });
 
             var leftUpIn = parts[0, 0].GetPinAt(RectSide.Left).IDInFlow;
             var leftUpOut = parts[0, 0].GetPinAt(RectSide.Left).IDOutFlow;
