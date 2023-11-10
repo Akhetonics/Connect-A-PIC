@@ -134,10 +134,6 @@ namespace CAP_Core.Component.ComponentDraftMapper
             }
             return errorMsg;
         }
-        // create a function that calculates the phase and the magnitude of the signal at a given time t and a given frequency f
-        // the function should return a tuple of (phase, magnitude)
-        // the function should be called "calculatePhaseAndMagnitude"
-        // the function should take 2 parameters: t and f
 
         private static string ValidatePin(PinDraft pin, int widthInTiles, int heightInTiles)
         {

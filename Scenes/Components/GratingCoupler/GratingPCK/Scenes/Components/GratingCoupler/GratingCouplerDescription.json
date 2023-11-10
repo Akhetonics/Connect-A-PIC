@@ -22,7 +22,7 @@
   "overlays": [
 	{
 	  "overlayAnimTexturePath": "res://Scenes/Components/GratingCoupler/Grating Coupler Overlay.png",
-	  "rectSide": "Left",
+	  "rectSide": 2,
 	  "tileOffsetX": 0,
 	  "tileOffsetY": 0
 	}

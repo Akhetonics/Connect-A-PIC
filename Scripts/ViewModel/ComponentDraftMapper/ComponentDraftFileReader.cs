@@ -1,4 +1,5 @@
 ﻿using ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper.DTOs;
+using System;
 using System.IO;
 using System.Text.Json;
 
@@ -13,7 +14,15 @@ namespace ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper
             if (File.Exists(filePath))
             {
                 var fileContent = File.ReadAllText(filePath);
-                return JsonSerializer.Deserialize<ComponentDraft>(fileContent);
+                try
+                {
+                    return JsonSerializer.Deserialize<ComponentDraft>(fileContent);
+                }catch (Exception ex)
+                {
+                    CustomLogger.PrintErr("file: " + filePath + "  ex: " + ex.Message + " " + ex.StackTrace);
+                    throw;
+                }
+                
             }
             else
             {

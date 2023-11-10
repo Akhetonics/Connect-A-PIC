@@ -46,7 +46,7 @@ namespace ConnectAPic.LayoutWindow
 				GridViewModel = new GridViewModel(GridView, Grid);
 				GridView.Initialize(GridViewModel);
 				InitializeExternalPortViews(Grid.ExternalPorts);
-				InitializeAllComponentDrafts();
+				CallDeferred(nameof(InitializeAllComponentDrafts));
 			}
 			else
 			{

@@ -42,7 +42,7 @@
   "overlays": [
 	{
 	  "overlayAnimTexturePath": "res://Scenes/Components/Bend/Component L_Overlay.png",
-	  "rectSide": "Left",
+	  "rectSide": 2,
 	  "tileOffsetX": 0,
 	  "tileOffsetY": 0
 	}

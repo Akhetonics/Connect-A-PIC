@@ -14,10 +14,12 @@ namespace ConnectAPIC.LayoutWindow.View
         [Export] private Script ComponentBaseScriptPath;
         private List<PackedScene> PackedComponentScenes;
         private static ComponentViewFactory instance { get; set; }
-        private Dictionary<int, ComponentSceneAndDraft> packedComponentCache = new();
+        private Dictionary<int, ComponentSceneAndDraft> PackedComponentCache = new();
         public static ComponentViewFactory Instance
         {
-            get { return instance; }
+            get { 
+                return instance; 
+            }
         }
 
         public override void _Ready()
@@ -25,27 +27,12 @@ namespace ConnectAPIC.LayoutWindow.View
             if (instance == null)
             {
                 instance = this;
-                LoadAllScenesFromSceneFolder();
                 EmitSignal(nameof(InitializedEventHandler).Replace("EventHandler", ""));
             }
             else
             {
                 QueueFree(); // delete this object as there is already another GameManager in the scene
             }
-        }
-
-        public List<PackedScene> LoadAllScenesFromSceneFolder()
-        {
-            PackedComponentScenes = new List<PackedScene>();
-            var folderPath = "Scenes\\Components";
-
-            foreach (string sceneFile in Directory.EnumerateFiles(folderPath, "*.tscn", SearchOption.AllDirectories))
-            {
-                string godotPath = sceneFile.Replace(folderPath, "res://Scenes/Components").Replace("\\", "/");
-                PackedScene scene = GD.Load<PackedScene>(godotPath);
-                PackedComponentScenes.Add(scene);
-            }
-            return PackedComponentScenes;
         }
 
         public void InitializeComponentDrafts(List<ComponentDraft> drafts)
@@ -70,17 +57,17 @@ namespace ConnectAPIC.LayoutWindow.View
                 });
                 componentNumber++;
             }
-            packedComponentCache = packedComponentScenes;
+            PackedComponentCache = packedComponentScenes;
         }
 
         public ComponentView CreateComponentView(int componentNR)
         {
-            if (!packedComponentCache.ContainsKey(componentNR))
+            if (!PackedComponentCache.ContainsKey(componentNR))
             {
                 CustomLogger.PrintErr("Key does not exist in ComponentCache of ComponentviewFactory: " + componentNR);
             }
-            var draft = packedComponentCache[componentNR].Draft;
-            var packedScene = packedComponentCache[componentNR].Scene;
+            var draft = PackedComponentCache[componentNR].Draft;
+            var packedScene = PackedComponentCache[componentNR].Scene;
             var slotDataSets = new List<AnimationSlotOverlayData>();
 
             try
@@ -108,7 +95,7 @@ namespace ConnectAPIC.LayoutWindow.View
     
         public Vector2I GetComponentDimensions(int componentTypeNumber)
         {
-            if(packedComponentCache.TryGetValue(componentTypeNumber, out var component))
+            if(PackedComponentCache.TryGetValue(componentTypeNumber, out var component))
             {
                 return new Vector2I(component.Draft.widthInTiles, component.Draft.heightInTiles);
             }
@@ -117,7 +104,7 @@ namespace ConnectAPIC.LayoutWindow.View
         }
         public List<int> GetAllComponentIDs()
         {
-            return packedComponentCache.Keys.ToList();
+            return PackedComponentCache.Keys.ToList();
         }
     }
 }

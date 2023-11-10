@@ -96,22 +96,22 @@
   "overlays": [
 	{
 	  "overlayAnimTexturePath": "res://Scenes/Components/DirectionalCoupler/Directional Coupler LeftUpIn.png",
-	  "rectSide": "Left",
+	  "rectSide": 2,
 	  "tileOffsetX": 0,
 	  "tileOffsetY": 0
 	},{
 	  "overlayAnimTexturePath": "res://Scenes/Components/DirectionalCoupler/Directional Coupler LeftDown.png",
-	  "rectSide": "Left",
+	  "rectSide": 2,
 	  "tileOffsetX": 0,
 	  "tileOffsetY": 1
 	},{
 	  "overlayAnimTexturePath": "res://Scenes/Components/DirectionalCoupler/Directional Coupler RightUp.png",
-	  "rectSide": "Right",
+	  "rectSide": 0,
 	  "tileOffsetX": 1,
 	  "tileOffsetY": 0
 	},{
 	  "overlayAnimTexturePath": "res://Scenes/Components/DirectionalCoupler/Directional Coupler RightDown.png",
-	  "rectSide": "Right",
+	  "rectSide": 0,
 	  "tileOffsetX": 1,
 	  "tileOffsetY": 1
 	}

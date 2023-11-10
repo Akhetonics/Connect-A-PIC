@@ -16,6 +16,7 @@ namespace ConnectAPIC.LayoutWindow.View
 	{
 
 		[Export] public DragDropProxy DragDropProxy;
+		[Export] public ComponentViewFactory ComponentViewFactory;
 		private GridViewModel ViewModel;
 
 		public void Initialize(GridViewModel viewModel)
