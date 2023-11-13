@@ -14,7 +14,7 @@ namespace UnitTests
     public class ComponentDraftFileReaderTests
     {
         [Fact]
-        public void TestReadWrite()
+        public async Task TestReadWrite()
         {
             // Arrange
             var tempFilePath = Path.Combine(Path.GetTempPath(), "tempComponentDraft.json");
@@ -63,7 +63,24 @@ namespace UnitTests
 
             // Act
             ComponentDraftFileReader.Write(tempFilePath, originalComponentDraft);
-            var readComponentDraft = ComponentDraftFileReader.Read(tempFilePath);
+            bool fileIsUsed = true;
+            int counter = 0;
+            ComponentDraft readComponentDraft = null;
+            while (fileIsUsed)
+            {
+                try
+                {
+                    readComponentDraft = ComponentDraftFileReader.Read(tempFilePath);
+                    fileIsUsed = false;
+                } catch (IOException)
+                {
+                    await Task.Delay(10);
+                    counter++;
+                    if (counter > 100)
+                        throw;
+                }
+            }
+            
 
             // Assert
             Assert.Equal(JsonSerializer.Serialize(originalComponentDraft), JsonSerializer.Serialize(readComponentDraft));

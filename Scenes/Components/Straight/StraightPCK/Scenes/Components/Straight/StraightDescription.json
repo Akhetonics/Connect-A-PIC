@@ -3,7 +3,7 @@
   "identifier": "Straight",
   "nazcaFunctionParameters": "",
   "nazcaFunctionName": "placeCell_StraightWG",
-  "sceneResPath": "res://Scenes/Components/Straight/Straight.tscn",
+  "sceneResPath": "res://Scenes/Components/Straight/StraightWaveGuide.tscn",
   "deltaLength": 0,
   "widthInTiles": 1,
   "heightInTiles": 1,

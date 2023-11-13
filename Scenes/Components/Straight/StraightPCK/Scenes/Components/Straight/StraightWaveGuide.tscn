@@ -2,7 +2,7 @@
 
 [ext_resource type="Texture2D" uid="uid://d3th1vtdpb7mb" path="res://Scenes/Components/Straight/Component I.png" id="1_3hlav"]
 [ext_resource type="Texture2D" uid="uid://dodssmnu1iubn" path="res://Scenes/Components/Straight/Component I_Horizontal_Overlay.png" id="3_0fxxl"]
-[ext_resource type="Shader" path="res://Scenes/Components/Straight/LightOverlayShaded.tres" id="4_4nh6w"]
+[ext_resource type="Shader" uid="uid://pm4ex5pguu8i" path="res://Scenes/Components/Straight/LightOverlayShaded.tres" id="4_4nh6w"]
 
 [sub_resource type="SystemFont" id="SystemFont_r1od1"]
 font_weight = 375

@@ -35,7 +35,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             this.Grid = grid;
             //this.GridView.Columns = grid.Width;
             this.GridComponentViews = new ComponentView[grid.Width, grid.Height];
-            CreateComponentCommand = new CreateComponentCommand(grid);
+            CreateComponentCommand = new CreateComponentCommand(grid,ComponentFactory.Instance);
             DeleteComponentCommand = new DeleteComponentCommand(grid);
             RotateComponentCommand = new RotateComponentCommand(grid);
             MoveComponentCommand = new MoveComponentCommand(grid);
@@ -107,7 +107,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         }
         public ComponentView CreateComponentView(int gridx, int gridy, DiscreteRotation rotationCounterClockwise, int componentTypeNumber)
         {
-            var ComponentView = ComponentViewFactory.Instance.CreateComponentView(componentTypeNumber);
+            var ComponentView = GridView.ComponentViewFactory.CreateComponentView(componentTypeNumber);
             ComponentView.RegisterInGrid(gridx, gridy, rotationCounterClockwise, this);
             RegisterComponentViewInGridView(ComponentView);
             GridView.DragDropProxy.AddChild(ComponentView); // it has to be the child of the DragDropArea to be displayed

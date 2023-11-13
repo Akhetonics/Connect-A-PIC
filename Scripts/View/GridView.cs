@@ -4,6 +4,7 @@ using CAP_Core.ExternalPorts;
 using ConnectAPic.LayoutWindow;
 using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
+using ConnectAPIC.Scripts.Helpers;
 using Godot;
 using System;
 using System.Collections.Generic;
@@ -19,7 +20,13 @@ namespace ConnectAPIC.LayoutWindow.View
 		[Export] public ComponentViewFactory ComponentViewFactory;
 		private GridViewModel ViewModel;
 
-		public void Initialize(GridViewModel viewModel)
+        public override void _Ready()
+        {
+            base._Ready();
+            this.CheckForNull(x => DragDropProxy);
+            this.CheckForNull(x => ComponentViewFactory);
+        }
+        public void Initialize(GridViewModel viewModel)
 		{
 			this.ViewModel = viewModel;
 			DragDropProxy.OnGetDragData += _GetDragData;

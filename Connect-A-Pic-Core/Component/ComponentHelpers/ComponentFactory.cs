@@ -1,10 +1,11 @@
 using AtetDataFormats.OpenEPDA;
+using CAP_Core.Helpers;
 
 namespace CAP_Core.Component.ComponentHelpers
 {
     public class ComponentFactory
     {
-        private List<Component> ComponentDrafts = new List<Component>();
+        private List<Component> ComponentDrafts { set; get; } = new List<Component>();
         private static ComponentFactory instance;
         public static ComponentFactory Instance
         {
@@ -20,6 +21,11 @@ namespace CAP_Core.Component.ComponentHelpers
             return (Component)newComponent.Clone();
         }
 
+        public IntVector GetDimensions(int componentTypeNumber)
+        {
+            var componentDraft = ComponentDrafts.Single(component => component.TypeNumber == componentTypeNumber);
+            return new IntVector(componentDraft.WidthInTiles, componentDraft.HeightInTiles);
+        }
         public void InitializeComponentDrafts(List<Component> componentDrafts)
         {
             this.ComponentDrafts = componentDrafts;

@@ -3,7 +3,7 @@
   "identifier": "DirectionalCoupler",
   "nazcaFunctionParameters": "deltaLength = 50",
   "nazcaFunctionName": "placeCell_DirectionalCoupler",
-  "sceneResPath": "res://Scenes/Components/DirectionalCoupler/DirectionalCoupler.tscn",
+  "sceneResPath": "res://Scenes/Components/DirectionalCoupler/DirectionalCouplerScene.tscn",
   "deltaLength": 50,
   "widthInTiles": 2,
   "heightInTiles": 2,

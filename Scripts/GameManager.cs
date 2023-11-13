@@ -4,6 +4,7 @@ using CAP_Core.ExternalPorts;
 using CAP_Core.LightFlow;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel;
+using ConnectAPIC.Scripts.Helpers;
 using ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper;
 using ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper.DTOs;
 using Godot;
@@ -18,6 +19,8 @@ namespace ConnectAPic.LayoutWindow
 	public partial class GameManager : Node
 	{
 		[Export] public NodePath GridViewPath { get; set; }
+		private ToolBox ToolBox { get; set; }
+		[Export] private NodePath ToolBoxPath { get; set; }
 		[Export] public int FieldWidth { get; set; } = 24;
 
 		[Export] public int FieldHeight { get; set; } = 12;
@@ -42,11 +45,15 @@ namespace ConnectAPic.LayoutWindow
 			{
 				instance = this;
 				GridView = GetNode<GridView>(GridViewPath);
+				this.CheckForNull(x => GridView);
 				Grid = new Grid(FieldWidth, FieldHeight);
 				GridViewModel = new GridViewModel(GridView, Grid);
 				GridView.Initialize(GridViewModel);
 				InitializeExternalPortViews(Grid.ExternalPorts);
-				CallDeferred(nameof(InitializeAllComponentDrafts));
+				CallDeferred(nameof(DeferedInitialization));
+				this.CheckForNull(x => x.ToolBoxPath);
+				ToolBox = GetNode<ToolBox>(ToolBoxPath);
+				this.CheckForNull(x => x.ToolBox);
 			}
 			else
 			{
@@ -54,13 +61,12 @@ namespace ConnectAPic.LayoutWindow
 			}
 		}
 		
-		private void InitializeAllComponentDrafts()
+		private void DeferedInitialization()
 		{
 			ComponentImporter.ImportAllPCKComponents(ComponentImporter.ComponentFolderPath);
 			var componentDrafts = ComponentImporter.ImportAllJsonComponents();
-			ComponentViewFactory.Instance.InitializeComponentDrafts(componentDrafts);
-			
-			
+			GridView.ComponentViewFactory.InitializeComponentDrafts(componentDrafts);
+			ToolBox.SetAvailableTools();
 			var modelComponents = new List<Component>();
 			int typeNumber = 0;
 			foreach ( var draft in componentDrafts)
@@ -114,7 +120,7 @@ namespace ConnectAPic.LayoutWindow
 					var toPin = PinDraftsByNumber[connectionDraft.toPinNr];
 					var toModelPin = parts[fromPin.partX, fromPin.partY].Pins.Single(p => p.Side == fromPin.side && p.MatterType == fromPin.matterType);
 					var phaseShiftDegreesRed = PhaseShiftCalculator.GetDegrees(connectionDraft.wireLengthNM, PhaseShiftCalculator.laserWaveLengthRedNM);
-                    connectionWeightsRed.Add((fromModelPin.IDInFlow, toModelPin.IDOutFlow), Complex.FromPolarCoordinates(connectionDraft.magnitude, phaseShiftDegreesRed));
+					connectionWeightsRed.Add((fromModelPin.IDInFlow, toModelPin.IDOutFlow), Complex.FromPolarCoordinates(connectionDraft.magnitude, phaseShiftDegreesRed));
 				};
 
 				componentConnectionsRed.SetValues(connectionWeightsRed);

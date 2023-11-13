@@ -13,25 +13,13 @@ namespace ConnectAPIC.LayoutWindow.View
         [Signal] public delegate void InitializedEventHandler();
         [Export] private Script ComponentBaseScriptPath;
         private List<PackedScene> PackedComponentScenes;
-        private static ComponentViewFactory instance { get; set; }
         private Dictionary<int, ComponentSceneAndDraft> PackedComponentCache = new();
-        public static ComponentViewFactory Instance
-        {
-            get { 
-                return instance; 
-            }
-        }
 
         public override void _Ready()
         {
-            if (instance == null)
+            if(ComponentBaseScriptPath == null)
             {
-                instance = this;
-                EmitSignal(nameof(InitializedEventHandler).Replace("EventHandler", ""));
-            }
-            else
-            {
-                QueueFree(); // delete this object as there is already another GameManager in the scene
+                CustomLogger.PrintErr($"{nameof(ComponentBaseScriptPath)} has not been attached to ComponentviewFactory in the Godot Editor.");
             }
         }
 
@@ -45,9 +33,13 @@ namespace ConnectAPIC.LayoutWindow.View
                 PackedScene packedScene;
                 try {
                     packedScene = GD.Load<PackedScene>(componentDraft.sceneResPath);
+                    if(packedScene == null)
+                    {
+                        throw new ArgumentException(componentDraft.sceneResPath);
+                    }
                 } catch( Exception ex)
                 {
-                    CustomLogger.PrintErr($"Error Loading PackedScene '{componentDraft.sceneResPath}' of Comopnent: {componentDraft.identifier} ex: {ex.Message} )");
+                    CustomLogger.PrintErr($"Error Loading PackedScene '{componentDraft?.sceneResPath}' of Compopnent: {componentDraft?.identifier} ex: {ex.Message} )");
                     continue;
                 }
                 packedComponentScenes.Add(componentNumber, new ComponentSceneAndDraft()
@@ -58,6 +50,7 @@ namespace ConnectAPIC.LayoutWindow.View
                 componentNumber++;
             }
             PackedComponentCache = packedComponentScenes;
+            EmitSignal(nameof(InitializedEventHandler).Replace("EventHandler", ""));
         }
 
         public ComponentView CreateComponentView(int componentNR)
@@ -74,17 +67,25 @@ namespace ConnectAPIC.LayoutWindow.View
             {
                 foreach (Overlay overlay in draft.overlays)
                 {
+                    var overlayBluePrint = ResourceLoader.Load<Texture>(overlay.overlayAnimTexturePath);
+                    if(overlayBluePrint == null)
+                    {
+                        CustomLogger.PrintErr("BluePrint could not be loaded in Type: " + draft.identifier +" ComponentTypeNR: " + componentNR + " path: " + overlay.overlayAnimTexturePath);
+                        continue;
+                    }
                     slotDataSets.Add(new AnimationSlotOverlayData()
                     {
-                        LightFlowOverlay = ResourceLoader.Load<Texture>(overlay.overlayAnimTexturePath),
+                        LightFlowOverlay = overlayBluePrint,
                         OffsetX = overlay.tileOffsetX,
                         OffsetY = overlay.tileOffsetY,
                         Side = overlay.rectSide
                     });
                 }
-                var view = packedScene.Instantiate() as ComponentView;
-                view.InitializeComponent(componentNR, slotDataSets, draft.widthInTiles, draft.heightInTiles);
-                return view;
+                var view = (TextureRect) packedScene.Instantiate();
+                ComponentView componentView = new();
+                componentView.AddChild(view);
+                componentView.InitializeComponent(componentNR, slotDataSets, draft.widthInTiles, draft.heightInTiles);
+                return componentView;
             }
             catch (Exception ex)
             {

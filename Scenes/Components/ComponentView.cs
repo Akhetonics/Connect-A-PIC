@@ -61,13 +61,17 @@ namespace ConnectAPIC.LayoutWindow.View
 
         public void InitializeComponent(int componentTypeNumber, List<AnimationSlotOverlayData> slotDatas, int widthIntiles, int heightInTiles)
         {
-            if (WidthInTiles == 0) CustomLogger.PrintErr(nameof(WidthInTiles) + " of this element is not set in the ComponentScene: " + this.GetType().Name);
-            if (HeightInTiles == 0) CustomLogger.PrintErr(nameof(HeightInTiles) + " of this element is not set in the ComponentScene: " + this.GetType().Name);
+            if (widthIntiles == 0) CustomLogger.PrintErr(nameof(widthIntiles) + " of this element is not set in the TypeNR: " + componentTypeNumber);
+            if (heightInTiles == 0) CustomLogger.PrintErr(nameof(heightInTiles) + " of this element is not set in the TypeNR: " + componentTypeNumber);
 
             this.TypeNumber = componentTypeNumber;
             foreach (var slotData in slotDatas)
             {
-                this.CheckForNull(x => slotData.LightFlowOverlay);
+                
+                if(slotData.LightFlowOverlay== null)
+                {
+                    CustomLogger.PrintErr(nameof(slotData.LightFlowOverlay) + " is null in TypeNR: " + componentTypeNumber );
+                }
                 AnimationSlots.AddRange(CreateRGBAnimSlots(slotData.Side, slotData.LightFlowOverlay, slotData.OffsetX, slotData.OffsetY));
             }
             this.WidthInTiles = widthIntiles;
