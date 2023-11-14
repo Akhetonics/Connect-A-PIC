@@ -6,35 +6,26 @@ using System.IO;
 
 namespace ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper
 {
-    public class ComponentImporter
+    public partial class ComponentImporter : Node
     {
         public const string ComponentFolderPath = "res://Scenes/Components";
-        public static void ImportAllPCKComponents(string startFolderPath)
+        [Export] public string[] PckFiles { get; set; }
+        public void ImportPCKFiles (string[] PckFiles)
         {
-            // Convert Godot to system Paths
-            var systemFolderPath = ProjectSettings.GlobalizePath(startFolderPath);
-
-            if (Directory.Exists(systemFolderPath))
+            // Load all PCK files when the game runs
+            foreach (var pckFile in PckFiles)
             {
-                foreach (var filePath in Directory.EnumerateFiles(systemFolderPath, "*.pck", SearchOption.AllDirectories))
+                if (ProjectSettings.LoadResourcePack(pckFile))
                 {
-                    var globalFilePath = ProjectSettings.LocalizePath(filePath);
-                    if (ProjectSettings.LoadResourcePack(globalFilePath))
-                    {
-                        CustomLogger.PrintLn($"PCK loaded successfully: {globalFilePath}");
-                    }
-                    else
-                    {
-                        CustomLogger.PrintErr($"Error while loading PCK: {globalFilePath}");
-                    }
+                    CustomLogger.PrintLn($"PCK loaded successfully: {pckFile}");
+                }
+                else
+                {
+                    CustomLogger.PrintErr($"Error while loading PCK: {pckFile}");
                 }
             }
-            else
-            {
-                CustomLogger.PrintErr($"Could not open folder: {startFolderPath}");
-            }
         }
-        public static List<ComponentDraft> ImportAllJsonComponents()
+        public static List<ComponentDraft> ReadComponentJSONDrafts()
         {
             var globalCompPath = ProjectSettings.GlobalizePath(ComponentFolderPath);
             List<ComponentDraft> drafts = new();
@@ -55,7 +46,7 @@ namespace ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper
             }
             else
             {
-                CustomLogger.PrintErr($"Could not open folder: {ComponentFolderPath}");
+                CustomLogger.PrintErr($"Fldr doesn't exist: {ComponentFolderPath}");
             }
 
             return drafts;

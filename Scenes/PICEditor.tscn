@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://cu6wqy6xwjfo1"]
+[gd_scene load_steps=19 format=3 uid="uid://cu6wqy6xwjfo1"]
 
 [ext_resource type="Script" path="res://Scripts/GameManager.cs" id="1_1g8p6"]
 [ext_resource type="Script" path="res://Scripts/View/GridView.cs" id="1_2pqex"]
@@ -8,6 +8,7 @@
 [ext_resource type="Script" path="res://Scripts/ViewModel/ComponentFactory/ComponentViewFactory.cs" id="7_x7uef"]
 [ext_resource type="PackedScene" uid="uid://ch8njrql1cvsv" path="res://Scenes/ToolBox/Tool_box.tscn" id="10_ir1q2"]
 [ext_resource type="PackedScene" uid="uid://bscqmaslppyt8" path="res://Scenes/NotificationBox.tscn" id="12_o0640"]
+[ext_resource type="Script" path="res://Scripts/ViewModel/ComponentFactory/ComponentImporter.cs" id="15_wk10j"]
 [ext_resource type="Texture2D" uid="uid://jcla22kq5xkl" path="res://GFX/ScreenshotMockUp.png" id="21_opdte"]
 [ext_resource type="PackedScene" uid="uid://batxcdg720fpl" path="res://Scenes/ExternalInputs/external_input_blue_template.tscn" id="24_57qdu"]
 [ext_resource type="PackedScene" uid="uid://bd8isg4mddv21" path="res://Scenes/InGameConsole/InGameConsole.tscn" id="24_wq416"]
@@ -445,6 +446,9 @@ ExternalInputBlueTemplate = NodePath("Templates/ExternalInputBlueTemplate")
 script = ExtResource("7_x7uef")
 ComponentBaseScriptPath = ExtResource("3_g7vl4")
 
+[node name="ComponentImporter" type="Node" parent="."]
+script = ExtResource("15_wk10j")
+
 [node name="MapBackground" type="TileMap" parent="." node_paths=PackedStringArray("DragDropProxy", "ComponentViewFactory")]
 position = Vector2(155.395, 42.7)
 tile_set = SubResource("TileSet_47324")
@@ -497,13 +501,12 @@ toggle_mode = true
 text = "Light Paths"
 metadata/_edit_use_anchors_ = true
 
-[node name="ToolBox" parent="." node_paths=PackedStringArray("ComponentViewFactory") instance=ExtResource("10_ir1q2")]
+[node name="ToolBox" parent="." instance=ExtResource("10_ir1q2")]
 custom_minimum_size = Vector2(4.615, 2.95)
 anchor_left = 0.850694
 anchor_top = 0.320988
 anchor_right = 0.986979
 anchor_bottom = 0.679012
-ComponentViewFactory = NodePath("../ComponentViewFactory")
 
 [node name="Templates" type="Node" parent="."]
 

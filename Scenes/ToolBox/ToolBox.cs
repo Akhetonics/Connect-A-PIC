@@ -8,22 +8,21 @@ using System.Collections.Generic;
 public partial class ToolBox : Node
 {
 	[Export] public GridContainer gridContainer;
-	[Export] public ComponentViewFactory ComponentViewFactory;
 	// soll alle ComponentenViews die es gibt hier als Tool anzeigen und automatisch laden. 
 	public override void _Ready()
 	{
 		this.CheckForNull(x => x.gridContainer);
-		this.CheckForNull(x => x.ComponentViewFactory);
 		//CallDeferred(nameof(SetAvailableTools));
 	}
 
-	public void SetAvailableTools()
+	public void SetAvailableTools(ComponentViewFactory ComponentViewFactory)
 	{
-		var allComponentTypesNRs = ComponentViewFactory.GetAllComponentIDs();
-		if(allComponentTypesNRs.Count == 0)
+		if (ComponentViewFactory == null)
 		{
-			CallDeferred(nameof(SetAvailableTools));
+			CustomLogger.PrintErr("ComponentViewFactory cannot be null");
+			return;
 		}
+		var allComponentTypesNRs = ComponentViewFactory.GetAllComponentIDs();
 		foreach (int typeNumber in allComponentTypesNRs)
 		{
 			var bordersize = gridContainer.GetThemeConstant("h_separation");

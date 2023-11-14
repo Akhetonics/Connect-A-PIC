@@ -139,10 +139,10 @@ public partial class CustomLogger : ScrollContainer
 			StackFrame frame = stackTrace.GetFrame(2);
 			var method = frame.GetMethod();
 			var lineNumber = frame.GetFileLineNumber();
-			var declaringType = method.DeclaringType;
+			var declaringType = method.DeclaringType.Name;
 			var methodName = method.Name;
 
-			return $"{declaringType}.{methodName}:{lineNumber} >> {text}";
+			return $"{declaringType}.{methodName}:{lineNumber} > {text}";
 		} catch (Exception ex)
 		{
 			return ex.Message + text;

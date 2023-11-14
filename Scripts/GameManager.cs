@@ -28,6 +28,7 @@ namespace ConnectAPic.LayoutWindow
 		[Export] public TextureRect ExternalInputRedTemplate { get; set; }
 		[Export] public TextureRect ExternalInputGreenTemplate { get; set; }
 		[Export] public TextureRect ExternalInputBlueTemplate { get; set; }
+		private ComponentImporter ComponentImporter { get; set; }
 		public static int TilePixelSize { get; private set; } = 62;
 		public static int TileBorderLeftDown { get; private set; } = 2;
 		public GridView GridView { get; set; }
@@ -54,6 +55,8 @@ namespace ConnectAPic.LayoutWindow
 				this.CheckForNull(x => x.ToolBoxPath);
 				ToolBox = GetNode<ToolBox>(ToolBoxPath);
 				this.CheckForNull(x => x.ToolBox);
+				ComponentImporter = (ComponentImporter)this.FindChild("ComponentImporter", true, false) ?? new ComponentImporter();
+				this.CheckForNull(x => x.ComponentImporter);
 			}
 			else
 			{
@@ -63,10 +66,10 @@ namespace ConnectAPic.LayoutWindow
 		
 		private void DeferedInitialization()
 		{
-			ComponentImporter.ImportAllPCKComponents(ComponentImporter.ComponentFolderPath);
-			var componentDrafts = ComponentImporter.ImportAllJsonComponents();
+			ComponentImporter.ImportPCKFiles(ComponentImporter.PckFiles);
+			var componentDrafts = ComponentImporter.ReadComponentJSONDrafts();
 			GridView.ComponentViewFactory.InitializeComponentDrafts(componentDrafts);
-			ToolBox.SetAvailableTools();
+			ToolBox.SetAvailableTools(GridView.ComponentViewFactory);
 			var modelComponents = new List<Component>();
 			int typeNumber = 0;
 			foreach ( var draft in componentDrafts)
