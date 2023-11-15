@@ -84,6 +84,7 @@ namespace ConnectAPIC.LayoutWindow.View
                 var view = (TextureRect) packedScene.Instantiate();
                 ComponentView componentView = new();
                 componentView.AddChild(view);
+                componentView._Ready();
                 componentView.InitializeComponent(componentNR, slotDataSets, draft.widthInTiles, draft.heightInTiles);
                 return componentView;
             }

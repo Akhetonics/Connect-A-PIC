@@ -448,6 +448,7 @@ ComponentBaseScriptPath = ExtResource("3_g7vl4")
 
 [node name="ComponentImporter" type="Node" parent="."]
 script = ExtResource("15_wk10j")
+PckFilesConcatenated = "res://Scenes/Components/Bend/BendPCK.pck;res://Scenes/Components/DirectionalCoupler/DirectionalCouplerPCK.pck;res://Scenes/Components/GratingCoupler/GratingCouplerPCK.pck;res://Scenes/Components/Straight/StraightPCK.pck"
 
 [node name="MapBackground" type="TileMap" parent="." node_paths=PackedStringArray("DragDropProxy", "ComponentViewFactory")]
 position = Vector2(155.395, 42.7)

@@ -51,12 +51,13 @@ namespace ConnectAPic.LayoutWindow
 				GridViewModel = new GridViewModel(GridView, Grid);
 				GridView.Initialize(GridViewModel);
 				InitializeExternalPortViews(Grid.ExternalPorts);
-				CallDeferred(nameof(DeferedInitialization));
 				this.CheckForNull(x => x.ToolBoxPath);
 				ToolBox = GetNode<ToolBox>(ToolBoxPath);
 				this.CheckForNull(x => x.ToolBox);
 				ComponentImporter = (ComponentImporter)this.FindChild("ComponentImporter", true, false) ?? new ComponentImporter();
 				this.CheckForNull(x => x.ComponentImporter);
+
+				CallDeferred(nameof(DeferredInitialization));
 			}
 			else
 			{
@@ -64,7 +65,7 @@ namespace ConnectAPic.LayoutWindow
 			}
 		}
 		
-		private void DeferedInitialization()
+		private void DeferredInitialization()
 		{
 			ComponentImporter.ImportPCKFiles(ComponentImporter.PckFiles);
 			var componentDrafts = ComponentImporter.ReadComponentJSONDrafts();

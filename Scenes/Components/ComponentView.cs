@@ -55,8 +55,20 @@ namespace ConnectAPIC.LayoutWindow.View
         {
             base._Ready();
             RotationCC = _rotationCC;
-            OverlayBluePrint = FindChild("Overlay", true) as Sprite2D;
-            this.CheckForNull(x => x.OverlayBluePrint);
+        }
+
+        private void FindAndAssignOverlay()
+        {
+            OverlayBluePrint = FindChild("Overlay", true, false) as Sprite2D;
+
+            if (OverlayBluePrint == null)
+            {
+                OverlayBluePrint = FindChild("?verlay", true, false) as Sprite2D;
+            }
+            if (OverlayBluePrint == null)
+            {
+                OverlayBluePrint = FindChild("?verlay*", true, false) as Sprite2D;
+            }
         }
 
         public void InitializeComponent(int componentTypeNumber, List<AnimationSlotOverlayData> slotDatas, int widthIntiles, int heightInTiles)
@@ -65,6 +77,9 @@ namespace ConnectAPIC.LayoutWindow.View
             if (heightInTiles == 0) CustomLogger.PrintErr(nameof(heightInTiles) + " of this element is not set in the TypeNR: " + componentTypeNumber);
 
             this.TypeNumber = componentTypeNumber;
+            FindAndAssignOverlay();
+            this.CheckForNull(x => x.OverlayBluePrint);
+            InitializeLightOverlays();
             foreach (var slotData in slotDatas)
             {
                 
@@ -76,7 +91,6 @@ namespace ConnectAPIC.LayoutWindow.View
             }
             this.WidthInTiles = widthIntiles;
             this.HeightInTiles= heightInTiles;
-            InitializeLightOverlays();
             RotationCC = _rotationCC;
         }
         private void InitializeLightOverlays()
