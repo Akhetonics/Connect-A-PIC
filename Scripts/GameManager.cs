@@ -66,77 +66,102 @@ namespace ConnectAPic.LayoutWindow
 		}
 		
 		private void DeferredInitialization()
-		{
-			ComponentImporter.ImportPCKFiles(ComponentImporter.PckFiles);
-			var componentDrafts = ComponentImporter.ReadComponentJSONDrafts();
-			GridView.ComponentViewFactory.InitializeComponentDrafts(componentDrafts);
-			ToolBox.SetAvailableTools(GridView.ComponentViewFactory);
-			var modelComponents = new List<Component>();
-			int typeNumber = 0;
-			foreach ( var draft in componentDrafts)
-			{
-				// convert PinDrafts to Model Pins
-				Dictionary<(int x, int y), List<PinDraft>> PinDraftsByXY = new();
-				foreach (var p in draft.pins)
+        {
+            ComponentImporter.ImportInternalPCKFiles();
+            var componentDrafts = ComponentImporter.ReadComponentJSONDrafts();
+            GridView.ComponentViewFactory.InitializeComponentDrafts(componentDrafts);
+            ToolBox.SetAvailableTools(GridView.ComponentViewFactory);
+            List<Component> modelComponents = ConvertComponentDraftsToComponentModels(componentDrafts);
+
+            ComponentFactory.Instance.InitializeComponentDrafts(modelComponents);
+        }
+
+        private static List<Component> ConvertComponentDraftsToComponentModels(List<ComponentDraft> componentDrafts)
+        {
+            var modelComponents = new List<Component>();
+            int typeNumber = 0;
+            foreach (var draft in componentDrafts)
+            {
+				try
 				{
-					if (PinDraftsByXY.ContainsKey((p.partX, p.partY)))
-					{
-						PinDraftsByXY[(p.partX, p.partY)].Add(p);
-					}
-					else
-					{
-						PinDraftsByXY.Add((p.partX, p.partY), new List<PinDraft>() { p });
-					}
+                    modelComponents.Add(ConvertComponentDraftToComponentModel(typeNumber, draft));
+                } catch (Exception ex)
+				{
+					CustomLogger.PrintEx(ex);
 				}
-
-				// Create Model Parts
-				Part[,] parts = new Part[draft.widthInTiles, draft.heightInTiles];
-				foreach (var pinDraft in PinDraftsByXY)
-				{
-					var realPins = pinDraft.Value.Select(pinDraft => new Pin(pinDraft.name, pinDraft.matterType, pinDraft.side)).ToList();
-					parts[pinDraft.Key.x, pinDraft.Key.y] = new Part(realPins);
-				}
-
-				// Create Smatrix Connections
-				// get all real Pins
-				Dictionary<Guid, Pin> ModelPins = new();
-				foreach (Part part in parts)
-				{
-					part.Pins.ForEach(p => ModelPins.Add(p.IDInFlow, p));
-					part.Pins.ForEach(p => ModelPins.Add(p.IDOutFlow, p));
-				}
-
-				Dictionary<int, PinDraft> PinDraftsByNumber = new();
-				draft.pins.ForEach(p => PinDraftsByNumber.Add(p.number, p));
-				List<Guid> allPinGuids = new();
-				allPinGuids.AddRange(ModelPins.Values.Select(p=>p.IDInFlow).Distinct());
-				allPinGuids.AddRange(ModelPins.Values.Select(p=>p.IDOutFlow).Distinct());
-				var componentConnectionsRed = new SMatrix(allPinGuids);
-				var componentConnectionsGreen = new SMatrix(allPinGuids);
-				var componentConnectionsBlue = new SMatrix(allPinGuids);
-				var connectionWeightsRed = new Dictionary<(Guid, Guid), Complex>();
-				var connectionWeightsGreen = new Dictionary<(Guid, Guid), Complex>();
-				var connectionWeightsBlue = new Dictionary<(Guid, Guid), Complex>();
-				foreach (Connection connectionDraft in draft.connections)
-				{
-					var fromPin = PinDraftsByNumber[connectionDraft.fromPinNr];
-					var fromModelPin = parts[fromPin.partX, fromPin.partY].Pins.Single(p => p.Side == fromPin.side && p.MatterType == fromPin.matterType);
-					var toPin = PinDraftsByNumber[connectionDraft.toPinNr];
-					var toModelPin = parts[fromPin.partX, fromPin.partY].Pins.Single(p => p.Side == fromPin.side && p.MatterType == fromPin.matterType);
-					var phaseShiftDegreesRed = PhaseShiftCalculator.GetDegrees(connectionDraft.wireLengthNM, PhaseShiftCalculator.laserWaveLengthRedNM);
-					connectionWeightsRed.Add((fromModelPin.IDInFlow, toModelPin.IDOutFlow), Complex.FromPolarCoordinates(connectionDraft.magnitude, phaseShiftDegreesRed));
-				};
-
-				componentConnectionsRed.SetValues(connectionWeightsRed);
-				// at the moment we pretend that every light is redlaser, but in the future any laserwavelength should be applicable
-
-				modelComponents.Add( new Component(componentConnectionsRed,draft.nazcaFunctionName, draft.nazcaFunctionParameters, parts, typeNumber, DiscreteRotation.R0 ));
 				typeNumber++;
-			}
-			
-			ComponentFactory.Instance.InitializeComponentDrafts(modelComponents);
-		}
-		private void InitializeExternalPortViews(List<ExternalPort> StandardPorts)
+            }
+
+            return modelComponents;
+        }
+
+        private static Component ConvertComponentDraftToComponentModel( int typeNumber, ComponentDraft draft)
+        {
+            // convert PinDrafts to Model Pins
+            Dictionary<(int x, int y), List<PinDraft>> PinDraftsByXY = new();
+            foreach (var p in draft.pins)
+            {
+                if (PinDraftsByXY.ContainsKey((p.partX, p.partY)))
+                {
+                    PinDraftsByXY[(p.partX, p.partY)].Add(p);
+                }
+                else
+                {
+                    PinDraftsByXY.Add((p.partX, p.partY), new List<PinDraft>() { p });
+                }
+            }
+
+            // Create Model Parts
+            Part[,] parts = new Part[draft.widthInTiles, draft.heightInTiles];
+            foreach (var pinDraft in PinDraftsByXY)
+            {
+                var realPins = pinDraft.Value.Select(pinDraft => new Pin(pinDraft.name, pinDraft.matterType, pinDraft.side)).ToList();
+                parts[pinDraft.Key.x, pinDraft.Key.y] = new Part(realPins);
+            }
+
+            // Create Smatrix Connections
+            // get all real Pins
+            Dictionary<Guid, Pin> ModelPins = new();
+            foreach (Part part in parts)
+            {
+                part.Pins.ForEach(p => ModelPins.Add(p.IDInFlow, p));
+                part.Pins.ForEach(p => ModelPins.Add(p.IDOutFlow, p));
+            }
+
+            Dictionary<int, PinDraft> PinDraftsByNumber = new();
+            draft.pins.ForEach(p => PinDraftsByNumber.Add(p.number, p));
+            List<Guid> allPinGuids = new();
+            allPinGuids.AddRange(ModelPins.Values.Select(p => p.IDInFlow).Distinct());
+            allPinGuids.AddRange(ModelPins.Values.Select(p => p.IDOutFlow).Distinct());
+            var componentConnectionsRed = new SMatrix(allPinGuids);
+            var componentConnectionsGreen = new SMatrix(allPinGuids);
+            var componentConnectionsBlue = new SMatrix(allPinGuids);
+            var connectionWeightsRed = new Dictionary<(Guid, Guid), Complex>();
+            var connectionWeightsGreen = new Dictionary<(Guid, Guid), Complex>();
+            var connectionWeightsBlue = new Dictionary<(Guid, Guid), Complex>();
+            foreach (Connection connectionDraft in draft.connections)
+            {
+                var fromPin = PinDraftsByNumber[connectionDraft.fromPinNr];
+                var toPin = PinDraftsByNumber[connectionDraft.toPinNr];
+                Pin fromModelPin = GetModelPin(parts, fromPin);
+				var toModelPin = GetModelPin(parts, toPin);
+
+                var phaseShiftDegreesRed = PhaseShiftCalculator.GetDegrees(connectionDraft.wireLengthNM, PhaseShiftCalculator.laserWaveLengthRedNM);
+                connectionWeightsRed.Add((fromModelPin.IDInFlow, toModelPin.IDOutFlow), Complex.FromPolarCoordinates(connectionDraft.magnitude, phaseShiftDegreesRed));
+            };
+
+            componentConnectionsRed.SetValues(connectionWeightsRed);
+            // at the moment we pretend that every light is redlaser, but in the future any laserwavelength should be applicable
+
+            return new Component(componentConnectionsRed, draft.nazcaFunctionName, draft.nazcaFunctionParameters, parts, typeNumber, DiscreteRotation.R0);
+        }
+
+        private static Pin GetModelPin(Part[,] parts, PinDraft pinDraft)
+        {
+            return parts[pinDraft.partX, pinDraft.partY].Pins.Single(p => p.Side == pinDraft.side && p.MatterType == pinDraft.matterType);
+        }
+
+        private void InitializeExternalPortViews(List<ExternalPort> StandardPorts)
 		{
 			ExternalInputRedTemplate.Visible = false;
 			ExternalInputGreenTemplate.Visible = false;

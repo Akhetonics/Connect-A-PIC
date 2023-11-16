@@ -3,6 +3,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper
 {
@@ -15,10 +16,11 @@ namespace ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper
 		}
 		[Export] public string PckFilesConcatenated;
 
-		public void ImportPCKFiles (string[] PckFiles)
+		public void ImportInternalPCKFiles ()
 		{
+			var pckFiles = FindFilesRecursively(ComponentFolderPath, "pck");
 			// Load all PCK files when the game runs
-			foreach (var pckFile in PckFiles)
+			foreach (var pckFile in pckFiles)
 			{
 				if (ProjectSettings.LoadResourcePack(pckFile))
 				{
@@ -30,31 +32,45 @@ namespace ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper
 				}
 			}
 		}
-		public static List<ComponentDraft> ReadComponentJSONDrafts()
+
+		public static List<string> FindFilesRecursively(string path, string extensionPattern)
 		{
-			var globalCompPath = ProjectSettings.GlobalizePath(ComponentFolderPath);
-			List<ComponentDraft> drafts = new();
-			if (Directory.Exists(globalCompPath))
+			var paths = new List<string>();
+			using var dir = DirAccess.Open(path);
+			if (dir != null)
 			{
-				foreach (var filePath in Directory.EnumerateFiles(globalCompPath, "*.json", SearchOption.AllDirectories))
+				dir.ListDirBegin();
+				string fileName = dir.GetNext();
+				while (fileName != "")
 				{
-					try
+					if (dir.CurrentIsDir())
 					{
-						var draft = ComponentDraftFileReader.Read(filePath);
-						drafts.Add(draft);
-					} catch (Exception ex)
-					{
-						CustomLogger.PrintEx(ex);
-						continue;
+						GD.Print($"Found directory: {fileName}");
+						paths.AddRange(FindFilesRecursively(path + "/" + fileName, extensionPattern));
 					}
+					else
+					{
+						if(fileName.EndsWith(extensionPattern, StringComparison.OrdinalIgnoreCase))
+						{
+							paths.Add(path + "/" + fileName);
+							GD.Print($"Found file: {fileName}");
+						}
+					}
+					fileName = dir.GetNext();
 				}
 			}
 			else
 			{
-				CustomLogger.PrintErr($"Fldr doesn't exist: {ComponentFolderPath}");
+				GD.Print("An error occurred when trying to access the path.");
 			}
-
-			return drafts;
+			return paths;
+		}
+		
+		public static List<ComponentDraft> ReadComponentJSONDrafts()
+		{
+			return FindFilesRecursively(ComponentFolderPath, "json")
+				.Select(file => ComponentDraftFileReader.TryRead(file))
+				.ToList();
 		}
 	}
 }

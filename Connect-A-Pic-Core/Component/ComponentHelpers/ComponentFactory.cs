@@ -6,7 +6,7 @@ namespace CAP_Core.Component.ComponentHelpers
     public class ComponentFactory
     {
         private List<Component> ComponentDrafts { set; get; } = new List<Component>();
-        private static ComponentFactory instance;
+        private static ComponentFactory instance = instance ?? new ComponentFactory();
         public static ComponentFactory Instance
         {
             get

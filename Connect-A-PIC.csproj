@@ -10,12 +10,16 @@
     <Compile Remove="Connect-A-Pic-Core\**" />
     <Compile Remove="libraries\**" />
     <Compile Remove="PDK\**" />
-    <Compile Remove="Scenes\Components\GratingCoupler\GratingPCK\Scenes\**" />
+    <Compile Remove="Scenes\Components\Bend\**" />
+    <Compile Remove="Scenes\Components\DirectionalCoupler\**" />
+    <Compile Remove="Scenes\Components\GratingCoupler\**" />
     <Compile Remove="Tests\**" />
     <EmbeddedResource Remove="Connect-A-Pic-Core\**" />
     <EmbeddedResource Remove="libraries\**" />
     <EmbeddedResource Remove="PDK\**" />
-    <EmbeddedResource Remove="Scenes\Components\GratingCoupler\GratingPCK\Scenes\**" />
+    <EmbeddedResource Remove="Scenes\Components\Bend\**" />
+    <EmbeddedResource Remove="Scenes\Components\DirectionalCoupler\**" />
+    <EmbeddedResource Remove="Scenes\Components\GratingCoupler\**" />
     <EmbeddedResource Remove="Tests\**" />
     <Compile Remove="UnitTests\**" />
     <EmbeddedResource Remove="UnitTests\**" />
@@ -37,10 +41,5 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="Connect-A-Pic-Core\CAP-Core.csproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Scenes\Components\Bend\BendPCK\Scenes\Components\Bend\" />
-    <Folder Include="Scenes\Components\DirectionalCoupler\DirectionalCouplerPCK\Scenes\Components\DirectionalCoupler\" />
-    <Folder Include="Scenes\Components\GratingCoupler\GratingPCK\" />
   </ItemGroup>
 </Project>

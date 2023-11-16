@@ -70,7 +70,7 @@ namespace UnitTests
             {
                 try
                 {
-                    readComponentDraft = ComponentDraftFileReader.Read(tempFilePath);
+                    readComponentDraft = ComponentDraftFileReader.TryRead(tempFilePath);
                     fileIsUsed = false;
                 } catch (IOException)
                 {

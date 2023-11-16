@@ -29,8 +29,12 @@ public partial class ToolBox : Node
 			var toolPixelSize = GameManager.TilePixelSize - bordersize;
 			var componentInstance = ComponentViewFactory.CreateComponentView(typeNumber);
 			componentInstance.CustomMinimumSize = new Vector2 (toolPixelSize, toolPixelSize);
-			var componentSizeCorrection = (componentInstance.Size / toolPixelSize);
+			var componentSizeCorrection = componentInstance.GetBiggestSize() / toolPixelSize;
 			var biggestScaleFactor = Math.Max(componentSizeCorrection.X, componentSizeCorrection.Y);
+			if(biggestScaleFactor <= 0)
+			{
+				CustomLogger.PrintErr("biggestScaleFactor is too small, the toolbox cannot scale this component properly of Component NR: " + typeNumber);
+			}
 			componentInstance.Scale /= biggestScaleFactor;
 			TemplateTileView rect = new();
 			rect.componentViewFactory = ComponentViewFactory;

@@ -3,7 +3,6 @@ using Godot;
 using MathNet.Numerics;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 
 namespace ConnectAPIC.LayoutWindow.View
@@ -67,7 +66,7 @@ namespace ConnectAPIC.LayoutWindow.View
             {
                 foreach (Overlay overlay in draft.overlays)
                 {
-                    var overlayBluePrint = ResourceLoader.Load<Texture>(overlay.overlayAnimTexturePath);
+                    var overlayBluePrint = ResourceLoader.Load<Texture2D>(overlay.overlayAnimTexturePath);
                     if(overlayBluePrint == null)
                     {
                         CustomLogger.PrintErr("BluePrint could not be loaded in Type: " + draft.identifier +" ComponentTypeNR: " + componentNR + " path: " + overlay.overlayAnimTexturePath);
@@ -81,10 +80,8 @@ namespace ConnectAPIC.LayoutWindow.View
                         Side = overlay.rectSide
                     });
                 }
-                var view = (TextureRect) packedScene.Instantiate();
                 ComponentView componentView = new();
-                componentView.AddChild(view);
-                componentView._Ready();
+                componentView.AddChild((TextureRect)packedScene.Instantiate());
                 componentView.InitializeComponent(componentNR, slotDataSets, draft.widthInTiles, draft.heightInTiles);
                 return componentView;
             }
