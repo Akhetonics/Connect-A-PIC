@@ -7,6 +7,7 @@
     <StartArguments>--path C:\dev\Akhetonics\Connect-A-PIC\</StartArguments>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Remove="CAP-DataAccess\**" />
     <Compile Remove="Connect-A-Pic-Core\**" />
     <Compile Remove="libraries\**" />
     <Compile Remove="PDK\**" />
@@ -14,6 +15,7 @@
     <Compile Remove="Scenes\Components\DirectionalCoupler\**" />
     <Compile Remove="Scenes\Components\GratingCoupler\**" />
     <Compile Remove="Tests\**" />
+    <EmbeddedResource Remove="CAP-DataAccess\**" />
     <EmbeddedResource Remove="Connect-A-Pic-Core\**" />
     <EmbeddedResource Remove="libraries\**" />
     <EmbeddedResource Remove="PDK\**" />
@@ -37,7 +39,7 @@
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DataAccessLayer\CAP-DataAccess.csproj" />
+    <ProjectReference Include="CAP-DataAccess\CAP-DataAccess.csproj" />
     <ProjectReference Include="Connect-A-Pic-Core\CAP-Core.csproj" />
   </ItemGroup>
 </Project>
