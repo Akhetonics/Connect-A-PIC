@@ -1,8 +1,9 @@
-﻿using Godot;
+﻿using Components.ComponentDraftMapper;
+using Godot;
 
-namespace Components.ComponentDraftMapper
+namespace ConnectAPIC.Scripts.View.ComponentFactory
 {
-    public class GodotFileAccessor : IDataAccesser
+    public class DataAccessorGodot : IDataAccessor
     {
         public bool DoesResourceExist(string godotFilePath)
         {

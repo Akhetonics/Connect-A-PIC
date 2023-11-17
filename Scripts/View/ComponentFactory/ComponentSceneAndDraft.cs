@@ -1,7 +1,7 @@
 ﻿using Components.ComponentDraftMapper.DTOs;
 using Godot;
 
-namespace ConnectAPIC.LayoutWindow.View
+namespace ConnectAPIC.Scripts.View.ComponentFactory
 {
     public record struct ComponentSceneAndDraft(PackedScene Scene, ComponentDraft Draft)
     {

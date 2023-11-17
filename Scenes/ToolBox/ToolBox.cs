@@ -18,7 +18,7 @@ public partial class ToolBox : Node
 	{
 		if (ComponentViewFactory == null)
 		{
-			CustomLogger.inst.PrintErr("ComponentViewFactory cannot be null");
+			Logger.Inst.PrintErr("ComponentViewFactory cannot be null");
 			return;
 		}
 		var allComponentTypesNRs = ComponentViewFactory.GetAllComponentIDs();
@@ -32,7 +32,7 @@ public partial class ToolBox : Node
 			var biggestScaleFactor = Math.Max(componentSizeCorrection.X, componentSizeCorrection.Y);
 			if(biggestScaleFactor <= 0)
 			{
-				CustomLogger.inst.PrintErr("biggestScaleFactor is too small, the toolbox cannot scale this component properly of Component NR: " + typeNumber);
+				Logger.Inst.PrintErr("biggestScaleFactor is too small, the toolbox cannot scale this component properly of Component NR: " + typeNumber);
 			}
 			componentInstance.Scale /= biggestScaleFactor;
 			TemplateTileView rect = new();

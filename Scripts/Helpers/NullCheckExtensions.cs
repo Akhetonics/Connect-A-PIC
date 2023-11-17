@@ -26,7 +26,7 @@ namespace ConnectAPIC.Scripts.Helpers
             {
                 string className = instance.GetType().Name;
                 string errorMsg = $"'{variableName}' of this element is not set in the class: '{className}'";
-                CustomLogger.inst.PrintErr(errorMsg);
+                Logger.Inst.PrintErr(errorMsg);
                 GD.PrintErr(errorMsg);
             }
         }

@@ -13,7 +13,7 @@ namespace UnitTests
 {
     public class ComponentDraftFileReaderTests
     {
-        public class PathCheckerDummy : IDataAccesser
+        public class PathCheckerDummy : IDataAccessor
         {
             public bool DoesResourceExist(string godotResourcePath) => true;
             public string ReadAsText(string godotFilePath) => "";
@@ -73,7 +73,7 @@ namespace UnitTests
             };
 
             // Act
-            var reader = new ComponentDraftFileReader(new PathCheckerDummy(), new DummyLogger());
+            var reader = new ComponentDraftFileReader(new PathCheckerDummy());
             reader.Write(tempFilePath, originalComponentDraft);
             bool fileIsUsed = true;
             int counter = 0;
@@ -82,7 +82,12 @@ namespace UnitTests
             {
                 try
                 {
-                    readComponentDraft = reader.TryRead(tempFilePath);
+                    var readResult = reader.TryRead(tempFilePath);
+                    if(readResult.error != null)
+                    {
+                        throw new IOException(readResult.error);
+                    }
+                    readComponentDraft = readResult.draft;
                     fileIsUsed = false;
                 } catch (IOException)
                 {

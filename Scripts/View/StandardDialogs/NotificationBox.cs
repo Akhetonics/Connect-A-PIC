@@ -2,7 +2,7 @@ using Godot;
 
 namespace ConnectAPIC.LayoutWindow.View
 {
-    public partial class NotificationBox : Control
+	public partial class NotificationBox : Control
 	{
 		private Label messageLabel;
 		private Timer timer;

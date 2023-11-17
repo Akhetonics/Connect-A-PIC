@@ -8,54 +8,47 @@ namespace Components.ComponentDraftMapper
     {
         public static readonly int CurrentFileVersion = 1;
 
-        public ComponentDraftFileReader(IDataAccesser dataAccessor, ILogger logger)
+        public ComponentDraftFileReader(IDataAccessor dataAccessor)
         {
             DataAccessor = dataAccessor;
-            Logger = logger;
         }
 
-        public IDataAccesser DataAccessor { get; }
-        public ILogger Logger { get; }
+        public IDataAccessor DataAccessor { get; }
 
-        public ComponentDraft TryRead(string godotFilePath)
+        public (ComponentDraft? draft, string error) TryRead(string godotFilePath)
         {
             if (DataAccessor.DoesResourceExist(godotFilePath))
             {
                 var fileContent = DataAccessor.ReadAsText(godotFilePath);
                 if (fileContent != null)
                 {
-
                     try
                     {
-                        return JsonSerializer.Deserialize<ComponentDraft>(fileContent) ?? new ComponentDraft();
+                        return (JsonSerializer.Deserialize<ComponentDraft>(fileContent) ?? new ComponentDraft(),"");
                     }
                     catch (Exception ex)
                     {
-                        Logger?.PrintErr("Error Deserializing Json-file: " + godotFilePath + "  ex: " + ex.Message + " " + ex.StackTrace);
-                        throw;
+                        var err = "Error Deserializing Json-file: " + godotFilePath + "  ex: " + ex.Message + " " + ex.StackTrace;
+                        return (null , err);
                     }
                 }
                 else
                 {
-                    throw new FileNotFoundException("Could not open file: " + godotFilePath);
+                    return (null , "could not open file to read, it might be blocked somehow: " + godotFilePath);
                 }
             }
-            else
-            {
-                throw new FileNotFoundException("File not found: " + godotFilePath);
-            }
+            return (null, "File does not exist: " + godotFilePath);
         }
 
-        public void Write(string filePath, ComponentDraft componentDraft)
+        public (bool isSuccess,string error) Write(string filePath, ComponentDraft componentDraft)
         {
             var componentJson = JsonSerializer.Serialize(componentDraft);
             bool success = DataAccessor.Write(filePath, componentJson);
-            
             if (!success)
             {
-                Logger.PrintErr("Failed to open file for writing: " + filePath);
-                throw new IOException("Could not open file for writing: " + filePath);
+                return (success, "Failed to open file for writing: " + filePath);
             }
+            return (success, "");
         }
     }
 }

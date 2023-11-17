@@ -1,10 +1,8 @@
 using CAP_Core;
 using CAP_Core.CodeExporter;
-using CAP_Core.Component;
 using CAP_Core.Component.ComponentHelpers;
 using CAP_Core.ExternalPorts;
 using CAP_Core.Tiles;
-using ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper;
 
 namespace UnitTests
 {

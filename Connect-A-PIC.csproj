@@ -34,6 +34,7 @@
   <ItemGroup>
     <None Include="MathNet.Numerics.dll" />
     <None Include="README.md" />
+    <None Include="Scenes\InGameConsole\InGameConsole.tscn" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />

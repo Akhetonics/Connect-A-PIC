@@ -21,7 +21,7 @@ project/assembly_name="Connect-A-PIC"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/PCKAutoLoader/plugin.cfg")
+enabled=PackedStringArray()
 
 [rendering]
 

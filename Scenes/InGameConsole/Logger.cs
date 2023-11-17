@@ -2,46 +2,44 @@ using CAP_Core.LightFlow;
 using Components.ComponentDraftMapper;
 using ConnectAPic.LayoutWindow;
 using ConnectAPIC.Scripts.Debuggers;
+using ConnectAPIC.Scripts.Helpers;
 using Godot;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Runtime.CompilerServices;
-using static System.Net.Mime.MediaTypeNames;
 
 public record LogInfo
 {
 	public string Info;
 	public bool IsError;
 }
-public partial class CustomLogger : ScrollContainer, ILogger
+public partial class Logger : ScrollContainer, ILogger
 {
 	private ScrollContainer console;
-	[Export] private Node _LoggingParent { get; set; }
-	[Export] private RichTextLabel _InfoText { get; set; }
-	[Export] private RichTextLabel _ErrorText { get; set; }
-	public Node LoggingParent { get; set; }
-	public RichTextLabel InfoTextTemplate { get; set; }
-	public RichTextLabel ErrorTextTemplate { get; set; }
+	[Export] private Node LoggingParent { get; set; }
+	[Export] private RichTextLabel InfoTextTemplate { get; set; }
+	[Export] private RichTextLabel ErrorTextTemplate { get; set; }
 	private bool visibilityChanged = false;
 	private List<LogInfo> LogInfos = new();
-	public static CustomLogger inst { get; set; }
+	private static Logger _inst;
+	public static Logger Inst => _inst;
+
 	public override void _Ready()
 	{
-		if(inst == null)
+		this.CheckForNull(x => x.LoggingParent);
+		this.CheckForNull(x => x.InfoTextTemplate);
+		this.CheckForNull(x => x.ErrorTextTemplate);
+		if(_inst!= null)
 		{
-			inst = this;
-		} 
-		else
-		{
-			QueueFree();
-			return;
+			var logInfos = _inst.LogInfos;
+			var oldLogger = _inst;
+			_inst = this;
+			_inst.LogInfos.AddRange(logInfos);
+			oldLogger.QueueFree();
 		}
-		inst.LoggingParent = _LoggingParent;
-        inst.InfoTextTemplate = _InfoText;
-        inst.ErrorTextTemplate = _ErrorText;
-        inst.console = this;
-        inst.Visible = false;
+		_inst = this;
+		Inst.console = this;
+		Inst.Visible = false;
 	}
 
 	public override void _UnhandledInput(InputEvent @event)

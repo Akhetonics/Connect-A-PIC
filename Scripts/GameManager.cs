@@ -2,11 +2,14 @@ using CAP_Core;
 using CAP_Core.Component.ComponentHelpers;
 using CAP_Core.ExternalPorts;
 using CAP_Core.LightFlow;
+using CAP_DataAccess.Components.ComponentDraftMapper;
+using CAP_DataAccess.Helpers;
 using Components.ComponentDraftMapper;
+using Components.ComponentDraftMapper.DTOs;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.Scripts.Helpers;
-using ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper;
+using ConnectAPIC.Scripts.View.ComponentFactory;
 using Godot;
 using System;
 using System.Collections.Generic;
@@ -28,7 +31,7 @@ namespace ConnectAPic.LayoutWindow
 		[Export] public TextureRect ExternalInputRedTemplate { get; set; }
 		[Export] public TextureRect ExternalInputGreenTemplate { get; set; }
 		[Export] public TextureRect ExternalInputBlueTemplate { get; set; }
-		private ComponentImporter ComponentImporter { get; set; }
+		private PCKLoader PCKLoader { get; set; }
 		public static int TilePixelSize { get; private set; } = 62;
 		public static int TileBorderLeftDown { get; private set; } = 2;
 		public GridView GridView { get; set; }
@@ -39,7 +42,7 @@ namespace ConnectAPic.LayoutWindow
 		{
 			get { return instance; }
 		}
-
+		public const string ComponentFolderPath = "res://Scenes/Components";
 		public override void _Ready()
 		{
 			if (instance == null)
@@ -54,9 +57,7 @@ namespace ConnectAPic.LayoutWindow
 				this.CheckForNull(x => x.ToolBoxPath);
 				ToolBox = GetNode<ToolBox>(ToolBoxPath);
 				this.CheckForNull(x => x.ToolBox);
-				ComponentImporter = (ComponentImporter)this.FindChild("ComponentImporter", true, false) ?? new ComponentImporter();
-				this.CheckForNull(x => x.ComponentImporter);
-
+				PCKLoader = new(ComponentFolderPath);
 				CallDeferred(nameof(DeferredInitialization));
 			}
 			else
@@ -64,15 +65,36 @@ namespace ConnectAPic.LayoutWindow
 				QueueFree(); // delete this object as there is already another GameManager in the scene
 			}
 		}
-		
+
 		private void DeferredInitialization()
 		{
-			ComponentImporter.ImportInternalPCKFiles();
-			var componentDrafts = ComponentImporter.ReadComponentJSONDrafts();
-			GridView.ComponentViewFactory.InitializeComponentDrafts(componentDrafts);
+			PCKLoader.LoadStandardPCKs();
+			List<ComponentDraft> componentDrafts = EquipViewComponentFactoryWithJSONDrafts();
 			ToolBox.SetAvailableTools(GridView.ComponentViewFactory);
-			List<Component> modelComponents = new ComponentDraftConverter(CustomLogger.inst).ToComponentModels(componentDrafts);
+			List<Component> modelComponents = new ComponentDraftConverter(Logger.Inst).ToComponentModels(componentDrafts);
 			ComponentFactory.Instance.InitializeComponentDrafts(modelComponents);
+		}
+
+		private List<ComponentDraft> EquipViewComponentFactoryWithJSONDrafts()
+		{
+			var draftsAndErrors = new ComponentJSONFinder(new DirectoryAccessGodot(), new DataAccessorGodot())
+				.ReadComponentJSONDrafts(ComponentFolderPath);
+			var componentDrafts = draftsAndErrors
+				.Where(d => String.IsNullOrEmpty(d.error) == true)
+				.Select(d => d.draft)
+				.ToList();
+			PrintLoadingErrorsToConsole(draftsAndErrors);
+
+			GridView.ComponentViewFactory.InitializeComponentDrafts(componentDrafts);
+			return componentDrafts;
+		}
+
+		private static void PrintLoadingErrorsToConsole(List<(ComponentDraft draft, string error)> draftsAndErrors)
+		{
+			draftsAndErrors
+				.Where(d => d.error != null)
+				.ToList()
+				.ForEach(d => Logger.Inst.PrintErr(d.error));
 		}
 
 		private void InitializeExternalPortViews(List<ExternalPort> StandardPorts)
