@@ -1,7 +1,7 @@
 ﻿using CAP_Core.Component.ComponentHelpers;
 using CAP_Core.Tiles;
 
-namespace ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper.DTOs
+namespace Components.ComponentDraftMapper.DTOs
 {
     public class PinDraft
     {

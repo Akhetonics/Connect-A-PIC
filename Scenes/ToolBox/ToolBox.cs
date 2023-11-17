@@ -12,14 +12,13 @@ public partial class ToolBox : Node
 	public override void _Ready()
 	{
 		this.CheckForNull(x => x.gridContainer);
-		//CallDeferred(nameof(SetAvailableTools));
 	}
 
 	public void SetAvailableTools(ComponentViewFactory ComponentViewFactory)
 	{
 		if (ComponentViewFactory == null)
 		{
-			CustomLogger.PrintErr("ComponentViewFactory cannot be null");
+			CustomLogger.inst.PrintErr("ComponentViewFactory cannot be null");
 			return;
 		}
 		var allComponentTypesNRs = ComponentViewFactory.GetAllComponentIDs();
@@ -33,7 +32,7 @@ public partial class ToolBox : Node
 			var biggestScaleFactor = Math.Max(componentSizeCorrection.X, componentSizeCorrection.Y);
 			if(biggestScaleFactor <= 0)
 			{
-				CustomLogger.PrintErr("biggestScaleFactor is too small, the toolbox cannot scale this component properly of Component NR: " + typeNumber);
+				CustomLogger.inst.PrintErr("biggestScaleFactor is too small, the toolbox cannot scale this component properly of Component NR: " + typeNumber);
 			}
 			componentInstance.Scale /= biggestScaleFactor;
 			TemplateTileView rect = new();

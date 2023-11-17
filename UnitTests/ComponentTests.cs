@@ -4,7 +4,6 @@ using CAP_Core.Component.ComponentHelpers;
 using CAP_Core.LightFlow;
 using CAP_Core.Tiles;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
-using ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper.DTOs;
 using Newtonsoft.Json;
 using System.Numerics;
 

@@ -19,7 +19,7 @@ namespace ConnectAPIC.Scripts.Debuggers
             {
                 NodeInfo += ", Playing: " + ((AnimatedSprite2D)node).IsPlaying() + ")";
             }
-            CustomLogger.PrintLn(NodeInfo, true);
+            CustomLogger.inst.PrintLn(NodeInfo, true);
 
             foreach (Node child in node.GetChildren())
             {

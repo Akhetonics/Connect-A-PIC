@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://Scripts/View/GridView.cs" id="1_2pqex"]
 [ext_resource type="Script" path="res://Scripts/View/DragDropProxy.cs" id="2_av7q5"]
 [ext_resource type="Script" path="res://Scripts/View/StandardDialogs/NotificationManager.cs" id="2_nntly"]
-[ext_resource type="Script" path="res://Scenes/Components/ComponentView.cs" id="3_g7vl4"]
+[ext_resource type="Script" path="res://Scripts/View/ComponentViews/ComponentView.cs" id="3_hlrce"]
 [ext_resource type="Script" path="res://Scripts/ViewModel/ComponentFactory/ComponentViewFactory.cs" id="7_x7uef"]
 [ext_resource type="PackedScene" uid="uid://ch8njrql1cvsv" path="res://Scenes/ToolBox/Tool_box.tscn" id="10_ir1q2"]
 [ext_resource type="PackedScene" uid="uid://bscqmaslppyt8" path="res://Scenes/NotificationBox.tscn" id="12_o0640"]
@@ -444,7 +444,7 @@ ExternalInputBlueTemplate = NodePath("Templates/ExternalInputBlueTemplate")
 
 [node name="ComponentViewFactory" type="Node" parent="."]
 script = ExtResource("7_x7uef")
-ComponentBaseScriptPath = ExtResource("3_g7vl4")
+ComponentBaseScriptPath = ExtResource("3_hlrce")
 
 [node name="ComponentImporter" type="Node" parent="."]
 script = ExtResource("15_wk10j")

@@ -1,7 +1,7 @@
 ﻿using CAP_Core.Component.ComponentHelpers;
 using CAP_Core.Tiles;
-using ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper;
-using ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper.DTOs;
+using Components.ComponentDraftMapper;
+using Components.ComponentDraftMapper.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +13,17 @@ namespace UnitTests
 {
     public class ComponentDraftFileReaderTests
     {
+        public class PathCheckerDummy : IDataAccesser
+        {
+            public bool DoesResourceExist(string godotResourcePath) => true;
+            public string ReadAsText(string godotFilePath) => "";
+            public bool Write(string filePath, string componentJson) => true;
+        }
+
+        public class DummyLogger : ILogger
+        {
+            public void PrintErr(string v) { }
+        }
         [Fact]
         public async Task TestReadWrite()
         {
@@ -62,7 +73,8 @@ namespace UnitTests
             };
 
             // Act
-            ComponentDraftFileReader.Write(tempFilePath, originalComponentDraft);
+            var reader = new ComponentDraftFileReader(new PathCheckerDummy(), new DummyLogger());
+            reader.Write(tempFilePath, originalComponentDraft);
             bool fileIsUsed = true;
             int counter = 0;
             ComponentDraft readComponentDraft = null;
@@ -70,7 +82,7 @@ namespace UnitTests
             {
                 try
                 {
-                    readComponentDraft = ComponentDraftFileReader.TryRead(tempFilePath);
+                    readComponentDraft = reader.TryRead(tempFilePath);
                     fileIsUsed = false;
                 } catch (IOException)
                 {
@@ -80,8 +92,6 @@ namespace UnitTests
                         throw;
                 }
             }
-            
-
             // Assert
             Assert.Equal(JsonSerializer.Serialize(originalComponentDraft), JsonSerializer.Serialize(readComponentDraft));
 

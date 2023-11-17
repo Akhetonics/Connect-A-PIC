@@ -1,4 +1,5 @@
 using CAP_Core.LightFlow;
+using Components.ComponentDraftMapper;
 using ConnectAPic.LayoutWindow;
 using ConnectAPIC.Scripts.Debuggers;
 using Godot;
@@ -13,24 +14,34 @@ public record LogInfo
 	public string Info;
 	public bool IsError;
 }
-public partial class CustomLogger : ScrollContainer
+public partial class CustomLogger : ScrollContainer, ILogger
 {
-	private static ScrollContainer console;
+	private ScrollContainer console;
 	[Export] private Node _LoggingParent { get; set; }
 	[Export] private RichTextLabel _InfoText { get; set; }
 	[Export] private RichTextLabel _ErrorText { get; set; }
-	public static Node LoggingParent { get; set; }
-	public static RichTextLabel InfoTextTemplate { get; set; }
-	public static RichTextLabel ErrorTextTemplate { get; set; }
+	public Node LoggingParent { get; set; }
+	public RichTextLabel InfoTextTemplate { get; set; }
+	public RichTextLabel ErrorTextTemplate { get; set; }
 	private bool visibilityChanged = false;
-	private static List<LogInfo> LogInfos = new();
+	private List<LogInfo> LogInfos = new();
+	public static CustomLogger inst { get; set; }
 	public override void _Ready()
 	{
-		LoggingParent = _LoggingParent;
-		InfoTextTemplate = _InfoText;
-		ErrorTextTemplate = _ErrorText;
-		console = this;
-		Visible = false;
+		if(inst == null)
+		{
+			inst = this;
+		} 
+		else
+		{
+			QueueFree();
+			return;
+		}
+		inst.LoggingParent = _LoggingParent;
+        inst.InfoTextTemplate = _InfoText;
+        inst.ErrorTextTemplate = _ErrorText;
+        inst.console = this;
+        inst.Visible = false;
 	}
 
 	public override void _UnhandledInput(InputEvent @event)
@@ -64,7 +75,7 @@ public partial class CustomLogger : ScrollContainer
 		}
 	}
 
-	private static void FlushBufferedLogs()
+	private void FlushBufferedLogs()
 	{
 		if (LogInfos.Count != 0 && LoggingParent != null)
 		{
@@ -86,7 +97,7 @@ public partial class CustomLogger : ScrollContainer
 		}
 	}
 
-	public static void PrintLn(string text, bool printRawText = false)
+	public void PrintLn(string text, bool printRawText = false)
 	{
 		if(!printRawText)
 		{
@@ -95,21 +106,21 @@ public partial class CustomLogger : ScrollContainer
 		GD.Print(text);
 		Print(text);
 	}
-	public static void PrintErr(string text)
+	public void PrintErr(string text)
 	{
 		text = FormatErrorText(text);
 		Print(text,true);
 		GD.PrintErr(text);
 		console?.Show();
 	}
-	public static void PrintEx(Exception ex)
+	public void PrintEx(Exception ex)
 	{
 		var text = FormatErrorText("msg: " + ex.Message + " stck: " + ex.StackTrace + " inner: " + ex.InnerException);
 		Print(text, true);
 		GD.PrintErr(text);
 		console?.Show();
 	}
-	private static void Print(string text, bool isError = false)
+	private void Print(string text, bool isError = false)
 	{
 		RichTextLabel labelTemplate = InfoTextTemplate;
 		if (isError)
@@ -135,7 +146,7 @@ public partial class CustomLogger : ScrollContainer
 	{
 		try
 		{
-			StackTrace stackTrace = new StackTrace(true);
+			StackTrace stackTrace = new(true);
 			StackFrame frame = stackTrace.GetFrame(2);
 			var method = frame.GetMethod();
 			var lineNumber = frame.GetFileLineNumber();

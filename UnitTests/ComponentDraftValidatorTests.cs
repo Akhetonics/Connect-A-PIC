@@ -1,15 +1,23 @@
-﻿using CAP_Core.Component.ComponentDraftMapper;
-using CAP_Core.Tiles;
-using ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper;
-using ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper.DTOs;
+﻿using CAP_Core.Tiles;
+using Components.ComponentDraftMapper;
+using Components.ComponentDraftMapper.DTOs;
 
 namespace UnitTests
 {
     public class ComponentDraftValidatorTests
     {
+        public class PathCheckerDummy : IResourcePathChecker
+        {
+            public bool DoesResourceExist(string godotResourcePath)
+            {
+                return true;
+            }
+        }
+
         [Fact]
         public void ValidateTest()
         {
+            var validator = new ComponentDraftValidator(new PathCheckerDummy());
             var draft = new ComponentDraft()
             {
                 fileFormatVersion = ComponentDraftFileReader.CurrentFileVersion + 1, // trigger ErrorFileVersionNotSupported
@@ -37,7 +45,7 @@ namespace UnitTests
                 new Connection { fromPinNr = 999, toPinNr = 998 } // trigger ErrorFromPinNrInvalid and ErrorToPinNrInvalid
             }
             };
-            var result = ComponentDraftValidator.Validate(draft);
+            var result = validator.Validate(draft);
 
             Assert.False(result.isValid);
             Assert.Contains(ComponentDraftValidator.ErrorFileVersionNotSupported, result.errorMsg);
@@ -59,6 +67,7 @@ namespace UnitTests
         [Fact]
         public void ValidateDraft_NoErrors_ReturnsValid()
         {
+            var validator = new ComponentDraftValidator(new PathCheckerDummy());
             // Arrange
             var draft = new ComponentDraft
             {
@@ -115,7 +124,7 @@ namespace UnitTests
             };
 
             // Act
-            var (isValid, errorMsg) = ComponentDraftValidator.Validate(draft);
+            var (isValid, errorMsg) = validator.Validate(draft);
 
             // Assert
             string currentDir = Directory.GetCurrentDirectory();

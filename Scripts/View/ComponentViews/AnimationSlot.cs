@@ -35,7 +35,7 @@ namespace ConnectAPIC.LayoutWindow.View
 			}
 			catch (Exception ex)
 			{
-				CustomLogger.PrintErr(ex.Message);
+				CustomLogger.inst.PrintErr(ex.Message);
 				throw;
 			}
 		}

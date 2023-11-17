@@ -143,7 +143,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
                 }
                 catch (Exception ex)
                 {
-                    CustomLogger.PrintEx(ex);
+                    CustomLogger.inst.PrintEx(ex);
                 }
 
             }
@@ -192,7 +192,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             }
             catch (Exception ex)
             {
-                CustomLogger.PrintEx(ex);
+                CustomLogger.inst.PrintEx(ex);
             }
 
         }

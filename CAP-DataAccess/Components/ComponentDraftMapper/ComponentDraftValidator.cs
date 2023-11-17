@@ -1,11 +1,10 @@
-﻿using ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper;
-using ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper.DTOs;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Components.ComponentDraftMapper.DTOs;
 
-namespace CAP_Core.Component.ComponentDraftMapper
+namespace Components.ComponentDraftMapper
 {
     public class ComponentDraftValidator
     {
@@ -28,19 +27,22 @@ namespace CAP_Core.Component.ComponentDraftMapper
         public static readonly string ErrorPinPartYBiggerMaxHeight = "Err_017";
         public static readonly string ErrorPinPartXBiggerMaxHeight = "Err_018";
 
-        public static bool ResourceExists(string godotPath)
+        public IResourcePathChecker ResourcePathChecker { get; }
+
+        public ComponentDraftValidator(IResourcePathChecker resourcePathChecker)
+        {
+            this.ResourcePathChecker = resourcePathChecker;
+        }
+        public bool ResourceExists(string godotPath)
         {
             if (!godotPath.StartsWith("res://"))
             {
                 throw new ArgumentException("Path has to start with 'res://'.", nameof(godotPath));
             }
-
-            var windowsPath = godotPath.Replace("res://", "").Replace("/", "\\");
-
-            return File.Exists(windowsPath);
+            return ResourcePathChecker.DoesResourceExist(godotPath);
         }
 
-        public static (bool isValid, string errorMsg) Validate(ComponentDraft draft)
+        public (bool isValid, string errorMsg) Validate(ComponentDraft draft)
         {
             string errorMsg = "";
             if (draft.overlays.Count == 0)
@@ -55,7 +57,7 @@ namespace CAP_Core.Component.ComponentDraftMapper
             {
                 errorMsg += ErrorNoPinsDefined + $" There are no {nameof(draft.pins)} defined at all. At least 1 pin should be defined\n";
             }
-            if (String.IsNullOrWhiteSpace(draft.sceneResPath))
+            if (string.IsNullOrWhiteSpace(draft.sceneResPath))
             {
                 errorMsg += ErrorSceneResPathNotExist + $" {nameof(draft.sceneResPath)} is not set\n";
             }
@@ -65,11 +67,12 @@ namespace CAP_Core.Component.ComponentDraftMapper
                 {
                     errorMsg += ErrorSceneResPathNotExist + $" {nameof(draft.sceneResPath)} does not exist on disk\n";
                 }
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 errorMsg += ErrorSceneResPathNotExist + $" {nameof(draft.sceneResPath)} - {ex.Message}\n";
             }
-            
+
             if (draft.widthInTiles == 0)
             {
                 errorMsg += ErrorWidthInTilesSmaller0 + $" {nameof(draft.widthInTiles)} has to be greater than 0\n";
@@ -78,7 +81,7 @@ namespace CAP_Core.Component.ComponentDraftMapper
             {
                 errorMsg += ErrorHeightInTilesSmaller0 + $" {nameof(draft.heightInTiles)} has to be greater than 0\n";
             }
-            if (String.IsNullOrWhiteSpace(draft.identifier))
+            if (string.IsNullOrWhiteSpace(draft.identifier))
             {
                 errorMsg += ErrorIdentifierNotSet + $" {nameof(draft.identifier)} has to be defined\n";
             }
@@ -105,7 +108,7 @@ namespace CAP_Core.Component.ComponentDraftMapper
             return (success, errorMsg);
         }
 
-        private static string ValidateOverlay(Overlay overlay)
+        private string ValidateOverlay(Overlay overlay)
         {
             string errorMsg = "";
             if (overlay == null)
@@ -119,11 +122,12 @@ namespace CAP_Core.Component.ComponentDraftMapper
                 {
                     errorMsg += ErrorOverlayTexturePathNotExist + $" {nameof(overlay.overlayAnimTexturePath) + " " + overlay.overlayAnimTexturePath} does not exist on disk\n";
                 }
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 errorMsg += ErrorOverlayTexturePathNotExist + $" {nameof(overlay.overlayAnimTexturePath) + " '" + overlay?.overlayAnimTexturePath + "'" + ex.Message}' \n";
             }
-            
+
             if (overlay.tileOffsetX < 0)
             {
                 errorMsg += ErrorOverlayOffsetXSmaller0 + $" {nameof(overlay.tileOffsetX)} cannot be < 0\n";
@@ -165,7 +169,7 @@ namespace CAP_Core.Component.ComponentDraftMapper
                 .ToList();
             if (duplicateNumbers.Any())
             {
-                string numbers = String.Join(',', duplicateNumbers);
+                string numbers = string.Join(',', duplicateNumbers);
                 return ErrorPinNumberDuplicated + $" Each Pin must have a unique {nameof(PinDraft.number)}, but '{numbers}' had been used twice\n";
             }
             return "";

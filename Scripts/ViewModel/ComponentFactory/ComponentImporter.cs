@@ -1,4 +1,5 @@
-using ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper.DTOs;
+using Components.ComponentDraftMapper;
+using Components.ComponentDraftMapper.DTOs;
 using Godot;
 using System;
 using System.Collections.Generic;
@@ -24,11 +25,11 @@ namespace ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper
 			{
 				if (ProjectSettings.LoadResourcePack(pckFile))
 				{
-					CustomLogger.PrintLn($"PCK loaded successfully: {pckFile}");
+					CustomLogger.inst.PrintLn($"PCK loaded successfully: {pckFile}");
 				}
 				else
 				{
-					CustomLogger.PrintErr($"Error while loading PCK: {pckFile}");
+					CustomLogger.inst.PrintErr($"Error while loading PCK: {pckFile}");
 				}
 			}
 		}
@@ -68,8 +69,9 @@ namespace ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper
 		
 		public static List<ComponentDraft> ReadComponentJSONDrafts()
 		{
+			ComponentDraftFileReader reader = new(new GodotFileAccessor(), CustomLogger.inst);
 			return FindFilesRecursively(ComponentFolderPath, "json")
-				.Select(file => ComponentDraftFileReader.TryRead(file))
+				.Select(file => reader.TryRead(file))
 				.ToList();
 		}
 	}

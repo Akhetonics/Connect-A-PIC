@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper.DTOs
+namespace Components.ComponentDraftMapper.DTOs
 {
     public class ComponentDraft
     {

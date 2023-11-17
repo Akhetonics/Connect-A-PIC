@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="Components\ComponentDraftMapper\ComponentDescriptionDraft.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="Components\ComponentDraftMapper\ComponentDescriptionDraft.json" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Connect-A-Pic-Core\CAP-Core.csproj" />
+  </ItemGroup>
+
+</Project>

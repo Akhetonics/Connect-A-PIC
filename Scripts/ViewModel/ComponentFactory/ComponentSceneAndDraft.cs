@@ -1,4 +1,4 @@
-﻿using ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper.DTOs;
+﻿using Components.ComponentDraftMapper.DTOs;
 using Godot;
 
 namespace ConnectAPIC.LayoutWindow.View

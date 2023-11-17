@@ -1,4 +1,4 @@
-﻿namespace ConnectAPIC.Scripts.ViewModel.ComponentDraftMapper.DTOs
+﻿namespace Components.ComponentDraftMapper.DTOs
 {
     public class Connection
     {

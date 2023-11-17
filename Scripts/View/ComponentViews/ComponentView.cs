@@ -16,13 +16,6 @@ using System.Runtime.CompilerServices;
 
 namespace ConnectAPIC.LayoutWindow.View
 {
-    public record AnimationSlotOverlayData
-    {
-        public Texture LightFlowOverlay;
-        public RectSide Side;
-        public int OffsetX;
-        public int OffsetY;
-    }
     public partial class ComponentView : TextureRect
     {
         public int WidthInTiles { get; private set; }
@@ -73,8 +66,8 @@ namespace ConnectAPIC.LayoutWindow.View
 
         public void InitializeComponent(int componentTypeNumber, List<AnimationSlotOverlayData> slotDatas, int widthIntiles, int heightInTiles)
         {
-            if (widthIntiles == 0) CustomLogger.PrintErr(nameof(widthIntiles) + " of this element is not set in the TypeNR: " + componentTypeNumber);
-            if (heightInTiles == 0) CustomLogger.PrintErr(nameof(heightInTiles) + " of this element is not set in the TypeNR: " + componentTypeNumber);
+            if (widthIntiles == 0) CustomLogger.inst.PrintErr(nameof(widthIntiles) + " of this element is not set in the TypeNR: " + componentTypeNumber);
+            if (heightInTiles == 0) CustomLogger.inst.PrintErr(nameof(heightInTiles) + " of this element is not set in the TypeNR: " + componentTypeNumber);
 
             this.TypeNumber = componentTypeNumber;
             FindAndAssignOverlay();
@@ -85,7 +78,7 @@ namespace ConnectAPIC.LayoutWindow.View
                 
                 if(slotData.LightFlowOverlay== null)
                 {
-                    CustomLogger.PrintErr(nameof(slotData.LightFlowOverlay) + " is null in TypeNR: " + componentTypeNumber );
+                    CustomLogger.inst.PrintErr(nameof(slotData.LightFlowOverlay) + " is null in TypeNR: " + componentTypeNumber );
                 }
                 AnimationSlots.AddRange(CreateRGBAnimSlots(slotData.Side, slotData.LightFlowOverlay, slotData.OffsetX, slotData.OffsetY));
             }
@@ -194,7 +187,7 @@ namespace ConnectAPIC.LayoutWindow.View
             }
             catch (Exception ex)
             {
-                CustomLogger.PrintErr(ex.Message);
+                CustomLogger.inst.PrintErr(ex.Message);
             }
         }
         protected void AssignInAndOutFlowShaderData(AnimationSlot slot, LightAtPin lightAtPin, int shaderAnimationNumber)
@@ -241,6 +234,13 @@ namespace ConnectAPIC.LayoutWindow.View
 
                 }
             }
+        }
+
+        public virtual ComponentView Duplicate()
+        {
+            var copy = base.Duplicate() as ComponentView;
+            copy.RotationCC = this.RotationCC; // give the new copy the proper RotationCC so that it has the correct rotation
+            return copy;
         }
 
         protected List<AnimationSlot> CreateRGBAnimSlots(RectSide inflowSide, Texture overlayAnimTexture, int tileOffsetX = 0, int tileOffsetY = 0)
