@@ -2,6 +2,7 @@ using CAP_Core;
 using CAP_Core.Component.ComponentHelpers;
 using CAP_Core.ExternalPorts;
 using CAP_Core.LightFlow;
+using CAP_Core.Logger;
 using CAP_DataAccess.Components.ComponentDraftMapper;
 using CAP_DataAccess.Helpers;
 using Components.ComponentDraftMapper;
@@ -37,6 +38,7 @@ namespace ConnectAPic.LayoutWindow
 		public GridView GridView { get; set; }
 		public Grid Grid { get; set; }
 		public static GameManager instance;
+		public Logger LoggerModel { get; set; }
 		public GridViewModel GridViewModel { get; private set; }
 		public static GameManager Instance
 		{

@@ -4,18 +4,21 @@ using ConnectAPic.LayoutWindow;
 using ConnectAPIC.Scripts.Debuggers;
 using ConnectAPIC.Scripts.Helpers;
 using Godot;
+using log4net;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
-public record LogInfo
-{
-	public string Info;
-	public bool IsError;
-}
 public partial class Logger : ScrollContainer, ILogger
 {
-	private ScrollContainer console;
+    private static readonly ILog log = LogManager.GetLogger(typeof(this));
+    public record LogInfo
+    {
+        public string Info;
+        public DateTime Time;
+        public bool IsError;
+    }
+    private ScrollContainer console;
 	[Export] private Node LoggingParent { get; set; }
 	[Export] private RichTextLabel InfoTextTemplate { get; set; }
 	[Export] private RichTextLabel ErrorTextTemplate { get; set; }
