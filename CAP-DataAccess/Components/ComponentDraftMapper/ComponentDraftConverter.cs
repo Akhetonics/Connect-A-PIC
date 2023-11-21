@@ -1,4 +1,5 @@
-﻿using CAP_Core.Component.ComponentHelpers;
+﻿using CAP_Contracts.Logger;
+using CAP_Core.Component.ComponentHelpers;
 using CAP_Core.LightFlow;
 using Components.ComponentDraftMapper.DTOs;
 using System.Numerics;

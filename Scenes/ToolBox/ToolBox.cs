@@ -1,3 +1,4 @@
+using CAP_Contracts.Logger;
 using ConnectAPic.LayoutWindow;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.Scripts.Helpers;
@@ -14,11 +15,11 @@ public partial class ToolBox : Node
 		this.CheckForNull(x => x.gridContainer);
 	}
 
-	public void SetAvailableTools(ComponentViewFactory ComponentViewFactory)
+	public void SetAvailableTools(ComponentViewFactory ComponentViewFactory, ILogger logger)
 	{
 		if (ComponentViewFactory == null)
 		{
-			Logger.Inst.PrintErr("ComponentViewFactory cannot be null");
+			logger.PrintErr("ComponentViewFactory cannot be null");
 			return;
 		}
 		var allComponentTypesNRs = ComponentViewFactory.GetAllComponentIDs();
@@ -32,7 +33,7 @@ public partial class ToolBox : Node
 			var biggestScaleFactor = Math.Max(componentSizeCorrection.X, componentSizeCorrection.Y);
 			if(biggestScaleFactor <= 0)
 			{
-				Logger.Inst.PrintErr("biggestScaleFactor is too small, the toolbox cannot scale this component properly of Component NR: " + typeNumber);
+				logger.PrintErr("biggestScaleFactor is too small, the toolbox cannot scale this component properly of Component NR: " + typeNumber);
 			}
 			componentInstance.Scale /= biggestScaleFactor;
 			TemplateTileView rect = new();

@@ -2,6 +2,7 @@
 using CAP_Core.ExternalPorts;
 using CAP_Core.Helpers;
 using CAP_Core.Tiles;
+using ConnectAPic.LayoutWindow;
 using Godot;
 using System;
 using System.Collections.Generic;
@@ -35,7 +36,7 @@ namespace ConnectAPIC.LayoutWindow.View
 			}
 			catch (Exception ex)
 			{
-				Logger.Inst.PrintErr(ex.Message);
+				GameManager.Instance?.Logger?.PrintErr( "Error at TryFindMatching slots - Could not find lightVector: " + lightVector.ToString() + " " +  ex.Message);
 				throw;
 			}
 		}

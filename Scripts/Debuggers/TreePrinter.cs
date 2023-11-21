@@ -1,30 +1,38 @@
 ﻿using Godot;
 using System;
+using System.Text;
 
 namespace ConnectAPIC.Scripts.Debuggers
 {
     public static class TreePrinter 
     {
-     
-        public static void PrintTree(Node node, int level)        {
-            
-            if(typeof(RichTextLabel).IsAssignableFrom(node.GetType())) return;
 
-            var NodeInfo = GetIndentation(level * 2) + "|-- " + node.Name + " (Type: " + node.GetType().Name;
-            if(typeof(Node2D).IsAssignableFrom(node.GetType()))
+        public static string PrintTree(Node node, int level)
+        {
+            StringBuilder result = new StringBuilder();
+
+            if (typeof(RichTextLabel).IsAssignableFrom(node.GetType())) return "";
+
+            result.Append(GetIndentation(level * 2) + "|-- " + node.Name + " (Type: " + node.GetType().Name);
+
+            if (typeof(Node2D).IsAssignableFrom(node.GetType()))
             {
-                NodeInfo += ", Visible: " + ((Node2D)node).Visible + ")";
+                result.Append(", Visible: " + ((Node2D)node).Visible);
             }
-            if(typeof(AnimatedSprite2D).IsAssignableFrom(node.GetType()))
+
+            if (typeof(AnimatedSprite2D).IsAssignableFrom(node.GetType()))
             {
-                NodeInfo += ", Playing: " + ((AnimatedSprite2D)node).IsPlaying() + ")";
+                result.Append(", Playing: " + ((AnimatedSprite2D)node).IsPlaying());
             }
-            Logger.Inst.PrintLn(NodeInfo, true);
+
+            result.AppendLine(")");
 
             foreach (Node child in node.GetChildren())
             {
-                PrintTree(child, level + 1);
+                result.Append(PrintTree(child, level + 1));
             }
+
+            return result.ToString();
         }
 
         public static string GetIndentation(int count)

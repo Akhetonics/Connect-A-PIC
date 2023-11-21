@@ -1,4 +1,5 @@
-﻿using CAP_Core;
+﻿using CAP_Contracts.Logger;
+using CAP_Core;
 using CAP_Core.CodeExporter;
 using CAP_Core.Component.ComponentHelpers;
 using CAP_Core.ExternalPorts;
@@ -26,13 +27,16 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         public int Width { get => GridComponentViews.GetLength(0); }
         public int Height { get => GridComponentViews.GetLength(1); }
         public Grid Grid { get; set; }
+        public ILogger Logger { get; }
         public GridView GridView { get; set; }
-        public GridSMatrixAnalyzer MatrixAnalyzer { get; private set; }
+        public GridSMatrixAnalyzer MatrixAnalyzer { get; private set; } 
         public int MaxTileCount { get => Width * Height; }
-        public GridViewModel(GridView gridview, Grid grid)
+
+        public GridViewModel(GridView gridview, Grid grid, ILogger logger)
         {
             this.GridView = gridview;
             this.Grid = grid;
+            Logger = logger;
             //this.GridView.Columns = grid.Width;
             this.GridComponentViews = new ComponentView[grid.Width, grid.Height];
             CreateComponentCommand = new CreateComponentCommand(grid,ComponentFactory.Instance);
@@ -43,6 +47,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             CreateEmptyField();
             this.Grid.OnComponentPlacedOnTile += Grid_OnComponentPlacedOnTile;
             this.Grid.OnComponentRemoved += Grid_OnComponentRemoved;
+            MatrixAnalyzer = new GridSMatrixAnalyzer(this.Grid);
         }
 
         private void Grid_OnComponentRemoved(Component component, int x, int y)
@@ -143,7 +148,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
                 }
                 catch (Exception ex)
                 {
-                    Logger.Inst.PrintEx(ex);
+                    Logger.PrintErr(ex.Message);
                 }
 
             }
@@ -192,7 +197,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             }
             catch (Exception ex)
             {
-                Logger.Inst.PrintEx(ex);
+                Logger.PrintErr(ex.Message);
             }
 
         }

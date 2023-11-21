@@ -1,4 +1,6 @@
+using CAP_Contracts.Logger;
 using Components.ComponentDraftMapper.DTOs;
+using ConnectAPic.LayoutWindow;
 using ConnectAPIC.Scripts.View.ComponentFactory;
 using Godot;
 using MathNet.Numerics;
@@ -14,17 +16,14 @@ namespace ConnectAPIC.LayoutWindow.View
         [Export] private Script ComponentBaseScriptPath;
         private List<PackedScene> PackedComponentScenes;
         private Dictionary<int, ComponentSceneAndDraft> PackedComponentCache = new();
-
-        public override void _Ready()
+        public ILogger Logger { get; set; }
+        public void InitializeComponentDrafts(List<ComponentDraft> drafts, ILogger logger)
         {
-            if(ComponentBaseScriptPath == null)
+            Logger = logger;
+            if (ComponentBaseScriptPath == null)
             {
-                Logger.Inst.PrintErr($"{nameof(ComponentBaseScriptPath)} has not been attached to ComponentviewFactory in the Godot Editor.");
+                Logger.PrintErr($"{nameof(ComponentBaseScriptPath)} has not been attached to ComponentviewFactory in the Godot Editor.");
             }
-        }
-
-        public void InitializeComponentDrafts(List<ComponentDraft> drafts)
-        {
             Dictionary<int, ComponentSceneAndDraft> packedComponentScenes = new();
 
             int componentNumber = 0;
@@ -39,7 +38,7 @@ namespace ConnectAPIC.LayoutWindow.View
                     }
                 } catch( Exception ex)
                 {
-                    Logger.Inst.PrintErr($"Error Loading PackedScene '{componentDraft?.sceneResPath}' of Compopnent: {componentDraft?.identifier} ex: {ex.Message} )");
+                    Logger.PrintErr($"Error Loading PackedScene '{componentDraft?.sceneResPath}' of Compopnent: {componentDraft?.identifier} ex: {ex.Message} )");
                     continue;
                 }
                 packedComponentScenes.Add(componentNumber, new ComponentSceneAndDraft()
@@ -57,7 +56,7 @@ namespace ConnectAPIC.LayoutWindow.View
         {
             if (!PackedComponentCache.ContainsKey(componentNR))
             {
-                Logger.Inst.PrintErr("Key does not exist in ComponentCache of ComponentviewFactory: " + componentNR);
+                Logger.PrintErr("Key does not exist in ComponentCache of ComponentviewFactory: " + componentNR);
             }
             var draft = PackedComponentCache[componentNR].Draft;
             var packedScene = PackedComponentCache[componentNR].Scene;
@@ -70,7 +69,7 @@ namespace ConnectAPIC.LayoutWindow.View
                     var overlayBluePrint = ResourceLoader.Load<Texture2D>(overlay.overlayAnimTexturePath);
                     if(overlayBluePrint == null)
                     {
-                        Logger.Inst.PrintErr("BluePrint could not be loaded in Type: " + draft.identifier +" ComponentTypeNR: " + componentNR + " path: " + overlay.overlayAnimTexturePath);
+                        Logger.PrintErr("BluePrint could not be loaded in Type: " + draft.identifier +" ComponentTypeNR: " + componentNR + " path: " + overlay.overlayAnimTexturePath);
                         continue;
                     }
                     slotDataSets.Add(new AnimationSlotOverlayData()
@@ -83,12 +82,12 @@ namespace ConnectAPIC.LayoutWindow.View
                 }
                 ComponentView componentView = new();
                 componentView.AddChild((TextureRect)packedScene.Instantiate());
-                componentView.InitializeComponent(componentNR, slotDataSets, draft.widthInTiles, draft.heightInTiles);
+                componentView.InitializeComponent(componentNR, slotDataSets, draft.widthInTiles, draft.heightInTiles , Logger);
                 return componentView;
             }
             catch (Exception ex)
             {
-                Logger.Inst.PrintErr($"ComponentTemplate is not or not well defined: {draft?.identifier} - Exception: {ex.Message}");
+                Logger.PrintErr($"ComponentTemplate is not or not well defined: {draft?.identifier} - Exception: {ex.Message}");
                 throw;
             }
         }
@@ -99,7 +98,7 @@ namespace ConnectAPIC.LayoutWindow.View
             {
                 return new Vector2I(component.Draft.widthInTiles, component.Draft.heightInTiles);
             }
-            Logger.Inst.PrintErr($"ComponentTypeNumber {componentTypeNumber} does not exist in ComponentViewFactory");
+            Logger.PrintErr($"ComponentTypeNumber {componentTypeNumber} does not exist in ComponentViewFactory");
             throw new KeyNotFoundException( $"ComponentTypeNumber {componentTypeNumber} does not exist in ComponentViewFactory");
         }
         public List<int> GetAllComponentIDs()

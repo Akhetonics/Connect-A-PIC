@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://bd8isg4mddv21"]
 
-[ext_resource type="Script" path="res://Scenes/InGameConsole/Logger.cs" id="1_fpfmq"]
+[ext_resource type="Script" path="res://Scenes/InGameConsole/Console.cs" id="1_fpfmq"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jfvjg"]
 content_margin_left = 4.0
@@ -32,7 +32,7 @@ grow_horizontal = 2
 grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_jfvjg")
 script = ExtResource("1_fpfmq")
-LoggingParent = NodePath(".")
+LoggingParent = NodePath("VBoxContainer")
 InfoTextTemplate = NodePath("VBoxContainer/InfoText")
 ErrorTextTemplate = NodePath("VBoxContainer/ErrorText")
 

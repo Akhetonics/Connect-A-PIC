@@ -433,7 +433,7 @@ tile_size = Vector2i(62, 62)
 sources/0 = SubResource("TileSetAtlasSource_4gtug")
 sources/1 = SubResource("TileSetAtlasSource_5h74f")
 
-[node name="GameManager" type="Node" node_paths=PackedStringArray("ExternalOutputTemplate", "ExternalInputRedTemplate", "ExternalInputGreenTemplate", "ExternalInputBlueTemplate")]
+[node name="GameManager" type="Node" node_paths=PackedStringArray("ExternalOutputTemplate", "ExternalInputRedTemplate", "ExternalInputGreenTemplate", "ExternalInputBlueTemplate", "InGameConsole")]
 script = ExtResource("1_1g8p6")
 GridViewPath = NodePath("MapBackground")
 ToolBoxPath = NodePath("ToolBox")
@@ -441,6 +441,7 @@ ExternalOutputTemplate = NodePath("Templates/ExternalOutputTemplate")
 ExternalInputRedTemplate = NodePath("Templates/ExternalInputRedTemplate")
 ExternalInputGreenTemplate = NodePath("Templates/ExternalInputGreenTemplate")
 ExternalInputBlueTemplate = NodePath("Templates/ExternalInputBlueTemplate")
+InGameConsole = NodePath("InGameConsole")
 
 [node name="ComponentViewFactory" type="Node" parent="."]
 script = ExtResource("7_x7uef")

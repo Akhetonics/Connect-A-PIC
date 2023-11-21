@@ -1,4 +1,5 @@
-﻿using CAP_Core.Component.ComponentHelpers;
+﻿using CAP_Contracts.Logger;
+using CAP_Core.Component.ComponentHelpers;
 using CAP_Core.Tiles;
 using Components.ComponentDraftMapper;
 using Components.ComponentDraftMapper.DTOs;
@@ -22,7 +23,14 @@ namespace UnitTests
 
         public class DummyLogger : ILogger
         {
+            public event Action<Log> LogAdded;
+
             public void PrintErr(string v) { }
+
+            public void PrintInfo(string info)
+            {
+                throw new NotImplementedException();
+            }
         }
         [Fact]
         public async Task TestReadWrite()

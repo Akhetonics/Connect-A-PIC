@@ -2,7 +2,7 @@ using CAP_Core;
 using CAP_Core.Component.ComponentHelpers;
 using CAP_Core.ExternalPorts;
 using CAP_Core.LightFlow;
-using CAP_Core.Logger;
+using CAP_DataAccess;
 using CAP_DataAccess.Components.ComponentDraftMapper;
 using CAP_DataAccess.Helpers;
 using Components.ComponentDraftMapper;
@@ -32,13 +32,15 @@ namespace ConnectAPic.LayoutWindow
 		[Export] public TextureRect ExternalInputRedTemplate { get; set; }
 		[Export] public TextureRect ExternalInputGreenTemplate { get; set; }
 		[Export] public TextureRect ExternalInputBlueTemplate { get; set; }
+		[Export] public Console InGameConsole { get; set; }
 		private PCKLoader PCKLoader { get; set; }
 		public static int TilePixelSize { get; private set; } = 62;
 		public static int TileBorderLeftDown { get; private set; } = 2;
 		public GridView GridView { get; set; }
 		public Grid Grid { get; set; }
 		public static GameManager instance;
-		public Logger LoggerModel { get; set; }
+		public CAP_Core.Logger Logger { get; set; }
+		public LogSaver LogSaver { get; set; }
 		public GridViewModel GridViewModel { get; private set; }
 		public static GameManager Instance
 		{
@@ -50,16 +52,11 @@ namespace ConnectAPic.LayoutWindow
 			if (instance == null)
 			{
 				instance = this;
-				GridView = GetNode<GridView>(GridViewPath);
-				this.CheckForNull(x => GridView);
-				Grid = new Grid(FieldWidth, FieldHeight);
-				GridViewModel = new GridViewModel(GridView, Grid);
-				GridView.Initialize(GridViewModel);
+				InitializeLoggingSystem();
+				InitializeGridSystem();
 				InitializeExternalPortViews(Grid.ExternalPorts);
-				this.CheckForNull(x => x.ToolBoxPath);
-				ToolBox = GetNode<ToolBox>(ToolBoxPath);
-				this.CheckForNull(x => x.ToolBox);
-				PCKLoader = new(ComponentFolderPath);
+				InitializeToolBox();
+				PCKLoader = new(ComponentFolderPath, Logger);
 				CallDeferred(nameof(DeferredInitialization));
 			}
 			else
@@ -67,13 +64,35 @@ namespace ConnectAPic.LayoutWindow
 				QueueFree(); // delete this object as there is already another GameManager in the scene
 			}
 		}
+		private void InitializeLoggingSystem()
+		{
+			Logger = new CAP_Core.Logger();
+			LogSaver = new LogSaver(Logger);
+			this.CheckForNull(x => x.InGameConsole);
+			InGameConsole.Initialize(Logger);
+		}
+
+		private void InitializeToolBox()
+		{
+			this.CheckForNull(x => x.ToolBoxPath);
+			ToolBox = GetNode<ToolBox>(ToolBoxPath);
+			this.CheckForNull(x => x.ToolBox);
+		}
+		private void InitializeGridSystem()
+		{
+			GridView = GetNode<GridView>(GridViewPath);
+			this.CheckForNull(x => GridView);
+			Grid = new Grid(FieldWidth, FieldHeight);
+			GridViewModel = new GridViewModel(GridView, Grid, Logger);
+			GridView.Initialize(GridViewModel);
+		}
 
 		private void DeferredInitialization()
 		{
 			PCKLoader.LoadStandardPCKs();
 			List<ComponentDraft> componentDrafts = EquipViewComponentFactoryWithJSONDrafts();
-			ToolBox.SetAvailableTools(GridView.ComponentViewFactory);
-			List<Component> modelComponents = new ComponentDraftConverter(Logger.Inst).ToComponentModels(componentDrafts);
+			ToolBox.SetAvailableTools(GridView.ComponentViewFactory, Logger);
+			List<Component> modelComponents = new ComponentDraftConverter(Logger).ToComponentModels(componentDrafts);
 			ComponentFactory.Instance.InitializeComponentDrafts(modelComponents);
 		}
 
@@ -87,16 +106,16 @@ namespace ConnectAPic.LayoutWindow
 				.ToList();
 			PrintLoadingErrorsToConsole(draftsAndErrors);
 
-			GridView.ComponentViewFactory.InitializeComponentDrafts(componentDrafts);
+			GridView.ComponentViewFactory.InitializeComponentDrafts(componentDrafts, Logger);
 			return componentDrafts;
 		}
 
-		private static void PrintLoadingErrorsToConsole(List<(ComponentDraft draft, string error)> draftsAndErrors)
+		private void PrintLoadingErrorsToConsole(List<(ComponentDraft draft, string error)> draftsAndErrors)
 		{
 			draftsAndErrors
-				.Where(d => d.error != null)
+				.Where(d => String.IsNullOrEmpty(d.error) == false)
 				.ToList()
-				.ForEach(d => Logger.Inst.PrintErr(d.error));
+				.ForEach(d => Logger.PrintErr(d.error));
 		}
 
 		private void InitializeExternalPortViews(List<ExternalPort> StandardPorts)

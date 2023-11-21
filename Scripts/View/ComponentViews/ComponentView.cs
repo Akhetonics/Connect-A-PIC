@@ -1,4 +1,5 @@
-﻿using CAP_Core.Component.ComponentHelpers;
+﻿using CAP_Contracts.Logger;
+using CAP_Core.Component.ComponentHelpers;
 using CAP_Core.ExternalPorts;
 using CAP_Core.Helpers;
 using CAP_Core.Tiles;
@@ -20,6 +21,7 @@ namespace ConnectAPIC.LayoutWindow.View
     {
         public int WidthInTiles { get; private set; }
         public int HeightInTiles { get; private set; }
+        public ILogger Logger { get; private set; }
         public int TypeNumber { get; set; }
         private Sprite2D OverlayBluePrint { get; set; }
         public Sprite2D OverlayRed { get; private set; }
@@ -64,10 +66,11 @@ namespace ConnectAPIC.LayoutWindow.View
             }
         }
 
-        public void InitializeComponent(int componentTypeNumber, List<AnimationSlotOverlayData> slotDatas, int widthIntiles, int heightInTiles)
+        public void InitializeComponent(int componentTypeNumber, List<AnimationSlotOverlayData> slotDatas, int widthIntiles, int heightInTiles, ILogger logger)
         {
-            if (widthIntiles == 0) Logger.Inst.PrintErr(nameof(widthIntiles) + " of this element is not set in the TypeNR: " + componentTypeNumber);
-            if (heightInTiles == 0) Logger.Inst.PrintErr(nameof(heightInTiles) + " of this element is not set in the TypeNR: " + componentTypeNumber);
+            this.Logger = logger;
+            if (widthIntiles == 0) Logger.PrintErr(nameof(widthIntiles) + " of this element is not set in the TypeNR: " + componentTypeNumber);
+            if (heightInTiles == 0) Logger.PrintErr(nameof(heightInTiles) + " of this element is not set in the TypeNR: " + componentTypeNumber);
 
             this.TypeNumber = componentTypeNumber;
             FindAndAssignOverlay();
@@ -78,7 +81,7 @@ namespace ConnectAPIC.LayoutWindow.View
                 
                 if(slotData.LightFlowOverlay== null)
                 {
-                    Logger.Inst.PrintErr(nameof(slotData.LightFlowOverlay) + " is null in TypeNR: " + componentTypeNumber );
+                    Logger.PrintErr(nameof(slotData.LightFlowOverlay) + " is null in TypeNR: " + componentTypeNumber );
                 }
                 AnimationSlots.AddRange(CreateRGBAnimSlots(slotData.Side, slotData.LightFlowOverlay, slotData.OffsetX, slotData.OffsetY));
             }
@@ -187,7 +190,7 @@ namespace ConnectAPIC.LayoutWindow.View
             }
             catch (Exception ex)
             {
-                Logger.Inst.PrintErr(ex.Message);
+                Logger.PrintErr(ex.Message);
             }
         }
         protected void AssignInAndOutFlowShaderData(AnimationSlot slot, LightAtPin lightAtPin, int shaderAnimationNumber)

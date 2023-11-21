@@ -1,3 +1,4 @@
+using ConnectAPic.LayoutWindow;
 using ConnectAPIC.Scripts.Helpers;
 using Godot;
 using System;
@@ -25,7 +26,7 @@ namespace ConnectAPIC.LayoutWindow.View
 			} else
 			{
 				var exceptionText = "child of _GetDragData() is not of type ComponentView even though it should be";
-				Logger.Inst.PrintErr(exceptionText);
+				GameManager.Instance.Logger.PrintErr(exceptionText);
 				throw new DataMisalignedException(exceptionText);
 			}
 		}

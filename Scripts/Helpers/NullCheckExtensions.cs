@@ -1,4 +1,5 @@
-﻿using Godot;
+﻿using ConnectAPic.LayoutWindow;
+using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,7 @@ namespace ConnectAPIC.Scripts.Helpers
             {
                 string className = instance.GetType().Name;
                 string errorMsg = $"'{variableName}' of this element is not set in the class: '{className}'";
-                Logger.Inst.PrintErr(errorMsg);
+                GameManager.instance.Logger.PrintErr(errorMsg);
                 GD.PrintErr(errorMsg);
             }
         }

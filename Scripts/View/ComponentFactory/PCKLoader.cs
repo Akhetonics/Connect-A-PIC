@@ -1,6 +1,9 @@
+using CAP_Contracts.Logger;
+using CAP_Core;
 using CAP_DataAccess.Helpers;
 using Components.ComponentDraftMapper;
 using Components.ComponentDraftMapper.DTOs;
+using ConnectAPic.LayoutWindow;
 using Godot;
 using System.Collections.Generic;
 using System.IO;
@@ -13,11 +16,13 @@ namespace ConnectAPIC.Scripts.View.ComponentFactory
     {
         public FileFinder GodotFileFinder { get; private set; }
         public string ComponentFolderPath { get; }
+        public ILogger Logger { get; }
 
-        public PCKLoader(string componentFolderPath)
+        public PCKLoader(string componentFolderPath, ILogger logger)
         {
             GodotFileFinder = new(new DirectoryAccessGodot());
             ComponentFolderPath = componentFolderPath;
+            Logger = logger;
         }
         public void LoadStandardPCKs()
         {
@@ -27,11 +32,11 @@ namespace ConnectAPIC.Scripts.View.ComponentFactory
             {
                 if (ProjectSettings.LoadResourcePack(pckFile))
                 {
-                    Logger.Inst.PrintLn($"PCK loaded successfully: {pckFile}");
+                    Logger.PrintInfo($"PCK loaded successfully: {pckFile}");
                 }
                 else
                 {
-                    Logger.Inst.PrintErr($"Error while loading PCK: {pckFile}");
+                    Logger.PrintErr($"Error while loading PCK: {pckFile}");
                 }
             }
         }
