@@ -1,3 +1,4 @@
+using CAP_Contracts.Logger;
 using CAP_Core;
 using CAP_Core.Component.ComponentHelpers;
 using CAP_Core.ExternalPorts;
@@ -20,15 +21,18 @@ namespace ConnectAPIC.LayoutWindow.View
 		[Export] public ComponentViewFactory ComponentViewFactory;
 		private GridViewModel ViewModel;
 
+        public ILogger Logger { get; private set; }
+
         public override void _Ready()
         {
             base._Ready();
             this.CheckForNull(x => DragDropProxy);
             this.CheckForNull(x => ComponentViewFactory);
         }
-        public void Initialize(GridViewModel viewModel)
+        public void Initialize(GridViewModel viewModel, ILogger logger)
 		{
 			this.ViewModel = viewModel;
+			this.Logger = logger;
 			DragDropProxy.OnGetDragData += _GetDragData;
 			DragDropProxy.OnCanDropData += _CanDropData;
 			DragDropProxy.OnDropData+= _DropData;
@@ -47,6 +51,7 @@ namespace ConnectAPIC.LayoutWindow.View
 				catch (Exception ex)
 				{
 					NotificationManager.Instance.Notify($"{ex.Message}",true);
+					Logger.PrintErr(ex.Message);
 				}
 			});
 		}
@@ -55,15 +60,22 @@ namespace ConnectAPIC.LayoutWindow.View
 		{
             lightPropagationIsPressed = button_pressed;
 
-            if (button_pressed)
-            {
-                ViewModel.HideLightPropagation();
-                ViewModel.ShowLightPropagation();
-            }
-            else
+			try
 			{
-				ViewModel.HideLightPropagation();
+                if (button_pressed)
+                {
+                    ViewModel.HideLightPropagation();
+                    ViewModel.ShowLightPropagation();
+                }
+                else
+                {
+                    ViewModel.HideLightPropagation();
+                }
+            } catch (Exception ex)
+			{
+				Logger.PrintErr (ex.Message);
 			}
+            
 		}
 
         public bool _CanDropData(Vector2 position, Variant data)

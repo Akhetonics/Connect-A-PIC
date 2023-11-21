@@ -25,6 +25,7 @@ namespace CAP_Core.LightFlow
             InputLightColor = newLightColor;
             var stepCount = SystemSMatrix.PinReference.Count() * 2;
             var usedInputs = Grid.GetUsedStandardInputs().Where(i => i.Input.Color == newLightColor).ToList();
+            UpdateSystemSMatrix();
             var inputVector = UsedStandardInputConverter.ToVector(usedInputs, SystemSMatrix);
             return SystemSMatrix.GetLightPropagation(inputVector, stepCount);
         }
@@ -51,7 +52,7 @@ namespace CAP_Core.LightFlow
 
         public List<SMatrix> GetAllComponentsSMatrices()
         {
-            var components = Grid.GetAllComponents();
+            
             return Grid.GetAllComponents().Select(c => c.Connections).ToList();
         }
         private void CalcAllConnectionsBetweenComponents()

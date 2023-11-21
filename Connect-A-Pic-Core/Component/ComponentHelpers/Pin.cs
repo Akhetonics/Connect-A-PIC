@@ -34,6 +34,11 @@ namespace CAP_Core.Component.ComponentHelpers
                 NotifyPropertyChanged();
             }
         }
+        public Pin(string Name, MatterType newMatterType, RectSide side, Guid idInFlow, Guid idOutFlow) : this(Name, newMatterType, side)
+        {
+            IDInFlow = idInFlow;
+            IDOutFlow = idOutFlow;
+        }
         public Pin(string Name, MatterType newMatterType, RectSide side) : this(Name, side)
         {
             MatterType = newMatterType;
@@ -67,7 +72,7 @@ namespace CAP_Core.Component.ComponentHelpers
 
         public object Clone()
         {
-            var clonedPin = new Pin(Name, MatterType, Side);
+            var clonedPin = new Pin(Name, MatterType, Side, IDInFlow , IDOutFlow);
             return clonedPin;
         }
     }

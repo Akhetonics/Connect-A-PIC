@@ -92,7 +92,7 @@ namespace ConnectAPic.LayoutWindow
 			this.CheckForNull(x => GridView);
 			Grid = new Grid(FieldWidth, FieldHeight);
 			GridViewModel = new GridViewModel(GridView, Grid, Logger);
-			GridView.Initialize(GridViewModel);
+			GridView.Initialize(GridViewModel, Logger);
             Logger.AddLog(CAP_Contracts.Logger.LogLevel.Debug, "Initialized GridView and Grid and GridViewModel");
         }
 
@@ -128,7 +128,7 @@ namespace ConnectAPic.LayoutWindow
 
 		private void LogComponentLoadingErrors(List<(ComponentDraft draft, string error)> draftsAndErrors)
 		{
-			draftsAndErrors.Where(d => String.IsNullOrEmpty(d.error) == false).ToList();
+            draftsAndErrors = draftsAndErrors.Where(d => String.IsNullOrEmpty(d.error) == false).ToList();
 			foreach (var d in draftsAndErrors)
 				Logger.PrintErr(d.error);
 		}

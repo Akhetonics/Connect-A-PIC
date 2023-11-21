@@ -1,6 +1,7 @@
 using CAP_Core.Helpers;
 using CAP_Core.LightFlow;
 using CAP_Core.Tiles;
+using System.Numerics;
 using System.Text.Json.Serialization;
 
 namespace CAP_Core.Component.ComponentHelpers
@@ -105,7 +106,13 @@ namespace CAP_Core.Component.ComponentHelpers
             {
                 for (int j = 0; j < Parts.GetLength(1); j++)
                 {
+                    // set new PinIDs as they should differ from the cloned original object but cloning makes them have the same ones.
                     clonedParts[i, j] = Parts[i, j]?.Clone() as Part;
+                    foreach (Pin p in clonedParts[i, j].Pins)
+                    {
+                        p.IDInFlow = new Guid();
+                        p.IDOutFlow = new Guid();
+                    }
                 }
             }
 
@@ -113,7 +120,48 @@ namespace CAP_Core.Component.ComponentHelpers
         }
         public object Clone()
         {
-            var newComponent = new Component((SMatrix)Connections.Clone(), NazcaFunctionName, NazcaFunctionParameters, CloneParts(), TypeNumber, Rotation90CounterClock);
+            var clonedParts = CloneParts();
+            // Create a mapping from old pin IDs to new pin IDs
+            Dictionary<Guid, Guid> oldToNewPinIds = new Dictionary<Guid, Guid>();
+            List<Guid> newPinIds = new List<Guid>();
+            for (int i = 0; i < Parts.GetLength(0); i++)
+            {
+                for (int j = 0; j < Parts.GetLength(1); j++)
+                {
+                    var oldPart = Parts[i, j];
+                    var newPart = clonedParts[i, j];
+
+                    if (oldPart != null && newPart != null)
+                    {
+                        for (int k = 0; k < oldPart.Pins.Count; k++)
+                        {
+                            var oldPin = oldPart.Pins[k];
+                            var newPin = newPart.Pins[k];
+                            oldToNewPinIds[oldPin.IDInFlow] = newPin.IDInFlow;
+                            oldToNewPinIds[oldPin.IDOutFlow] = newPin.IDOutFlow;
+                            newPinIds.Add(newPin.IDInFlow);
+                            newPinIds.Add(newPin.IDOutFlow);
+                        }
+                    }
+                }
+            }
+
+            // Clone the existing connections and update with new pin IDs
+            var oldConnections = this.Connections.GetNonNullValues();
+            var newConnections = new Dictionary<(Guid, Guid), Complex>();
+
+            foreach (var oldConnection in oldConnections)
+            {
+                var oldInflowId = oldConnection.Key.Item1;
+                var oldOutflowId = oldConnection.Key.Item2;
+                var newInflowId = oldToNewPinIds[oldInflowId];
+                var newOutflowId = oldToNewPinIds[oldOutflowId];
+                newConnections[(newInflowId, newOutflowId)] = oldConnection.Value;
+            }
+
+            var clonedSMatrix = new SMatrix(newPinIds);
+            clonedSMatrix.SetValues(newConnections);
+            var newComponent = new Component(clonedSMatrix, NazcaFunctionName, NazcaFunctionParameters, clonedParts, TypeNumber, Rotation90CounterClock);
             return newComponent;
         }
     }

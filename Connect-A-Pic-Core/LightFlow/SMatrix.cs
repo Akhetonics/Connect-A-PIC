@@ -23,7 +23,8 @@ namespace CAP_Core.LightFlow
             }
 
             SMat = Matrix<Complex>.Build.Dense(size, size);
-            PinReference = allPinsInGrid;
+            PinReference = new List<Guid>();
+            PinReference.AddRange(allPinsInGrid);
         }
 
         public void SetValues(Dictionary<(Guid, Guid), Complex> transfers, bool reset = false)
