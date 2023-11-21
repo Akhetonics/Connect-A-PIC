@@ -25,7 +25,7 @@ namespace CAP_DataAccess
                 RolloverLogs(logFilePath, logBackupPathFormat, MaxBackupFiles);
             }
 
-            File.AppendAllText(logFilePath, log.Message + Environment.NewLine);
+            File.AppendAllText(logFilePath, log.TimeStamp + " " + log.Message + Environment.NewLine);
         }
 
         private void RolloverLogs(string currentLogPath, string backupPathFormat, int maxBackups)

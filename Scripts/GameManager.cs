@@ -51,13 +51,18 @@ namespace ConnectAPic.LayoutWindow
 		{
 			if (instance == null)
 			{
-				instance = this;
-				InitializeLoggingSystem();
-				InitializeGridSystem();
-				InitializeExternalPortViews(Grid.ExternalPorts);
-				InitializeToolBox();
-				PCKLoader = new(ComponentFolderPath, Logger);
-				CallDeferred(nameof(DeferredInitialization));
+				try
+				{
+                    instance = this;
+                    InitializeLoggingSystem();
+                    InitializeGridSystem();
+                    InitializeExternalPortViews(Grid.ExternalPorts);
+                    PCKLoader = new(ComponentFolderPath, Logger);
+                    CallDeferred(nameof(DeferredInitialization));
+                } catch (Exception ex)
+				{
+					Logger.PrintErr(ex.Message);
+				}		
 			}
 			else
 			{
@@ -70,14 +75,17 @@ namespace ConnectAPic.LayoutWindow
 			LogSaver = new LogSaver(Logger);
 			this.CheckForNull(x => x.InGameConsole);
 			InGameConsole.Initialize(Logger);
+			Logger.AddLog(CAP_Contracts.Logger.LogLevel.Debug, "Initialized LoggingSystem");
 		}
 
-		private void InitializeToolBox()
+		private void InitializeToolBox(ComponentViewFactory componentViewFactory)
 		{
 			this.CheckForNull(x => x.ToolBoxPath);
 			ToolBox = GetNode<ToolBox>(ToolBoxPath);
 			this.CheckForNull(x => x.ToolBox);
-		}
+            ToolBox.SetAvailableTools(componentViewFactory, Logger);
+            Logger.AddLog(CAP_Contracts.Logger.LogLevel.Debug, "Initialized ToolBox");
+        }
 		private void InitializeGridSystem()
 		{
 			GridView = GetNode<GridView>(GridViewPath);
@@ -85,16 +93,25 @@ namespace ConnectAPic.LayoutWindow
 			Grid = new Grid(FieldWidth, FieldHeight);
 			GridViewModel = new GridViewModel(GridView, Grid, Logger);
 			GridView.Initialize(GridViewModel);
-		}
+            Logger.AddLog(CAP_Contracts.Logger.LogLevel.Debug, "Initialized GridView and Grid and GridViewModel");
+        }
 
 		private void DeferredInitialization()
 		{
-			PCKLoader.LoadStandardPCKs();
-			List<ComponentDraft> componentDrafts = EquipViewComponentFactoryWithJSONDrafts();
-			ToolBox.SetAvailableTools(GridView.ComponentViewFactory, Logger);
-			List<Component> modelComponents = new ComponentDraftConverter(Logger).ToComponentModels(componentDrafts);
-			ComponentFactory.Instance.InitializeComponentDrafts(modelComponents);
-		}
+			try
+			{
+                PCKLoader.LoadStandardPCKs();
+                List<ComponentDraft> componentDrafts = EquipViewComponentFactoryWithJSONDrafts();
+                InitializeToolBox(this.GridView.ComponentViewFactory);
+                List<Component> modelComponents = new ComponentDraftConverter(Logger).ToComponentModels(componentDrafts);
+                ComponentFactory.Instance.InitializeComponentDrafts(modelComponents);
+                Logger.AddLog(CAP_Contracts.Logger.LogLevel.Debug, "Initialized ComponentDrafts");
+            } catch (Exception ex)
+			{
+                Logger.AddLog(CAP_Contracts.Logger.LogLevel.Error, ex.Message);
+            }
+			
+        }
 
 		private List<ComponentDraft> EquipViewComponentFactoryWithJSONDrafts()
 		{
@@ -104,18 +121,16 @@ namespace ConnectAPic.LayoutWindow
 				.Where(d => String.IsNullOrEmpty(d.error) == true)
 				.Select(d => d.draft)
 				.ToList();
-			PrintLoadingErrorsToConsole(draftsAndErrors);
-
+			LogComponentLoadingErrors(draftsAndErrors);
 			GridView.ComponentViewFactory.InitializeComponentDrafts(componentDrafts, Logger);
 			return componentDrafts;
 		}
 
-		private void PrintLoadingErrorsToConsole(List<(ComponentDraft draft, string error)> draftsAndErrors)
+		private void LogComponentLoadingErrors(List<(ComponentDraft draft, string error)> draftsAndErrors)
 		{
-			draftsAndErrors
-				.Where(d => String.IsNullOrEmpty(d.error) == false)
-				.ToList()
-				.ForEach(d => Logger.PrintErr(d.error));
+			draftsAndErrors.Where(d => String.IsNullOrEmpty(d.error) == false).ToList();
+			foreach (var d in draftsAndErrors)
+				Logger.PrintErr(d.error);
 		}
 
 		private void InitializeExternalPortViews(List<ExternalPort> StandardPorts)
@@ -124,7 +139,6 @@ namespace ConnectAPic.LayoutWindow
 			ExternalInputGreenTemplate.Visible = false;
 			ExternalInputBlueTemplate.Visible = false;
 			ExternalOutputTemplate.Visible = false;
-
 			foreach (var port in StandardPorts)
 			{
 				TextureRect view;

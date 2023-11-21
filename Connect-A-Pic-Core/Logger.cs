@@ -15,7 +15,7 @@ namespace CAP_Core
         private List<Log> logs = new List<Log>();
         public event Action<Log> LogAdded;
         
-        public void AddLog(LogLevel level, string message, bool isError = false)
+        public void AddLog(LogLevel level, string message)
         {
             var formattedMessage = FormatErrorText(message);
             var log = new Log
@@ -58,12 +58,12 @@ namespace CAP_Core
 
         public void PrintErr(string error)
         {
-            AddLog(LogLevel.Error, error, true);
+            AddLog(LogLevel.Error, error);
         }
 
         public void PrintInfo(string info)
         {
-            AddLog(LogLevel.Info, info, false);
+            AddLog(LogLevel.Info, info);
         }
     }
 }
