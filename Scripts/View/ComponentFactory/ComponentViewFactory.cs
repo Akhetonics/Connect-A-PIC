@@ -69,7 +69,7 @@ namespace ConnectAPIC.LayoutWindow.View
                     var overlayBluePrint = ResourceLoader.Load<Texture2D>(overlay.overlayAnimTexturePath);
                     if(overlayBluePrint == null)
                     {
-                        Logger.PrintErr("BluePrint could not be loaded in Type: " + draft.identifier +" ComponentTypeNR: " + componentNR + " path: " + overlay.overlayAnimTexturePath);
+                        Logger.PrintErr("BluePrint could not be loaded in Type: " + draft.identifier + " ComponentTypeNR: " + componentNR + " path: " + overlay.overlayAnimTexturePath);
                         continue;
                     }
                     slotDataSets.Add(new AnimationSlotOverlayData()
@@ -81,6 +81,7 @@ namespace ConnectAPIC.LayoutWindow.View
                     });
                 }
                 ComponentView componentView = new();
+                componentView._Ready();
                 componentView.AddChild((TextureRect)packedScene.Instantiate());
                 componentView.InitializeComponent(componentNR, slotDataSets, draft.widthInTiles, draft.heightInTiles , Logger);
                 return componentView;

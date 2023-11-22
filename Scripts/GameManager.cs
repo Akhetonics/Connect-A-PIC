@@ -53,13 +53,13 @@ namespace ConnectAPic.LayoutWindow
 			{
 				try
 				{
-                    instance = this;
-                    InitializeLoggingSystem();
-                    InitializeGridSystem();
-                    InitializeExternalPortViews(Grid.ExternalPorts);
-                    PCKLoader = new(ComponentFolderPath, Logger);
-                    CallDeferred(nameof(DeferredInitialization));
-                } catch (Exception ex)
+					instance = this;
+					InitializeLoggingSystem();
+					InitializeGridSystem();
+					InitializeExternalPortViews(Grid.ExternalPorts);
+					PCKLoader = new(ComponentFolderPath, Logger);
+					CallDeferred(nameof(DeferredInitialization));
+				} catch (Exception ex)
 				{
 					Logger.PrintErr(ex.Message);
 				}		
@@ -83,9 +83,9 @@ namespace ConnectAPic.LayoutWindow
 			this.CheckForNull(x => x.ToolBoxPath);
 			ToolBox = GetNode<ToolBox>(ToolBoxPath);
 			this.CheckForNull(x => x.ToolBox);
-            ToolBox.SetAvailableTools(componentViewFactory, Logger);
-            Logger.AddLog(CAP_Contracts.Logger.LogLevel.Debug, "Initialized ToolBox");
-        }
+			ToolBox.SetAvailableTools(componentViewFactory, Logger);
+			Logger.AddLog(CAP_Contracts.Logger.LogLevel.Debug, "Initialized ToolBox");
+		}
 		private void InitializeGridSystem()
 		{
 			GridView = GetNode<GridView>(GridViewPath);
@@ -93,25 +93,25 @@ namespace ConnectAPic.LayoutWindow
 			Grid = new Grid(FieldWidth, FieldHeight);
 			GridViewModel = new GridViewModel(GridView, Grid, Logger);
 			GridView.Initialize(GridViewModel, Logger);
-            Logger.AddLog(CAP_Contracts.Logger.LogLevel.Debug, "Initialized GridView and Grid and GridViewModel");
-        }
+			Logger.AddLog(CAP_Contracts.Logger.LogLevel.Debug, "Initialized GridView and Grid and GridViewModel");
+		}
 
 		private void DeferredInitialization()
 		{
 			try
 			{
-                PCKLoader.LoadStandardPCKs();
-                List<ComponentDraft> componentDrafts = EquipViewComponentFactoryWithJSONDrafts();
-                InitializeToolBox(this.GridView.ComponentViewFactory);
-                List<Component> modelComponents = new ComponentDraftConverter(Logger).ToComponentModels(componentDrafts);
-                ComponentFactory.Instance.InitializeComponentDrafts(modelComponents);
-                Logger.AddLog(CAP_Contracts.Logger.LogLevel.Debug, "Initialized ComponentDrafts");
-            } catch (Exception ex)
+				PCKLoader.LoadStandardPCKs();
+				List<ComponentDraft> componentDrafts = EquipViewComponentFactoryWithJSONDrafts();
+				InitializeToolBox(this.GridView.ComponentViewFactory);
+				List<Component> modelComponents = new ComponentDraftConverter(Logger).ToComponentModels(componentDrafts);
+				ComponentFactory.Instance.InitializeComponentDrafts(modelComponents);
+				Logger.AddLog(CAP_Contracts.Logger.LogLevel.Debug, "Initialized ComponentDrafts");
+			} catch (Exception ex)
 			{
-                Logger.AddLog(CAP_Contracts.Logger.LogLevel.Error, ex.Message);
-            }
+				Logger.AddLog(CAP_Contracts.Logger.LogLevel.Error, ex.Message);
+			}
 			
-        }
+		}
 
 		private List<ComponentDraft> EquipViewComponentFactoryWithJSONDrafts()
 		{
@@ -128,7 +128,7 @@ namespace ConnectAPic.LayoutWindow
 
 		private void LogComponentLoadingErrors(List<(ComponentDraft draft, string error)> draftsAndErrors)
 		{
-            draftsAndErrors = draftsAndErrors.Where(d => String.IsNullOrEmpty(d.error) == false).ToList();
+			draftsAndErrors = draftsAndErrors.Where(d => String.IsNullOrEmpty(d.error) == false).ToList();
 			foreach (var d in draftsAndErrors)
 				Logger.PrintErr(d.error);
 		}

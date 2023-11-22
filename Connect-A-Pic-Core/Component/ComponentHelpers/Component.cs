@@ -98,6 +98,15 @@ namespace CAP_Core.Component.ComponentHelpers
                    $"Parts Length: {Parts?.Length} \n" +
                    $"Connections PinReferences Count: {Connections?.PinReference?.Count}";
         }
+        public List<Pin> GetAllPins()
+        {
+            var pinList = new List<Pin>();
+            foreach(var part in Parts)
+            {
+                pinList.AddRange(part.Pins);
+            }
+            return pinList;
+        }
         private Part[,] CloneParts()
         {
             Part[,] clonedParts = new Part[Parts.GetLength(0), Parts.GetLength(1)];
@@ -110,8 +119,8 @@ namespace CAP_Core.Component.ComponentHelpers
                     clonedParts[i, j] = Parts[i, j]?.Clone() as Part;
                     foreach (Pin p in clonedParts[i, j].Pins)
                     {
-                        p.IDInFlow = new Guid();
-                        p.IDOutFlow = new Guid();
+                        p.IDInFlow = Guid.NewGuid();
+                        p.IDOutFlow = Guid.NewGuid();
                     }
                 }
             }
@@ -152,8 +161,8 @@ namespace CAP_Core.Component.ComponentHelpers
 
             foreach (var oldConnection in oldConnections)
             {
-                var oldInflowId = oldConnection.Key.Item1;
-                var oldOutflowId = oldConnection.Key.Item2;
+                var oldInflowId = oldConnection.Key.PinIdStart;
+                var oldOutflowId = oldConnection.Key.PinIdEnd;
                 var newInflowId = oldToNewPinIds[oldInflowId];
                 var newOutflowId = oldToNewPinIds[oldOutflowId];
                 newConnections[(newInflowId, newOutflowId)] = oldConnection.Value;

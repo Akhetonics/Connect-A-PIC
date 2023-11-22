@@ -4,8 +4,10 @@ using CAP_Core.Tiles;
 using Components.ComponentDraftMapper;
 using Components.ComponentDraftMapper.DTOs;
 using System;
+using System.CodeDom.Compiler;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -14,29 +16,21 @@ namespace UnitTests
 {
     public class ComponentDraftFileReaderTests
     {
-        public class PathCheckerDummy : IDataAccessor
+        public class FileDataAccessor : IDataAccessor
         {
-            public bool DoesResourceExist(string godotResourcePath) => true;
-            public string ReadAsText(string godotFilePath) => "";
-            public bool Write(string filePath, string componentJson) => true;
-        }
-
-        public class DummyLogger : ILogger
-        {
-            public event Action<Log> LogAdded;
-
-            public void PrintErr(string v) { }
-
-            public void PrintInfo(string info)
-            {
-                throw new NotImplementedException();
+            public bool DoesResourceExist(string resourcePath) => File.Exists(resourcePath);
+            public string ReadAsText(string filePath) => File.ReadAllText(filePath);
+            public bool Write(string filePath, string componentJson) {
+                File.WriteAllText(filePath , componentJson);
+                return true;
             }
         }
+
         [Fact]
         public async Task TestReadWrite()
         {
             // Arrange
-            var tempFilePath = Path.Combine(Path.GetTempPath(), "tempComponentDraft.json");
+            var tempFilePath = Path.GetTempFileName();
             var originalComponentDraft = new ComponentDraft
             {
                 fileFormatVersion = 1,
@@ -81,7 +75,7 @@ namespace UnitTests
             };
 
             // Act
-            var reader = new ComponentDraftFileReader(new PathCheckerDummy());
+            var reader = new ComponentDraftFileReader(new FileDataAccessor());
             reader.Write(tempFilePath, originalComponentDraft);
             bool fileIsUsed = true;
             int counter = 0;
@@ -91,7 +85,7 @@ namespace UnitTests
                 try
                 {
                     var readResult = reader.TryRead(tempFilePath);
-                    if(readResult.error != null)
+                    if(readResult.error == null)
                     {
                         throw new IOException(readResult.error);
                     }

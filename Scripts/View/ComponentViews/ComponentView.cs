@@ -24,7 +24,7 @@ namespace ConnectAPIC.LayoutWindow.View
         public ILogger Logger { get; private set; }
         public int TypeNumber { get; set; }
         private Sprite2D OverlayBluePrint { get; set; }
-        public Sprite2D OverlayRed { get; private set; }
+        public Sprite2D OverlayRed { get; private set; } // each laser(color) is independent of the others, so they need their own overlay and shader
         public Sprite2D OverlayGreen { get; private set; }
         public Sprite2D OverlayBlue { get; private set; }
         private List<Sprite2D> OverlaySprites { get; set; } = new();
@@ -158,20 +158,26 @@ namespace ConnectAPIC.LayoutWindow.View
             OverlayRed?.Hide();
             OverlayGreen?.Hide();
             OverlayBlue?.Hide();
+            ResetAllShaderParametersToZero();
+        }
+
+        private void ResetAllShaderParametersToZero()
+        {
             int shaderAnimationNumber = 1;
             var emptyTexture = new Texture();
-            foreach ( AnimationSlot slot in AnimationSlots)
+            foreach (AnimationSlot slot in AnimationSlots)
             {
                 if (slot?.BaseOverlaySprite?.Material is ShaderMaterial shaderMat)
                 {
                     shaderMat.SetShaderParameter("lightInFlow" + shaderAnimationNumber, new Vector4());
                     shaderMat.SetShaderParameter("lightOutFlow" + shaderAnimationNumber, new Vector4());
                     shaderMat.SetShaderParameter("animation" + shaderAnimationNumber, emptyTexture);
-                    shaderMat.SetShaderParameter("lightColor", new Godot.Color(1,0,0));
+                    shaderMat.SetShaderParameter("lightColor", new Godot.Color(1, 0, 0));
                 }
                 shaderAnimationNumber++;
             }
         }
+
         public virtual void DisplayLightVector(List<LightAtPin> lightsAtPins)
         {
             try

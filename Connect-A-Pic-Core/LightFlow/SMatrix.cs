@@ -27,7 +27,7 @@ namespace CAP_Core.LightFlow
             PinReference.AddRange(allPinsInGrid);
         }
 
-        public void SetValues(Dictionary<(Guid, Guid), Complex> transfers, bool reset = false)
+        public void SetValues(Dictionary<(Guid PinIdStart, Guid PinIdEnd), Complex> transfers, bool reset = false)
         {
             if (transfers == null || PinReference == null)
             {
@@ -50,7 +50,7 @@ namespace CAP_Core.LightFlow
             }
         }
 
-        public Dictionary<(Guid, Guid), Complex> GetNonNullValues()
+        public Dictionary<(Guid PinIdStart, Guid PinIdEnd), Complex> GetNonNullValues()
         {
             var transfers = new Dictionary<(Guid, Guid), Complex>();
             for (int i = 0; i < size; i++)
