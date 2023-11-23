@@ -40,8 +40,8 @@
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CAP_Contracts\CAP_Contracts.csproj" />
     <ProjectReference Include="CAP-DataAccess\CAP-DataAccess.csproj" />
+    <ProjectReference Include="CAP_Contracts\CAP_Contracts.csproj" />
     <ProjectReference Include="Connect-A-Pic-Core\CAP-Core.csproj" />
   </ItemGroup>
 </Project>

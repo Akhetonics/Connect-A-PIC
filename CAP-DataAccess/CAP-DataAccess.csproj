@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CAP_Contracts\CAP_Contracts.csproj" />
     <ProjectReference Include="..\Connect-A-Pic-Core\CAP-Core.csproj" />
   </ItemGroup>
 
