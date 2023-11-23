@@ -5,11 +5,11 @@
 [ext_resource type="Script" path="res://Scripts/View/DragDropProxy.cs" id="2_av7q5"]
 [ext_resource type="Script" path="res://Scripts/View/StandardDialogs/NotificationManager.cs" id="2_nntly"]
 [ext_resource type="Script" path="res://Scripts/View/ComponentViews/ComponentView.cs" id="3_hlrce"]
+[ext_resource type="Texture2D" uid="uid://jcla22kq5xkl" path="res://Scenes/ToolBox/ScreenshotMockUp.png" id="5_hhcry"]
 [ext_resource type="Script" path="res://Scripts/View/ComponentFactory/ComponentViewFactory.cs" id="7_x7uef"]
-[ext_resource type="PackedScene" uid="uid://ch8njrql1cvsv" path="res://Scenes/ToolBox/Tool_box.tscn" id="10_ir1q2"]
+[ext_resource type="PackedScene" uid="uid://dfrjm1onsjusf" path="res://Scenes/ToolBox/Tool_box.tscn" id="10_ir1q2"]
 [ext_resource type="PackedScene" uid="uid://bscqmaslppyt8" path="res://Scenes/NotificationBox.tscn" id="12_o0640"]
 [ext_resource type="Script" path="res://Scripts/View/ComponentFactory/PCKLoader.cs" id="15_wk10j"]
-[ext_resource type="Texture2D" uid="uid://jcla22kq5xkl" path="res://GFX/ScreenshotMockUp.png" id="21_opdte"]
 [ext_resource type="PackedScene" uid="uid://batxcdg720fpl" path="res://Scenes/ExternalInputs/external_input_blue_template.tscn" id="24_57qdu"]
 [ext_resource type="PackedScene" uid="uid://bd8isg4mddv21" path="res://Scenes/InGameConsole/InGameConsole.tscn" id="24_wq416"]
 [ext_resource type="PackedScene" uid="uid://b6do0hy7ny7x2" path="res://Scenes/ExternalInputs/external_input_red_template.tscn" id="25_ns08j"]
@@ -17,7 +17,7 @@
 [ext_resource type="PackedScene" uid="uid://c0mcgj6g7ik52" path="res://Scenes/ExternalInputs/external_output_template.tscn" id="27_ydf4m"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_4gtug"]
-texture = ExtResource("21_opdte")
+texture = ExtResource("5_hhcry")
 margins = Vector2i(40, 12)
 texture_region_size = Vector2i(62, 62)
 use_texture_padding = false
@@ -203,7 +203,7 @@ use_texture_padding = false
 17:9/0 = 0
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_5h74f"]
-texture = ExtResource("21_opdte")
+texture = ExtResource("5_hhcry")
 margins = Vector2i(0, 3)
 texture_region_size = Vector2i(64, 64)
 use_texture_padding = false

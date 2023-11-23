@@ -1,10 +1,10 @@
-[gd_scene load_steps=5 format=3 uid="uid://ch8njrql1cvsv"]
+[gd_scene load_steps=5 format=3 uid="uid://dfrjm1onsjusf"]
 
 [ext_resource type="Script" path="res://Scenes/ToolBox/ToolBox.cs" id="1_j3t3x"]
-[ext_resource type="Texture2D" uid="uid://jcla22kq5xkl" path="res://GFX/ScreenshotMockUp.png" id="2_5jmcf"]
+[ext_resource type="Texture2D" uid="uid://jcla22kq5xkl" path="res://Scenes/ToolBox/ScreenshotMockUp.png" id="2_dscxe"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_f4md5"]
-texture = ExtResource("2_5jmcf")
+texture = ExtResource("2_dscxe")
 margins = Vector2i(0, 11)
 texture_region_size = Vector2i(62, 62)
 0:0/0 = 0

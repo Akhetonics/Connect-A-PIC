@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://batxcdg720fpl"]
 
-[ext_resource type="Texture2D" uid="uid://dbc8fq12pwjqx" path="res://GFX/ExternalInputBlue.png" id="1_bgm4y"]
+[ext_resource type="Texture2D" uid="uid://dbc8fq12pwjqx" path="res://Scenes/ExternalInputs/ExternalInputBlue.png" id="1_bgm4y"]
 
 [node name="ExternalInputBlueTemplate" type="TextureRect"]
 custom_minimum_size = Vector2(64, 64)

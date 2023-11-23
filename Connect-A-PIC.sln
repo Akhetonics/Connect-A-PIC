@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CAP-Core", "Connect-A-Pic-C
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CAP-DataAccess", "CAP-DataAccess\CAP-DataAccess.csproj", "{18E2C923-BB80-47DB-8F7B-B3BCE38CDD00}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CAP_Contracts", "..\CAP_Contracts\CAP_Contracts.csproj", "{6692B104-0298-4F45-AF5E-5624DEF2DC6E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CAP_Contracts", "..\CAP_Contracts\CAP_Contracts.csproj", "{798CADB1-0C4C-4E72-92A6-B222CA66B3F0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -53,14 +53,14 @@ Global
 		{18E2C923-BB80-47DB-8F7B-B3BCE38CDD00}.ExportRelease|Any CPU.Build.0 = Release|Any CPU
 		{18E2C923-BB80-47DB-8F7B-B3BCE38CDD00}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{18E2C923-BB80-47DB-8F7B-B3BCE38CDD00}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6692B104-0298-4F45-AF5E-5624DEF2DC6E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6692B104-0298-4F45-AF5E-5624DEF2DC6E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6692B104-0298-4F45-AF5E-5624DEF2DC6E}.ExportDebug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6692B104-0298-4F45-AF5E-5624DEF2DC6E}.ExportDebug|Any CPU.Build.0 = Debug|Any CPU
-		{6692B104-0298-4F45-AF5E-5624DEF2DC6E}.ExportRelease|Any CPU.ActiveCfg = Release|Any CPU
-		{6692B104-0298-4F45-AF5E-5624DEF2DC6E}.ExportRelease|Any CPU.Build.0 = Release|Any CPU
-		{6692B104-0298-4F45-AF5E-5624DEF2DC6E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6692B104-0298-4F45-AF5E-5624DEF2DC6E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{798CADB1-0C4C-4E72-92A6-B222CA66B3F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{798CADB1-0C4C-4E72-92A6-B222CA66B3F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{798CADB1-0C4C-4E72-92A6-B222CA66B3F0}.ExportDebug|Any CPU.ActiveCfg = Debug|Any CPU
+		{798CADB1-0C4C-4E72-92A6-B222CA66B3F0}.ExportDebug|Any CPU.Build.0 = Debug|Any CPU
+		{798CADB1-0C4C-4E72-92A6-B222CA66B3F0}.ExportRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{798CADB1-0C4C-4E72-92A6-B222CA66B3F0}.ExportRelease|Any CPU.Build.0 = Release|Any CPU
+		{798CADB1-0C4C-4E72-92A6-B222CA66B3F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{798CADB1-0C4C-4E72-92A6-B222CA66B3F0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
