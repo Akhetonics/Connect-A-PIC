@@ -8,6 +8,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Remove="CAP-DataAccess\**" />
+    <Compile Remove="CAP_Contracts\**" />
     <Compile Remove="Connect-A-Pic-Core\**" />
     <Compile Remove="libraries\**" />
     <Compile Remove="PDK\**" />
@@ -16,6 +17,7 @@
     <Compile Remove="Scenes\Components\GratingCoupler\**" />
     <Compile Remove="Tests\**" />
     <EmbeddedResource Remove="CAP-DataAccess\**" />
+    <EmbeddedResource Remove="CAP_Contracts\**" />
     <EmbeddedResource Remove="Connect-A-Pic-Core\**" />
     <EmbeddedResource Remove="libraries\**" />
     <EmbeddedResource Remove="PDK\**" />
