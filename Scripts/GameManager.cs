@@ -55,7 +55,7 @@ namespace ConnectAPic.LayoutWindow
 				{
 					instance = this;
 					InitializeLoggingSystem();
-					InitializeGridSystem();
+					InitializeGridAndGridView();
 					InitializeExternalPortViews(Grid.ExternalPorts);
 					PCKLoader = new(ComponentFolderPath, Logger);
 					CallDeferred(nameof(DeferredInitialization));
@@ -84,16 +84,16 @@ namespace ConnectAPic.LayoutWindow
 			ToolBox = GetNode<ToolBox>(ToolBoxPath);
 			this.CheckForNull(x => x.ToolBox);
 			ToolBox.SetAvailableTools(componentViewFactory, Logger);
-			Logger.AddLog(CAP_Contracts.Logger.LogLevel.Debug, "Initialized ToolBox");
+			Logger?.AddLog(CAP_Contracts.Logger.LogLevel.Debug, "Initialized ToolBox");
 		}
-		private void InitializeGridSystem()
+		private void InitializeGridAndGridView()
 		{
 			GridView = GetNode<GridView>(GridViewPath);
 			this.CheckForNull(x => GridView);
 			Grid = new Grid(FieldWidth, FieldHeight);
 			GridViewModel = new GridViewModel(GridView, Grid, Logger);
 			GridView.Initialize(GridViewModel, Logger);
-			Logger.AddLog(CAP_Contracts.Logger.LogLevel.Debug, "Initialized GridView and Grid and GridViewModel");
+			Logger?.AddLog(CAP_Contracts.Logger.LogLevel.Debug, "Initialized GridView and Grid and GridViewModel");
 		}
 
 		private void DeferredInitialization()
@@ -105,10 +105,10 @@ namespace ConnectAPic.LayoutWindow
 				InitializeToolBox(this.GridView.ComponentViewFactory);
 				List<Component> modelComponents = new ComponentDraftConverter(Logger).ToComponentModels(componentDrafts);
 				ComponentFactory.Instance.InitializeComponentDrafts(modelComponents);
-				Logger.AddLog(CAP_Contracts.Logger.LogLevel.Debug, "Initialized ComponentDrafts");
+				Logger?.AddLog(CAP_Contracts.Logger.LogLevel.Debug, "Initialized ComponentDrafts");
 			} catch (Exception ex)
 			{
-				Logger.AddLog(CAP_Contracts.Logger.LogLevel.Error, ex.Message);
+				Logger?.AddLog(CAP_Contracts.Logger.LogLevel.Error, ex.Message);
 			}
 			
 		}

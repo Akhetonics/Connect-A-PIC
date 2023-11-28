@@ -6,7 +6,7 @@
     },
     "Profil \"1\"": {
       "commandName": "Executable",
-      "executablePath": "C:\\Program Files\\Godot_v4.1\\Godot_v4.1.exe",
+      "executablePath": "C:\\Program Files\\Godot_v4.1\\Godot_v4.1\\Godot_v4.1.exe",
       "commandLineArgs": "--path . --verbose",
       "workingDirectory": "."
     }
