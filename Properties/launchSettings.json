@@ -4,10 +4,16 @@
       "commandName": "Project",
       "workingDirectory": "$(ProjectDir)"
     },
-    "Profil \"1\"": {
+    "Debug": {
       "commandName": "Executable",
       "executablePath": "C:\\Program Files\\Godot_v4.1\\Godot_v4.1\\Godot_v4.1.exe",
       "commandLineArgs": "--path . --verbose",
+      "workingDirectory": "."
+    },
+    "Run GD Tests": {
+      "commandName": "Executable",
+      "executablePath": "C:\\Program Files\\Godot_v4.1\\Godot_v4.1\\Godot_v4.1.exe",
+      "commandLineArgs": "--path . --run-tests --quit-on-finish",
       "workingDirectory": "."
     }
   }

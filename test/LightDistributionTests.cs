@@ -3,25 +3,34 @@ using Chickensoft.GoDotTest;
 using ConnectAPic.LayoutWindow;
 using Godot;
 using GodotTestDriver;
+using System;
 using System.Threading.Tasks;
 
 public class LightDistributionTests : TestClass
 {
 	private readonly ILog _log = new GDLog(nameof(ExampleTest));
     public Fixture MyFixture { get; set; }
-    public PackedScene MainScene { get; set; }
+    public GameManager gameManager { get; set; }
 	public LightDistributionTests(Node testScene) : base(testScene) { }
 
 	[SetupAll]
 	public async Task SetupAll()
 	{
 		MyFixture = new Fixture(TestScene.GetTree());
-		//MainScene = await MyFixture.LoadAndAddScene<PackedScene>();
+		try
+		{
+            gameManager = await MyFixture.LoadAndAddScene<GameManager>("res://Scenes/PICEditor.tscn");
+        } catch (Exception ex)
+		{
+			_log.Print(ex.Message);
+		}
+        
 
-        // first import all components so that we have curves. 
-        GameManager.Instance._Ready();
+		// first import all components so that we have curves. 
+		gameManager._Ready();
 		// create a curve at the position of one of the standardinputs and rotate it by 90 degrees and then start light distribution
-		
+
+
 
 	}
 

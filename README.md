@@ -29,3 +29,7 @@ Our Target Audience is students and scientists that are interested in photonics.
 # Install Nazca 
 In order to be able to compile the exported Nazca code, you want to have Nazca installed properly
 https://nazca-design.org/installation/
+
+# Tools we use
+In this project we are using GodotTestDriver, GoDotTest, Shouldly, maybe Coverlet
+Checkensoft has some approach for unit testing: https://github.com/chickensoft-games/GoDotTest
