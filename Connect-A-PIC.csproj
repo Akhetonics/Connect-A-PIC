@@ -47,6 +47,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
+    <None Include=".gitignore" />
     <!-- <None Include="MathNet.Numerics.dll" /> -->
     <None Include="README.md" />
     <None Include="Scenes\InGameConsole\InGameConsole.tscn" />
