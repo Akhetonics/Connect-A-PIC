@@ -50,6 +50,7 @@
     <None Include=".gitignore" />
     <!-- <None Include="MathNet.Numerics.dll" /> -->
     <None Include="README.md" />
+    <None Include="RunGodotTests.ps1" />
     <None Include="Scenes\InGameConsole\InGameConsole.tscn" />
     <ProjectReference Include="CAP-DataAccess\CAP-DataAccess.csproj" />
     <ProjectReference Include="CAP_Contracts\CAP_Contracts.csproj" />
