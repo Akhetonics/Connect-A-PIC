@@ -32,7 +32,7 @@ namespace ConnectAPIC.Scripts.View.ComponentFactory
             {
                 if (ProjectSettings.LoadResourcePack(pckFile))
                 {
-                    Logger.PrintInfo($"PCK loaded successfully: {pckFile}");
+                    Logger.Print($"PCK loaded successfully: {pckFile}");
                 }
                 else
                 {

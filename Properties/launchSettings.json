@@ -1,20 +1,19 @@
 {
   "profiles": {
-    "Connect-A-PIC": {
-      "commandName": "Project",
-      "workingDirectory": "$(ProjectDir)"
-    },
     "Debug": {
       "commandName": "Executable",
-      "executablePath": "C:\\Program Files\\Godot_v4.1\\Godot_v4.1\\Godot_v4.1.exe",
+      "executablePath": "C:\\Program Files\\Godot_v4.1\\Godot_v4.1.exe",
       "commandLineArgs": "--path . --verbose",
       "workingDirectory": "."
     },
     "Run GD Tests": {
       "commandName": "Executable",
-      "executablePath": "C:\\Program Files\\Godot_v4.1\\Godot_v4.1\\Godot_v4.1.exe",
-      "commandLineArgs": "--path . --run-tests --quit-on-finish",
+      "executablePath": "C:\\Program Files\\Godot_v4.1\\Godot_v4.1.exe",
+      "commandLineArgs": "--path . --run-tests --quit-on-finish --verbose",
       "workingDirectory": "."
+    },
+    "Profil \"1\"": {
+      "commandName": "Project"
     }
   }
 }

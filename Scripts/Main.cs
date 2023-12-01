@@ -1,4 +1,5 @@
 using Godot;
+using ConnectAPIC.Scripts.Helpers;
 
 
 #if DEBUG
@@ -15,7 +16,7 @@ public partial class Main : Node2D
 	public override void _Ready()
 	{
 		GD.Print("started Main Scene");
-		GD.Print(GameEntryPointScene.ResourceName);
+		this.CheckForNull(x => x.GameEntryPointScene);
 
 #if DEBUG
 		// If this is a debug build, use GoDotTest to examine the

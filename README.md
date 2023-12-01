@@ -25,6 +25,10 @@ Our Target Audience is students and scientists that are interested in photonics.
 	* Command Line Arguments is '--path . --verbose'
 	* Working Directory is '.'
 * Install Submodules using 'git submodule init' and then 'git submodule update --recursive --remote'
+* Set an Environment Variable for the Godot Unit tests like this:														
+	* open your command prompt (WINDOWS+R, type 'cmd' and press enter)
+	* setx GODOT "C:\Program Files\Godot_v4.1\Godot_v4.1.exe"
+
 
 # Install Nazca 
 In order to be able to compile the exported Nazca code, you want to have Nazca installed properly

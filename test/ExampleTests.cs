@@ -1,10 +1,13 @@
+using CAP_Contracts.Logger;
+using CAP_Core;
 using Chickensoft.GoDotLog;
 using Chickensoft.GoDotTest;
 using Godot;
+using System.Diagnostics;
 
 public class ExampleTest : TestClass
 {
-	private readonly ILog _log = new GDLog(nameof(ExampleTest));
+	private readonly ILogger _log = new Logger(log=>Debug.WriteLine(log.ToString()));
 
 	public ExampleTest(Node testScene) : base(testScene) { }
 

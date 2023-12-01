@@ -14,7 +14,15 @@ namespace CAP_Core
     {
         private List<Log> logs = new List<Log>();
         public event Action<Log> LogAdded;
-        
+
+        public Logger()
+        {
+            LogAdded = (Log) => Console.WriteLine(Log.ToString());
+        }
+        public Logger(Action<Log> logAddedAction)
+        {
+            this.LogAdded = logAddedAction;
+        }
         public void AddLog(LogLevel level, string message)
         {
             var formattedMessage = FormatErrorText(message);
@@ -61,7 +69,7 @@ namespace CAP_Core
             AddLog(LogLevel.Error, error);
         }
 
-        public void PrintInfo(string info)
+        public void Print(string info)
         {
             AddLog(LogLevel.Info, info);
         }
