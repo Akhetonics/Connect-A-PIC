@@ -3,10 +3,8 @@
 ## Step-by-Step Guide
 
 ### 1. **Accessing External Tools**
-- Navigate to `Extras` > `Tools`.
+- Navigate to `Extras` or in english: `Tools`.
 - Click on `External Tools`.
-
-![Extras](https://github.com/Akhetonics/Connect-A-PIC/assets/18228325/d8bb5b45-bc17-42b4-8595-37ad74980875)
 
 ![External Tools](https://github.com/Akhetonics/Connect-A-PIC/assets/18228325/299c8934-0c4a-4a21-90af-9ab29a0c2761)
 
