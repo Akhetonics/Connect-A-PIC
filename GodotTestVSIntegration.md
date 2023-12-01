@@ -54,6 +54,9 @@ if ($args.Length -eq 0) {
   ![Index Position Screenshot](https://github.com/Akhetonics/Connect-A-PIC/assets/18228325/057ad428-67bf-422b-8e55-00ebe4514cd7)
 ### 6. **Adding Commands to the Context Menu**
 - Go to `Tools` > `Customize` > `Commands`.
+
+  ![Anpassen](https://github.com/Akhetonics/Connect-A-PIC/assets/18228325/2d77b971-23b1-4ba4-8175-f9738ffbe137)
+  
 - Select `KontextMenü` (Context Menu).
 - Choose `ContextMenu for Projects and Project Folders | Item`.
 - Scroll to `Start Tests` or `Tests Ausführen` and click on `Add Command`.
