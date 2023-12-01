@@ -1,9 +1,11 @@
 # Connect-A-PIC
 ![image](badges/line_coverage.svg)
 ![image](badges/branch_coverage.svg)
-![image](https://github.com/Akhetonics/Connect-A-PIC/assets/18228325/cde9edb5-f93c-452d-b046-a02134fbc1ba)
 
 Gamification of PIC Design (PIC = Photonic integrated circuit)
+
+![image](https://github.com/Akhetonics/Connect-A-PIC/assets/18228325/cde9edb5-f93c-452d-b046-a02134fbc1ba)
+
 This Software wants to provide a very simple way of designing optical circuits on a chip that is then printable using our export to Nazca-Python function
 The designer is written in C# Godot 4 and consists of three projects: 
 
@@ -30,7 +32,7 @@ Our Target Audience is students and scientists that are interested in photonics.
 * Set an Environment Variable for the Godot Unit tests like this:														
 	* open your command prompt (WINDOWS+R, type 'cmd' and press enter)
 	* setx GODOT "C:\Program Files\Godot_v4.1\Godot_v4.1.exe"
-
+ * [Create two external Tools in Visual studio](https://github.com/Akhetonics/Connect-A-PIC/blob/feature/ComponentPackaging/GodotTestVSIntegration.md) to be able to manually run the GoDotTest - Unittests for Godot.
 
 # Install Nazca 
 In order to be able to compile the exported Nazca code, you want to have Nazca installed properly
