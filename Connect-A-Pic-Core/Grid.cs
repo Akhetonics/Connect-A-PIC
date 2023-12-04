@@ -192,8 +192,8 @@ namespace CAP_Core
         {
             Component.ComponentHelpers.Component? component = GetComponentAt(sourceX, sourceY);
             if(component == null) return false;
-            int oldMainGridx = component.GridXMainTile;
-            int oldMainGridy = component.GridYMainTile;
+            int oldMainGridX = component.GridXMainTile;
+            int oldMainGridY = component.GridYMainTile;
             UnregisterComponentAt(component.GridXMainTile, component.GridYMainTile); // to avoid blocking itself from moving only one tile into its own subtiles
             try
             {
@@ -203,16 +203,16 @@ namespace CAP_Core
             }
             catch (ComponentCannotBePlacedException)
             {
-                PlaceComponent(oldMainGridx, oldMainGridy, component);
+                PlaceComponent(oldMainGridX, oldMainGridY, component);
             }
             return false;
         }
 
-        public List<ParentAndChildTile> GetConnectedNeighboursOfComponent(Component.ComponentHelpers.Component component)
+        public List<ParentAndChildTile> GetConnectedNeighborsOfComponent(Component.ComponentHelpers.Component component)
         {
             if (component is null) return new List<ParentAndChildTile>();
             // connectedNeighbours should get all neighbours of the component, shouldn't it?
-            List<ParentAndChildTile> neighbours = new();
+            List<ParentAndChildTile> neighbors = new();
             for (int partX = 0; partX < component.Parts.GetLength(0); partX++)
             {
                 for (int partY = 0; partY < component.Parts.GetLength(1); partY++)
@@ -222,14 +222,14 @@ namespace CAP_Core
                     if (!IsInGrid(compGridX, compGridY, 1, 1)) continue;
                     if (component.Parts[partX, partY] == null) continue;
                     var parentTile = Tiles[component.GridXMainTile + partX, component.GridYMainTile + partY];
-                    GetConnectedNeighboursOfSingleTile(parentTile)
-                        .ForEach(child => neighbours.Add(new ParentAndChildTile(parentTile, child)));
+                    GetConnectedNeighborsOfSingleTile(parentTile)
+                        .ForEach(child => neighbors.Add(new ParentAndChildTile(parentTile, child)));
                 }
             }
-            return neighbours;
+            return neighbors;
         }
-        // finds all neighbour components that are connected to a certain Tile (parent) only if the Pins match.
-        public List<Tile> GetConnectedNeighboursOfSingleTile(Tile parent)
+        // finds all neighbor components that are connected to a certain Tile (parent) only if the Pins match.
+        public List<Tile> GetConnectedNeighborsOfSingleTile(Tile parent)
         {
             if (parent == null || parent.Component == null) return new List<Tile>();
             List<Tile> children = new();
@@ -238,17 +238,17 @@ namespace CAP_Core
                 for (int y = -1; y < 2; y++)
                 {
                     if (x != 0 && y != 0 || y == 0 && x == 0) continue; // only compute Tiles that are "up down left right"
-                    var neighbourX = parent.GridX + x;
-                    var neighbourY = parent.GridY + y;
-                    if (!IsInGrid(neighbourX, neighbourY, 1, 1)) continue;
-                    Tile neighbour = Tiles[neighbourX, neighbourY];
-                    var neighbourComponent = neighbour?.Component;
-                    if (parent.Component == neighbourComponent || neighbourComponent == null) continue;
+                    var neighborX = parent.GridX + x;
+                    var neighborY = parent.GridY + y;
+                    if (!IsInGrid(neighborX, neighborY, 1, 1)) continue;
+                    Tile neighbor = Tiles[neighborX, neighborY];
+                    var neighborComponent = neighbor?.Component;
+                    if (parent.Component == neighborComponent || neighborComponent == null) continue;
                     var lightDirection = new IntVector(x, y);
-                    var neighbourPin = neighbour.GetPinAt(lightDirection * -1);
+                    var neighbourPin = neighbor.GetPinAt(lightDirection * -1);
                     var parentPin = parent.GetPinAt(lightDirection);
                     if (neighbourPin?.MatterType != MatterType.Light || parentPin?.MatterType != MatterType.Light) continue;
-                    children.Add(neighbour);
+                    children.Add(neighbor);
                 }
             }
             return children;

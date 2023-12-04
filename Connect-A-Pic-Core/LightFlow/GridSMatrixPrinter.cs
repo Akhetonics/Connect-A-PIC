@@ -14,7 +14,7 @@ namespace CAP_Core.LightFlow
         private string GetSMatrixWithPinNames(SMatrix matrix)
         {
             if (matrix == null) return "";
-            // get the smatrix tostring of the whole systemmatrix, also get the LightPropagation vector, replace the IDs of the pins with the name of the pin
+            // get the S-Matrix tostring of the whole systemmatrix, also get the LightPropagation vector, replace the IDs of the pins with the name of the pin
             var allPinsInField = GetAllPinShortNames();
             var outputstring = matrix.ToString();
             foreach (Guid guid in matrix.PinReference)

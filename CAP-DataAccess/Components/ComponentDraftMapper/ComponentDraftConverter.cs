@@ -58,7 +58,7 @@ namespace Components.ComponentDraftMapper
                 parts[pinDraft.Key.x, pinDraft.Key.y] = new Part(realPins);
             }
 
-            // Create Smatrix Connections
+            // Create S-Matrix Connections
             // get all real Pins
             Dictionary<Guid, Pin> ModelPins = new();
             foreach (Part part in parts)

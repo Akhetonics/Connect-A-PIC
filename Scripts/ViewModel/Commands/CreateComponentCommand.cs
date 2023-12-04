@@ -24,7 +24,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             if( parameter is CreateComponentArgs args)
             {
                 var dimensions = ComponentFactory.GetDimensions(args.ComponentTypeNumber);
-                if (GridModel != null && !GridModel.IsColliding(args.Gridx, args.Gridy, dimensions.X, dimensions.Y))
+                if (GridModel != null && !GridModel.IsColliding(args.GridX, args.GridY, dimensions.X, dimensions.Y))
                 {
                     return true;
                 }
@@ -37,21 +37,21 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             if ( !CanExecute(parameter) ) return;
             var compParams = (CreateComponentArgs)parameter;
             Component component = ComponentFactory.CreateComponent(compParams.ComponentTypeNumber);
-            GridModel.PlaceComponent(compParams.Gridx, compParams.Gridy, component);
+            GridModel.PlaceComponent(compParams.GridX, compParams.GridY, component);
         }
     }
     public class CreateComponentArgs
     {
         public readonly int ComponentTypeNumber;
-        public readonly int Gridx;
-        public readonly int Gridy;
+        public readonly int GridX;
+        public readonly int GridY;
         public readonly DiscreteRotation Rotation;
 
-        public CreateComponentArgs(int componentTypeNumber, int gridx, int gridy, DiscreteRotation rotation)
+        public CreateComponentArgs(int componentTypeNumber, int gridX, int gridY, DiscreteRotation rotation)
         {
             this.ComponentTypeNumber = componentTypeNumber;
-            this.Gridx = gridx;
-            this.Gridy = gridy;
+            this.GridX = gridX;
+            this.GridY = gridY;
             this.Rotation = rotation;
         }
     }

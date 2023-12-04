@@ -19,8 +19,8 @@ namespace UnitTests
             var secondComponent = PlaceAndConcatenateComponent(grid, firstComponent);
             var thirdComponent = PlaceAndConcatenateComponent(grid, secondComponent);
             var fourthComponent = PlaceAndConcatenateComponent(grid, thirdComponent);
-            var orphant = TestComponentFactory.CreateDirectionalCoupler();
-            grid.PlaceComponent(10, 5, orphant);
+            var orphan = TestComponentFactory.CreateDirectionalCoupler();
+            grid.PlaceComponent(10, 5, orphan);
             
             NazcaExporter exporter = new();
             var output = exporter.Export(grid);
@@ -28,7 +28,7 @@ namespace UnitTests
             var secondCellName = grid.Tiles[secondComponent.GridXMainTile, secondComponent.GridYMainTile].GetComponentCellName();
             var thirdCellName = grid.Tiles[thirdComponent.GridXMainTile, thirdComponent.GridYMainTile].GetComponentCellName();
             var fourthCellName = grid.Tiles[fourthComponent.GridXMainTile, fourthComponent.GridYMainTile].GetComponentCellName();
-            var orphanCellName = grid.Tiles[orphant.GridXMainTile, orphant.GridYMainTile].GetComponentCellName();
+            var orphanCellName = grid.Tiles[orphan.GridXMainTile, orphan.GridYMainTile].GetComponentCellName();
             
             // assert if all components are in the string output
             Assert.Contains(firstCellName, output);
@@ -39,7 +39,7 @@ namespace UnitTests
         }
         
         [Fact]
-        public void GetConnectedNeighboursTest()
+        public void GetConnectedNeighborsTest()
         {
             Grid grid = new(24, 12);
             var inputs = grid.ExternalPorts.Where(p => p.GetType() == typeof(StandardInput)).ToList();
@@ -57,9 +57,9 @@ namespace UnitTests
             Tile secondComponentMainTile = grid.Tiles[secondComponent.GridXMainTile, secondComponent.GridYMainTile];
             Tile thirdComponentMainTile = grid.Tiles[thirdComponent.GridXMainTile, thirdComponent.GridYMainTile];
             
-            Assert.Contains(secondComponentMainTile, grid.GetConnectedNeighboursOfComponent(firstComponent).Select(b=>b.Child));
-            Assert.Contains(thirdComponentMainTile, grid.GetConnectedNeighboursOfComponent(secondComponent).Select(b => b.Child));
-            Assert.Contains(firstComponentMainTile, grid.GetConnectedNeighboursOfComponent(secondComponent).Select(b => b.Child));
+            Assert.Contains(secondComponentMainTile, grid.GetConnectedNeighborsOfComponent(firstComponent).Select(b=>b.Child));
+            Assert.Contains(thirdComponentMainTile, grid.GetConnectedNeighborsOfComponent(secondComponent).Select(b => b.Child));
+            Assert.Contains(firstComponentMainTile, grid.GetConnectedNeighborsOfComponent(secondComponent).Select(b => b.Child));
         }
         
         public static Component PlaceAndConcatenateComponent(Grid grid, Component parentComponent)

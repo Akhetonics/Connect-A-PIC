@@ -73,7 +73,7 @@ namespace UnitTests
 
             var connections = component.Connections.GetNonNullValues();
 
-            // every lightbased Pin of the whole component that is defined should exist in the connectionsmatrix.
+            // every lightbased Pin of the whole component that is defined should exist in the connection-S-Matrix.
             foreach (var part in component.Parts)
             {
                 if (part == null) continue;

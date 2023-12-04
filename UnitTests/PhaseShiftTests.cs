@@ -36,8 +36,8 @@ namespace UnitTests
             var secondComponent = ExportNazcaTests.PlaceAndConcatenateComponent(grid, firstComponent);
             var thirdComponent = ExportNazcaTests.PlaceAndConcatenateComponent(grid, secondComponent);
             var fourthComponent = ExportNazcaTests.PlaceAndConcatenateComponent(grid, thirdComponent);
-            var orphant = TestComponentFactory.CreateStraightWaveGuide();
-            grid.PlaceComponent(10, 5, orphant);
+            var orphan = TestComponentFactory.CreateStraightWaveGuide();
+            grid.PlaceComponent(10, 5, orphan);
 
             NazcaExporter exporter = new();
             var output = exporter.Export(grid);
@@ -45,7 +45,7 @@ namespace UnitTests
             var secondCellName = grid.Tiles[secondComponent.GridXMainTile, secondComponent.GridYMainTile].GetComponentCellName();
             var thirdCellName = grid.Tiles[thirdComponent.GridXMainTile, thirdComponent.GridYMainTile].GetComponentCellName();
             var fourthCellName = grid.Tiles[fourthComponent.GridXMainTile, fourthComponent.GridYMainTile].GetComponentCellName();
-            var orphanCellName = grid.Tiles[orphant.GridXMainTile, orphant.GridYMainTile].GetComponentCellName();
+            var orphanCellName = grid.Tiles[orphan.GridXMainTile, orphan.GridYMainTile].GetComponentCellName();
 
             // assert if all components are in the string output
             Assert.Contains(firstCellName, output);
