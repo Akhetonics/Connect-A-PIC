@@ -22,17 +22,26 @@ Our Target Audience is students and scientists that are interested in photonics.
 
 # Setup Code
 * Install Visual Studio 
-* Install Godot Engine and add Path to your "PATH"- Environment Variable
+* Install Godot Engine and add a System Variable called "GODOT" to the Path to the godot mono exe file like so:
+	* open your command prompt (WINDOWS+R, type 'cmd' and press enter)
+```shell
+setx GODOT "C:\Program Files\Godot_v4.1\Godot_v4.1.exe" /M
+```
 * Clone this project into a nice folder
 * Setup Launch Profile for visual Studio where 
 	* "Path to the executale to run" is the Path to your godot_v4.0-beta_mono_win64.exe 
-	* Command Line Arguments is '--path . --verbose'
+	* Command Line Arguments is `--path . --verbose`
 	* Working Directory is '.'
 * Install Submodules using 'git submodule init' and then 'git submodule update --recursive --remote'
-* Set an Environment Variable for the Godot Unit tests like this:														
-	* open your command prompt (WINDOWS+R, type 'cmd' and press enter)
-	* setx GODOT "C:\Program Files\Godot_v4.1\Godot_v4.1.exe"
  * [Create two external Tools in Visual studio](https://github.com/Akhetonics/Connect-A-PIC/blob/feature/ComponentPackaging/GodotTestVSIntegration.md) to be able to manually run the GoDotTest - Unittests for Godot.
+* Install Submodules using `git submodule init` and then `git submodule update --recursive --remote`
+* Coverlet is a tool for code-coverage reports - install it like using powershell like this:
+```shell
+dotnet tool install --global coverlet.console
+dotnet tool update --global coverlet.console
+dotnet tool install --global dotnet-reportgenerator-globaltool
+dotnet tool update --global dotnet-reportgenerator-globaltool
+```
 
 # Install Nazca 
 In order to be able to compile the exported Nazca code, you want to have Nazca installed properly
