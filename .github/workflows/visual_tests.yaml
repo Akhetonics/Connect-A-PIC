@@ -25,10 +25,8 @@ jobs:
         # Use bash shells on all platforms.
         shell: bash
     steps:
-      - name: Install Vulkan
-        run: |
-          sudo apt update
-          sudo apt install vulkan-utils
+      - name: Setup Vulkan SDK
+        uses: humbletim/setup-vulkan-sdk@v1.2.0
       - name: 🧾 Checkout
         uses: actions/checkout@v4
         with:
