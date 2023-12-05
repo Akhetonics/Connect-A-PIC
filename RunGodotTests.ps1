@@ -1,6 +1,6 @@
 # PowerShell-Skript: run-godot-tests.ps1
 
-# Stelle sicher, dass die Umgebungsvariable GODOT gesetzt ist
+# make sure that environment variable GODOT is set
 if (-not [System.Environment]::GetEnvironmentVariable('GODOT')) {
     Write-Host "Please ensure you have defined a GODOT system variable that leads to the path of the Godot executable file."
     exit
@@ -8,7 +8,7 @@ if (-not [System.Environment]::GetEnvironmentVariable('GODOT')) {
 
 $godotPath = [System.Environment]::GetEnvironmentVariable('GODOT')
 
-# Überprüfe, ob ein Dateipfad als Argument übergeben wurde
+# test if a file path was given as a parameter
 if ($args.Length -eq 0) {
     Write-Host "No file specified. Running tests without specific file."
     & "$godotPath" --path . --run-tests --quit-on-finish

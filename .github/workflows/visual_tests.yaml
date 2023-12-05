@@ -19,18 +19,12 @@ jobs:
       fail-fast: false
       matrix:
         # Put the rendering drivers you want to use for tests here.
-        render-driver: [vulkan] # also: opengl3
+        render-driver: [opengl3] # also: opengl3 or vulkan
     defaults:
       run:
         # Use bash shells on all platforms.
         shell: bash
     steps:
-      - name: Prepare Vulkan SDK
-        uses: humbletim/setup-vulkan-sdk@v1.2.0
-        with:
-          vulkan-query-version: 1.3.204.0
-          vulkan-components: Vulkan-Headers, Vulkan-Loader
-          vulkan-use-cache: true
       - name: 🧾 Checkout
         uses: actions/checkout@v4
         with:
@@ -49,16 +43,16 @@ jobs:
       - name: 📦 Restore Dependencies
         run: dotnet restore
 
-      - name: 💾 Add Graphics Driver Emulators Source
-        run: |
-          sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
-          sudo add-apt-repository -n ppa:kisak/kisak-mesa
+      # - name: 💾 Add Graphics Driver Emulators Source
+      #   run: |
+      #     sudo rm -f /etc/apt/sources.list.d/microsoft-prod.list
+      #     sudo add-apt-repository -n ppa:kisak/kisak-mesa
 
-      - name: 💾 Install Graphics Driver Emulators
-        uses: awalsh128/cache-apt-pkgs-action@latest
-        with:
-          packages: mesa-vulkan-drivers binutils
-          version: 1.0
+      # - name: 💾 Install Graphics Driver Emulators
+      #   uses: awalsh128/cache-apt-pkgs-action@latest
+      #   with:
+      #     packages: mesa-vulkan-drivers binutils
+      #     version: 1.0
 
       - name: 🤖 Setup Godot
         uses: chickensoft-games/setup-godot@v1
