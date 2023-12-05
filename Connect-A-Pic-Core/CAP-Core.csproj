@@ -16,10 +16,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="libraries\SBB\obj\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\CAP_Contracts\CAP_Contracts.csproj" />
   </ItemGroup>
 
