@@ -211,7 +211,6 @@ namespace CAP_Core
         public List<ParentAndChildTile> GetConnectedNeighborsOfComponent(Component.ComponentHelpers.Component component)
         {
             if (component is null) return new List<ParentAndChildTile>();
-            // connectedNeighbours should get all neighbours of the component, shouldn't it?
             List<ParentAndChildTile> neighbors = new();
             for (int partX = 0; partX < component.Parts.GetLength(0); partX++)
             {
@@ -245,9 +244,9 @@ namespace CAP_Core
                     var neighborComponent = neighbor?.Component;
                     if (parent.Component == neighborComponent || neighborComponent == null) continue;
                     var lightDirection = new IntVector(x, y);
-                    var neighbourPin = neighbor.GetPinAt(lightDirection * -1);
+                    var neighborPin = neighbor.GetPinAt(lightDirection * -1);
                     var parentPin = parent.GetPinAt(lightDirection);
-                    if (neighbourPin?.MatterType != MatterType.Light || parentPin?.MatterType != MatterType.Light) continue;
+                    if (neighborPin?.MatterType != MatterType.Light || parentPin?.MatterType != MatterType.Light) continue;
                     children.Add(neighbor);
                 }
             }

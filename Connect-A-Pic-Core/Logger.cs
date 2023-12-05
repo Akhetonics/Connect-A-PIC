@@ -1,11 +1,4 @@
-﻿using Components.ComponentDraftMapper;
-using CAP_Contracts;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Diagnostics;
 using CAP_Contracts.Logger;
 
 namespace CAP_Core
@@ -43,7 +36,7 @@ namespace CAP_Core
             try
             {
                 StackTrace stackTrace = new(true);
-                StackFrame frame = stackTrace.GetFrame(3); // Anpassung je nach Aufrufkontext
+                StackFrame frame = stackTrace.GetFrame(3);
                 var method = frame.GetMethod();
                 var lineNumber = frame.GetFileLineNumber();
                 var declaringType = method.DeclaringType.Name;
@@ -60,7 +53,7 @@ namespace CAP_Core
         private string GetCallingClassName()
         {
             StackTrace stackTrace = new(true);
-            StackFrame frame = stackTrace.GetFrame(3); // Anpassung je nach Aufrufkontext
+            StackFrame frame = stackTrace.GetFrame(3);
             return frame.GetMethod().DeclaringType.Name;
         }
 

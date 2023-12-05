@@ -14,14 +14,13 @@ namespace CAP_Core.LightFlow
         private string GetSMatrixWithPinNames(SMatrix matrix)
         {
             if (matrix == null) return "";
-            // get the S-Matrix tostring of the whole systemmatrix, also get the LightPropagation vector, replace the IDs of the pins with the name of the pin
             var allPinsInField = GetAllPinShortNames();
-            var outputstring = matrix.ToString();
+            var maxtrixStringified = matrix.ToString();
             foreach (Guid guid in matrix.PinReference)
             {
-                outputstring = outputstring.Replace(guid.ToString()[..SMatrix.MaxToStringPinGuidSize], allPinsInField[guid]);
+                maxtrixStringified = maxtrixStringified.Replace(guid.ToString()[..SMatrix.MaxToStringPinGuidSize], allPinsInField[guid]);
             }
-            return outputstring;
+            return maxtrixStringified;
         }
         private Dictionary<Guid, string> GetAllPinShortNames()
         {
@@ -39,10 +38,10 @@ namespace CAP_Core.LightFlow
                         if (pin == null) continue;
                         var componentTypeName = component.GetType().Name[..3];
                         var sideShort = Enum.GetName(typeof(RectSide), side)[..1];
-                        var pinname = $"{componentTypeName}[{x},{y}]{sideShort}i";
-                        PinsProcessed.Add(pin.IDInFlow, pinname);
-                        pinname = $"{componentTypeName}[{x},{y}]{sideShort}o";
-                        PinsProcessed.Add(pin.IDOutFlow, pinname);
+                        var pinName = $"{componentTypeName}[{x},{y}]{sideShort}i";
+                        PinsProcessed.Add(pin.IDInFlow, pinName);
+                        pinName = $"{componentTypeName}[{x},{y}]{sideShort}o";
+                        PinsProcessed.Add(pin.IDOutFlow, pinName);
                     }
                 }
             }

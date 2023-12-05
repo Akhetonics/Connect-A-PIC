@@ -90,10 +90,10 @@ namespace CAP_Core.LightFlow
             }
         }
 
-        private bool IsComponentBorderEdge(int gridx, int gridy, Tile foreignTile)
+        private bool IsComponentBorderEdge(int gridX, int gridY, Tile foreignTile)
         {
             if (foreignTile == null) return false;
-            var centeredComponent = Grid.Tiles[gridx, gridy].Component;
+            var centeredComponent = Grid.Tiles[gridX, gridY].Component;
             return centeredComponent != foreignTile.Component;
         }
 

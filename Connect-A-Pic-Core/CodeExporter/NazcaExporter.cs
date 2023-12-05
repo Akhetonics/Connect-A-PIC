@@ -15,7 +15,7 @@ namespace CAP_Core.CodeExporter
             var nazcaString = new StringBuilder();
             nazcaString.Append(child.ExportToNazca(connectedParent));
             AlreadyProcessedComponents.Add(child.Component);
-            var neighbors = GetUncomputedNeighbors(child);
+            var neighbors = GetUnComputedNeighbors(child);
             foreach (ParentAndChildTile childNeighborTile in neighbors)
             {
                 if(AlreadyProcessedComponents.Contains(childNeighborTile.Child.Component)) continue;
@@ -86,7 +86,7 @@ namespace CAP_Core.CodeExporter
             }
         }
 
-        private List<ParentAndChildTile> GetUncomputedNeighbors(Tile currentTile)
+        private List<ParentAndChildTile> GetUnComputedNeighbors(Tile currentTile)
         {
             var neighbors = grid.GetConnectedNeighborsOfComponent(currentTile.Component);
             return neighbors.Where(n => !AlreadyProcessedComponents.Contains(n.Child.Component)).ToList();

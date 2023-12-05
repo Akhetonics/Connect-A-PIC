@@ -9,9 +9,18 @@
     "coverage/**/*.*",
     ".godot/**/*.*",
     "**/*.tres",
-    "**/*.resx"
+    "**/*.resx",
+    "*.Designer.cs",
+    "**/Resources.Designer.cs"
   ],
   "words": [
+    "CAPICPDK",
+    "Gamification",
+    "Cloneable",
+    "Akhetonics",
+    "APIC",
+    "Atet",
+    "EPDA",
     "assemblyfilters",
     "binutils",
     "branchcoverage",
