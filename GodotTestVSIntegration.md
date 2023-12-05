@@ -34,7 +34,7 @@ if ($args.Length -eq 0) {
 ```
 ### 3. **Configuring GodotTests for Individual Files**
 - **Title**: 🔬 GodotTests - CurrentFile
-- **Command**: `C:\windows\system32\windowspowershell\v1.0\powershell.exe`
+- **Command**: `C:\windows\system32\WindowsPowerShell\v1.0\powershell.exe`
 - **Arguments**: `-File "C:\dev\tools\RunGodotTests.ps1" $(ItemPath)`
 - **Working Directory**: `$(ProjectDir)`
 
@@ -42,7 +42,7 @@ if ($args.Length -eq 0) {
 
 ### 4. **Configuring GodotTests for All Files**
 - **Title**: 🧪 GodotTests - All
-- **Command**: `C:\windows\system32\windowspowershell\v1.0\powershell.exe`
+- **Command**: `C:\windows\system32\WindowsPowerShell\v1.0\powershell.exe`
 - **Arguments**: `-File "C:\dev\tools\RunGodotTests.ps1"`
 - **Working Directory**: `$(ProjectDir)`
 

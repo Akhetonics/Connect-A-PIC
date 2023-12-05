@@ -66,10 +66,10 @@ namespace ConnectAPIC.LayoutWindow.View
             }
         }
 
-        public void InitializeComponent(int componentTypeNumber, List<AnimationSlotOverlayData> slotDatas, int widthIntiles, int heightInTiles, ILogger logger)
+        public void InitializeComponent(int componentTypeNumber, List<AnimationSlotOverlayData> slotDatas, int widthInTiles, int heightInTiles, ILogger logger)
         {
             this.Logger = logger;
-            if (widthIntiles == 0) Logger.PrintErr(nameof(widthIntiles) + " of this element is not set in the TypeNR: " + componentTypeNumber);
+            if (widthInTiles == 0) Logger.PrintErr(nameof(widthInTiles) + " of this element is not set in the TypeNR: " + componentTypeNumber);
             if (heightInTiles == 0) Logger.PrintErr(nameof(heightInTiles) + " of this element is not set in the TypeNR: " + componentTypeNumber);
 
             this.TypeNumber = componentTypeNumber;
@@ -85,7 +85,7 @@ namespace ConnectAPIC.LayoutWindow.View
                 }
                 AnimationSlots.AddRange(CreateRGBAnimSlots(slotData.Side, slotData.LightFlowOverlay, slotData.OffsetX, slotData.OffsetY));
             }
-            this.WidthInTiles = widthIntiles;
+            this.WidthInTiles = widthInTiles;
             this.HeightInTiles= heightInTiles;
             RotationCC = _rotationCC;
         }

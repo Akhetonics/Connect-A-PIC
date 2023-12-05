@@ -23,7 +23,9 @@
     "*.pck",
     "*.cfg",
     "*.gdshader",
-    "*.py"
+    "*.py",
+    "cspell.json",
+    "*.json"
   ],
   "words": [
     "fluence",
