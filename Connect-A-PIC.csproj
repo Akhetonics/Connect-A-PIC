@@ -37,6 +37,10 @@
     <Compile Remove="Scenes\Scenes.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="cspell.json" />
+    <Content Include="renovate.json" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="Chickensoft.GoDotTest" Version="1.2.3" />
     <PackageReference Include="coverlet.collector" Version="6.0.0">
       <PrivateAssets>all</PrivateAssets>
@@ -51,6 +55,9 @@
     <None Include=".github\workflows\version_change.yaml" />
     <None Include=".github\workflows\visual_tests.yaml" />
     <None Include=".gitignore" />
+    <None Include="coverage.ps1" />
+    <None Include="GodotTestVSIntegration.md" />
+    <None Include="project.godot" />
     <!-- <None Include="MathNet.Numerics.dll" /> -->
     <None Include="README.md" />
     <None Include="RunGodotTests.ps1" />

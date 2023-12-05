@@ -71,7 +71,7 @@ namespace UnitTests
             // Arrange
             var draft = new ComponentDraft
             {
-                sceneResPath = "res://testhost.exe",
+                sceneResPath = "res://testHost.exe",
                 widthInTiles = 2,
                 heightInTiles = 1,
                 identifier = "test",
@@ -79,7 +79,7 @@ namespace UnitTests
                 overlays = new List<Overlay>
                 {
                     new Overlay {
-                        overlayAnimTexturePath = "res://testhost.exe",
+                        overlayAnimTexturePath = "res://testHost.exe",
                         tileOffsetX = 0,
                         tileOffsetY = 0,
                     }

@@ -194,7 +194,7 @@ namespace CAP_Core
             if(component == null) return false;
             int oldMainGridX = component.GridXMainTile;
             int oldMainGridY = component.GridYMainTile;
-            UnregisterComponentAt(component.GridXMainTile, component.GridYMainTile); // to avoid blocking itself from moving only one tile into its own subtiles
+            UnregisterComponentAt(component.GridXMainTile, component.GridYMainTile); // to avoid blocking itself from moving only one tile into its own subTiles
             try
             {
                 PlaceComponent(x, y, component);

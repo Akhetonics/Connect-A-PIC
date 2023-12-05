@@ -31,13 +31,13 @@ namespace UnitTests
                 rightUpOut,
             };
             var connections = new SMatrix(allPins);
-            var Connectionweights = new Dictionary<(Guid, Guid), Complex>()
+            var ConnectionWeights = new Dictionary<(Guid, Guid), Complex>()
             {
                 { (leftUpIn, rightUpOut), new Complex(1, 0) },
                 { (rightUpIn, leftUpOut), new Complex(1, 0) },
             };
 
-            connections.SetValues(Connectionweights);
+            connections.SetValues(ConnectionWeights);
             return new Component(connections, "placeCell_StraightWG", "", parts, 0, DiscreteRotation.R0);
         }
 

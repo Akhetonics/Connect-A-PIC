@@ -58,7 +58,7 @@ namespace UnitTests
             var Straight_LiRoConnection = allComponentsSMatrices[0].GetNonNullValues().Single(b => b.Key == (straight.PinIdLeftIn(), straight.PinIdRightOut())).Value;
             var Straight_RiLoConnection = allComponentsSMatrices[0].GetNonNullValues().Single(b => b.Key == (straight.PinIdRightIn(), straight.PinIdLeftOut())).Value;
 
-            // test straightcomponent light throughput
+            // test straightComponent light throughput
             var straightCompLightVal = lightValues[straight.PinIdRightOut()];
 
             // test whole circuit's light throughput

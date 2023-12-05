@@ -26,10 +26,10 @@ if ($args.Length -eq 0) {
     Write-Host "Current Path: $(Get-Location)"
     & "$godotPath" --path . --run-tests --quit-on-finish
 } else {
-    $fullpath = $args[0]
-    $filename = [System.IO.Path]::GetFileNameWithoutExtension($fullpath)
-    Write-Host "Running Test: $filename"
-    & "$godotPath" --path . --run-tests="$filename" --quit-on-finish
+    $fullPath = $args[0]
+    $fileName = [System.IO.Path]::GetFileNameWithoutExtension($fullPath)
+    Write-Host "Running Test: $fileName"
+    & "$godotPath" --path . --run-tests="$fileName" --quit-on-finish
 }
 ```
 ### 3. **Configuring GodotTests for Individual Files**
@@ -55,7 +55,7 @@ if ($args.Length -eq 0) {
 ### 6. **Adding Commands to the Context Menu**
 - Go to `Tools` > `Customize` > `Commands`.
 
-  ![Anpassen](https://github.com/Akhetonics/Connect-A-PIC/assets/18228325/2d77b971-23b1-4ba4-8175-f9738ffbe137)
+  ![Customize](https://github.com/Akhetonics/Connect-A-PIC/assets/18228325/2d77b971-23b1-4ba4-8175-f9738ffbe137)
   
 - Select `KontextMenü` (Context Menu).
 - Choose `ContextMenu for Projects and Project Folders | Item`.

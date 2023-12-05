@@ -110,9 +110,9 @@ namespace UnitTests
             var componentOld = TestComponentFactory.CreateDirectionalCoupler();
             var component = componentOld.Clone() as Component;
             var component2 = componentOld.Clone() as Component;
-            var componenty = grid.ExternalPorts.First().TilePositionY;
-            grid.PlaceComponent(0, componenty, component);
-            grid.PlaceComponent(2, componenty, component2);
+            var componentY = grid.ExternalPorts.First().TilePositionY;
+            grid.PlaceComponent(0, componentY, component);
+            grid.PlaceComponent(2, componentY, component2);
 
             var allComponentPins = component.GetAllPins();
             var allComponent2Pins = component2.GetAllPins();

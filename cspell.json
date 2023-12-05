@@ -13,15 +13,24 @@
     "*.Designer.cs",
     "**/Resources.Designer.cs",
     "*.csproj",
+    "*.csproj.*",
     "**/Resources/*.*",
     "*.pptx",
-    "Mathnet.Numerics.xml",
+    "MathNet.Numerics.xml",
+    "*.xml",
     "PDK/*.*",
     "*.ps1",
-    "*.pck"
-
+    "*.pck",
+    "*.cfg",
+    "*.gdshader",
+    "*.py"
   ],
   "words": [
+    "fluence",
+    "Kontext",
+    "Menü",
+    "Ausführen",
+    "Argb",
     "CAPICPDK",
     "Gamification",
     "Cloneable",
