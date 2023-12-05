@@ -15,12 +15,12 @@ namespace CAP_Core.LightFlow
         {
             if (matrix == null) return "";
             var allPinsInField = GetAllPinShortNames();
-            var maxtrixStringified = matrix.ToString();
+            var matrixStringified = matrix.ToString();
             foreach (Guid guid in matrix.PinReference)
             {
-                maxtrixStringified = maxtrixStringified.Replace(guid.ToString()[..SMatrix.MaxToStringPinGuidSize], allPinsInField[guid]);
+                matrixStringified = matrixStringified.Replace(guid.ToString()[..SMatrix.MaxToStringPinGuidSize], allPinsInField[guid]);
             }
-            return maxtrixStringified;
+            return matrixStringified;
         }
         private Dictionary<Guid, string> GetAllPinShortNames()
         {
@@ -65,20 +65,20 @@ namespace CAP_Core.LightFlow
             all += $"SystemMatrix \n{SystemSMatrixWithNamedPins}";
 
             var allPinsInField = GetAllPinShortNames();
-            var outputstring = all;
-            outputstring += "\n\nLightPropagationVector:\n\n";
+            var outputString = all;
+            outputString += "\n\nLightPropagationVector:\n\n";
 
             foreach (var color in Enum.GetValues(typeof(LightColor)).OfType<LightColor>())
             {
                 foreach (var lightIntensity in Analyzer.CalculateLightPropagation(color))
                 {
                     string lightColorName = Enum.GetName(typeof(LightColor), color);
-                    outputstring += $"LightColor: {lightColorName}\t{allPinsInField[lightIntensity.Key]}\t{lightIntensity.Key}\t{lightIntensity.Value}\n";
+                    outputString += $"LightColor: {lightColorName}\t{allPinsInField[lightIntensity.Key]}\t{lightIntensity.Key}\t{lightIntensity.Value}\n";
                 }
             }
 
 
-            return outputstring;
+            return outputString;
         }
     }
 }

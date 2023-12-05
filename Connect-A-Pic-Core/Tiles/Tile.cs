@@ -48,7 +48,7 @@ namespace CAP_Core.Tiles
             var rotationDisplacementCorrectionX = 0f;
             var rotationDisplacementCorrectionY = 0f;
             var rotation = (int)comp.Rotation90CounterClock * 90;
-            // bei Nazca ist der StartPin immer das lokale (0,0), also links oben
+            // the StartPin is always the local (0,0) which is the top left at Nazca
             if (rotation == 90)
             {
                 rotationDisplacementCorrectionX = 0.5f;
@@ -74,11 +74,11 @@ namespace CAP_Core.Tiles
         {
             return GetParentTouchingEdgeSide(parentTile.GridX, parentTile.GridY, GridX, GridY);
         }
-        public static RectSide GetParentTouchingEdgeSide(int parentx, int parenty, int childx, int childy)
+        public static RectSide GetParentTouchingEdgeSide(int parentX, int parentY, int childX, int childY)
         {
-            int xdir = Math.Clamp(childx - parentx, -1, 1);
-            int ydir = Math.Clamp(childy - parenty, -1, 1);
-            var lightFLowDirection = new IntVector(xdir, ydir);
+            int xDir = Math.Clamp(childX - parentX, -1, 1);
+            int yDir = Math.Clamp(childY - parentY, -1, 1);
+            var lightFLowDirection = new IntVector(xDir, yDir);
             return (RectSide)lightFLowDirection;
         }
         public Pin? GetPinAt(RectSide side)

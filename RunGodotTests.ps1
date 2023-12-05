@@ -1,4 +1,4 @@
-# PowerShell-Skript: run-godot-tests.ps1
+# PowerShell-Script: run-godot-tests.ps1
 
 # make sure that environment variable GODOT is set
 if (-not [System.Environment]::GetEnvironmentVariable('GODOT')) {
