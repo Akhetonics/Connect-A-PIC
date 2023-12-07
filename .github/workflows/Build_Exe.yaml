@@ -18,9 +18,6 @@ jobs:
 
       - name: Read Godot version from global.json
         id: godot_version
-        run: echo "::set-output name=VERSION::$(jq -r '.msbuild-sdks["Godot.NET.Sdk"]' global.json)"
-      - name: Read Godot version from global.json
-        id: godot_version
         run: |
           GODOT_VERSION=$(jq -r '.msbuild-sdks["Godot.NET.Sdk"]' global.json)
           echo "Godot version: $GODOT_VERSION"
