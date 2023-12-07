@@ -16,8 +16,6 @@ jobs:
           lfs: true
           submodules: 'recursive'
 
-      - name: Print global.json
-        run: cat global.json
       - name: Read Godot version from global.json
         id: godot_version
         run: |
@@ -35,6 +33,8 @@ jobs:
           
       - name: Build Windows EXE
         run: |
+          Xvfb :99 &
+          export DISPLAY=:99
           godot --no-window --export-release "Windows Desktop" ConnectAPIC.exe
         env:
           GODOT_EXPORT_PATH: ${{ github.workspace }}
