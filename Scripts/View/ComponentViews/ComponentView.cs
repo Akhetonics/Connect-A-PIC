@@ -66,7 +66,7 @@ namespace ConnectAPIC.LayoutWindow.View
             }
         }
 
-        public void InitializeComponent(int componentTypeNumber, List<AnimationSlotOverlayData> slotDatas, int widthInTiles, int heightInTiles, ILogger logger)
+        public void InitializeComponent(int componentTypeNumber, List<AnimationSlotOverlayData> slotDataSets, int widthInTiles, int heightInTiles, ILogger logger)
         {
             this.Logger = logger;
             if (widthInTiles == 0) Logger.PrintErr(nameof(widthInTiles) + " of this element is not set in the TypeNR: " + componentTypeNumber);
@@ -76,7 +76,7 @@ namespace ConnectAPIC.LayoutWindow.View
             FindAndAssignOverlay();
             this.CheckForNull(x => x.OverlayBluePrint);
             InitializeLightOverlays();
-            foreach (var slotData in slotDatas)
+            foreach (var slotData in slotDataSets)
             {
                 
                 if(slotData.LightFlowOverlay== null)
@@ -108,8 +108,8 @@ namespace ConnectAPIC.LayoutWindow.View
             this.GridY = gridY;
             this.ViewModel = viewModel;
             this.RotationCC = rotationCounterClockwise;
-            var rawposition = new Vector2(this.GridX * GameManager.TilePixelSize, this.GridY * GameManager.TilePixelSize);
-            Position = rawposition + GetPositionDisplacementAfterRotation();
+            var rawPosition = new Vector2(this.GridX * GameManager.TilePixelSize, this.GridY * GameManager.TilePixelSize);
+            Position = rawPosition + GetPositionDisplacementAfterRotation();
             Visible = true;
             HideLightVector();
         }

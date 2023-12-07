@@ -24,8 +24,8 @@ public partial class ToolBox : Node
 		var allComponentTypesNRs = ComponentViewFactory.GetAllComponentIDs();
 		foreach (int typeNumber in allComponentTypesNRs)
 		{
-			var bordersize = gridContainer.GetThemeConstant("h_separation");
-			var toolPixelSize = GameManager.TilePixelSize - bordersize;
+			var borderSize = gridContainer.GetThemeConstant("h_separation");
+			var toolPixelSize = GameManager.TilePixelSize - borderSize;
 			var componentInstance = ComponentViewFactory.CreateComponentView(typeNumber);
 			componentInstance.CustomMinimumSize = new Vector2 (toolPixelSize, toolPixelSize);
 			var componentSizeCorrection = componentInstance.GetBiggestSize() / toolPixelSize;

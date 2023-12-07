@@ -32,9 +32,9 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         public GridSMatrixAnalyzer MatrixAnalyzer { get; private set; } 
         public int MaxTileCount { get => Width * Height; }
 
-        public GridViewModel(GridView gridview, Grid grid, ILogger logger)
+        public GridViewModel(GridView gridView, Grid grid, ILogger logger)
         {
-            this.GridView = gridview;
+            this.GridView = gridView;
             this.Grid = grid;
             Logger = logger;
             //this.GridView.Columns = grid.Width;

@@ -17,8 +17,8 @@ namespace ConnectAPIC.Scripts.Helpers
 
             if (body == null)
             {
-                UnaryExpression ubody = (UnaryExpression)expr.Body;
-                body = ubody.Operand as MemberExpression;
+                UnaryExpression uBody = (UnaryExpression)expr.Body;
+                body = uBody.Operand as MemberExpression;
             }
 
             string variableName = body.Member.Name;

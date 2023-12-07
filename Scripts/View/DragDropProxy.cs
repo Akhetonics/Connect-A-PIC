@@ -44,7 +44,7 @@ public partial class DragDropProxy : Control
     public void ShowComponentDragPreview(Godot.Vector2 position, Control data, bool canDropData = true)
     {
         if (data == null) return;
-        CheckIfDragWasResetted();
+        CheckIfDragWasReset();
         if (DragPreview == null && data is ComponentView originalComponent)
         {
             DragPreview = originalComponent.Duplicate();
@@ -74,7 +74,7 @@ public partial class DragDropProxy : Control
         SetDragPreview(DragPreview);
     }
 
-    private void CheckIfDragWasResetted()
+    private void CheckIfDragWasReset()
     {
         if (DragPreview == null) return;
         try

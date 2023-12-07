@@ -25,10 +25,14 @@
     "*.gdshader",
     "*.py",
     "cspell.json",
-    "*.json"
+    "*.json",
+    "*.md"
   ],
   "words": [
+    "verlay",
     "fluence",
+    "Newtonsoft",
+    "Stylebox",
     "Kontext",
     "Menü",
     "Ausführen",

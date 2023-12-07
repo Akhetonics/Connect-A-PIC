@@ -73,7 +73,7 @@ namespace UnitTests
                 rightDownOut,
             };
             var connections = new SMatrix(allPins);
-            var Connectionweights = new Dictionary<(Guid, Guid), Complex>()
+            var ConnectionWeights = new Dictionary<(Guid, Guid), Complex>()
             {
                 { (leftUpIn, rightUpOut), new Complex(0.5, 0) },
                 { (leftUpIn, rightDownOut), new Complex(0.5, 0) },
@@ -86,7 +86,7 @@ namespace UnitTests
                 { (rightDownIn, leftDownOut), new Complex(0.5, 0) },
             };
 
-            connections.SetValues(Connectionweights);
+            connections.SetValues(ConnectionWeights);
             return new Component(connections, "placeCell_DirectionalCoupler", "", parts, 0, DiscreteRotation.R0);
         }
     

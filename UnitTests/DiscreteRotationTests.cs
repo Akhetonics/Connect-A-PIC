@@ -25,7 +25,7 @@ namespace UnitTests
             Assert.True(Cycles4 == 1);
         }
         [Fact]
-        public void Rotation90SideCorellationTests()
+        public void Rotation90SideCorrelationTests()
         {
             Assert.True((int)DiscreteRotation.R0 == (int)RectSide.Right);
             Assert.True((int)DiscreteRotation.R90 == (int)RectSide.Down, "Because both the rotation and Orientation should be clockwise as it is in the Godot Engine to be easily compatible");

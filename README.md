@@ -14,7 +14,7 @@ The designer is written in C# Godot 4 and consists of three projects:
 	* This S-Matrix can calculate the light-distribution of all light that goes through all the components. 
 	* Each component has a smaller S-Matrix that tells the engine how exactly the light goes from each pin of the component to each other pin - like if the phase shifts or if the light's intensity gets less through the path from one pin to the other pin inside of the component. 
     * The Model also has functions to export the whole game-grid to a python script that then can be used to actually manufacture the chip by sending it to a manufacturer. 
-* Then there is the view and the integrationtests of the Model - the view has no unittests as I didn't really find a testing suite for godot 4 - this was also one reason to separate the core functionality from the godot 4 engine. 
+* Then there is the view and the integrationtests of the Model - the view has no unit tests as I didn't really find a testing suite for godot 4 - this was also one reason to separate the core functionality from the godot 4 engine. 
 * There also is a shader for mixing the light colors properly together that uses phase calculations based on blue and red spheres
 
 # Target Audience

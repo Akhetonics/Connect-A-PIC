@@ -22,7 +22,7 @@ namespace ConnectAPIC.LayoutWindow.View
             Logger = logger;
             if (ComponentBaseScriptPath == null)
             {
-                Logger.PrintErr($"{nameof(ComponentBaseScriptPath)} has not been attached to ComponentviewFactory in the Godot Editor.");
+                Logger.PrintErr($"{nameof(ComponentBaseScriptPath)} has not been attached to ComponentViewFactory in the Godot Editor.");
             }
             Dictionary<int, ComponentSceneAndDraft> packedComponentScenes = new();
 
@@ -38,7 +38,7 @@ namespace ConnectAPIC.LayoutWindow.View
                     }
                 } catch( Exception ex)
                 {
-                    Logger.PrintErr($"Error Loading PackedScene '{componentDraft?.sceneResPath}' of Compopnent: {componentDraft?.identifier} ex: {ex.Message} )");
+                    Logger.PrintErr($"Error Loading PackedScene '{componentDraft?.sceneResPath}' of Component: {componentDraft?.identifier} ex: {ex.Message} )");
                     continue;
                 }
                 packedComponentScenes.Add(componentNumber, new ComponentSceneAndDraft()
@@ -56,7 +56,7 @@ namespace ConnectAPIC.LayoutWindow.View
         {
             if (!PackedComponentCache.ContainsKey(componentNR))
             {
-                Logger.PrintErr("Key does not exist in ComponentCache of ComponentviewFactory: " + componentNR);
+                Logger.PrintErr("Key does not exist in ComponentCache of ComponentViewFactory: " + componentNR);
             }
             var draft = PackedComponentCache[componentNR].Draft;
             var packedScene = PackedComponentCache[componentNR].Scene;

@@ -28,7 +28,7 @@ public class LightDistributionTests : TestClass
 
 		// first import all components so that we have curves. 
 		gameManager._Ready();
-		// create a curve at the position of one of the standardinputs and rotate it by 90 degrees and then start light distribution
+		// create a curve at the position of one of the standardInputs and rotate it by 90 degrees and then start light distribution
 
 
 

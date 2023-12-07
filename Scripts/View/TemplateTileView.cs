@@ -33,7 +33,7 @@ namespace ConnectAPIC.LayoutWindow.View
 
 		public override void _GuiInput(InputEvent inputEvent)
 		{
-			// override so that the tile cannot use middle click and rightclick
+			// override so that the tile cannot use middle click and right click
 		}
 	}
 
