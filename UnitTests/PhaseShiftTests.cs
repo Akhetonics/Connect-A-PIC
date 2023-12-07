@@ -18,11 +18,10 @@ namespace UnitTests
         [Fact]
         public static void ComplexFactorTest()
         {
-            // Beispiel für die Berechnung für zwei Bauteile
-            Complex factor1 = PhaseShiftCalculator.Calc(1); // Angenommen, die widthInTiles ist 1 für das erste Bauteil
-            Complex factor2 = PhaseShiftCalculator.Calc(1); // Angenommen, die widthInTiles ist 1 für das zweite Bauteil
+            Complex factor1 = PhaseShiftCalculator.GetDegrees(PhaseShiftCalculator.TileWidthInNM, PhaseShiftCalculator.laserWaveLengthRedNM); // widthInTiles is 1 for the first component
+            Complex factor2 = PhaseShiftCalculator.GetDegrees(PhaseShiftCalculator.TileWidthInNM, PhaseShiftCalculator.laserWaveLengthRedNM); // widthInTiles is 1 also for the second component
 
-            Complex result = factor1 * factor2; // Multiplizieren der Faktoren der beiden Bauteile
+            Complex result = factor1 * factor2; 
 
         }
         [Fact]
@@ -31,13 +30,13 @@ namespace UnitTests
             Grid grid = new(24, 12);
             var inputs = grid.ExternalPorts.Where(p => p.GetType() == typeof(StandardInput)).ToList();
             int inputHeight = inputs.FirstOrDefault()?.TilePositionY ?? throw new Exception("there is no StandardInput defined");
-            var firstComponent = new DirectionalCoupler();
+            var firstComponent = TestComponentFactory.CreateStraightWaveGuide();
             grid.PlaceComponent(0, inputHeight, firstComponent);
             var secondComponent = ExportNazcaTests.PlaceAndConcatenateComponent(grid, firstComponent);
             var thirdComponent = ExportNazcaTests.PlaceAndConcatenateComponent(grid, secondComponent);
             var fourthComponent = ExportNazcaTests.PlaceAndConcatenateComponent(grid, thirdComponent);
-            var orphant = new DirectionalCoupler();
-            grid.PlaceComponent(10, 5, orphant);
+            var orphan = TestComponentFactory.CreateStraightWaveGuide();
+            grid.PlaceComponent(10, 5, orphan);
 
             NazcaExporter exporter = new();
             var output = exporter.Export(grid);
@@ -45,7 +44,7 @@ namespace UnitTests
             var secondCellName = grid.Tiles[secondComponent.GridXMainTile, secondComponent.GridYMainTile].GetComponentCellName();
             var thirdCellName = grid.Tiles[thirdComponent.GridXMainTile, thirdComponent.GridYMainTile].GetComponentCellName();
             var fourthCellName = grid.Tiles[fourthComponent.GridXMainTile, fourthComponent.GridYMainTile].GetComponentCellName();
-            var orphanCellName = grid.Tiles[orphant.GridXMainTile, orphant.GridYMainTile].GetComponentCellName();
+            var orphanCellName = grid.Tiles[orphan.GridXMainTile, orphan.GridYMainTile].GetComponentCellName();
 
             // assert if all components are in the string output
             Assert.Contains(firstCellName, output);

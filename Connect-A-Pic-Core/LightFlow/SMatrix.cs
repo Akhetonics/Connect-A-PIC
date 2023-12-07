@@ -4,7 +4,7 @@ using MathNet.Numerics.LinearAlgebra;
 
 namespace CAP_Core.LightFlow
 {
-    public class SMatrix
+    public class SMatrix : ICloneable
     {
         public Matrix<Complex> SMat;
         public readonly List<Guid> PinReference;
@@ -23,10 +23,11 @@ namespace CAP_Core.LightFlow
             }
 
             SMat = Matrix<Complex>.Build.Dense(size, size);
-            PinReference = allPinsInGrid;
+            PinReference = new List<Guid>();
+            PinReference.AddRange(allPinsInGrid);
         }
 
-        public void SetValues(Dictionary<(Guid, Guid), Complex> transfers, bool reset = false)
+        public void SetValues(Dictionary<(Guid PinIdStart, Guid PinIdEnd), Complex> transfers, bool reset = false)
         {
             if (transfers == null || PinReference == null)
             {
@@ -49,7 +50,7 @@ namespace CAP_Core.LightFlow
             }
         }
 
-        public Dictionary<(Guid, Guid), Complex> GetNonNullValues()
+        public Dictionary<(Guid PinIdStart, Guid PinIdEnd), Complex> GetNonNullValues()
         {
             var transfers = new Dictionary<(Guid, Guid), Complex>();
             for (int i = 0; i < size; i++)
@@ -77,7 +78,7 @@ namespace CAP_Core.LightFlow
             return sysMat;
         }
 
-        // n is the number of timesteps to move forward "steps=3" would return the light propagation after 3 steps.
+        // n is the number of time steps to move forward "steps=3" would return the light propagation after 3 steps.
         public Dictionary<Guid, Complex>? GetLightPropagation(MathNet.Numerics.LinearAlgebra.Vector<Complex> inputVector, int maxSteps)
         {
             if (maxSteps < 1) return null;
@@ -138,6 +139,13 @@ namespace CAP_Core.LightFlow
             }
 
             return result.ToString();
+        }
+
+        public object Clone()
+        {
+            var clonedSMatrix = new SMatrix(PinReference);
+            clonedSMatrix.SetValues(GetNonNullValues());
+            return clonedSMatrix;
         }
     }
 }

@@ -13,12 +13,10 @@ namespace CAP_Core.Component.ComponentHelpers
         public static double laserWaveLengthGreenNM { get; set; } = 1310.0;
         public static double laserWaveLengthBlueNM { get; set; } = 980.0;
         public const double refractionIndexSiliconNitride = 2.0;
-        public static double Calc(int widthInTiles)
+        public static double GetDegrees(double waveGuideLength, double laserWaveLength)
         {
-            var waveGuideLength = TileWidthInNM * widthInTiles;
-
-            var phaseShift = 2 * Math.PI * refractionIndexSiliconNitride * waveGuideLength / laserWaveLengthRedNM;
-            phaseShift %= (2 * Math.PI);
+            var phaseShift = 360 * refractionIndexSiliconNitride * waveGuideLength / laserWaveLength;
+            phaseShift %= (360);
             return phaseShift;
         }
     }

@@ -2,17 +2,18 @@ using CAP_Core.Tiles;
 using System.ComponentModel;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Text.Json.Serialization;
 
 namespace CAP_Core.Component.ComponentHelpers
 {
-    public class Pin : INotifyPropertyChanged
+    public class Pin : INotifyPropertyChanged, ICloneable
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public string Name { get; set; } // the nazca name like b0, a0, a1}
         public Guid IDInFlow { get; set; }
         public Guid IDOutFlow { get; set; }
-        public Complex LightInflow { get; set; } // the light flowing into this component at this pin
-        public Complex LightOutflow { get; set; } // the light exiting this component at this pin
+        [JsonIgnore] public Complex LightInflow { get; set; } // the light flowing into this component at this pin
+        [JsonIgnore] public Complex LightOutflow { get; set; } // the light exiting this component at this pin
         private RectSide _side;
         public RectSide Side
         {
@@ -33,11 +34,16 @@ namespace CAP_Core.Component.ComponentHelpers
                 NotifyPropertyChanged();
             }
         }
+        public Pin(string Name, MatterType newMatterType, RectSide side, Guid idInFlow, Guid idOutFlow) : this(Name, newMatterType, side)
+        {
+            IDInFlow = idInFlow;
+            IDOutFlow = idOutFlow;
+        }
         public Pin(string Name, MatterType newMatterType, RectSide side) : this(Name, side)
         {
             MatterType = newMatterType;
         }
-        public Pin(string Name, RectSide side)
+        protected Pin(string Name, RectSide side)
         {
             Side = side;
             this.Name = Name;
@@ -55,11 +61,6 @@ namespace CAP_Core.Component.ComponentHelpers
             SetMatterType(MatterType.None);
             Name = "";
         }
-        public Pin Duplicate()
-        {
-            var duplicatedPin = new Pin(Name, MatterType, Side);
-            return duplicatedPin;
-        }
         private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
@@ -67,6 +68,12 @@ namespace CAP_Core.Component.ComponentHelpers
         public override string ToString()
         {
             return $"{Name}: {MatterType}";
+        }
+
+        public object Clone()
+        {
+            var clonedPin = new Pin(Name, MatterType, Side, IDInFlow , IDOutFlow);
+            return clonedPin;
         }
     }
 }

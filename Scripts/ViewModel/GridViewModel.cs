@@ -1,14 +1,13 @@
-﻿using CAP_Core;
+﻿using CAP_Contracts.Logger;
+using CAP_Core;
 using CAP_Core.CodeExporter;
 using CAP_Core.Component.ComponentHelpers;
 using CAP_Core.ExternalPorts;
-using CAP_Core.Helpers;
 using CAP_Core.LightFlow;
 using CAP_Core.Tiles;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scripts.Helpers;
-using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,20 +23,23 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         public ICommand DeleteComponentCommand { get; set; }
         public ICommand RotateComponentCommand { get; set; }
         public ICommand ExportToNazcaCommand { get; set; }
-        public ComponentBaseView[,] GridComponentViews { get; private set; }
+        public ComponentView[,] GridComponentViews { get; private set; }
         public int Width { get => GridComponentViews.GetLength(0); }
         public int Height { get => GridComponentViews.GetLength(1); }
         public Grid Grid { get; set; }
+        public ILogger Logger { get; }
         public GridView GridView { get; set; }
-        public GridSMatrixAnalyzer MatrixAnalyzer { get; private set; }
+        public GridSMatrixAnalyzer MatrixAnalyzer { get; private set; } 
         public int MaxTileCount { get => Width * Height; }
-        public GridViewModel(GridView gridview, Grid grid)
+
+        public GridViewModel(GridView gridView, Grid grid, ILogger logger)
         {
-            this.GridView = gridview;
+            this.GridView = gridView;
             this.Grid = grid;
+            Logger = logger;
             //this.GridView.Columns = grid.Width;
-            this.GridComponentViews = new ComponentBaseView[grid.Width, grid.Height];
-            CreateComponentCommand = new CreateComponentCommand(grid);
+            this.GridComponentViews = new ComponentView[grid.Width, grid.Height];
+            CreateComponentCommand = new CreateComponentCommand(grid,ComponentFactory.Instance);
             DeleteComponentCommand = new DeleteComponentCommand(grid);
             RotateComponentCommand = new RotateComponentCommand(grid);
             MoveComponentCommand = new MoveComponentCommand(grid);
@@ -45,9 +47,10 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             CreateEmptyField();
             this.Grid.OnComponentPlacedOnTile += Grid_OnComponentPlacedOnTile;
             this.Grid.OnComponentRemoved += Grid_OnComponentRemoved;
+            MatrixAnalyzer = new GridSMatrixAnalyzer(this.Grid);
         }
 
-        private void Grid_OnComponentRemoved(ComponentBase component, int x, int y)
+        private void Grid_OnComponentRemoved(Component component, int x, int y)
         {
             ResetTilesAt(x, y, component.WidthInTiles, component.HeightInTiles);
             if (GridView.lightPropagationIsPressed)
@@ -56,10 +59,9 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
                 ShowLightPropagation();
             }
         }
-        private void Grid_OnComponentPlacedOnTile(ComponentBase component, int gridX, int gridY)
+        private void Grid_OnComponentPlacedOnTile(Component component, int gridX, int gridY)
         {
-            Type componentViewType = ComponentViewModelTypeConverter.ToView(component.GetType());
-            CreateComponentViewOfType(gridX, gridY, component.Rotation90CounterClock, componentViewType, component);
+            CreateComponentView(gridX, gridY, component.Rotation90CounterClock, component.TypeNumber);
             if (GridView.lightPropagationIsPressed)
             {
                 HideLightPropagation();
@@ -80,7 +82,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             }
         }
 
-        public void RegisterComponentView(ComponentBaseView componentView)
+        public void RegisterComponentViewInGridView(ComponentView componentView)
         {
             for (int x = componentView.GridX; x < componentView.GridX + componentView.WidthInTiles; x++)
             {
@@ -108,11 +110,11 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
                 }
             }
         }
-        public ComponentBaseView CreateComponentViewOfType(int gridx, int gridy, DiscreteRotation rotationCounterClockwise, Type componentViewType, ComponentBase componentModel)
+        public ComponentView CreateComponentView(int gridX, int gridY, DiscreteRotation rotationCounterClockwise, int componentTypeNumber)
         {
-            var ComponentView = ComponentViewFactory.Instance.CreateComponentView(componentViewType);
-            ComponentView.RegisterInGrid(gridx, gridy, rotationCounterClockwise, this);
-            RegisterComponentView(ComponentView);
+            var ComponentView = GridView.ComponentViewFactory.CreateComponentView(componentTypeNumber);
+            ComponentView.RegisterInGrid(gridX, gridY, rotationCounterClockwise, this);
+            RegisterComponentViewInGridView(ComponentView);
             GridView.DragDropProxy.AddChild(ComponentView); // it has to be the child of the DragDropArea to be displayed
             return ComponentView;
         }
@@ -136,7 +138,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
 
         private void AssignLightToComponentViews(Dictionary<Guid, Complex> lightVector, LightColor color)
         {
-            List<ComponentBase> components = Grid.GetAllComponents();
+            List<Component> components = Grid.GetAllComponents();
             foreach (var componentModel in components)
             {
                 try
@@ -146,13 +148,13 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
                 }
                 catch (Exception ex)
                 {
-                    CustomLogger.PrintEx(ex);
+                    Logger.PrintErr(ex.Message);
                 }
 
             }
         }
 
-        public static List<LightAtPin> CalculateLightAtPins(Dictionary<Guid, Complex> lightVector, LightColor color, ComponentBase componentModel)
+        public static List<LightAtPin> CalculateLightAtPins(Dictionary<Guid, Complex> lightVector, LightColor color, Component componentModel)
         {
             List<LightAtPin> lightAtPins = new();
 
@@ -195,7 +197,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             }
             catch (Exception ex)
             {
-                CustomLogger.PrintEx(ex);
+                Logger.PrintErr(ex.Message);
             }
 
         }

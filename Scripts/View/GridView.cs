@@ -1,9 +1,11 @@
+using CAP_Contracts.Logger;
 using CAP_Core;
 using CAP_Core.Component.ComponentHelpers;
 using CAP_Core.ExternalPorts;
 using ConnectAPic.LayoutWindow;
 using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
+using ConnectAPIC.Scripts.Helpers;
 using Godot;
 using System;
 using System.Collections.Generic;
@@ -16,11 +18,21 @@ namespace ConnectAPIC.LayoutWindow.View
 	{
 
 		[Export] public DragDropProxy DragDropProxy;
+		[Export] public ComponentViewFactory ComponentViewFactory;
 		private GridViewModel ViewModel;
 
-		public void Initialize(GridViewModel viewModel)
+        public ILogger Logger { get; private set; }
+
+        public override void _Ready()
+        {
+            base._Ready();
+            this.CheckForNull(x => DragDropProxy);
+            this.CheckForNull(x => ComponentViewFactory);
+        }
+        public void Initialize(GridViewModel viewModel, ILogger logger)
 		{
 			this.ViewModel = viewModel;
+			this.Logger = logger;
 			DragDropProxy.OnGetDragData += _GetDragData;
 			DragDropProxy.OnCanDropData += _CanDropData;
 			DragDropProxy.OnDropData+= _DropData;
@@ -39,6 +51,7 @@ namespace ConnectAPIC.LayoutWindow.View
 				catch (Exception ex)
 				{
 					NotificationManager.Instance.Notify($"{ex.Message}",true);
+					Logger.PrintErr(ex.Message);
 				}
 			});
 		}
@@ -47,24 +60,31 @@ namespace ConnectAPIC.LayoutWindow.View
 		{
             lightPropagationIsPressed = button_pressed;
 
-            if (button_pressed)
-            {
-                ViewModel.HideLightPropagation();
-                ViewModel.ShowLightPropagation();
-            }
-            else
+			try
 			{
-				ViewModel.HideLightPropagation();
+                if (button_pressed)
+                {
+                    ViewModel.HideLightPropagation();
+                    ViewModel.ShowLightPropagation();
+                }
+                else
+                {
+                    ViewModel.HideLightPropagation();
+                }
+            } catch (Exception ex)
+			{
+				Logger.PrintErr (ex.Message);
 			}
+            
 		}
 
         public bool _CanDropData(Vector2 position, Variant data)
 		{
-			if (data.Obj is ComponentBaseView component)
+			if (data.Obj is ComponentView component)
 			{
 				int gridX = (int)position.X / GameManager.TilePixelSize;
 				int gridY = (int)position.Y / GameManager.TilePixelSize;
-				ComponentBase model = null;
+				Component model = null;
 				if (component.IsPlacedOnGrid())
 				{
                     model = ViewModel.Grid.GetComponentAt(component.GridX, component.GridY, component.WidthInTiles, component.HeightInTiles);
@@ -79,11 +99,11 @@ namespace ConnectAPIC.LayoutWindow.View
 		public void _DropData(Vector2 atPosition, Variant data)
 		{
 			Vector2I GridXY = LocalToMap(atPosition);
-			if (data.Obj is ComponentBaseView componentView)
+			if (data.Obj is ComponentView componentView)
 			{
 				if (!componentView.IsPlacedOnGrid())
 				{
-					ViewModel.CreateComponentCommand.Execute(new CreateComponentArgs(componentView.GetType(), GridXY.X, GridXY.Y, (DiscreteRotation)(componentView.RotationDegrees /90)));
+					ViewModel.CreateComponentCommand.Execute(new CreateComponentArgs(componentView.TypeNumber, GridXY.X, GridXY.Y, (DiscreteRotation)(componentView.RotationDegrees /90)));
 				}
 				else
 				{

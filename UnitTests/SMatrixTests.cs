@@ -1,5 +1,5 @@
 using CAP_Core;
-using CAP_Core.Component;
+using CAP_Core.Component.ComponentHelpers;
 using CAP_Core.LightFlow;
 using System.Numerics;
 
@@ -10,7 +10,7 @@ namespace UnitTests
         [Fact]
         public void TestDirectionalCoupler()
         {
-            var directionalCoupler = new DirectionalCoupler();
+            var directionalCoupler = TestComponentFactory.CreateDirectionalCoupler();
             var grid = new Grid(20,10);
             grid.PlaceComponent(0, grid.ExternalPorts[0].TilePositionY, directionalCoupler);
             var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid);
@@ -39,17 +39,17 @@ namespace UnitTests
         [Fact]
         public void TestSMatrixForGrid()
         {
-            var straight = new StraightWaveGuide();
-            var rotatedStraight = new StraightWaveGuide();
-            var directionalCoupler = new DirectionalCoupler();
-            var Grating = new GratingCoupler();
+            var straight = TestComponentFactory.CreateStraightWaveGuide();
+            var rotatedStraight = TestComponentFactory.CreateStraightWaveGuide();
+            var directionalCoupler = TestComponentFactory.CreateDirectionalCoupler();
+            var secondStraight = TestComponentFactory.CreateStraightWaveGuide();
 
             rotatedStraight.RotateBy90CounterClockwise();
             var grid = new Grid(20, 10);
             var inputPort = grid.ExternalPorts[0];
             grid.PlaceComponent(0, inputPort.TilePositionY, straight);
             grid.PlaceComponent(1, inputPort.TilePositionY, directionalCoupler);
-            grid.PlaceComponent(3, inputPort.TilePositionY, Grating);
+            grid.PlaceComponent(3, inputPort.TilePositionY, secondStraight);
             grid.PlaceComponent(0, inputPort.TilePositionY + 1, rotatedStraight);
 
             var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid);
@@ -58,14 +58,14 @@ namespace UnitTests
             var Straight_LiRoConnection = allComponentsSMatrices[0].GetNonNullValues().Single(b => b.Key == (straight.PinIdLeftIn(), straight.PinIdRightOut())).Value;
             var Straight_RiLoConnection = allComponentsSMatrices[0].GetNonNullValues().Single(b => b.Key == (straight.PinIdRightIn(), straight.PinIdLeftOut())).Value;
 
-            // test straightcomponent light throughput
+            // test straightComponent light throughput
             var straightCompLightVal = lightValues[straight.PinIdRightOut()];
 
             // test whole circuit's light throughput
-            var circuitLightVal = lightValues[Grating.PinIdLeftIn()]; // the light flows into the grating and therefore leaves the circuit.
+            var circuitLightVal = lightValues[secondStraight.PinIdLeftIn()]; // the light flows into the grating and therefore leaves the circuit.
             string allDebugInformation = gridSMatrixAnalyzer.ToString();
 
-            Assert.Contains(Grating.PinIdLeftOut(), lightValues);
+            Assert.Contains(secondStraight.PinIdLeftOut(), lightValues);
             Assert.Equal(1, straightCompLightVal.Real);
             Assert.Equal(0.5, circuitLightVal.Real);
             Assert.Equal(1, Straight_LiRoConnection.Real);

@@ -16,8 +16,8 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
         }
         public bool CanExecute(object parameter)
         {
-            if (parameter is DeleteComponentArgs deleteparams
-                && grid.GetComponentAt(deleteparams.gridX, deleteparams.gridY) != null)
+            if (parameter is DeleteComponentArgs deleteParameters
+                && grid.GetComponentAt(deleteParameters.gridX, deleteParameters.gridY) != null)
                 return true;
             return false;
         }
@@ -25,8 +25,8 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
         public void Execute(object parameter)
         {
             if (!CanExecute(parameter)) return;
-            var deleteparams = (DeleteComponentArgs)parameter;
-            grid.UnregisterComponentAt(deleteparams.gridX, deleteparams.gridY);
+            var deleteParameters = (DeleteComponentArgs)parameter;
+            grid.UnregisterComponentAt(deleteParameters.gridX, deleteParameters.gridY);
         }
     }
     public class DeleteComponentArgs

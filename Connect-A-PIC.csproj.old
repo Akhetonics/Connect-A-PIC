@@ -1,17 +1,70 @@
-<Project Sdk="Godot.NET.Sdk/4.0.3">
+﻿<Project Sdk="Godot.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
-    <EnableDynamicLoading>true</EnableDynamicLoading>
     <RootNamespace>ConnectAPIC</RootNamespace>
+    <StartAction>Program</StartAction>
+    <StartProgram>C:\Program Files\Godot_v4.1\Godot_v4.1\Godot_v4.1.exe</StartProgram>
+    <StartArguments>--path C:\dev\Akhetonics\Connect-A-PIC\</StartArguments>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
-
-  <ItemGroup>
-      <Compile Remove="Scenes\Program.cs" />
-      <Compile Remove="Scenes\Tests.cs" />
-      <Compile Remove="Scenes\Scenes.csproj" />
+  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+    <!-- Test dependencies go here! -->
+    <!-- Dependencies added here will not be included in release builds. -->
+    <!-- Used to drive test scenes when testing visual code -->
+    <PackageReference Include="GodotTestDriver" Version="2.1.0" />
+    <!-- Bring your own assertion library for tests! -->
+    <!-- We're using Shouldly for this example, but you can use anything. -->
+    <PackageReference Include="Shouldly" Version="4.2.1" />
+    <PackageReference Include="Moq" Version="4.20.69" />
   </ItemGroup>
-
   <ItemGroup>
+    <Compile Remove="CAP-DataAccess\**" />
+    <Compile Remove="CAP_Contracts\**" />
+    <Compile Remove="Connect-A-Pic-Core\**" />
+    <Compile Remove="libraries\**" />
+    <Compile Remove="PDK\**" />
+    <Compile Remove="Tests\**" />
+    <EmbeddedResource Remove="CAP-DataAccess\**" />
+    <EmbeddedResource Remove="CAP_Contracts\**" />
+    <EmbeddedResource Remove="Connect-A-Pic-Core\**" />
+    <EmbeddedResource Remove="libraries\**" />
+    <EmbeddedResource Remove="PDK\**" />
+    <EmbeddedResource Remove="Tests\**" />
+    <Compile Remove="UnitTests\**" />
+    <EmbeddedResource Remove="UnitTests\**" />
+    <Compile Remove="Scenes\Program.cs" />
+    <Compile Remove="Scenes\Tests.cs" />
+    <Compile Remove="Scenes\Scenes.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Chickensoft.GoDotTest" Version="1.2.3" />
+    <PackageReference Include="coverlet.collector" Version="6.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="coverlet.msbuild" Version="6.0.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
+    <None Include=".github\workflows\spellcheck.yaml" />
+    <None Include=".github\workflows\version_change.yaml" />
+    <None Include=".github\workflows\visual_tests.yaml" />
+    <None Include=".gitignore" />
+    <!-- <None Include="MathNet.Numerics.dll" /> -->
+    <None Include="README.md" />
+    <None Include="RunGodotTests.ps1" />
+    <None Include="Scenes\InGameConsole\InGameConsole.tscn" />
+    <ProjectReference Include="CAP-DataAccess\CAP-DataAccess.csproj" />
+    <ProjectReference Include="CAP_Contracts\CAP_Contracts.csproj" />
+    <ProjectReference Include="Connect-A-Pic-Core\CAP-Core.csproj" />
+    <PackageReference Update="GodotSharp" Version="4.1.3" />
+    <PackageReference Update="Godot.SourceGenerators" Version="4.1.3" />
+    <PackageReference Update="GodotSharpEditor" Version="4.1.3" />
   </ItemGroup>
+  <PropertyGroup>
+    <DefaultItemExcludes Condition="'$(Configuration)' == 'ExportRelease'">
+        $(DefaultItemExcludes);test/**/*
+    </DefaultItemExcludes>
+  </PropertyGroup>
 </Project>
