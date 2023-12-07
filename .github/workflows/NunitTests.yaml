@@ -29,4 +29,4 @@ jobs:
         run: dotnet restore
 
       - name: 🏃 Run xUnit Tests
-        run: dotnet test .\UnitTests\UnitTests.csproj --logger:trx
+        run: dotnet test ./UnitTests/UnitTests.csproj --logger:trx
