@@ -31,7 +31,7 @@ jobs:
       - name: Setup Godot
         uses: chickensoft-games/setup-godot@v1
         with:
-          version: global.version
+          version: godot_version
           
       - name: Build Windows EXE
         run: |
