@@ -16,6 +16,8 @@ jobs:
           lfs: true
           submodules: 'recursive'
 
+      - name: Print global.json
+        run: cat global.json
       - name: Read Godot version from global.json
         id: godot_version
         run: |
