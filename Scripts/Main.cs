@@ -10,7 +10,9 @@ using Chickensoft.GoDotTest;
 namespace ConnectAPIC;
 public partial class Main : Node2D
 {
+#if DEBUG
 	public TestEnvironment Environment = default!;
+#endif
 	[Export] public PackedScene GameEntryPointScene;
 
 	public override void _Ready()
@@ -31,7 +33,9 @@ public partial class Main : Node2D
 		// If we don't need to run tests, we can just switch to the game scene.
 		GetTree().ChangeSceneToPacked(GameEntryPointScene);
 	}
+#if DEBUG
 
 	private void RunTests()
 	  => _ = GoTest.RunTests(Assembly.GetExecutingAssembly(), this, Environment);
+#endif
 }

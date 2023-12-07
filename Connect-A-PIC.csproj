@@ -58,7 +58,6 @@
     <None Include="coverage.ps1" />
     <None Include="GodotTestVSIntegration.md" />
     <None Include="project.godot" />
-    <!-- <None Include="MathNet.Numerics.dll" /> -->
     <None Include="README.md" />
     <None Include="RunGodotTests.ps1" />
     <None Include="Scenes\InGameConsole\InGameConsole.tscn" />
