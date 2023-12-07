@@ -35,7 +35,7 @@ jobs:
           
       - name: Build Windows EXE
         run: |
-          godot --no-window --export "Windows Desktop" ConnectAPIC.exe
+          godot --no-window --export-release "Windows Desktop" ConnectAPIC.exe
         env:
           GODOT_EXPORT_PATH: ${{ github.workspace }}
 
