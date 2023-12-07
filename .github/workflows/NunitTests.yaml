@@ -1,0 +1,32 @@
+name: 🔍 xUnit Tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  nunit_tests:
+    name: 🔍 xUnit Tests
+    runs-on: ubuntu-latest
+
+    env:
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+      DOTNET_NOLOGO: true
+
+    steps:
+      - name: 🧾 Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          submodules: 'recursive'
+
+      - name: 💽 Setup .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          global-json-file: global.json
+
+      - name: 📦 Restore Dependencies
+        run: dotnet restore
+
+      - name: 🏃 Run xUnit Tests
+        run: dotnet test .\UnitTests\UnitTests.csproj --logger:trx
