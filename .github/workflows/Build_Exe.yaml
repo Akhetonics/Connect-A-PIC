@@ -1,4 +1,4 @@
-name: Build Godot Windows EXE
+name: 🖥️ Build Windows EXE
 
 on:
   push:
@@ -19,11 +19,20 @@ jobs:
       - name: Read Godot version from global.json
         id: godot_version
         run: echo "::set-output name=VERSION::$(jq -r '.msbuild-sdks["Godot.NET.Sdk"]' global.json)"
+      - name: Read Godot version from global.json
+        id: godot_version
+        run: |
+          GODOT_VERSION=$(jq -r '.msbuild-sdks["Godot.NET.Sdk"]' global.json)
+          echo "Godot version: $GODOT_VERSION"
+          echo "::set-output name=VERSION::$GODOT_VERSION"
+
+      - name: Print extracted version
+        run: echo "The extracted Godot version is ${{ steps.godot_version.outputs.VERSION }}"
 
       - name: Setup Godot
         uses: chickensoft-games/setup-godot@v1
         with:
-          version: ${{ steps.godot_version.outputs.VERSION }}
+          version: global.version
           
       - name: Build Windows EXE
         run: |
