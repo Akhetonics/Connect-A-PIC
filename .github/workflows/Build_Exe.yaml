@@ -1,16 +1,11 @@
 name: 🖥️ Build Windows EXE
 
 on:
-  push:
-    branches:
-      - main
-    tags:
-      - 'v*'
-  pull_request:
-    types: [closed]
-    branches:
-      - main
-
+  workflow_call:
+    inputs:
+      version:
+        required: true
+        type: string
 jobs:
   build_windows_exe:
     name: Build Windows EXE
@@ -23,8 +18,8 @@ jobs:
           lfs: true
           submodules: 'recursive'
       
-      - name: Print Tag Name
-        run: echo "The tag name is ${{ github.ref_name }}"
+      - name: Print Version Parameter
+        run: echo "The Version provided as parameter is ${{ inputs.version }}"
 
       - name: Read Godot version from global.json
         id: godot_version
@@ -59,8 +54,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{github.ref_name }}
-          release_name: Release ${{ github.ref_name }}
+          tag_name: v${{ inputs.version }}
+          release_name: Release v${{ inputs.version }}
           draft: false
           prerelease: false
           body: "automatically generated release"
