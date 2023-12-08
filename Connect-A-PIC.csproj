@@ -64,6 +64,11 @@
     <None Include="README.md" />
     <None Include="RunGodotTests.ps1" />
     <None Include="Scenes\InGameConsole\InGameConsole.tscn" />
+    <None Include="Scenes\Main.tscn" />
+    <None Include="Scenes\NotificationBox.tscn" />
+    <None Include="Scenes\PICEditor.tscn" />
+    <None Include="Scenes\StartMenu.tscn" />
+    <None Include="Scenes\ToolBox\Tool_box.tscn" />
     <ProjectReference Include="CAP-DataAccess\CAP-DataAccess.csproj" />
     <ProjectReference Include="CAP_Contracts\CAP_Contracts.csproj" />
     <ProjectReference Include="Connect-A-Pic-Core\CAP-Core.csproj" />

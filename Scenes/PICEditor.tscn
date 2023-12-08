@@ -464,19 +464,6 @@ mouse_filter = 1
 script = ExtResource("2_av7q5")
 metadata/_edit_use_anchors_ = true
 
-[node name="Debug_Delete this _Shader Tests" type="Node2D" parent="."]
-visible = false
-
-[node name="BackBufferCopy" type="BackBufferCopy" parent="Debug_Delete this _Shader Tests"]
-visible = false
-position = Vector2(213, 53)
-scale = Vector2(0.98, 0.88)
-
-[node name="BackBufferCopy2" type="BackBufferCopy" parent="Debug_Delete this _Shader Tests"]
-visible = false
-position = Vector2(80.9999, 39)
-scale = Vector2(0.98, 0.88)
-
 [node name="NotificationManager" type="Node" parent="."]
 script = ExtResource("2_nntly")
 NotificationBoxScene = ExtResource("12_o0640")

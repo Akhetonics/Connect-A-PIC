@@ -2,8 +2,14 @@ name: 🖥️ Build Windows EXE
 
 on:
   push:
+    branches:
+      - main
     tags:
       - 'v*'
+  pull_request:
+    types: [closed]
+    branches:
+      - main
 
 jobs:
   build_windows_exe:
@@ -36,16 +42,16 @@ jobs:
           version: ${{ steps.godot_version.outputs.VERSION }}
       
       - name: Create Build Directory
-        run: mkdir -p ${{ github.workspace }}/builds
+        run: mkdir -p ${{ github.workspace }}/Release
 
       - name: Build Windows EXE
         run: |
-          godot --headless --export-release "Windows Desktop" /builds/ConnectAPIC.exe
+          godot --headless --export-release "Windows Desktop"
         env:
           GODOT_EXPORT_PATH: ${{ github.workspace }}
 
       - name: Zip Release Build
-        run: zip -r ConnectAPIC.zip ${{ github.workspace }}/builds/
+        run: zip -r ConnectAPIC.zip ${{ github.workspace }}/Release/
 
       - name: Create GitHub Release
         id: create_release
