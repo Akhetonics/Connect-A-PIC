@@ -1,9 +1,11 @@
 name: 🖥️ Build Windows EXE
 
 on:
+  workflow_dispatch:    
   push:
     branches:
-      - main 
+      - main
+      - fix
     paths:
       - '**/Connect-A-PIC.csproj'
 
