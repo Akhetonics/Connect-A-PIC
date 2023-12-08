@@ -2,14 +2,8 @@ name: 🖥️ Build Windows EXE
 
 on:
   push:
-    branches:
-      - main
     tags:
       - 'v*'
-  pull_request:
-    types: [closed]
-    branches:
-      - main
 
 jobs:
   build_windows_exe:
@@ -46,8 +40,6 @@ jobs:
 
       - name: Build Windows EXE
         run: |
-          # Xvfb :99 &
-          # export DISPLAY=:99
           godot --headless --export-release "Windows Desktop" /builds/ConnectAPIC.exe
         env:
           GODOT_EXPORT_PATH: ${{ github.workspace }}
