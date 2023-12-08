@@ -19,13 +19,14 @@ jobs:
         with:
           file: "Connect-A-PIC.csproj"
           version: ${{ github.event.inputs.version }}
-
+      - name: '📝 Update README.md'
+        run: |
+          sed -i 's/<!--version-->.*<!--version-->/<!--version-->${{ github.event.inputs.version }}<!--version-->/' README.md
       - name: '⤴️ Create Pull Request'
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           branch: version/${{ github.event.inputs.version }}
-          commit-message: update version to ${{ github.event.inputs.version }}
+          commit-message: "Update version to ${{ github.event.inputs.version }}"
           title: 'chore(project): update version to ${{ github.event.inputs.version }}'
-          body: >
-            chore(project): update the version to ${{ github.event.inputs.version }}.
+          body: 'chore(project): update the version to ${{ github.event.inputs.version }}.'
