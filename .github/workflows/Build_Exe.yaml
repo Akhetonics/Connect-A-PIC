@@ -2,7 +2,14 @@ name: 🖥️ Build Windows EXE
 
 on:
   push:
+    branches:
+      - main
+    tags:
+      - 'v*'
   pull_request:
+    types: [closed]
+    branches:
+      - main
 
 jobs:
   build_windows_exe:
@@ -30,17 +37,23 @@ jobs:
         uses: chickensoft-games/setup-godot@v1
         with:
           version: ${{ steps.godot_version.outputs.VERSION }}
-          
+      
+      - name: Create Build Directory
+        run: mkdir -p ${{ github.workspace }}/builds
+
       - name: Build Windows EXE
         run: |
-          Xvfb :99 &
-          export DISPLAY=:99
-          godot --no-window --export-release "Windows Desktop" ConnectAPIC.exe
+          # Xvfb :99 &
+          # export DISPLAY=:99
+          godot --headless --export-release "Windows Desktop" /builds/ConnectAPIC.exe
         env:
           GODOT_EXPORT_PATH: ${{ github.workspace }}
 
-      - name: Upload EXE
+      - name: Zip Release Build
+        run: zip -r ConnectAPIC.zip ${{ github.workspace }}/builds/
+
+      - name: Upload ZIP
         uses: actions/upload-artifact@v3
         with:
-          name: ConnectAPIC Windows Executable
-          path: ConnectAPIC.exe
+          name: ConnectAPIC Release ZIP
+          path: ConnectAPIC.zip
