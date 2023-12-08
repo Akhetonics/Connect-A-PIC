@@ -53,9 +53,11 @@ jobs:
           GODOT_EXPORT_PATH: ${{ github.workspace }}
 
       - name: Zip Release Build
+        id: zip_build
         run: |
           $zipPath = Join-Path "${{ github.workspace }}" "ConnectAPIC.zip"
           Compress-Archive -Path "${{ github.workspace }}\Release\*" -DestinationPath $zipPath
+          echo "::set-output name=zip_path::$zipPath"
         shell: pwsh
 
       - name: Create GitHub Release
@@ -76,6 +78,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: $zipPath
+          asset_path: ${{ steps.zip_build.outputs.zip_path }}
           asset_name: ConnectAPIC.zip
           asset_content_type: application/zip
