@@ -19,9 +19,18 @@ jobs:
         with:
           file: "Connect-A-PIC.csproj"
           version: ${{ github.event.inputs.version }}
+
       - name: '📝 Update README.md'
         run: |
           sed -i 's/<!--version-->.*<!--version-->/<!--version-->${{ github.event.inputs.version }}<!--version-->/' README.md
+
+      - name: '🏷️ Create and Push Tag'
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git tag v${{ github.event.inputs.version }}
+          git push origin v${{ github.event.inputs.version }}
+
       - name: '⤴️ Create Pull Request'
         uses: peter-evans/create-pull-request@v5
         with:
