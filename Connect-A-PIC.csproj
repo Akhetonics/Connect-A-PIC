@@ -1,4 +1,4 @@
-﻿<Project Sdk="Godot.NET.Sdk/4.1.2">
+﻿<Project Sdk="Godot.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>ConnectAPIC</RootNamespace>
@@ -8,13 +8,10 @@
     <StartArguments>--path C:\dev\Akhetonics\Connect-A-PIC\</StartArguments>
     <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
-  <ItemGroup Condition="'$(Configuration)' == 'Debug'">
+  <ItemGroup > 
+    <!-- Condition="'$(Configuration)' == 'Debug'" -->
     <!-- Test dependencies go here! -->
-    <!-- Dependencies added here will not be included in release builds. -->
-    <!-- Used to drive test scenes when testing visual code -->
     <PackageReference Include="GodotTestDriver" Version="2.1.0" />
-    <!-- Bring your own assertion library for tests! -->
-    <!-- We're using Shouldly for this example, but you can use anything. -->
     <PackageReference Include="Shouldly" Version="4.2.1" />
     <PackageReference Include="Moq" Version="4.20.69" />
   </ItemGroup>
