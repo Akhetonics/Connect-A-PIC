@@ -52,8 +52,15 @@ jobs:
       - name: Zip Release Build
         run: zip -r ConnectAPIC.zip ${{ github.workspace }}/builds/
 
-      - name: Upload ZIP
-        uses: actions/upload-artifact@v3
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: ConnectAPIC Release ZIP
-          path: ConnectAPIC.zip
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+          body: "Beschreibung der Release hier einfügen"
+          assets: ${{ github.workspace }}/ConnectAPIC.zip
