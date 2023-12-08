@@ -6,6 +6,12 @@ Gamification of PIC Design (PIC = Photonic integrated circuit)
 
 ![image](https://github.com/Akhetonics/Connect-A-PIC/assets/18228325/cde9edb5-f93c-452d-b046-a02134fbc1ba)
 
+## Downloads
+
+You can download the newest releases [here](https://github.com/Akhetonics/Connect-A-PIC/releases).
+
+# About Connect a PIC
+
 This Software wants to provide a very simple way of designing optical circuits on a chip that is then printable using our export to Nazca-Python function
 The designer is written in C# Godot 4 and consists of three projects: 
 
