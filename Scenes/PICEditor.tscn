@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://cu6wqy6xwjfo1"]
+[gd_scene load_steps=18 format=3 uid="uid://cu6wqy6xwjfo1"]
 
 [ext_resource type="Script" path="res://Scripts/GameManager.cs" id="1_1g8p6"]
 [ext_resource type="Script" path="res://Scripts/View/GridView.cs" id="1_2pqex"]
@@ -9,7 +9,6 @@
 [ext_resource type="Script" path="res://Scripts/View/ComponentFactory/ComponentViewFactory.cs" id="7_x7uef"]
 [ext_resource type="PackedScene" uid="uid://dfrjm1onsjusf" path="res://Scenes/ToolBox/Tool_box.tscn" id="10_ir1q2"]
 [ext_resource type="PackedScene" uid="uid://bscqmaslppyt8" path="res://Scenes/NotificationBox.tscn" id="12_o0640"]
-[ext_resource type="Script" path="res://Scripts/View/ComponentFactory/PCKLoader.cs" id="15_wk10j"]
 [ext_resource type="PackedScene" uid="uid://batxcdg720fpl" path="res://Scenes/ExternalInputs/external_input_blue_template.tscn" id="24_57qdu"]
 [ext_resource type="PackedScene" uid="uid://bd8isg4mddv21" path="res://Scenes/InGameConsole/InGameConsole.tscn" id="24_wq416"]
 [ext_resource type="PackedScene" uid="uid://b6do0hy7ny7x2" path="res://Scenes/ExternalInputs/external_input_red_template.tscn" id="25_ns08j"]
@@ -446,10 +445,6 @@ InGameConsole = NodePath("InGameConsole")
 [node name="ComponentViewFactory" type="Node" parent="."]
 script = ExtResource("7_x7uef")
 ComponentBaseScriptPath = ExtResource("3_hlrce")
-
-[node name="ComponentImporter" type="Node" parent="."]
-script = ExtResource("15_wk10j")
-PckFilesConcatenated = "res://Scenes/Components/Bend/BendPCK.pck;res://Scenes/Components/DirectionalCoupler/DirectionalCouplerPCK.pck;res://Scenes/Components/GratingCoupler/GratingCouplerPCK.pck;res://Scenes/Components/Straight/StraightPCK.pck"
 
 [node name="MapBackground" type="TileMap" parent="." node_paths=PackedStringArray("DragDropProxy", "ComponentViewFactory")]
 position = Vector2(155.395, 42.7)
