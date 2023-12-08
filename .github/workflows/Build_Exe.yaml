@@ -59,10 +59,15 @@ jobs:
 
       - name: Build Windows EXE
         run: |
-          & "C:\\Users\\runneradmin\\godot\\Godot_v4.1.3-stable_mono_win64\\Godot_v4.1.3-stable_mono_win64.exe" --headless --export-release "Windows Desktop"
+          $godotPath = "C:\\Users\\runneradmin\\godot\\Godot_v4.1.3-stable_mono_win64\\Godot_v4.1.3-stable_mono_win64.exe"
+          $godotArgs = "--headless", "--export-release", "`"Windows Desktop`""
+          $godotProcess = Start-Process -FilePath $godotPath -ArgumentList $godotArgs -PassThru
+          $godotProcess.WaitForExit()
+        shell: pwsh
         env:
           GODOT_EXPORT_PATH: ${{ github.workspace }}\Release
           GODOT_EXPORT_PRESET: "Windows Desktop"
+
 
       - name: Zip Release Build
         id: zip_build
