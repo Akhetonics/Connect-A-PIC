@@ -8,6 +8,8 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using static System.Net.Mime.MediaTypeNames;
+using System.Reflection;
 
 public partial class Console : ScrollContainer
 {
@@ -17,8 +19,8 @@ public partial class Console : ScrollContainer
 	private bool visibilityChanged = false;
 
 	public override void _Ready()
-	{
-		this.CheckForNull(x => x.LoggingParent);
+	{   
+        this.CheckForNull(x => x.LoggingParent);
 		this.CheckForNull(x => x.InfoTextTemplate);
 		this.CheckForNull(x => x.ErrorTextTemplate);
 		Hide();
@@ -36,7 +38,7 @@ public partial class Console : ScrollContainer
 				PrintInfo(obj.Message);
 			}
 		};
-	}
+    }
 	public void PrintInfo(string text)
 	{
 		GD.Print(text);

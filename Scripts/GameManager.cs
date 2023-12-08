@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
+using YamlDotNet.Core;
 
 namespace ConnectAPic.LayoutWindow
 {
@@ -37,7 +38,8 @@ namespace ConnectAPic.LayoutWindow
 		public static int TilePixelSize { get; private set; } = 62;
 		public static int TileBorderLeftDown { get; private set; } = 2;
 		public GridView GridView { get; set; }
-		public Grid Grid { get; set; }
+        public System.Version Version => Assembly.GetExecutingAssembly().GetName().Version; // Get the version from the assembly
+        public Grid Grid { get; set; }
 		public static GameManager instance;
 		public CAP_Core.Logger Logger { get; set; }
 		public LogSaver LogSaver { get; set; }
@@ -54,7 +56,7 @@ namespace ConnectAPic.LayoutWindow
 				try
 				{
 					instance = this;
-					InitializeLoggingSystem();
+					InitializeLoggingSystemAndConsole();
 					InitializeGridAndGridView();
 					InitializeExternalPortViews(Grid.ExternalPorts);
 					PCKLoader = new(ComponentFolderPath, Logger);
@@ -69,13 +71,14 @@ namespace ConnectAPic.LayoutWindow
 				QueueFree(); // delete this object as there is already another GameManager in the scene
 			}
 		}
-		private void InitializeLoggingSystem()
+		private void InitializeLoggingSystemAndConsole()
 		{
 			Logger = new CAP_Core.Logger();
 			LogSaver = new LogSaver(Logger);
 			this.CheckForNull(x => x.InGameConsole);
 			InGameConsole.Initialize(Logger);
 			Logger.AddLog(CAP_Contracts.Logger.LogLevel.Debug, "Initialized LoggingSystem");
+			Logger.AddLog(CAP_Contracts.Logger.LogLevel.Debug, "Program Version: " + Version);
 		}
 
 		private void InitializeToolBox(ComponentViewFactory componentViewFactory)
