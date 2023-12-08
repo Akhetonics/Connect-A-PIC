@@ -50,7 +50,8 @@ jobs:
         run: |
           godot --headless --export-release "Windows Desktop"
         env:
-          GODOT_EXPORT_PATH: ${{ github.workspace }}
+          GODOT_EXPORT_PATH: ${{ github.workspace }}\Release
+          GODOT_EXPORT_PRESET: "Windows Desktop"
 
       - name: Zip Release Build
         id: zip_build
@@ -62,7 +63,8 @@ jobs:
 
       - name: List files in Release Directory
         run: |
-          Get-ChildItem -Path ${{ github.workspace }} -Recurse | ForEach-Object { Write-Host $_.FullName }
+          echo "list files in folder ${{ github.workspace }}\\Release"
+          Get-ChildItem -Path ${{ github.workspace }}\\Release -Recurse | ForEach-Object { Write-Host $_.FullName }
         shell: pwsh
 
       - name: Create GitHub Release
