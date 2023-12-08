@@ -22,6 +22,9 @@ jobs:
         with:
           lfs: true
           submodules: 'recursive'
+      
+      - name: Print Tag Name
+        run: echo "The tag name is ${{ github.ref_name }}"
 
       - name: Read Godot version from global.json
         id: godot_version
@@ -58,9 +61,18 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: ${{github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
           draft: false
           prerelease: false
-          body: "Beschreibung der Release hier einfügen"
-          assets: ${{ github.workspace }}/ConnectAPIC.zip
+          body: "automatically generated release"
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./ConnectAPIC.zip
+          asset_name: ConnectAPIC.zip
+          asset_content_type: application/zip
