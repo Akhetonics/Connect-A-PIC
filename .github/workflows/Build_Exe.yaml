@@ -55,26 +55,13 @@ jobs:
       - name: Zip Release Build
         run: |
           cd ${{ github.workspace }}/Release
-          zip -r ../../ConnectAPIC.zip .
-
-      - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: v${{ steps.project_version.outputs.VERSION }}
-          release_name: Release v${{ steps.project_version.outputs.VERSION }}
-          draft: false
-          prerelease: false
-          body: "automatically generated release"
+          zip -r ../ConnectAPIC.zip .
+          cd ..
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./ConnectAPIC.zip
+          asset_path: ${{ github.workspace }}/ConnectAPIC.zip
           asset_name: ConnectAPIC.zip
           asset_content_type: application/zip
