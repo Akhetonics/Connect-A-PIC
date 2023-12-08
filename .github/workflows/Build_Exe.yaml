@@ -48,10 +48,6 @@ jobs:
       - name: Create Build Directory
         run: mkdir -p ${{ github.workspace }}\\Release
 
-      - name: Print GODOT Environment Variable
-        run: |
-          echo "GODOT variable: $Env:GODOT"
-          echo "GODOT4 variable: $Env:GODOT4"
         shell: pwsh
       - name: List Godot Directory
         run: |
@@ -61,23 +57,9 @@ jobs:
           GODOT: ${{ env.GODOT }}
           GODOT4: ${{ env.GODOT4 }}
 
-      - name: Find Godot Executable
+      - name: Build Windows EXE
         run: |
-          $godotPath = $Env:GODOT
-          $godotExe = Get-ChildItem -Path $godotPath -Filter *.exe -Recurse | Where-Object { $_.Name -notlike "*console*" } | Select-Object -First 1
-          if ($godotExe -ne $null) {
-            echo "Found Godot executable: $($godotExe.FullName)"
-            # Führen Sie hier den Export-Befehl aus
-            & $godotExe.FullName --headless --export-release "Windows Desktop"
-          } else {
-              Write-Error "Godot executable not found"
-          }
-        shell: pwsh
-        env:
-          GODOT: ${{ env.GODOT }}
-          GODOT4: ${{ env.GODOT4 }}
-          GODOT_EXPORT_PATH: ${{ github.workspace }}\Release
-          GODOT_EXPORT_PRESET: "Windows Desktop"
+          "C:\Users\\runneradmin\godot\Godot_v4.1.3-stable_mono_win64\Godot_v4.1.3-stable_mono_win64.exe" --headless --export-release "Windows Desktop"
 
 
       - name: Zip Release Build
