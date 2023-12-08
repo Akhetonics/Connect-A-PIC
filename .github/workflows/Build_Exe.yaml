@@ -1,0 +1,46 @@
+name: 🖥️ Build Windows EXE
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build_windows_exe:
+    name: Build Windows EXE
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🧾 Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          submodules: 'recursive'
+
+      - name: Read Godot version from global.json
+        id: godot_version
+        run: |
+          GODOT_VERSION=$(jq -r '."msbuild-sdks"."Godot.NET.Sdk"' global.json)
+          echo "Godot version: $GODOT_VERSION"
+          echo "::set-output name=VERSION::$GODOT_VERSION"
+
+      - name: Print extracted version
+        run: echo "The extracted Godot version is ${{ steps.godot_version.outputs.VERSION }}"
+
+      - name: Setup Godot
+        uses: chickensoft-games/setup-godot@v1
+        with:
+          version: ${{ steps.godot_version.outputs.VERSION }}
+          
+      - name: Build Windows EXE
+        run: |
+          Xvfb :99 &
+          export DISPLAY=:99
+          godot --no-window --export-release "Windows Desktop" ConnectAPIC.exe
+        env:
+          GODOT_EXPORT_PATH: ${{ github.workspace }}
+
+      - name: Upload EXE
+        uses: actions/upload-artifact@v3
+        with:
+          name: ConnectAPIC Windows Executable
+          path: ConnectAPIC.exe

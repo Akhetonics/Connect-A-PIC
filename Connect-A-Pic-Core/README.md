@@ -9,8 +9,8 @@ Our Target Audience is students and scientists that are interested in photonics.
 * Install Visual Studio 
 * Install Godot Engine and add Path to your "PATH"- Environment Variable
 * Clone this project into a nice folder
-* Setup Launch Profile for visual Studio where 
-	* "Path to the executale to run" is the Path to your godot_v4.0-beta_mono_win64.exe 
+* Setup Launch profile for visual Studio where 
+	* "Path to the executable to run" is the Path to your godot_v4.0-beta_mono_win64.exe 
 	* Command Line Arguments is '--path . --verbose'
 	* Working Directory is '.'
 * Install Submodules using 'git submodule init' and then 'git submodule update --recursive --remote'

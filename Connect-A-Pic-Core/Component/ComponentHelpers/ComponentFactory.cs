@@ -1,10 +1,12 @@
-using AtetDataFormats.OpenEPDA;
+
+using CAP_Core.Helpers;
 
 namespace CAP_Core.Component.ComponentHelpers
 {
     public class ComponentFactory
     {
-        private static ComponentFactory instance;
+        private List<Component> ComponentDrafts { set; get; } = new List<Component>();
+        private static ComponentFactory instance = instance ?? new ComponentFactory();
         public static ComponentFactory Instance
         {
             get
@@ -13,23 +15,20 @@ namespace CAP_Core.Component.ComponentHelpers
                 return instance;
             }
         }
-        public ComponentBase CreateComponent(Type T)
+        public Component CreateComponent(int componentTypeNumber)
         {
-            if (!typeof(ComponentBase).IsAssignableFrom(T))
-                throw new ArgumentException($"Type is not of {nameof(ComponentBase)}: {nameof(T) + " " + T.FullName}");
-
-            if (!T.IsClass || T.IsAbstract || T.GetConstructor(Type.EmptyTypes) == null)
-                throw new ArgumentException($"Type is abstract or has no empty constructor: {nameof(T) + " " + T.FullName}");
-
-            return (ComponentBase)Activator.CreateInstance(T);
+            var newComponent = ComponentDrafts.Single(component => component.TypeNumber == componentTypeNumber);
+            return (Component)newComponent.Clone();
         }
 
-        public ComponentBase LoadComponent(string yamlOfSBBComponent)
+        public IntVector GetDimensions(int componentTypeNumber)
         {
-            SBB sbb = SBBBuilder.createSBB(yamlOfSBBComponent);
-            ComponentBase newComponent;
-            // create Component from sbb
-            throw new NotImplementedException();
+            var componentDraft = ComponentDrafts.Single(component => component.TypeNumber == componentTypeNumber);
+            return new IntVector(componentDraft.WidthInTiles, componentDraft.HeightInTiles);
+        }
+        public void InitializeComponentDrafts(List<Component> componentDrafts)
+        {
+            this.ComponentDrafts = componentDrafts;
         }
     }
 }

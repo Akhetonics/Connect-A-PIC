@@ -8,7 +8,7 @@ namespace CAP_Core.Component.ComponentHelpers
     {
         public string ComponentTypeName { get; set; }
         public string BlockingComponentInfo { get; set; }
-        public ComponentCannotBePlacedException(ComponentBase? component, ComponentBase ?blockingComponent)
+        public ComponentCannotBePlacedException(Component? component, Component ?blockingComponent)
             : base(blockingComponent?.ToString()
                   + "\n## Unable to Place this component ##: \n"
                   + component?.ToString())

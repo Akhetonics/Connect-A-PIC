@@ -14,14 +14,13 @@ namespace CAP_Core.LightFlow
         private string GetSMatrixWithPinNames(SMatrix matrix)
         {
             if (matrix == null) return "";
-            // get the smatrix tostring of the whole systemmatrix, also get the LightPropagation vector, replace the IDs of the pins with the name of the pin
             var allPinsInField = GetAllPinShortNames();
-            var outputstring = matrix.ToString();
+            var matrixStringified = matrix.ToString();
             foreach (Guid guid in matrix.PinReference)
             {
-                outputstring = outputstring.Replace(guid.ToString()[..SMatrix.MaxToStringPinGuidSize], allPinsInField[guid]);
+                matrixStringified = matrixStringified.Replace(guid.ToString()[..SMatrix.MaxToStringPinGuidSize], allPinsInField[guid]);
             }
-            return outputstring;
+            return matrixStringified;
         }
         private Dictionary<Guid, string> GetAllPinShortNames()
         {
@@ -39,10 +38,10 @@ namespace CAP_Core.LightFlow
                         if (pin == null) continue;
                         var componentTypeName = component.GetType().Name[..3];
                         var sideShort = Enum.GetName(typeof(RectSide), side)[..1];
-                        var pinname = $"{componentTypeName}[{x},{y}]{sideShort}i";
-                        PinsProcessed.Add(pin.IDInFlow, pinname);
-                        pinname = $"{componentTypeName}[{x},{y}]{sideShort}o";
-                        PinsProcessed.Add(pin.IDOutFlow, pinname);
+                        var pinName = $"{componentTypeName}[{x},{y}]{sideShort}i";
+                        PinsProcessed.Add(pin.IDInFlow, pinName);
+                        pinName = $"{componentTypeName}[{x},{y}]{sideShort}o";
+                        PinsProcessed.Add(pin.IDOutFlow, pinName);
                     }
                 }
             }
@@ -66,20 +65,20 @@ namespace CAP_Core.LightFlow
             all += $"SystemMatrix \n{SystemSMatrixWithNamedPins}";
 
             var allPinsInField = GetAllPinShortNames();
-            var outputstring = all;
-            outputstring += "\n\nLightPropagationVector:\n\n";
+            var outputString = all;
+            outputString += "\n\nLightPropagationVector:\n\n";
 
             foreach (var color in Enum.GetValues(typeof(LightColor)).OfType<LightColor>())
             {
                 foreach (var lightIntensity in Analyzer.CalculateLightPropagation(color))
                 {
                     string lightColorName = Enum.GetName(typeof(LightColor), color);
-                    outputstring += $"LightColor: {lightColorName}\t{allPinsInField[lightIntensity.Key]}\t{lightIntensity.Key}\t{lightIntensity.Value}\n";
+                    outputString += $"LightColor: {lightColorName}\t{allPinsInField[lightIntensity.Key]}\t{lightIntensity.Key}\t{lightIntensity.Value}\n";
                 }
             }
 
 
-            return outputstring;
+            return outputString;
         }
     }
 }

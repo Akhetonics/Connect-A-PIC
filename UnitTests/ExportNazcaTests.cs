@@ -1,6 +1,5 @@
 using CAP_Core;
 using CAP_Core.CodeExporter;
-using CAP_Core.Component;
 using CAP_Core.Component.ComponentHelpers;
 using CAP_Core.ExternalPorts;
 using CAP_Core.Tiles;
@@ -15,13 +14,13 @@ namespace UnitTests
             Grid grid = new(24,12);
             var inputs = grid.ExternalPorts.Where(p => p.GetType() == typeof(StandardInput)).ToList();
             int inputHeight = inputs.FirstOrDefault()?.TilePositionY ?? throw new Exception("there is no StandardInput defined");
-            var firstComponent = new DirectionalCoupler();
+            var firstComponent = TestComponentFactory.CreateDirectionalCoupler();
             grid.PlaceComponent(0, inputHeight, firstComponent);
             var secondComponent = PlaceAndConcatenateComponent(grid, firstComponent);
             var thirdComponent = PlaceAndConcatenateComponent(grid, secondComponent);
             var fourthComponent = PlaceAndConcatenateComponent(grid, thirdComponent);
-            var orphant = new DirectionalCoupler();
-            grid.PlaceComponent(10, 5, orphant);
+            var orphan = TestComponentFactory.CreateDirectionalCoupler();
+            grid.PlaceComponent(10, 5, orphan);
             
             NazcaExporter exporter = new();
             var output = exporter.Export(grid);
@@ -29,7 +28,7 @@ namespace UnitTests
             var secondCellName = grid.Tiles[secondComponent.GridXMainTile, secondComponent.GridYMainTile].GetComponentCellName();
             var thirdCellName = grid.Tiles[thirdComponent.GridXMainTile, thirdComponent.GridYMainTile].GetComponentCellName();
             var fourthCellName = grid.Tiles[fourthComponent.GridXMainTile, fourthComponent.GridYMainTile].GetComponentCellName();
-            var orphanCellName = grid.Tiles[orphant.GridXMainTile, orphant.GridYMainTile].GetComponentCellName();
+            var orphanCellName = grid.Tiles[orphan.GridXMainTile, orphan.GridYMainTile].GetComponentCellName();
             
             // assert if all components are in the string output
             Assert.Contains(firstCellName, output);
@@ -40,14 +39,14 @@ namespace UnitTests
         }
         
         [Fact]
-        public void GetConnectedNeighboursTest()
+        public void GetConnectedNeighborsTest()
         {
             Grid grid = new(24, 12);
             var inputs = grid.ExternalPorts.Where(p => p.GetType() == typeof(StandardInput)).ToList();
             var firstInput = inputs.FirstOrDefault();
             if (firstInput == null) throw new Exception("Inputs not found, they seem not to be declared in the grid. Please do that now");
             var inputHeight = firstInput.TilePositionY;
-            var firstComponent = new StraightWaveGuide();
+            var firstComponent = TestComponentFactory.CreateStraightWaveGuide();
             // add grid components and tiles
             grid.PlaceComponent(0, inputHeight, firstComponent);
             var secondComponent = PlaceAndConcatenateComponent(grid, firstComponent);
@@ -58,14 +57,14 @@ namespace UnitTests
             Tile secondComponentMainTile = grid.Tiles[secondComponent.GridXMainTile, secondComponent.GridYMainTile];
             Tile thirdComponentMainTile = grid.Tiles[thirdComponent.GridXMainTile, thirdComponent.GridYMainTile];
             
-            Assert.Contains(secondComponentMainTile, grid.GetConnectedNeighboursOfComponent(firstComponent).Select(b=>b.Child));
-            Assert.Contains(thirdComponentMainTile, grid.GetConnectedNeighboursOfComponent(secondComponent).Select(b => b.Child));
-            Assert.Contains(firstComponentMainTile, grid.GetConnectedNeighboursOfComponent(secondComponent).Select(b => b.Child));
+            Assert.Contains(secondComponentMainTile, grid.GetConnectedNeighborsOfComponent(firstComponent).Select(b=>b.Child));
+            Assert.Contains(thirdComponentMainTile, grid.GetConnectedNeighborsOfComponent(secondComponent).Select(b => b.Child));
+            Assert.Contains(firstComponentMainTile, grid.GetConnectedNeighborsOfComponent(secondComponent).Select(b => b.Child));
         }
         
-        public static ComponentBase PlaceAndConcatenateComponent(Grid grid, ComponentBase parentComponent)
+        public static Component PlaceAndConcatenateComponent(Grid grid, Component parentComponent)
         {
-            ComponentBase newComponent = new StraightWaveGuide();
+            Component newComponent = TestComponentFactory.CreateStraightWaveGuide();
             var GridXSecondComponent = parentComponent.GridXMainTile + parentComponent.WidthInTiles;
             var GridYSecondComponent = parentComponent.GridYMainTile + parentComponent.HeightInTiles-1;
             grid.PlaceComponent(GridXSecondComponent, GridYSecondComponent, newComponent);

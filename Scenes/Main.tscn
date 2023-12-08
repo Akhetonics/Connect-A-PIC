@@ -1,0 +1,8 @@
+[gd_scene load_steps=3 format=3 uid="uid://cjs011yfvnq7t"]
+
+[ext_resource type="Script" path="res://Scripts/Main.cs" id="1_sc51e"]
+[ext_resource type="PackedScene" uid="uid://cu6wqy6xwjfo1" path="res://Scenes/PICEditor.tscn" id="2_6xl15"]
+
+[node name="MainObj" type="Node2D"]
+script = ExtResource("1_sc51e")
+GameEntryPointScene = ExtResource("2_6xl15")

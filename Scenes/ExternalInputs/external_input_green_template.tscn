@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://c4uqvn0fwc10d"]
 
-[ext_resource type="Texture2D" uid="uid://dfrkvavwush2t" path="res://GFX/ExternalInputGreen.png" id="1_slu4v"]
+[ext_resource type="Texture2D" uid="uid://dfrkvavwush2t" path="res://Scenes/ExternalInputs/ExternalInputGreen.png" id="1_slu4v"]
 
 [node name="ExternalInputGreenTemplate" type="TextureRect"]
 custom_minimum_size = Vector2(64, 64)

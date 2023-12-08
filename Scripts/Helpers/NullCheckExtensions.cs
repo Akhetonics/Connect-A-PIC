@@ -1,4 +1,5 @@
-﻿using Godot;
+﻿using ConnectAPic.LayoutWindow;
+using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,8 +17,8 @@ namespace ConnectAPIC.Scripts.Helpers
 
             if (body == null)
             {
-                UnaryExpression ubody = (UnaryExpression)expr.Body;
-                body = ubody.Operand as MemberExpression;
+                UnaryExpression uBody = (UnaryExpression)expr.Body;
+                body = uBody.Operand as MemberExpression;
             }
 
             string variableName = body.Member.Name;
@@ -26,7 +27,7 @@ namespace ConnectAPIC.Scripts.Helpers
             {
                 string className = instance.GetType().Name;
                 string errorMsg = $"'{variableName}' of this element is not set in the class: '{className}'";
-                CustomLogger.PrintErr(errorMsg);
+                GameManager.instance.Logger.PrintErr(errorMsg);
                 GD.PrintErr(errorMsg);
             }
         }

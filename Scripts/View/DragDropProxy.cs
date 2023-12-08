@@ -44,10 +44,10 @@ public partial class DragDropProxy : Control
     public void ShowComponentDragPreview(Godot.Vector2 position, Control data, bool canDropData = true)
     {
         if (data == null) return;
-        CheckIfDragWasResetted();
-        if (DragPreview == null)
+        CheckIfDragWasReset();
+        if (DragPreview == null && data is ComponentView originalComponent)
         {
-            DragPreview = ((ComponentBaseView)data).Duplicate();
+            DragPreview = originalComponent.Duplicate();
             DragPreview.Visible = false;
         }
         else
@@ -65,16 +65,16 @@ public partial class DragDropProxy : Control
         }
 
         var rotationDisposition = new Vector2(0, 0);
-        if (data is ComponentBaseView component)
+        if (data is ComponentView component)
         {
             rotationDisposition = component.GetPositionDisplacementAfterRotation();
         }
-            
+       
         DragPreview.Position = position + this.GlobalPosition + rotationDisposition;
         SetDragPreview(DragPreview);
     }
 
-    private void CheckIfDragWasResetted()
+    private void CheckIfDragWasReset()
     {
         if (DragPreview == null) return;
         try
