@@ -17,7 +17,7 @@ jobs:
       - name: '📝 Change Version'
         uses: vers-one/dotnet-project-version-updater@v1.3
         with:
-          file: "Chickensoft.GodotGame.csproj"
+          file: "Connect-A-PIC.csproj"
           version: ${{ github.event.inputs.version }}
 
       - name: '⤴️ Create Pull Request'
