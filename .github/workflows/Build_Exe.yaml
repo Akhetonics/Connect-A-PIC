@@ -59,7 +59,10 @@ jobs:
           Compress-Archive -Path "${{ github.workspace }}\Release\*" -DestinationPath $zipPath
           echo "::set-output name=zip_path::$zipPath"
         shell: pwsh
-
+      - name: List files in Release Directory
+        run: |
+          Get-ChildItem -Path ${{ github.workspace }}\Release -Recurse | ForEach-Object { Write-Host $_.FullName }
+        shell: pwsh
       - name: Create GitHub Release
         id: create_release
         uses: actions/create-release@v1
