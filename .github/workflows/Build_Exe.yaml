@@ -46,7 +46,9 @@ jobs:
           GODOT_EXPORT_PATH: ${{ github.workspace }}
 
       - name: Zip Release Build
-        run: zip -r ConnectAPIC.zip ${{ github.workspace }}/Release/
+        run: |
+          cd ${{ github.workspace }}/Release
+          zip -r ../../ConnectAPIC.zip .
 
       - name: Create GitHub Release
         id: create_release
