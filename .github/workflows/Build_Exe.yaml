@@ -18,9 +18,6 @@ jobs:
         with:
           lfs: true
           submodules: 'recursive'
-      
-      - name: Install jq (if required)
-        run: choco install jq
 
       - name: Extract Version from Project File
         id: project_version
