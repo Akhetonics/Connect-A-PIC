@@ -63,7 +63,8 @@ namespace ConnectAPic.LayoutWindow
 					CallDeferred(nameof(DeferredInitialization));
 				} catch (Exception ex)
 				{
-					Logger.PrintErr(ex.Message);
+                    GD.PrintErr(ex.Message);
+                    GD.PrintErr(ex);
 				}		
 			}
 			else
