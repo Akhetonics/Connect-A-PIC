@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>ConnectAPIC</RootNamespace>
-    <Version>0.0.20</Version>
+    <Version>0.0.21</Version>
     <StartAction>Program</StartAction>
     <StartProgram>C:\Program Files\Godot_v4.1\Godot_v4.1\Godot_v4.1.exe</StartProgram>
     <StartArguments>--path C:\dev\Akhetonics\Connect-A-PIC\</StartArguments>
