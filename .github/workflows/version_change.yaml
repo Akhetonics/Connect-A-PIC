@@ -40,6 +40,6 @@ jobs:
           title: 'chore(project): update version to ${{ github.event.inputs.version }}'
           body: 'chore(project): update the version to ${{ github.event.inputs.version }}.'
   call_build_exe:
-    uses: ./.github/workflows/Build_Exe.yml
+    uses: ./.github/workflows/Build_Exe.yaml
     with:
       version: ${{ github.event.inputs.version}}
