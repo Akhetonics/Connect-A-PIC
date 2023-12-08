@@ -47,7 +47,7 @@ jobs:
           version: ${{ steps.godot_version.outputs.VERSION }}
       
       - name: Create Build Directory
-        run: mkdir -p ${{ github.workspace }}/Release
+        run: mkdir -p ${{ github.workspace }}\Release
 
       - name: Build Windows EXE
         run: |
@@ -57,7 +57,8 @@ jobs:
 
       - name: Zip Release Build
         run: |
-          Compress-Archive -Path "${{ github.workspace }}/Release/*" -DestinationPath "${{ github.workspace }}/ConnectAPIC.zip"
+          $zipPath = Join-Path ${{ github.workspace }} "ConnectAPIC.zip"
+          Compress-Archive -Path "${{ github.workspace }}/Release/*" -DestinationPath $zipPath
 
       - name: Create GitHub Release
         id: create_release
