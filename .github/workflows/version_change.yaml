@@ -39,3 +39,7 @@ jobs:
           commit-message: "Update version to ${{ github.event.inputs.version }}"
           title: 'chore(project): update version to ${{ github.event.inputs.version }}'
           body: 'chore(project): update the version to ${{ github.event.inputs.version }}.'
+  call_build_exe:
+    uses: ./.github/workflows/Build_Exe.yml
+    with:
+      version: ${{ github.event.inputs.version}}
