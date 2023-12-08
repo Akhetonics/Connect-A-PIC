@@ -12,7 +12,7 @@ using System.Linq;
 namespace ConnectAPIC.Scripts.View.ComponentFactory
 {
 
-    public partial class PCKLoader
+    public class PCKLoader
     {
         public FileFinder GodotFileFinder { get; private set; }
         public string ComponentFolderPath { get; }
