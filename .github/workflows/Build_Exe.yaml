@@ -5,12 +5,12 @@ on:
     branches:
       - main 
     paths:
-      - '**/Connect-A-PIC.csproj' # the path to the file with the version number
+      - '**/Connect-A-PIC.csproj'
 
 jobs:
   build_windows_exe:
     name: Build Windows EXE
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: 🧾 Checkout
@@ -19,24 +19,27 @@ jobs:
           lfs: true
           submodules: 'recursive'
       
+      - name: Install jq (if required)
+        run: choco install jq
+
       - name: Extract Version from Project File
         id: project_version
         run: |
-          VERSION=$(grep '<Version>' Connect-A-PIC.csproj | sed -e 's/<\/\?Version>//g' | xargs)
-          echo "::set-output name=VERSION::$VERSION"
+          $version = Select-String -Path "Connect-A-PIC.csproj" -Pattern '<Version>(.*)</Version>' | % { $_.Matches.Groups[1].Value }
+          echo "::set-output name=VERSION::$version"
 
       - name: Print extracted version
-        run: echo "The extracted project version is ${{ steps.project_version.outputs.VERSION }}"
+        run: echo "The extracted project version is $env:VERSION"
 
       - name: Read Godot version from global.json
         id: godot_version
         run: |
-          GODOT_VERSION=$(jq -r '."msbuild-sdks"."Godot.NET.Sdk"' global.json)
-          echo "Godot version: $GODOT_VERSION"
-          echo "::set-output name=VERSION::$GODOT_VERSION"
+          $godotVersion = Get-Content -Raw -Path 'global.json' | ConvertFrom-Json | Select-Object -ExpandProperty 'msbuild-sdks' | Select-Object -ExpandProperty 'Godot.NET.Sdk'
+          echo "Godot version: $godotVersion"
+          echo "::set-output name=VERSION::$godotVersion"
 
       - name: Print extracted version
-        run: echo "The extracted Godot version is ${{ steps.godot_version.outputs.VERSION }}"
+        run: echo "The extracted Godot version is $env:VERSION"
 
       - name: Setup Godot
         uses: chickensoft-games/setup-godot@v1
@@ -54,9 +57,7 @@ jobs:
 
       - name: Zip Release Build
         run: |
-          cd ${{ github.workspace }}/Release
-          zip -r ../ConnectAPIC.zip .
-          cd ..
+          Compress-Archive -Path "${{ github.workspace }}/Release/*" -DestinationPath "${{ github.workspace }}/ConnectAPIC.zip"
 
       - name: Create GitHub Release
         id: create_release
