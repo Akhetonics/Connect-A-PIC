@@ -48,7 +48,8 @@ jobs:
 
       - name: Build Windows EXE
         run: |
-          godot --headless --export-release "Windows Desktop"
+          $Env:GODOT --headless --export-release "Windows Desktop"
+          
         env:
           GODOT_EXPORT_PATH: ${{ github.workspace }}\Release
           GODOT_EXPORT_PRESET: "Windows Desktop"
@@ -63,7 +64,7 @@ jobs:
 
       - name: List files in Release Directory
         run: |
-          echo "list files in folder ${{ github.workspace }}\\Release"
+          echo "list files in folder ${{ github.workspace }}\Release"
           Get-ChildItem -Path ${{ github.workspace }}\\Release -Recurse | ForEach-Object { Write-Host $_.FullName }
         shell: pwsh
 
