@@ -24,12 +24,16 @@
     <Compile Remove="Connect-A-Pic-Core\**" />
     <Compile Remove="libraries\**" />
     <Compile Remove="PDK\**" />
+    <Compile Remove="Scenes\Components\**" />
+    <Compile Remove="Scenes\ExternalInputs\**" />
     <Compile Remove="Tests\**" />
     <EmbeddedResource Remove="CAP-DataAccess\**" />
     <EmbeddedResource Remove="CAP_Contracts\**" />
     <EmbeddedResource Remove="Connect-A-Pic-Core\**" />
     <EmbeddedResource Remove="libraries\**" />
     <EmbeddedResource Remove="PDK\**" />
+    <EmbeddedResource Remove="Scenes\Components\**" />
+    <EmbeddedResource Remove="Scenes\ExternalInputs\**" />
     <EmbeddedResource Remove="Tests\**" />
     <Compile Remove="UnitTests\**" />
     <EmbeddedResource Remove="UnitTests\**" />

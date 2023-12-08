@@ -1,11 +1,12 @@
 name: 🖥️ Build Windows EXE
 
 on:
-  workflow_call:
-    inputs:
-      version:
-        required: true
-        type: string
+  push:
+    branches:
+      - main 
+    paths:
+      - '**/Connect-A-PIC.csproj' # the path to the file with the version number
+
 jobs:
   build_windows_exe:
     name: Build Windows EXE
@@ -18,8 +19,14 @@ jobs:
           lfs: true
           submodules: 'recursive'
       
-      - name: Print Version Parameter
-        run: echo "The Version provided as parameter is ${{ inputs.version }}"
+      - name: Extract Version from Project File
+        id: project_version
+        run: |
+          VERSION=$(grep '<Version>' Connect-A-PIC.csproj | sed -e 's/<\/\?Version>//g' | xargs)
+          echo "::set-output name=VERSION::$VERSION"
+
+      - name: Print extracted version
+        run: echo "The extracted project version is ${{ steps.project_version.outputs.VERSION }}"
 
       - name: Read Godot version from global.json
         id: godot_version
@@ -46,7 +53,9 @@ jobs:
           GODOT_EXPORT_PATH: ${{ github.workspace }}
 
       - name: Zip Release Build
-        run: zip -r ConnectAPIC.zip ${{ github.workspace }}/Release/
+        run: |
+          cd ${{ github.workspace }}/Release
+          zip -r ../../ConnectAPIC.zip .
 
       - name: Create GitHub Release
         id: create_release
@@ -54,8 +63,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ inputs.version }}
-          release_name: Release v${{ inputs.version }}
+          tag_name: v${{ steps.project_version.outputs.VERSION }}
+          release_name: Release v${{ steps.project_version.outputs.VERSION }}
           draft: false
           prerelease: false
           body: "automatically generated release"
