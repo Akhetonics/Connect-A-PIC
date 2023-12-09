@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - main
-      - fix
     paths:
       - '**/Connect-A-PIC.csproj'
 
@@ -67,7 +66,6 @@ jobs:
         env:
           GODOT_EXPORT_PATH: ${{ github.workspace }}\Release
           GODOT_EXPORT_PRESET: "Windows Desktop"
-
 
       - name: Zip Release Build
         id: zip_build
