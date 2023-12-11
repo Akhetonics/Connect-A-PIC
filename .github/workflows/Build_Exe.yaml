@@ -43,6 +43,13 @@ jobs:
         uses: chickensoft-games/setup-godot@v1
         with:
           version: ${{ steps.godot_version.outputs.VERSION }}
+      - name: Open and Save Godot Project
+        run: |
+          $godotPath = "C:\\Users\\runneradmin\\godot\\Godot_v4.1.3-stable_mono_win64\\Godot_v4.1.3-stable_mono_win64.exe"
+          $godotArgs = "--headless", "--path" "--quit"
+          $godotProcess = Start-Process -FilePath $godotPath -ArgumentList $godotArgs -PassThru
+          $godotProcess.WaitForExit()
+        shell: pwsh
       
       - name: Create Build Directory
         run: mkdir -p ${{ github.workspace }}\\Release
