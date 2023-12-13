@@ -20,7 +20,7 @@ public partial class Console : ScrollContainer
 
 	public override void _Ready()
 	{   
-        this.CheckForNull(x => x.LoggingParent);
+		this.CheckForNull(x => x.LoggingParent);
 		this.CheckForNull(x => x.InfoTextTemplate);
 		this.CheckForNull(x => x.ErrorTextTemplate);
 		Hide();
@@ -38,7 +38,7 @@ public partial class Console : ScrollContainer
 				PrintInfo(obj.Message);
 			}
 		};
-    }
+	}
 	public void PrintInfo(string text)
 	{
 		GD.Print(text);

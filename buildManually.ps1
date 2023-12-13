@@ -1,14 +1,7 @@
 # Adjust the Godot path and arguments as per your local setup
 $godotPath = $env:GODOT
+$releaseDir = "Release"
 
-# Build Windows EXE
-$godotArgs = "--headless", "--export-release", "`"Windows Desktop`""
-$godotProcess = Start-Process -FilePath $godotPath -ArgumentList $godotArgs -PassThru
-$godotProcess.WaitForExit()
-
-Write-Host "Press any key to continue..."
-$Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-exit 
 # Extract Version from Project File
 $version = Select-String -Path "Connect-A-PIC.csproj" -Pattern '<Version>(.*)</Version>' | % { $_.Matches.Groups[1].Value }
 Write-Host "The extracted project version is $version"
@@ -17,21 +10,19 @@ Write-Host "The extracted project version is $version"
 $godotVersion = Get-Content -Raw -Path 'global.json' | ConvertFrom-Json | Select-Object -ExpandProperty 'msbuild-sdks' | Select-Object -ExpandProperty 'Godot.NET.Sdk'
 Write-Host "Godot version: $godotVersion"
 
-# Adjust the Godot path and arguments as per your local setup
-$godotPath = $env:GODOT
-
 # Delete all old Releases
-Remove-Item -Path "Release\*" -Recurse -Force
-Write-Host "Release Folder got cleared"
+if (Test-Path $releaseDir) {
+    Remove-Item -Path "Release\*" -Recurse -Force
+    Write-Host "Release Folder got cleared"
+}
 
 # Create Build Directory
-$releaseDir = "Release"
 if (-not (Test-Path $releaseDir)) {
     New-Item -ItemType Directory -Path $releaseDir
 }
 
 # Build Windows EXE
-$godotArgs = "--headless", "--export-release", "`"Windows Desktop`""
+$godotArgs = "--headless", "--export-release", "`"Windows Desktop`"", "--path .", "--verbose"
 $godotProcess = Start-Process -FilePath $godotPath -ArgumentList $godotArgs -PassThru
 $godotProcess.WaitForExit()
 
