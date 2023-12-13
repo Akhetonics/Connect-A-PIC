@@ -1,14 +1,6 @@
 # Adjust the Godot path and arguments as per your local setup
 $godotPath = $env:GODOT
 
-# Build Windows EXE
-$godotArgs = "--headless", "--export-release", "`"Windows Desktop`""
-$godotProcess = Start-Process -FilePath $godotPath -ArgumentList $godotArgs -PassThru
-$godotProcess.WaitForExit()
-
-Write-Host "Press any key to continue..."
-$Host.UI.RawUI.ReadKey("NoEcho,IncludeKeyDown")
-exit 
 # Extract Version from Project File
 $version = Select-String -Path "Connect-A-PIC.csproj" -Pattern '<Version>(.*)</Version>' | % { $_.Matches.Groups[1].Value }
 Write-Host "The extracted project version is $version"
@@ -31,7 +23,7 @@ if (-not (Test-Path $releaseDir)) {
 }
 
 # Build Windows EXE
-$godotArgs = "--headless", "--export-release", "`"Windows Desktop`""
+$godotArgs = "--headless", "--export-release", "`"Windows Desktop`"", "--path .", "--verbose"
 $godotProcess = Start-Process -FilePath $godotPath -ArgumentList $godotArgs -PassThru
 $godotProcess.WaitForExit()
 

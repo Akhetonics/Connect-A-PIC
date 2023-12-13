@@ -38,8 +38,8 @@ namespace ConnectAPic.LayoutWindow
 		public static int TilePixelSize { get; private set; } = 62;
 		public static int TileBorderLeftDown { get; private set; } = 2;
 		public GridView GridView { get; set; }
-        public System.Version Version => Assembly.GetExecutingAssembly().GetName().Version; // Get the version from the assembly
-        public Grid Grid { get; set; }
+		public System.Version Version => Assembly.GetExecutingAssembly().GetName().Version; // Get the version from the assembly
+		public Grid Grid { get; set; }
 		public static GameManager instance;
 		public CAP_Core.Logger Logger { get; set; }
 		public LogSaver LogSaver { get; set; }
@@ -63,8 +63,8 @@ namespace ConnectAPic.LayoutWindow
 					CallDeferred(nameof(DeferredInitialization));
 				} catch (Exception ex)
 				{
-                    GD.PrintErr(ex.Message);
-                    GD.PrintErr(ex);
+					GD.PrintErr(ex.Message);
+					GD.PrintErr(ex);
 				}		
 			}
 			else
