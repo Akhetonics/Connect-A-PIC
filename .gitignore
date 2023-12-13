@@ -1,8 +1,6 @@
 # Godot 4+ specific ignores
 .godot/mono/
-.godot/exported/
-.godot/imported/
-.godot/shader_cache/
+.godot/export_credentials.cfg
 
 Exports/
 
