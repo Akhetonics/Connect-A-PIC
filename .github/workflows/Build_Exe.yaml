@@ -11,7 +11,7 @@ on:
 jobs:
   build_windows_exe:
     name: Build Windows EXE
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: 🧾 Checkout
@@ -23,62 +23,53 @@ jobs:
       - name: Extract Version from Project File
         id: project_version
         run: |
-          $version = Select-String -Path "Connect-A-PIC.csproj" -Pattern '<Version>(.*)</Version>' | % { $_.Matches.Groups[1].Value }
-          echo "::set-output name=PROJECTVERSION::$version"
+          version=$(grep '<Version>' Connect-A-PIC.csproj | sed -e 's/<[^>]*>//g' | xargs)
+          echo "PROJECTVERSION=$version" >> $GITHUB_ENV
 
       - name: Print extracted Project version
-        run: echo "The extracted Godot version is ${{ steps.project_version.outputs.PROJECTVERSION }}"
+        run: echo "The extracted Godot version is $PROJECTVERSION"
 
       - name: Read Godot version from global.json
         id: godot_version
         run: |
-          $godotVersion = Get-Content -Raw -Path 'global.json' | ConvertFrom-Json | Select-Object -ExpandProperty 'msbuild-sdks' | Select-Object -ExpandProperty 'Godot.NET.Sdk'
-          echo "Godot version: $godotVersion"
-          echo "::set-output name=GODOTVERSION::$godotVersion"
+          godotVersion=$(cat global.json | jq -r '.msbuild-sdks["Godot.NET.Sdk"]')
+          echo "GODOTVERSION=$godotVersion" >> $GITHUB_ENV
 
       - name: Print extracted Godot version
-        run: echo "The extracted Godot version is ${{ steps.godot_version.outputs.GODOTVERSION }}"
+        run: echo "The extracted Godot version is $GODOTVERSION"
 
       - name: Setup Godot
         uses: chickensoft-games/setup-godot@v1
         with:
-          version: ${{ steps.godot_version.outputs.GODOTVERSION }}
+          version: ${{ env.GODOTVERSION }}
 
       - name: Create Build Directory
-        run: mkdir -p ${{ github.workspace }}\Release
-        shell: pwsh
+        run: mkdir -p $GITHUB_WORKSPACE/Release
 
       - name: Build Windows EXE
         run: |
-          & $env:GODOT --headless --export-release "Windows Desktop"
-          
-          if ($LASTEXITCODE -ne 0) {
-            Write-Host "Build failed with exit code $LASTEXITCODE"
-            exit $LASTEXITCODE
-          }
-        shell: pwsh
+          $GODOT --headless --export-release "Windows Desktop"
+          if [ $? -ne 0 ]; then
+            echo "Build failed with exit code $?"
+            exit 1
+          fi
 
       - name: Zip Release Build
         id: zip_build
         run: |
-          $zipPath = Join-Path "${{ github.workspace }}" "ConnectAPIC.zip"
-          Compress-Archive -Path "${{ github.workspace }}\Release\*" -DestinationPath $zipPath
-          echo "::set-output name=zip_path::$zipPath"
-        shell: pwsh
+          zipPath="$GITHUB_WORKSPACE/ConnectAPIC.zip"
+          zip -r $zipPath $GITHUB_WORKSPACE/Release/*
+          echo "zip_path=$zipPath" >> $GITHUB_ENV
 
       - name: List files in Release Directory
         run: |
-          $releaseDir = "${{ github.workspace }}\Release"
+          releaseDir="$GITHUB_WORKSPACE/Release"
           echo "Checking files in folder $releaseDir"
-          $items = Get-ChildItem -Path $releaseDir -Recurse -ErrorAction SilentlyContinue
-          if ($null -eq $items -or $items.Count -eq 0) {
-            Write-Host "Error: No files found in the Release directory."
+          if [ -z "$(ls -A $releaseDir)" ]; then
+            echo "Error: No files found in the Release directory."
             exit 1
-          }
-          foreach ($item in $items) {
-            Write-Host $item.FullName
-          }
-        shell: pwsh
+          fi
+          ls -l $releaseDir
 
       - name: Create GitHub Release
         id: create_release
@@ -86,11 +77,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ steps.project_version.outputs.PROJECTVERSION }}
-          release_name: Release v${{ steps.project_version.outputs.PROJECTVERSION }}
+          tag_name: v${{ env.PROJECTVERSION }}
+          release_name: Release v${{ env.PROJECTVERSION }}
           draft: false
           prerelease: false
-          body: "automatically generated release"
+          body: "Automatically generated release"
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
@@ -98,6 +89,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ steps.zip_build.outputs.zip_path }}
+          asset_path: ${{ env.zip_path }}
           asset_name: ConnectAPIC.zip
           asset_content_type: application/zip
