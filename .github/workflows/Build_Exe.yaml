@@ -44,30 +44,13 @@ jobs:
         with:
           version: ${{ steps.godot_version.outputs.GODOTVERSION }}
 
-      - name: Find Godot Executable
-        id: find_godot_exe
-        run: |
-          $godotDir = $env:GODOT
-          $godotExe = Get-ChildItem -Path $godotDir -Filter *.exe -Recurse | Where-Object { $_.Name -like "Godot*" } | Select-Object -First 1
-
-          if ($godotExe -ne $null) {
-              $godotPath = $godotExe.FullName
-              echo "Godot executable found at $godotPath"
-              echo "::set-output name=godotPath::$godotPath"
-          } else {
-              Write-Error "Godot executable not found in $godotDir"
-              exit 1
-          }
-        shell: pwsh
-      
       - name: Create Build Directory
         run: mkdir -p ${{ github.workspace }}\Release
         shell: pwsh
 
       - name: Build Windows EXE
         run: |
-          $godotPath = "${{ steps.find_godot_exe.outputs.godotPath }}"
-          & $godotPath --headless --export-release "Windows Desktop"
+          & $env:GODOT --headless --export-release "Windows Desktop"
           
           if ($LASTEXITCODE -ne 0) {
             Write-Host "Build failed with exit code $LASTEXITCODE"
