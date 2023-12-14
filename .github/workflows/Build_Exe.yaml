@@ -43,9 +43,21 @@ jobs:
         uses: chickensoft-games/setup-godot@v1
         with:
           version: ${{ steps.godot_version.outputs.GODOTVERSION }}
-      - name: Check Godot Path
+
+      - name: Find Godot Executable
+        id: find_godot_exe
         run: |
-          Write-Host "Godot executable path: $env:GODOT"
+          $godotDir = $env:GODOT
+          $godotExe = Get-ChildItem -Path $godotDir -Filter *.exe -Recurse | Where-Object { $_.Name -like "Godot*" } | Select-Object -First 1
+
+          if ($godotExe -ne $null) {
+              $godotPath = $godotExe.FullName
+              echo "Godot executable found at $godotPath"
+              echo "::set-output name=godotPath::$godotPath"
+          } else {
+              Write-Error "Godot executable not found in $godotDir"
+              exit 1
+          }
         shell: pwsh
       
       - name: Create Build Directory
@@ -54,7 +66,8 @@ jobs:
 
       - name: Build Windows EXE
         run: |
-          & $env:GODOT --headless --export-release "Windows Desktop"
+          $godotPath = "${{ steps.find_godot_exe.outputs.godotPath }}"
+          & $godotPath --headless --export-release "Windows Desktop"
           
           if ($LASTEXITCODE -ne 0) {
             Write-Host "Build failed with exit code $LASTEXITCODE"
