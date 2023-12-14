@@ -1,5 +1,5 @@
 # Adjust the Godot path and arguments as per your local setup
-$godotPath = $env:GODOT
+$godotPath = "C:\Users\max_a\Downloads\Godot_v4.1.3-stable_mono_win64 (1)\Godot_v4.1.3-stable_mono_win64\Godot_v4.1.3-stable_mono_win64_console.exe" #$env:GODOT
 $releaseDir = "Release"
 
 # Extract Version from Project File
@@ -22,7 +22,7 @@ if (-not (Test-Path $releaseDir)) {
 }
 
 # Build Windows EXE
-$godotArgs = "--headless", "--export-release", "`"Windows Desktop`"", "--path .", "--verbose"
+$godotArgs = "--headless", "--export-release", "`"Windows Desktop`""
 $godotProcess = Start-Process -FilePath $godotPath -ArgumentList $godotArgs -PassThru
 $godotProcess.WaitForExit()
 
