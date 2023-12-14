@@ -74,16 +74,15 @@ jobs:
         run: |
           $releaseDir = "${{ github.workspace }}\Release"
           echo "Checking files in folder $releaseDir"
-          $items = Get-ChildItem -Path $releaseDir -Recurse
-          if ($items.Length -eq 0) {
-            Write-Error "Error: No files found in the Release directory."
+          $items = Get-ChildItem -Path $releaseDir -Recurse -ErrorAction SilentlyContinue
+          if ($null -eq $items -or $items.Count -eq 0) {
+            Write-Host "Error: No files found in the Release directory."
             exit 1
           }
           foreach ($item in $items) {
             Write-Host $item.FullName
           }
         shell: pwsh
-        fail-fast: true
 
       - name: Create GitHub Release
         id: create_release
