@@ -58,6 +58,7 @@ jobs:
         run: |
           cd ${{ github.workspace }}/Release
           zip -r ../ConnectAPIC.zip .
+          echo "zip_path=${{ github.workspace }}/ConnectAPIC.zip" >> $GITHUB_ENV
           cd ..
 
       - name: List files in Release Directory
