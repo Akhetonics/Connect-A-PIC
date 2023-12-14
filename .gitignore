@@ -1,7 +1,10 @@
-# Godot 4+ specific ignores
-.godot/mono/
-.godot/export_credentials.cfg
-.godot/shader_cache.cfg
+# ignore the .godot
+.godot/*
+
+# allow those folders as we need them when using pck files it seems
+!.godot/exported/
+!.godot/imported/
+!.godot/global_script_class_cache.cfg
 
 Exports/
 
