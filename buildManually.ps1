@@ -1,5 +1,5 @@
 # Adjust the Godot path and arguments as per your local setup
-$godotPath = "C:\Users\max_a\Downloads\Godot_v4.1.3-stable_mono_win64 (1)\Godot_v4.1.3-stable_mono_win64\Godot_v4.1.3-stable_mono_win64_console.exe" #$env:GODOT
+$godotPath = $env:GODOT
 $releaseDir = "Release"
 
 # Extract Version from Project File
