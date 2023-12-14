@@ -55,11 +55,13 @@ jobs:
           fi
 
       - name: Zip Release Build
-        id: zip_build
         run: |
-          zipPath="$GITHUB_WORKSPACE/ConnectAPIC.zip"
-          zip -r $zipPath $GITHUB_WORKSPACE/Release/*
-          echo "zip_path=$zipPath" >> $GITHUB_ENV
+          $releaseDir = "${{ github.workspace }}/Release"
+          Push-Location -Path $releaseDir
+          $zipPath = "${{ github.workspace }}/ConnectAPIC.zip"
+          Compress-Archive -Path "*" -DestinationPath $zipPath
+          Pop-Location
+        shell: pwsh
 
       - name: List files in Release Directory
         run: |
