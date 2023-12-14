@@ -24,55 +24,43 @@ jobs:
         id: project_version
         run: |
           $version = Select-String -Path "Connect-A-PIC.csproj" -Pattern '<Version>(.*)</Version>' | % { $_.Matches.Groups[1].Value }
-          echo "::set-output name=VERSION::$version"
+          echo "::set-output name=PROJECTVERSION::$version"
 
-      - name: Print extracted version
-        run: echo "The extracted project version is $env:VERSION"
+      - name: Print extracted Project version
+        run: echo "The extracted Godot version is ${{ steps.project_version.outputs.PROJECTVERSION }}"
 
       - name: Read Godot version from global.json
         id: godot_version
         run: |
           $godotVersion = Get-Content -Raw -Path 'global.json' | ConvertFrom-Json | Select-Object -ExpandProperty 'msbuild-sdks' | Select-Object -ExpandProperty 'Godot.NET.Sdk'
           echo "Godot version: $godotVersion"
-          echo "::set-output name=VERSION::$godotVersion"
+          echo "::set-output name=GODOTVERSION::$godotVersion"
 
-      - name: Print extracted version
-        run: echo "The extracted Godot version is $env:VERSION"
+      - name: Print extracted Godot version
+        run: echo "The extracted Godot version is ${{ steps.godot_version.outputs.GODOTVERSION }}"
 
       - name: Setup Godot
         uses: chickensoft-games/setup-godot@v1
         with:
-          version: ${{ steps.godot_version.outputs.VERSION }}
-      - name: Open and Save Godot Project
+          version: ${{ steps.godot_version.outputs.GODOTVERSION }}
+      - name: Check Godot Path
         run: |
-          $godotPath = "C:\\Users\\runneradmin\\godot\\Godot_v4.1.3-stable_mono_win64\\Godot_v4.1.3-stable_mono_win64.exe"
-          $godotArgs = "--headless", "--quit"
-          $godotProcess = Start-Process -FilePath $godotPath -ArgumentList $godotArgs -PassThru
-          $godotProcess.WaitForExit()
+          Write-Host "Godot executable path: $env:GODOT"
         shell: pwsh
       
       - name: Create Build Directory
-        run: mkdir -p ${{ github.workspace }}\\Release
-
+        run: mkdir -p ${{ github.workspace }}\Release
         shell: pwsh
-      - name: List Godot Directory
-        run: |
-          Get-ChildItem -Path $Env:GODOT -Recurse | ForEach-Object { Write-Host $_.FullName }
-        shell: pwsh
-        env:
-          GODOT: ${{ env.GODOT }}
-          GODOT4: ${{ env.GODOT4 }}
 
       - name: Build Windows EXE
         run: |
-          $godotPath = "C:\\Users\\runneradmin\\godot\\Godot_v4.1.3-stable_mono_win64\\Godot_v4.1.3-stable_mono_win64.exe"
-          $godotArgs = "--headless", "--export-release", "`"Windows Desktop`""
-          $godotProcess = Start-Process -FilePath $godotPath -ArgumentList $godotArgs -PassThru
-          $godotProcess.WaitForExit()
+          & $env:GODOT --headless --export-release "Windows Desktop"
+          
+          if ($LASTEXITCODE -ne 0) {
+            Write-Host "Build failed with exit code $LASTEXITCODE"
+            exit $LASTEXITCODE
+          }
         shell: pwsh
-        env:
-          GODOT_EXPORT_PATH: ${{ github.workspace }}\Release
-          GODOT_EXPORT_PRESET: "Windows Desktop"
 
       - name: Zip Release Build
         id: zip_build
@@ -84,9 +72,18 @@ jobs:
 
       - name: List files in Release Directory
         run: |
-          echo "list files in folder ${{ github.workspace }}\Release"
-          Get-ChildItem -Path ${{ github.workspace }}\\Release -Recurse | ForEach-Object { Write-Host $_.FullName }
+          $releaseDir = "${{ github.workspace }}\Release"
+          echo "Checking files in folder $releaseDir"
+          $items = Get-ChildItem -Path $releaseDir -Recurse
+          if ($items.Length -eq 0) {
+            Write-Error "Error: No files found in the Release directory."
+            exit 1
+          }
+          foreach ($item in $items) {
+            Write-Host $item.FullName
+          }
         shell: pwsh
+        fail-fast: true
 
       - name: Create GitHub Release
         id: create_release
@@ -94,8 +91,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ steps.project_version.outputs.VERSION }}
-          release_name: Release v${{ steps.project_version.outputs.VERSION }}
+          tag_name: v${{ steps.project_version.outputs.PROJECTVERSION }}
+          release_name: Release v${{ steps.project_version.outputs.PROJECTVERSION }}
           draft: false
           prerelease: false
           body: "automatically generated release"
