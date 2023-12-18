@@ -39,7 +39,7 @@ namespace CAP_Core.CodeExporter
         {
             foreach (ExternalPort port in grid.ExternalPorts)
             {
-                if (port is not StandardInput input) continue;
+                if (port is not ExternalInput input) continue;
                 var x = 0;
                 var y = input.TilePositionY;
                 if (!grid.IsInGrid(x, y, 1, 1)) continue;
@@ -92,7 +92,7 @@ namespace CAP_Core.CodeExporter
             return neighbors.Where(n => !AlreadyProcessedComponents.Contains(n.Child.Component)).ToList();
         }
 
-        private void StartConnectingAtInput(StringBuilder NazcaCode, StandardInput input, Tile firstConnectedTile)
+        private void StartConnectingAtInput(StringBuilder NazcaCode, ExternalInput input, Tile firstConnectedTile)
         {
             NazcaCode.Append(firstConnectedTile.ExportToNazcaExtended(new IntVector(-1, input.TilePositionY), Resources.NazcaStandardInputCellName, input.PinName));
             AlreadyProcessedComponents.Add(firstConnectedTile.Component);

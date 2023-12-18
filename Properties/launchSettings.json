@@ -11,9 +11,6 @@
       "executablePath": "C:\\Program Files\\Godot_v4.1\\Godot_v4.1.exe",
       "commandLineArgs": "--path . --run-tests --quit-on-finish --verbose",
       "workingDirectory": "."
-    },
-    "Profil \"1\"": {
-      "commandName": "Project"
     }
   }
 }

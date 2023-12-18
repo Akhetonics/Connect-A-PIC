@@ -1,24 +1,35 @@
 using CAP_Contracts.Logger;
+using CAP_Core;
+using Chickensoft.AutoInject;
 using ConnectAPic.LayoutWindow;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.Scripts.Helpers;
 using Godot;
+using SuperNodes.Types;
 using System;
 using System.Collections.Generic;
 
+[SuperNode(typeof(Dependent))]
 public partial class ToolBox : Node
 {
+	public override partial void _Notification(int what);
+	[Dependency] public ComponentViewFactory ComponentViewFactory => DependOn<ComponentViewFactory>();
+	[Dependency] public ILogger Logger => DependOn<ILogger>();
 	[Export] public GridContainer gridContainer;
 	public override void _Ready()
 	{
 		this.CheckForNull(x => x.gridContainer);
 	}
-
-	public void SetAvailableTools(ComponentViewFactory ComponentViewFactory, ILogger logger)
+	public void OnResolved()
+	{
+        SetAvailableTools();
+        Logger?.Log(CAP_Contracts.Logger.LogLevel.Debug, "Initialized ToolBox");
+    }
+	public void SetAvailableTools()
 	{
 		if (ComponentViewFactory == null)
 		{
-			logger.PrintErr("ComponentViewFactory cannot be null");
+			Logger.PrintErr("ComponentViewFactory cannot be null");
 			return;
 		}
 		var allComponentTypesNRs = ComponentViewFactory.GetAllComponentIDs();
@@ -32,7 +43,7 @@ public partial class ToolBox : Node
 			var biggestScaleFactor = Math.Max(componentSizeCorrection.X, componentSizeCorrection.Y);
 			if(biggestScaleFactor <= 0)
 			{
-				logger.PrintErr("biggestScaleFactor is too small, the toolbox cannot scale this component properly of Component NR: " + typeNumber);
+                Logger.PrintErr("biggestScaleFactor is too small, the toolbox cannot scale this component properly of Component NR: " + typeNumber);
 			}
 			componentInstance.Scale /= biggestScaleFactor;
 			TemplateTileView rect = new();

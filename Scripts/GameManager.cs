@@ -1,3 +1,4 @@
+using CAP_Contracts.Logger;
 using CAP_Core;
 using CAP_Core.Component.ComponentHelpers;
 using CAP_Core.ExternalPorts;
@@ -5,6 +6,7 @@ using CAP_Core.LightFlow;
 using CAP_DataAccess;
 using CAP_DataAccess.Components.ComponentDraftMapper;
 using CAP_DataAccess.Helpers;
+using Chickensoft.AutoInject;
 using Components.ComponentDraftMapper;
 using Components.ComponentDraftMapper.DTOs;
 using ConnectAPIC.LayoutWindow.View;
@@ -12,19 +14,37 @@ using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.Scripts.Helpers;
 using ConnectAPIC.Scripts.View.ComponentFactory;
 using Godot;
+using SuperNodes.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
+using System.Text;
 using YamlDotNet.Core;
 
 namespace ConnectAPic.LayoutWindow
 {
-	public partial class GameManager : Node
-	{
+	[SuperNode (typeof(Provider))]
+	public partial class GameManager : Node, 
+		IProvide<ToolBox> , IProvide<ILogger>, IProvide<GridView>, IProvide<Grid>, IProvide<GridViewModel>, IProvide<GameManager>,
+		IProvide<Console> , IProvide<System.Version> , IProvide<ComponentViewFactory> 
+    {
+        #region Dependency Injection
+        public override partial void _Notification(int what);
+		ToolBox IProvide<ToolBox>.Value() => MainToolBox;
+        ILogger IProvide<ILogger>.Value() => Logger;
+		GridView IProvide<GridView>.Value() => GridView;
+		Grid IProvide<Grid>.Value() => Grid;
+		GridViewModel IProvide<GridViewModel>.Value() => GridViewModel;
+		GameManager IProvide<GameManager>.Value() => Instance;
+        Console IProvide<Console>.Value() => InGameConsole;
+        ComponentViewFactory IProvide<ComponentViewFactory>.Value() => GridView.ComponentViewFactory;
+        System.Version IProvide<System.Version>.Value() => Version;
+        #endregion 
+        
 		[Export] public NodePath GridViewPath { get; set; }
-		private ToolBox ToolBox { get; set; }
+		public ToolBox MainToolBox { get; set; }
 		[Export] private NodePath ToolBoxPath { get; set; }
 		[Export] public int FieldWidth { get; set; } = 24;
 
@@ -41,55 +61,82 @@ namespace ConnectAPic.LayoutWindow
 		public System.Version Version => Assembly.GetExecutingAssembly().GetName().Version; // Get the version from the assembly
 		public Grid Grid { get; set; }
 		public static GameManager instance;
-		public CAP_Core.Logger Logger { get; set; }
-		public LogSaver LogSaver { get; set; }
+		public ILogger Logger { get; set; }
+		private LogSaver LogSaver { get; set; }
+		private StringBuilder InitializaionLogs = new();
 		public GridViewModel GridViewModel { get; private set; }
 		public static GameManager Instance
 		{
 			get { return instance; }
 		}
 		public const string ComponentFolderPath = "res://Scenes/Components";
-		public override void _Ready()
+
+        public override void _EnterTree()
+        {
+            base._EnterTree();
+            if (instance == null)
+            {
+                try
+                {
+                    instance = this;
+                    InitializeLoggingSystemAndConsole();
+                    InitializaionLogs.AppendLine("Program Version: " + Version);
+                    InitializeGridAndGridView();
+                    InitializeExternalPortViews(Grid.ExternalPorts);
+                    PCKLoader = new(ComponentFolderPath, Logger);
+                }
+                catch (Exception ex)
+                {
+                    GD.PrintErr(ex.Message);
+                    GD.PrintErr(ex);
+					InitializaionLogs.AppendLine(ex.Message);
+                }
+            }
+            else
+            {
+                QueueFree(); // delete this object as there is already another GameManager in the scene
+            }
+        }
+		
+        public override void _Ready()
 		{
-			if (instance == null)
+            try
+            {
+                PCKLoader.LoadStandardPCKs();
+                List<ComponentDraft> componentDrafts = EquipViewComponentFactoryWithJSONDrafts();
+                this.CheckForNull(x => x.ToolBoxPath);
+                MainToolBox = GetNode<ToolBox>(ToolBoxPath);
+                this.CheckForNull(x => x.MainToolBox);
+                List<Component> modelComponents = new ComponentDraftConverter(Logger).ToComponentModels(componentDrafts);
+                ComponentFactory.Instance.InitializeComponentDrafts(modelComponents);
+                InitializaionLogs.AppendLine("Initialized ComponentDrafts");
+            }
+            catch (Exception ex)
+            {
+                InitializaionLogs.AppendLine(ex.Message);
+            }
+			// Provide all DI Objects -> might throw if types don't match up
+			try
 			{
-				try
-				{
-					instance = this;
-					InitializeLoggingSystemAndConsole();
-					InitializeGridAndGridView();
-					InitializeExternalPortViews(Grid.ExternalPorts);
-					PCKLoader = new(ComponentFolderPath, Logger);
-					CallDeferred(nameof(DeferredInitialization));
-				} catch (Exception ex)
-				{
-					GD.PrintErr(ex.Message);
-					GD.PrintErr(ex);
-				}		
+                Provide();
 			}
-			else
+			catch (Exception ex)
 			{
-				QueueFree(); // delete this object as there is already another GameManager in the scene
+				GD.PrintErr(ex.Message); // we don't know if the Console is set up already properly
+				Logger.PrintErr(ex.Message);
 			}
-		}
+			Logger.Print(InitializaionLogs.ToString());
+        }
+
 		private void InitializeLoggingSystemAndConsole()
 		{
 			Logger = new CAP_Core.Logger();
 			LogSaver = new LogSaver(Logger);
 			this.CheckForNull(x => x.InGameConsole);
-			InGameConsole.Initialize(Logger);
-			Logger.AddLog(CAP_Contracts.Logger.LogLevel.Debug, "Initialized LoggingSystem");
-			Logger.AddLog(CAP_Contracts.Logger.LogLevel.Debug, "Program Version: " + Version);
+            InitializaionLogs.AppendLine("Initialized LoggingSystem");
 		}
 
-		private void InitializeToolBox(ComponentViewFactory componentViewFactory)
-		{
-			this.CheckForNull(x => x.ToolBoxPath);
-			ToolBox = GetNode<ToolBox>(ToolBoxPath);
-			this.CheckForNull(x => x.ToolBox);
-			ToolBox.SetAvailableTools(componentViewFactory, Logger);
-			Logger?.AddLog(CAP_Contracts.Logger.LogLevel.Debug, "Initialized ToolBox");
-		}
+		
 		private void InitializeGridAndGridView()
 		{
 			GridView = GetNode<GridView>(GridViewPath);
@@ -97,24 +144,7 @@ namespace ConnectAPic.LayoutWindow
 			Grid = new Grid(FieldWidth, FieldHeight);
 			GridViewModel = new GridViewModel(GridView, Grid, Logger);
 			GridView.Initialize(GridViewModel, Logger);
-			Logger?.AddLog(CAP_Contracts.Logger.LogLevel.Debug, "Initialized GridView and Grid and GridViewModel");
-		}
-
-		private void DeferredInitialization()
-		{
-			try
-			{
-				PCKLoader.LoadStandardPCKs();
-				List<ComponentDraft> componentDrafts = EquipViewComponentFactoryWithJSONDrafts();
-				InitializeToolBox(this.GridView.ComponentViewFactory);
-				List<Component> modelComponents = new ComponentDraftConverter(Logger).ToComponentModels(componentDrafts);
-				ComponentFactory.Instance.InitializeComponentDrafts(modelComponents);
-				Logger?.AddLog(CAP_Contracts.Logger.LogLevel.Debug, "Initialized ComponentDrafts");
-			} catch (Exception ex)
-			{
-				Logger?.AddLog(CAP_Contracts.Logger.LogLevel.Error, ex.Message);
-			}
-			
+            InitializaionLogs.AppendLine("Initialized GridView and Grid and GridViewModel");
 		}
 
 		private List<ComponentDraft> EquipViewComponentFactoryWithJSONDrafts()
@@ -134,19 +164,19 @@ namespace ConnectAPic.LayoutWindow
 		{
 			draftsAndErrors = draftsAndErrors.Where(d => String.IsNullOrEmpty(d.error) == false).ToList();
 			foreach (var d in draftsAndErrors)
-				Logger.PrintErr(d.error);
+                InitializaionLogs.AppendLine("ERR " + d.error);
 		}
 
-		private void InitializeExternalPortViews(List<ExternalPort> StandardPorts)
+		private void InitializeExternalPortViews(List<ExternalPort> ExternalPorts)
 		{
 			ExternalInputRedTemplate.Visible = false;
 			ExternalInputGreenTemplate.Visible = false;
 			ExternalInputBlueTemplate.Visible = false;
 			ExternalOutputTemplate.Visible = false;
-			foreach (var port in StandardPorts)
+			foreach (var port in ExternalPorts)
 			{
 				TextureRect view;
-				if (port is StandardInput input)
+				if (port is ExternalInput input)
 				{
 					if (input.Color == LightColor.Red)
 					{
@@ -170,5 +200,6 @@ namespace ConnectAPic.LayoutWindow
 				view.Position = new Godot.Vector2(view.Position.X - GridView.GlobalPosition.X, (GameManager.TilePixelSize) * port.TilePositionY);
 			}
 		}
-	}
+
+    }
 }

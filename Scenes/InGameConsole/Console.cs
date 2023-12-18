@@ -1,18 +1,18 @@
 using CAP_Contracts.Logger;
 using CAP_Core.LightFlow;
-using Components.ComponentDraftMapper;
-using ConnectAPic.LayoutWindow;
-using ConnectAPIC.Scripts.Debuggers;
 using ConnectAPIC.Scripts.Helpers;
 using Godot;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using static System.Net.Mime.MediaTypeNames;
-using System.Reflection;
+using Chickensoft.AutoInject;
+using SuperNodes.Types;
+using ConnectAPIC.LayoutWindow.ViewModel;
+using CAP_Core;
 
+[SuperNode(typeof(Dependent))]
 public partial class Console : ScrollContainer
 {
+	public override partial void _Notification(int what);
+	[Dependency] public GridViewModel ViewModel => DependOn<GridViewModel>();
+	[Dependency] public ILogger Logger => DependOn<ILogger>();
 	[Export] private Node LoggingParent { get; set; }
 	[Export] private RichTextLabel InfoTextTemplate { get; set; }
 	[Export] private RichTextLabel ErrorTextTemplate { get; set; }
@@ -25,20 +25,20 @@ public partial class Console : ScrollContainer
 		this.CheckForNull(x => x.ErrorTextTemplate);
 		Hide();
 	}
-
-	public void Initialize(ILogger logger)
+	public void OnResolved()
 	{
-		logger.LogAdded += (Log obj)=> {
-			if (obj.Level > LogLevel.Warn)
-			{
-				PrintErr(obj.Message);
-			}
-			else
-			{
-				PrintInfo(obj.Message);
-			}
-		};
-	}
+        Logger.LogAdded += (Log obj) => {
+            if (obj.Level > LogLevel.Warn)
+            {
+                PrintErr(obj.Message);
+            }
+            else
+            {
+                PrintInfo(obj.Message);
+            }
+        };
+    }
+
 	public void PrintInfo(string text)
 	{
 		GD.Print(text);
@@ -84,7 +84,7 @@ public partial class Console : ScrollContainer
 
 			if (eventKey.IsReleased() && eventKey.Keycode == Key.F2)
 			{
-				var matrixPrinter = new GridSMatrixPrinter(GameManager.instance.GridViewModel.MatrixAnalyzer);
+				var matrixPrinter = new GridSMatrixPrinter(ViewModel.MatrixAnalyzer);
 				Print(matrixPrinter.ToString().Replace('\t', ' '));
 			}
 		}

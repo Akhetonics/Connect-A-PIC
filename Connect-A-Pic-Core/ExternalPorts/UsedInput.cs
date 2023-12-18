@@ -1,8 +1,8 @@
 ﻿namespace CAP_Core.ExternalPorts
 {
-    public class UsedStandardInput
+    public class UsedInput
     {
-        public StandardInput Input { get; set; }
+        public ExternalInput Input { get; set; }
         public Guid AttachedComponentPinId { get; set; }
 
     }

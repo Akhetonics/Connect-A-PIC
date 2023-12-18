@@ -28,23 +28,23 @@ namespace CAP_Core
             Width = width;
             Height = height;
             ExternalPorts = new List<ExternalPort>() {
-                    new StandardInput("io0",LightColor.Red  , 0, 2,1),
-                    new StandardInput("io1",LightColor.Green, 0, 3,1),
-                    new StandardInput("io2",LightColor.Blue , 0, 4,1),
-                    new StandardOutput("io3",5),
-                    new StandardOutput("io4",6),
-                    new StandardOutput("io5",7),
-                    new StandardOutput("io6",8),
-                    new StandardOutput("io7",9),
+                    new ExternalInput("io0",LightColor.Red  , 0, 2,1),
+                    new ExternalInput("io1",LightColor.Green, 0, 3,1),
+                    new ExternalInput("io2",LightColor.Blue , 0, 4,1),
+                    new ExternalOutput("io3",5),
+                    new ExternalOutput("io4",6),
+                    new ExternalOutput("io5",7),
+                    new ExternalOutput("io6",8),
+                    new ExternalOutput("io7",9),
                 };
             GenerateAllTiles();
         }
-        public List<UsedStandardInput> GetUsedStandardInputs()
+        public List<UsedInput> GetUsedStandardInputs()
         {
-            List<UsedStandardInput> inputsFound = new();
+            List<UsedInput> inputsFound = new();
             foreach (var port in ExternalPorts)
             {
-                if (port is StandardInput input)
+                if (port is ExternalInput input)
                 {
                     var inputY = input.TilePositionY;
                     if (IsInGrid(0, inputY) == false) continue;
@@ -56,7 +56,7 @@ namespace CAP_Core
                     if(componentPin?.MatterType != MatterType.Light) continue; // if the component does not have a connected pin, then we ignore it.
                     Guid pinId = componentPin.IDInFlow;
                     
-                    inputsFound.Add(new UsedStandardInput() { AttachedComponentPinId = pinId, Input = input });
+                    inputsFound.Add(new UsedInput() { AttachedComponentPinId = pinId, Input = input });
                 }
             }
             return inputsFound;

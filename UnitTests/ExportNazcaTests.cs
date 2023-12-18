@@ -12,7 +12,7 @@ namespace UnitTests
         public void NazcaCompilerTest()
         {
             Grid grid = new(24,12);
-            var inputs = grid.ExternalPorts.Where(p => p.GetType() == typeof(StandardInput)).ToList();
+            var inputs = grid.ExternalPorts.Where(p => p.GetType() == typeof(ExternalInput)).ToList();
             int inputHeight = inputs.FirstOrDefault()?.TilePositionY ?? throw new Exception("there is no StandardInput defined");
             var firstComponent = TestComponentFactory.CreateDirectionalCoupler();
             grid.PlaceComponent(0, inputHeight, firstComponent);
@@ -42,7 +42,7 @@ namespace UnitTests
         public void GetConnectedNeighborsTest()
         {
             Grid grid = new(24, 12);
-            var inputs = grid.ExternalPorts.Where(p => p.GetType() == typeof(StandardInput)).ToList();
+            var inputs = grid.ExternalPorts.Where(p => p.GetType() == typeof(ExternalInput)).ToList();
             var firstInput = inputs.FirstOrDefault();
             if (firstInput == null) throw new Exception("Inputs not found, they seem not to be declared in the grid. Please do that now");
             var inputHeight = firstInput.TilePositionY;
