@@ -31,7 +31,7 @@ namespace ConnectAPIC.LayoutWindow.View
         public GridViewModel ViewModel { get; private set; }
         public int GridX { get; set; }
         public int GridY { get; set; }
-        protected List<AnimationSlot> AnimationSlots = new();
+        public List<AnimationSlot> AnimationSlots { get; private set; } = new();
         private new float RotationDegrees { get => base.RotationDegrees; set => base.RotationDegrees = value; }
         private new float Rotation { get => base.Rotation; set => base.Rotation = value; }
         private DiscreteRotation _rotationCC;
@@ -179,25 +179,18 @@ namespace ConnectAPIC.LayoutWindow.View
         }
 
         public virtual void DisplayLightVector(List<LightAtPin> lightsAtPins)
-        {
-            try
+    {
+            int shaderAnimNumber = 1;
+            foreach (LightAtPin light in lightsAtPins)
             {
-                int shaderAnimNumber = 1;
-                foreach (LightAtPin light in lightsAtPins)
-                {
-                    var animationSlot = AnimationSlot.TryFindMatching(AnimationSlots, light);
-                    if (animationSlot == null) continue;
-                    AssignInAndOutFlowShaderData(animationSlot, light, shaderAnimNumber);
-                    shaderAnimNumber += 1;
-                }
-                OverlayRed?.Show();
-                OverlayGreen?.Show();
-                OverlayBlue?.Show();
+                var animationSlot = AnimationSlot.TryFindMatching(AnimationSlots, light);
+                if (animationSlot == null) continue;
+                AssignInAndOutFlowShaderData(animationSlot, light, shaderAnimNumber);
+                shaderAnimNumber += 1;
             }
-            catch (Exception ex)
-            {
-                Logger.PrintErr(ex.Message);
-            }
+            OverlayRed?.Show();
+            OverlayGreen?.Show();
+            OverlayBlue?.Show();
         }
         protected void AssignInAndOutFlowShaderData(AnimationSlot slot, LightAtPin lightAtPin, int shaderAnimationNumber)
         {

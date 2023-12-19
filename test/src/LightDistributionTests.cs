@@ -38,19 +38,22 @@ public class LightDistributionTests : TestClass
 			_log.Print(ex.Message);
         }
 
-
         // first import all components so that we have curves. 
-        gameManager._EnterTree();
-        gameManager._Ready();
         // find proper tool from toolbox
-
+        int componentNr = gameManager.GridView.ComponentViewFactory.PackedComponentCache.Single(c=>c.Value.Draft.identifier == "Bend").Key;
         // instantiate tool at position attached to laserinput
-        var TileY= gameManager.Grid.GetUsedStandardInputs().First().Input.TilePositionY;
-        int componentNr = 0;
+        var firstLaserInput = gameManager.Grid.ExternalPorts.First();
+        var TileY= firstLaserInput.TilePositionY;
         
-        gameManager.GridViewModel.CreateComponentCommand.Execute(new CreateComponentArgs(componentNr, 0, TileY, DiscreteRotation.R90));
+        gameManager.GridViewModel.CreateComponentCommand.Execute(new CreateComponentArgs(componentNr, 0, TileY, DiscreteRotation.R270));
         // create a curve at the position of one of the standardInputs and rotate it by 90 degrees and then start light distribution
-        gameManager.ShouldNotBe(null);
+        gameManager.GridViewModel.ShowLightPropagation();
+        var componentView = gameManager.GridViewModel.GridComponentViews[0, TileY];
+        var usedPorts = gameManager.Grid.GetUsedExternalInputs();
+        
+        // Assert
+        componentView.AnimationSlots.First().Rotation.ShouldBe(componentView.RotationCC);
+        usedPorts.Count.ShouldBe(1);
     }
     [Setup]
     public void Setup() => _log.Print("Setup");

@@ -15,7 +15,7 @@ namespace ConnectAPIC.LayoutWindow.View
         [Signal] public delegate void InitializedEventHandler();
         [Export] private Script ComponentBaseScriptPath;
         private List<PackedScene> PackedComponentScenes;
-        private Dictionary<int, ComponentSceneAndDraft> PackedComponentCache = new();
+        public Dictionary<int, ComponentSceneAndDraft> PackedComponentCache { get; private set; } = new();
         public ILogger Logger { get; set; }
         public void InitializeComponentDrafts(List<ComponentDraft> drafts, ILogger logger)
         {

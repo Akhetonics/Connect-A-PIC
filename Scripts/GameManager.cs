@@ -63,7 +63,7 @@ namespace ConnectAPic.LayoutWindow
 		public static GameManager instance;
 		public ILogger Logger { get; set; }
 		private LogSaver LogSaver { get; set; }
-		private StringBuilder InitializaionLogs = new();
+		private StringBuilder InitializationLogs = new();
 		public GridViewModel GridViewModel { get; private set; }
 		public static GameManager Instance
 		{
@@ -80,7 +80,7 @@ namespace ConnectAPic.LayoutWindow
                 {
                     instance = this;
                     InitializeLoggingSystemAndConsole();
-                    InitializaionLogs.AppendLine("Program Version: " + Version);
+                    InitializationLogs.AppendLine("Program Version: " + Version);
                     InitializeGridAndGridView();
                     InitializeExternalPortViews(Grid.ExternalPorts);
                     PCKLoader = new(ComponentFolderPath, Logger);
@@ -89,7 +89,7 @@ namespace ConnectAPic.LayoutWindow
                 {
                     GD.PrintErr(ex.Message);
                     GD.PrintErr(ex);
-					InitializaionLogs.AppendLine(ex.Message);
+					InitializationLogs.AppendLine(ex.Message);
                 }
             }
             else
@@ -99,7 +99,7 @@ namespace ConnectAPic.LayoutWindow
         }
 		
         public override void _Ready()
-		{
+        {
             try
             {
                 PCKLoader.LoadStandardPCKs();
@@ -109,34 +109,38 @@ namespace ConnectAPic.LayoutWindow
                 this.CheckForNull(x => x.MainToolBox);
                 List<Component> modelComponents = new ComponentDraftConverter(Logger).ToComponentModels(componentDrafts);
                 ComponentFactory.Instance.InitializeComponentDrafts(modelComponents);
-                InitializaionLogs.AppendLine("Initialized ComponentDrafts");
+                InitializationLogs.AppendLine("Initialized ComponentDrafts");
             }
             catch (Exception ex)
             {
-                InitializaionLogs.AppendLine(ex.Message);
+                InitializationLogs.AppendLine(ex.Message);
             }
-			// Provide all DI Objects -> might throw if types don't match up
-			try
-			{
-                Provide();
-			}
-			catch (Exception ex)
-			{
-				GD.PrintErr(ex.Message); // we don't know if the Console is set up already properly
-				Logger.PrintErr(ex.Message);
-			}
-			Logger.Print(InitializaionLogs.ToString());
+            ProvideDependenciesOrLogError();
+            Logger.Print(InitializationLogs.ToString());
         }
 
-		private void InitializeLoggingSystemAndConsole()
+        private void ProvideDependenciesOrLogError()
+        {
+            // Provide all DI Objects -> might throw if types don't match up
+            try
+            {
+                Provide();
+            }
+            catch (Exception ex)
+            {
+                GD.PrintErr(ex.Message); // we don't know if the Console is set up already properly
+                Logger.PrintErr(ex.Message);
+            }
+        }
+
+        private void InitializeLoggingSystemAndConsole()
 		{
 			Logger = new CAP_Core.Logger();
 			LogSaver = new LogSaver(Logger);
 			this.CheckForNull(x => x.InGameConsole);
-            InitializaionLogs.AppendLine("Initialized LoggingSystem");
+            InitializationLogs.AppendLine("Initialized LoggingSystem");
 		}
 
-		
 		private void InitializeGridAndGridView()
 		{
 			GridView = GetNode<GridView>(GridViewPath);
@@ -144,7 +148,7 @@ namespace ConnectAPic.LayoutWindow
 			Grid = new Grid(FieldWidth, FieldHeight);
 			GridViewModel = new GridViewModel(GridView, Grid, Logger);
 			GridView.Initialize(GridViewModel, Logger);
-            InitializaionLogs.AppendLine("Initialized GridView and Grid and GridViewModel");
+            InitializationLogs.AppendLine("Initialized GridView and Grid and GridViewModel");
 		}
 
 		private List<ComponentDraft> EquipViewComponentFactoryWithJSONDrafts()
@@ -164,7 +168,7 @@ namespace ConnectAPic.LayoutWindow
 		{
 			draftsAndErrors = draftsAndErrors.Where(d => String.IsNullOrEmpty(d.error) == false).ToList();
 			foreach (var d in draftsAndErrors)
-                InitializaionLogs.AppendLine("ERR " + d.error);
+                InitializationLogs.AppendLine("ERR " + d.error);
 		}
 
 		private void InitializeExternalPortViews(List<ExternalPort> ExternalPorts)

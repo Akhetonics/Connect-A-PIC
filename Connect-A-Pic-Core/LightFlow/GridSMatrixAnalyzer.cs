@@ -24,7 +24,7 @@ namespace CAP_Core.LightFlow
         {
             InputLightColor = newLightColor;
             var stepCount = SystemSMatrix.PinReference.Count() * 2;
-            var usedInputs = Grid.GetUsedStandardInputs().Where(i => i.Input.Color == newLightColor).ToList();
+            var usedInputs = Grid.GetUsedExternalInputs().Where(i => i.Input.Color == newLightColor).ToList();
             UpdateSystemSMatrix();
             var inputVector = UsedInputConverter.ToVector(usedInputs, SystemSMatrix);
             return SystemSMatrix.GetLightPropagation(inputVector, stepCount) ?? new Dictionary<Guid, Complex>();

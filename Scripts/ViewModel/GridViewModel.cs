@@ -144,16 +144,9 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             List<Component> components = Grid.GetAllComponents();
             foreach (var componentModel in components)
             {
-                try
-                {
-                    List<LightAtPin> lightAtPins = CalculateLightAtPins(lightVector, color, componentModel);
-                    GridComponentViews[componentModel.GridXMainTile, componentModel.GridYMainTile].DisplayLightVector(lightAtPins);
-                }
-                catch (Exception ex)
-                {
-                    Logger.PrintErr(ex.Message);
-                }
-
+                var componentView = GridComponentViews[componentModel.GridXMainTile, componentModel.GridYMainTile];
+                List<LightAtPin> lightAtPins = CalculateLightAtPins(lightVector, color, componentModel);
+                componentView.DisplayLightVector(lightAtPins);   
             }
         }
 

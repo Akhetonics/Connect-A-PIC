@@ -37,7 +37,9 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             if ( !CanExecute(parameter) ) return;
             var compParams = (CreateComponentArgs)parameter;
             Component component = ComponentFactory.CreateComponent(compParams.ComponentTypeNumber);
+            component.Rotation90CounterClock = compParams.Rotation;
             GridModel.PlaceComponent(compParams.GridX, compParams.GridY, component);
+
         }
     }
     public class CreateComponentArgs

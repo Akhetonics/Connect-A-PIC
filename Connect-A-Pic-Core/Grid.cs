@@ -39,7 +39,7 @@ namespace CAP_Core
                 };
             GenerateAllTiles();
         }
-        public List<UsedInput> GetUsedStandardInputs()
+        public List<UsedInput> GetUsedExternalInputs()
         {
             List<UsedInput> inputsFound = new();
             foreach (var port in ExternalPorts)
