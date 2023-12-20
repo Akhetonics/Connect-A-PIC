@@ -7,6 +7,10 @@ namespace ConnectAPIC.Scripts.View.ComponentFactory
     {
         public bool DoesResourceExist(string godotFilePath)
         {
+            if (!godotFilePath.StartsWith("res://Scenes/Components"))
+            {
+                return false;
+            }
             return true;// the path is within a pck file and we cannot load PCK files without importing them.. So `FileAccess.FileExists(godotFilePath);` won't work.
         }
 
