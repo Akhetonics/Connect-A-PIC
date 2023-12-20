@@ -8,7 +8,7 @@ namespace ConnectAPIC.LayoutWindow.View
     {
         public override string ToString()
         {
-            string shortSide = side.ToString().Substring(0, 1); // Assuming the enum names have at least 1 character
+            string shortSide = side.ToString()[..3]; // Assuming the enum names have at least 1 character
             return $"x: {partOffsetX}, y: {partOffsetY},{shortSide}, clr: {color.ToReadableString()}, in: {lightInFlow}, out: {lightOutFlow}";
         }
 

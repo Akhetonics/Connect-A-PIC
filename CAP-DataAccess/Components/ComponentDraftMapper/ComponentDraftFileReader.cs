@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using Components.ComponentDraftMapper.DTOs;
 
@@ -23,7 +24,7 @@ namespace Components.ComponentDraftMapper
                 if (fileContent != null)
                 {
                     try
-                    {
+                    {   
                         return (JsonSerializer.Deserialize<ComponentDraft>(fileContent) ?? new ComponentDraft(),"");
                     }
                     catch (Exception ex)

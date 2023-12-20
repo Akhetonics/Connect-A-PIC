@@ -7,7 +7,7 @@ namespace ConnectAPIC.Scripts.View.ComponentFactory
     {
         public bool DoesResourceExist(string godotFilePath)
         {
-            return FileAccess.FileExists(godotFilePath);
+            return true;// the path is within a pck file and we cannot load PCK files without importing them.. So `FileAccess.FileExists(godotFilePath);` won't work.
         }
 
         public string ReadAsText(string godotFilePath)

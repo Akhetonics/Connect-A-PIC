@@ -13,6 +13,8 @@ namespace ConnectAPIC.LayoutWindow.View
     public class AnimationSlot
 	{
 		public AnimationSlot(LightColor color, Vector2I tileOffsetXY, RectSide side, Sprite2D baseOverlaySprite, Texture texture , Vector2I componentSizeInTiles ) {
+			if (componentSizeInTiles.X < 1) throw new WrongSizeException("component Width must be at least 1");
+			if (componentSizeInTiles.Y < 1) throw new WrongSizeException("component Height must be at least 1");
 			this.Color = color;
             TileOffset = tileOffsetXY;
 			Side = side;
@@ -64,10 +66,15 @@ namespace ConnectAPIC.LayoutWindow.View
 
 		public LightColor Color { get; }
         public Vector2I TileOffset { get; private set; }
-        public DiscreteRotation Rotation { get; set; }
+        public DiscreteRotation Rotation { get; private set; }
 		public RectSide Side { get; private set; }
         public Sprite2D BaseOverlaySprite { get; }
         public Texture Texture { get; }
         public Vector2I ComponentSizeInTiles { get; }
+    }
+    public class WrongSizeException : Exception
+    {
+        public WrongSizeException() { }
+        public WrongSizeException(string message) : base(message) { }
     }
 }

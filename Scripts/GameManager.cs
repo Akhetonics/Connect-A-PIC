@@ -63,7 +63,7 @@ namespace ConnectAPic.LayoutWindow
 		public static GameManager instance;
 		public ILogger Logger { get; set; }
 		private LogSaver LogSaver { get; set; }
-		private StringBuilder InitializationLogs = new();
+		private List<(String log, bool isError)> InitializationLogs = new();
 		public GridViewModel GridViewModel { get; private set; }
 		public static GameManager Instance
 		{
@@ -80,7 +80,7 @@ namespace ConnectAPic.LayoutWindow
                 {
                     instance = this;
                     InitializeLoggingSystemAndConsole();
-                    InitializationLogs.AppendLine("Program Version: " + Version);
+                    InitializationLogs.Add(("Program Version: " + Version, false));
                     InitializeGridAndGridView();
                     InitializeExternalPortViews(Grid.ExternalPorts);
                     PCKLoader = new(ComponentFolderPath, Logger);
@@ -89,7 +89,7 @@ namespace ConnectAPic.LayoutWindow
                 {
                     GD.PrintErr(ex.Message);
                     GD.PrintErr(ex);
-					InitializationLogs.AppendLine(ex.Message);
+					InitializationLogs.Add((ex.Message,true));
                 }
             }
             else
@@ -109,14 +109,24 @@ namespace ConnectAPic.LayoutWindow
                 this.CheckForNull(x => x.MainToolBox);
                 List<Component> modelComponents = new ComponentDraftConverter(Logger).ToComponentModels(componentDrafts);
                 ComponentFactory.Instance.InitializeComponentDrafts(modelComponents);
-                InitializationLogs.AppendLine("Initialized ComponentDrafts");
+                InitializationLogs.Add(("Initialized ComponentDrafts",false));
             }
             catch (Exception ex)
             {
-                InitializationLogs.AppendLine(ex.Message);
+                InitializationLogs.Add((ex.Message,true));
             }
+
             ProvideDependenciesOrLogError();
-            Logger.Print(InitializationLogs.ToString());
+			InitializationLogs.ForEach(l =>
+			{
+				if (l.isError)
+				{
+					Logger.PrintErr(l.log);
+				} else
+				{
+                    Logger.Print(l.log);
+                }
+			});
         }
 
         private void ProvideDependenciesOrLogError()
@@ -135,10 +145,10 @@ namespace ConnectAPic.LayoutWindow
 
         private void InitializeLoggingSystemAndConsole()
 		{
-			Logger = new CAP_Core.Logger();
+            Logger = new CAP_Core.Logger();
 			LogSaver = new LogSaver(Logger);
-			this.CheckForNull(x => x.InGameConsole);
-            InitializationLogs.AppendLine("Initialized LoggingSystem");
+            InGameConsole.Initialize(Logger);
+            InitializationLogs.Add(("Initialized LoggingSystem",false));
 		}
 
 		private void InitializeGridAndGridView()
@@ -148,7 +158,7 @@ namespace ConnectAPic.LayoutWindow
 			Grid = new Grid(FieldWidth, FieldHeight);
 			GridViewModel = new GridViewModel(GridView, Grid, Logger);
 			GridView.Initialize(GridViewModel, Logger);
-            InitializationLogs.AppendLine("Initialized GridView and Grid and GridViewModel");
+            InitializationLogs.Add(("Initialized GridView and Grid and GridViewModel", false));
 		}
 
 		private List<ComponentDraft> EquipViewComponentFactoryWithJSONDrafts()
@@ -168,7 +178,7 @@ namespace ConnectAPic.LayoutWindow
 		{
 			draftsAndErrors = draftsAndErrors.Where(d => String.IsNullOrEmpty(d.error) == false).ToList();
 			foreach (var d in draftsAndErrors)
-                InitializationLogs.AppendLine("ERR " + d.error);
+                InitializationLogs.Add(( d.error,true));
 		}
 
 		private void InitializeExternalPortViews(List<ExternalPort> ExternalPorts)

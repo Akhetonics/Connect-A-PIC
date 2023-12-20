@@ -12,7 +12,6 @@ public partial class Console : ScrollContainer
 {
 	public override partial void _Notification(int what);
 	[Dependency] public GridViewModel ViewModel => DependOn<GridViewModel>();
-	[Dependency] public ILogger Logger => DependOn<ILogger>();
 	[Export] private Node LoggingParent { get; set; }
 	[Export] private RichTextLabel InfoTextTemplate { get; set; }
 	[Export] private RichTextLabel ErrorTextTemplate { get; set; }
@@ -25,9 +24,9 @@ public partial class Console : ScrollContainer
 		this.CheckForNull(x => x.ErrorTextTemplate);
 		Hide();
 	}
-	public void OnResolved()
+	public void Initialize(ILogger logger)
 	{
-        Logger.LogAdded += (Log obj) => {
+        logger.LogAdded += (Log obj) => {
             if (obj.Level > LogLevel.Warn)
             {
                 PrintErr(obj.Message);

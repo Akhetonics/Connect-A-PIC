@@ -73,6 +73,8 @@ namespace ConnectAPIC.LayoutWindow.View
             if (heightInTiles == 0) Logger.PrintErr(nameof(heightInTiles) + " of this element is not set in the TypeNR: " + componentTypeNumber);
 
             this.TypeNumber = componentTypeNumber;
+            this.WidthInTiles = widthInTiles;
+            this.HeightInTiles = heightInTiles;
             FindAndAssignOverlay();
             this.CheckForNull(x => x.OverlayBluePrint);
             InitializeLightOverlays();
@@ -85,8 +87,6 @@ namespace ConnectAPIC.LayoutWindow.View
                 }
                 AnimationSlots.AddRange(CreateRGBAnimSlots(slotData.Side, slotData.LightFlowOverlay, slotData.OffsetX, slotData.OffsetY));
             }
-            this.WidthInTiles = widthInTiles;
-            this.HeightInTiles= heightInTiles;
             RotationCC = _rotationCC;
         }
         private void InitializeLightOverlays()
