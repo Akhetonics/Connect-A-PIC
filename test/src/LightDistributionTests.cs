@@ -41,7 +41,7 @@ public class LightDistributionTests : TestClass
         // first import all components so that we have curves. 
         // find proper tool from toolbox
         int componentNr = gameManager.GridView.ComponentViewFactory.PackedComponentCache.Single(c=>c.Value.Draft.identifier == "Bend").Key;
-        // instantiate tool at position attached to laserinput
+        // instantiate tool at position attached to laserInput
         var firstLaserInput = gameManager.Grid.ExternalPorts.First();
         var TileY= firstLaserInput.TilePositionY;
         

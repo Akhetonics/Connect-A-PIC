@@ -22,7 +22,7 @@ namespace UnitTests
             lightAtPin = new LightAtPin(0, 0, RectSide.Down, CAP_Core.ExternalPorts.LightColor.Red, new System.Numerics.Complex(1, 0), 0);
             var matchingAfterRotation = slot.IsMatchingWithLightVector(lightAtPin);
 
-            matchingBeforeRotation.ShouldBe(true, $"the lightvector should be at the right pin. Slot: {slot.Side}, light: {lightAtPin} " );
+            matchingBeforeRotation.ShouldBe(true, $"the lightVector should be at the right pin. Slot: {slot.Side}, light: {lightAtPin} " );
             matchingAfterRotation.ShouldBe(true, $"the slot should be facing down now after 270° CC turn. Slot: {slot.Side}, light: {lightAtPin}");
             slot.Side.ShouldBe(RectSide.Down);
         }
