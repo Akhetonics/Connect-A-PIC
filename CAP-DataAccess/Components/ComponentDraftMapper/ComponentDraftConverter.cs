@@ -84,11 +84,11 @@ namespace Components.ComponentDraftMapper
             return componentConnectionsRed;
         }
 
-        private static SMatrix CreateSMatrix(List<Connection> connections, Part[,] parts, Dictionary<int, PinDraft> PinDraftsByNumber, List<Guid> allPinGuids, double laserWaveLengthNM)
+        private static SMatrix CreateSMatrix(List<DTOs.Connection> connections, Part[,] parts, Dictionary<int, PinDraft> PinDraftsByNumber, List<Guid> allPinGuids, double laserWaveLengthNM)
         {
             var componentConnections = new SMatrix(allPinGuids);
             var connectionWeights = new Dictionary<(Guid, Guid), Complex>();
-            foreach (Connection connectionDraft in connections)
+            foreach (DTOs.Connection connectionDraft in connections)
             {
                 var fromPin = PinDraftsByNumber[connectionDraft.fromPinNr];
                 var toPin = PinDraftsByNumber[connectionDraft.toPinNr];

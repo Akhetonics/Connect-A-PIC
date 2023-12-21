@@ -1,3 +1,4 @@
+using CAP_Core.Components.Creation;
 using CAP_Core.Helpers;
 using CAP_Core.LightFlow;
 using CAP_Core.Tiles;
@@ -15,7 +16,8 @@ namespace CAP_Core.Components
         [JsonIgnore] public int GridXMainTile { get; protected set; }
         [JsonIgnore] public int GridYMainTile { get; protected set; }
         public Part[,] Parts { get; protected set; }
-        public SMatrix Connections { get; protected set; }
+        private List<Connection> RawConnections;
+        public SMatrix Connections(double waveLength) => SMatrixFactory.GetSMatrix(RawConnections, Parts, waveLength);
         public string NazcaFunctionName { get; set; }
         public string NazcaFunctionParameters { get; set; }
         private DiscreteRotation _discreteRotation;
@@ -31,12 +33,12 @@ namespace CAP_Core.Components
                 }
             }
         }
-        public Component(SMatrix connections , string nazcaFunctionName, string nazcaFunctionParameters, Part[,] parts, int typeNumber, DiscreteRotation discreteRotationCounterClock)
+        public Component(List<Connection> connections , string nazcaFunctionName, string nazcaFunctionParameters, Part[,] parts, int typeNumber, DiscreteRotation discreteRotationCounterClock)
         {
             Parts = parts;
             TypeNumber = typeNumber;
             _discreteRotation = discreteRotationCounterClock;
-            Connections = connections;
+            RawConnections = connections;
             NazcaFunctionName = nazcaFunctionName;
             NazcaFunctionParameters = nazcaFunctionParameters;
         }
@@ -96,7 +98,7 @@ namespace CAP_Core.Components
                    $"Grid Y (Main Tile): {GridYMainTile} \n" +
                    $"Rotation: {Rotation90CounterClock} \n" +
                    $"Parts Length: {Parts?.Length} \n" +
-                   $"Connections PinReferences Count: {Connections?.PinReference?.Count}";
+                   $"Connections Count: {RawConnections.Count}";
         }
         public List<Pin> GetAllPins()
         {
