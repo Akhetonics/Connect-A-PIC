@@ -1,9 +1,7 @@
-using CAP_Core.Component.ComponentHelpers;
-using CAP_Core;
+using CAP_Core.Components;
 using Chickensoft.GoDotLog;
 using Chickensoft.GoDotTest;
 using ConnectAPic.LayoutWindow;
-using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using Godot;
 using GodotTestDriver;
@@ -11,9 +9,6 @@ using Shouldly;
 using System;
 using System.Threading.Tasks;
 using System.Linq;
-using Chickensoft.AutoInject;
-using SuperNodes.Types;
-using ConnectAPIC.LayoutWindow.ViewModel;
 
 public class LightDistributionTests : TestClass
 {

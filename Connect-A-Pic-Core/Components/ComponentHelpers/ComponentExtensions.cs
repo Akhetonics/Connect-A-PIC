@@ -1,6 +1,6 @@
 ﻿using CAP_Core.Tiles;
 
-namespace CAP_Core.Component.ComponentHelpers
+namespace CAP_Core.Components.ComponentHelpers
 {
     public static class ComponentExtensions
     {

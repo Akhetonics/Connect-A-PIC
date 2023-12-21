@@ -1,16 +1,16 @@
 ﻿using CAP_Contracts.Logger;
 using CAP_Core;
 using CAP_Core.CodeExporter;
-using CAP_Core.Component.ComponentHelpers;
+using CAP_Core.Components;
+using CAP_Core.Components.ComponentHelpers;
+using CAP_Core.Components.Creation;
 using CAP_Core.ExternalPorts;
 using CAP_Core.LightFlow;
 using CAP_Core.Tiles;
-using Chickensoft.AutoInject;
+using ConnectAPic.LayoutWindow;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scripts.Helpers;
-using Godot;
-using SuperNodes.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -122,35 +122,35 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             return ComponentView;
         }
 
-        public Dictionary<Guid, Complex> GetLightVector(LightColor color)
+        public Dictionary<Guid, Complex> GetLightVector(LaserType inputLight)
         {
             MatrixAnalyzer = new GridSMatrixAnalyzer(this.Grid);
-            return MatrixAnalyzer.CalculateLightPropagation(color);
+            return MatrixAnalyzer.CalculateLightPropagation(inputLight);
         }
 
         public void ShowLightPropagation()
         {
-            var lightVectorRed = GetLightVector(LightColor.Red);
-            var lightVectorGreen = GetLightVector(LightColor.Green);
-            var lightVectorBlue = GetLightVector(LightColor.Blue);
-            // go through the whole grid and send all 
-            AssignLightToComponentViews(lightVectorRed, LightColor.Red);
-            AssignLightToComponentViews(lightVectorGreen, LightColor.Green);
-            AssignLightToComponentViews(lightVectorBlue, LightColor.Blue);
+            var inputPorts = Grid.GetUsedExternalInputs();
+            foreach (var port in inputPorts)
+            {
+                var lightVectorRed = GetLightVector(port.Input.LaserType);
+                // go through the whole grid and send all 
+                AssignLightToComponentViews(lightVectorRed, port.Input.LaserType);
+            }
         }
 
-        private void AssignLightToComponentViews(Dictionary<Guid, Complex> lightVector, LightColor color)
+        private void AssignLightToComponentViews(Dictionary<Guid, Complex> lightVector, LaserType laserType)
         {
             List<Component> components = Grid.GetAllComponents();
             foreach (var componentModel in components)
             {
                 var componentView = GridComponentViews[componentModel.GridXMainTile, componentModel.GridYMainTile];
-                List<LightAtPin> lightAtPins = CalculateLightAtPins(lightVector, color, componentModel);
+                List<LightAtPin> lightAtPins = CalculateLightAtPins(lightVector, laserType, componentModel);
                 componentView.DisplayLightVector(lightAtPins);   
             }
         }
 
-        public static List<LightAtPin> CalculateLightAtPins(Dictionary<Guid, Complex> lightVector, LightColor color, Component componentModel)
+        public static List<LightAtPin> CalculateLightAtPins(Dictionary<Guid, Complex> lightVector, LaserType laserType, Component componentModel)
         {
             List<LightAtPin> lightAtPins = new();
 
@@ -167,7 +167,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
                             offsetX,
                             offsetY,
                             localSide,
-                            color,
+                            laserType,
                             lightVector.TryGetVal(pin.IDInFlow),
                             lightVector.TryGetVal(pin.IDOutFlow)
                             );

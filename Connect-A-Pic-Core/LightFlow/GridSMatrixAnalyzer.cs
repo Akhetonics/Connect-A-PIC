@@ -1,4 +1,5 @@
-﻿using CAP_Core.Component.ComponentHelpers;
+﻿using CAP_Core.Components;
+using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.ExternalPorts;
 using CAP_Core.Helpers;
 using CAP_Core.Tiles;
@@ -10,8 +11,7 @@ namespace CAP_Core.LightFlow
         public readonly Grid Grid;
         public Dictionary<(Guid, Guid), Complex> InterComponentConnections { get; private set; }
         public SMatrix SystemSMatrix { get; private set; }
-        private Dictionary<Guid, Complex> LightPropagation;
-        public LightColor InputLightColor { get; private set; }
+        public LaserType InputLaserType { get; private set; }
 
         public GridSMatrixAnalyzer(Grid grid)
         {
@@ -20,11 +20,11 @@ namespace CAP_Core.LightFlow
         }
 
         // calculates the light intensity and phase at a given PIN-ID for both light-flow-directions "in" and "out" for a given period of steps
-        public Dictionary<Guid, Complex> CalculateLightPropagation(LightColor newLightColor)
+        public Dictionary<Guid, Complex> CalculateLightPropagation(LaserType inputLaserType)
         {
-            InputLightColor = newLightColor;
+            InputLaserType = inputLaserType;
             var stepCount = SystemSMatrix.PinReference.Count() * 2;
-            var usedInputs = Grid.GetUsedExternalInputs().Where(i => i.Input.Color == newLightColor).ToList();
+            var usedInputs = Grid.GetUsedExternalInputs().Where(i => i.Input.LaserType.WaveLengthInNm == inputLaserType.WaveLengthInNm).ToList();
             UpdateSystemSMatrix();
             var inputVector = UsedInputConverter.ToVector(usedInputs, SystemSMatrix);
             return SystemSMatrix.GetLightPropagation(inputVector, stepCount) ?? new Dictionary<Guid, Complex>();

@@ -1,11 +1,10 @@
 using CAP_Contracts.Logger;
 using CAP_Core;
-using CAP_Core.Component.ComponentHelpers;
+using CAP_Core.Components;
+using CAP_Core.Components.Creation;
 using CAP_Core.ExternalPorts;
-using CAP_Core.LightFlow;
 using CAP_DataAccess;
 using CAP_DataAccess.Components.ComponentDraftMapper;
-using CAP_DataAccess.Helpers;
 using Chickensoft.AutoInject;
 using Components.ComponentDraftMapper;
 using Components.ComponentDraftMapper.DTOs;
@@ -18,14 +17,11 @@ using SuperNodes.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using System.Reflection;
-using System.Text;
-using YamlDotNet.Core;
 
 namespace ConnectAPic.LayoutWindow
 {
-	[SuperNode (typeof(Provider))]
+    [SuperNode (typeof(Provider))]
 	public partial class GameManager : Node, 
 		IProvide<ToolBox> , IProvide<ILogger>, IProvide<GridView>, IProvide<Grid>, IProvide<GridViewModel>, IProvide<GameManager>,
 		IProvide<Console> , IProvide<System.Version> , IProvide<ComponentViewFactory> 
@@ -192,11 +188,11 @@ namespace ConnectAPic.LayoutWindow
 				TextureRect view;
 				if (port is ExternalInput input)
 				{
-					if (input.Color == LightColor.Red)
+					if (input.LaserType == LaserType.Red)
 					{
 						view = (TextureRect)ExternalInputRedTemplate.Duplicate();
 					}
-					else if (input.Color == LightColor.Green)
+					else if (input.LaserType == LaserType.Green)
 					{
 						view = (TextureRect)ExternalInputGreenTemplate.Duplicate();
 					}

@@ -4,7 +4,7 @@ using CAP_Core.Tiles;
 using System.Numerics;
 using System.Text.Json.Serialization;
 
-namespace CAP_Core.Component.ComponentHelpers
+namespace CAP_Core.Components
 {
     public class Component : ICloneable
     {
@@ -31,7 +31,7 @@ namespace CAP_Core.Component.ComponentHelpers
                 }
             }
         }
-        public Component(SMatrix connections ,string nazcaFunctionName, string nazcaFunctionParameters, Part[,] parts, int typeNumber, DiscreteRotation discreteRotationCounterClock)
+        public Component(SMatrix connections , string nazcaFunctionName, string nazcaFunctionParameters, Part[,] parts, int typeNumber, DiscreteRotation discreteRotationCounterClock)
         {
             Parts = parts;
             TypeNumber = typeNumber;

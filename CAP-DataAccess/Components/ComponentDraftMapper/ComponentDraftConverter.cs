@@ -1,5 +1,6 @@
 ﻿using CAP_Contracts.Logger;
-using CAP_Core.Component.ComponentHelpers;
+using CAP_Core.Components;
+using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.LightFlow;
 using Components.ComponentDraftMapper.DTOs;
 using System.Numerics;
@@ -58,6 +59,12 @@ namespace Components.ComponentDraftMapper
                 parts[pinDraft.Key.x, pinDraft.Key.y] = new Part(realPins);
             }
 
+            SMatrix componentConnectionsRed = GetSMatrix(draft, parts);
+            return new Component(componentConnectionsRed, draft.nazcaFunctionName, draft.nazcaFunctionParameters, parts, typeNumber, DiscreteRotation.R0);
+        }
+
+        public static SMatrix GetSMatrix(ComponentDraft draft, Part[,] parts)
+        {
             // Create S-Matrix Connections
             // get all real Pins
             Dictionary<Guid, Pin> ModelPins = new();
@@ -73,23 +80,23 @@ namespace Components.ComponentDraftMapper
             allPinGuids.AddRange(ModelPins.Values.Select(p => p.IDInFlow).Distinct());
             allPinGuids.AddRange(ModelPins.Values.Select(p => p.IDOutFlow).Distinct());
 
-            SMatrix componentConnectionsRed = CreateSMatrix(draft, parts, PinDraftsByNumber, allPinGuids, PhaseShiftCalculator.laserWaveLengthRedNM);
-            return new Component(componentConnectionsRed, draft.nazcaFunctionName, draft.nazcaFunctionParameters, parts, typeNumber, DiscreteRotation.R0);
+            SMatrix componentConnectionsRed = CreateSMatrix(draft.connections, parts, PinDraftsByNumber, allPinGuids, StandardWaveLengths.RedNM);
+            return componentConnectionsRed;
         }
 
-        private static SMatrix CreateSMatrix(ComponentDraft draft, Part[,] parts, Dictionary<int, PinDraft> PinDraftsByNumber, List<Guid> allPinGuids, double laserWaveLengthNM)
+        private static SMatrix CreateSMatrix(List<Connection> connections, Part[,] parts, Dictionary<int, PinDraft> PinDraftsByNumber, List<Guid> allPinGuids, double laserWaveLengthNM)
         {
             var componentConnections = new SMatrix(allPinGuids);
             var connectionWeights = new Dictionary<(Guid, Guid), Complex>();
-            foreach (Connection connectionDraft in draft.connections)
+            foreach (Connection connectionDraft in connections)
             {
                 var fromPin = PinDraftsByNumber[connectionDraft.fromPinNr];
                 var toPin = PinDraftsByNumber[connectionDraft.toPinNr];
                 Pin fromModelPin = GetModelPin(parts, fromPin);
                 var toModelPin = GetModelPin(parts, toPin);
 
-                var phaseShiftDegreesRed = PhaseShiftCalculator.GetDegrees(connectionDraft.wireLengthNM, laserWaveLengthNM);
-                connectionWeights.Add((fromModelPin.IDInFlow, toModelPin.IDOutFlow), Complex.FromPolarCoordinates(connectionDraft.magnitude, phaseShiftDegreesRed));
+                var phaseShiftDegrees = PhaseShiftCalculator.GetDegrees(connectionDraft.wireLengthNM, laserWaveLengthNM);
+                connectionWeights.Add((fromModelPin.IDInFlow, toModelPin.IDOutFlow), Complex.FromPolarCoordinates(connectionDraft.magnitude, phaseShiftDegrees));
             };
 
             componentConnections.SetValues(connectionWeights);

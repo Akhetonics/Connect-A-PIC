@@ -1,4 +1,4 @@
-﻿using CAP_Core.Component.ComponentHelpers;
+﻿using CAP_Core.Components.ComponentHelpers;
 using System;
 using System.Collections.Generic;
 using System.Linq;

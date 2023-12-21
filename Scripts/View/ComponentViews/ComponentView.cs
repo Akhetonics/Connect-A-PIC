@@ -1,5 +1,6 @@
 ﻿using CAP_Contracts.Logger;
-using CAP_Core.Component.ComponentHelpers;
+using CAP_Core.Components;
+using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.ExternalPorts;
 using CAP_Core.Helpers;
 using CAP_Core.Tiles;
@@ -201,7 +202,7 @@ namespace ConnectAPIC.LayoutWindow.View
                 shaderMat.SetShaderParameter("lightInFlow" + shaderAnimationNumber, InFlowDataAndPosition);
                 shaderMat.SetShaderParameter("lightOutFlow" + shaderAnimationNumber, outFlowDataAndPosition);
                 shaderMat.SetShaderParameter("animation" + shaderAnimationNumber, slot.Texture);
-                shaderMat.SetShaderParameter("lightColor", slot.Color.ToGodotColor());
+                shaderMat.SetShaderParameter("lightColor", slot.MatchingLaser.Color.ToGodotColor());
             }
         }
 
@@ -250,9 +251,9 @@ namespace ConnectAPIC.LayoutWindow.View
             var tileOffset = new Vector2I(tileOffsetX, tileOffsetY);
             return new List<AnimationSlot>()
             {
-                new AnimationSlot(LightColor.Red, tileOffset, inflowSide, OverlayRed, overlayAnimTexture,new Vector2I(WidthInTiles, HeightInTiles)),
-                new AnimationSlot(LightColor.Green,tileOffset, inflowSide, OverlayGreen, overlayAnimTexture, new Vector2I(WidthInTiles, HeightInTiles)),
-                new AnimationSlot(LightColor.Blue,tileOffset, inflowSide, OverlayBlue, overlayAnimTexture, new Vector2I(WidthInTiles, HeightInTiles)),
+                new AnimationSlot(new LaserType(LightColor.Red,StandardWaveLengths.RedNM), tileOffset, inflowSide, OverlayRed, overlayAnimTexture,new Vector2I(WidthInTiles, HeightInTiles)),
+                new AnimationSlot(LaserType.Green,tileOffset, inflowSide, OverlayGreen, overlayAnimTexture, new Vector2I(WidthInTiles, HeightInTiles)),
+                new AnimationSlot(LaserType.Blue,tileOffset, inflowSide, OverlayBlue, overlayAnimTexture, new Vector2I(WidthInTiles, HeightInTiles)),
             };
         }
 

@@ -1,4 +1,5 @@
-﻿using CAP_Core.Tiles;
+﻿using CAP_Core.Components;
+using CAP_Core.Tiles;
 using Components.ComponentDraftMapper;
 using Components.ComponentDraftMapper.DTOs;
 
@@ -91,7 +92,7 @@ namespace UnitTests
                         number = 1,
                         partX = 0,
                         partY = 0,
-                        matterType = CAP_Core.Component.ComponentHelpers.MatterType.Light,
+                        matterType = MatterType.Light,
                         side = RectSide.Left,
                         name = "west0",
                     },
@@ -99,7 +100,7 @@ namespace UnitTests
                         number = 2,
                         partX = 1,
                         partY = 0,
-                        matterType = CAP_Core.Component.ComponentHelpers.MatterType.Light,
+                        matterType = MatterType.Light,
                         side = RectSide.Right,
                         name = "east0",
                     }

@@ -1,4 +1,5 @@
-﻿using CAP_Core.Component.ComponentHelpers;
+﻿using CAP_Core.Components;
+using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.ExternalPorts;
 using CAP_Core.Helpers;
 using CAP_Core.Tiles;
@@ -12,10 +13,10 @@ namespace ConnectAPIC.LayoutWindow.View
 {
     public class AnimationSlot
 	{
-		public AnimationSlot(LightColor color, Vector2I tileOffsetXY, RectSide side, Sprite2D baseOverlaySprite, Texture texture , Vector2I componentSizeInTiles ) {
+		public AnimationSlot(LaserType color, Vector2I tileOffsetXY, RectSide side, Sprite2D baseOverlaySprite, Texture texture , Vector2I componentSizeInTiles ) {
 			if (componentSizeInTiles.X < 1) throw new WrongSizeException("component Width must be at least 1");
 			if (componentSizeInTiles.Y < 1) throw new WrongSizeException("component Height must be at least 1");
-			this.Color = color;
+			this.MatchingLaser = color;
             TileOffset = tileOffsetXY;
 			Side = side;
             BaseOverlaySprite = baseOverlaySprite;
@@ -27,7 +28,7 @@ namespace ConnectAPIC.LayoutWindow.View
 			if (TileOffset.X != lightVector.partOffsetX) return false;
 			if (TileOffset.Y != lightVector.partOffsetY) return false;
 			if (Side != lightVector.side) return false;
-			if (Color != lightVector.color) return false;
+			if (MatchingLaser.WaveLengthInNm != lightVector.lightType.WaveLengthInNm) return false;
 			return true;
 		}
 		public static AnimationSlot TryFindMatching(List<AnimationSlot> slots, LightAtPin lightVector)
@@ -64,7 +65,7 @@ namespace ConnectAPIC.LayoutWindow.View
 			TileOffset = RotateOffsetBy90CounterClockwise(TileOffset);
 		}
 
-		public LightColor Color { get; }
+		public LaserType MatchingLaser { get; }
         public Vector2I TileOffset { get; private set; }
         public DiscreteRotation Rotation { get; private set; }
 		public RectSide Side { get; private set; }

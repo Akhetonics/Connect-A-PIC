@@ -68,12 +68,14 @@ namespace CAP_Core.LightFlow
             var outputString = all;
             outputString += "\n\nLightPropagationVector:\n\n";
 
-            foreach (var color in Enum.GetValues(typeof(LightColor)).OfType<LightColor>())
+            foreach (var externalPort in Analyzer.Grid.GetUsedExternalInputs().DistinctBy(d=>d.Input.LaserType.WaveLengthInNm))
             {
-                foreach (var lightIntensity in Analyzer.CalculateLightPropagation(color))
+                var usedLaserType = externalPort.Input.LaserType;
+                foreach (var lightIntensity in Analyzer.CalculateLightPropagation(usedLaserType))
                 {
-                    string lightColorName = Enum.GetName(typeof(LightColor), color);
-                    outputString += $"LightColor: {lightColorName}\t{allPinsInField[lightIntensity.Key]}\t{lightIntensity.Key}\t{lightIntensity.Value}\n";
+                    string lightColorName = usedLaserType.Color.ToReadableString();
+                    Guid pinId = lightIntensity.Key;
+                    outputString += $"LightColor: {lightColorName}\t{allPinsInField[pinId]}\t{pinId}\t{lightIntensity.Value}\n";
                 }
             }
 

@@ -1,15 +1,17 @@
-using CAP_Core.Component.ComponentHelpers;
+using CAP_Core.Components;
+using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.ExternalPorts;
 using CAP_Core.Helpers;
 using CAP_Core.Tiles;
 using System.ComponentModel;
+using Component = CAP_Core.Components.Component;
 
 namespace CAP_Core
 {
     public class Grid
     {
         public delegate void OnGridCreatedHandler(Tile[,] Tiles);
-        public delegate void OnComponentChangedEventHandler(Component.ComponentHelpers.Component component, int x, int y);
+        public delegate void OnComponentChangedEventHandler(Components.Component component, int x, int y);
         public event OnGridCreatedHandler OnGridCreated;
         public event OnComponentChangedEventHandler OnComponentPlacedOnTile;
         public event OnComponentChangedEventHandler OnComponentRemoved;
@@ -28,9 +30,9 @@ namespace CAP_Core
             Width = width;
             Height = height;
             ExternalPorts = new List<ExternalPort>() {
-                    new ExternalInput("io0",LightColor.Red  , 0, 2,1),
-                    new ExternalInput("io1",LightColor.Green, 0, 3,1),
-                    new ExternalInput("io2",LightColor.Blue , 0, 4,1),
+                    new ExternalInput("io0",new LaserType(LightColor.Red, 300), 2,1),
+                    new ExternalInput("io1",new LaserType(LightColor.Green, 400), 3, 1),
+                    new ExternalInput("io2",new LaserType(LightColor.Blue,500) , 4, 1),
                     new ExternalOutput("io3",5),
                     new ExternalOutput("io4",6),
                     new ExternalOutput("io5",7),
@@ -56,7 +58,7 @@ namespace CAP_Core
                     if(componentPin?.MatterType != MatterType.Light) continue; // if the component does not have a connected pin, then we ignore it.
                     Guid pinId = componentPin.IDInFlow;
                     
-                    inputsFound.Add(new UsedInput() { AttachedComponentPinId = pinId, Input = input });
+                    inputsFound.Add(new UsedInput(input, pinId) );
                 }
             }
             return inputsFound;
@@ -74,7 +76,7 @@ namespace CAP_Core
             OnGridCreated?.Invoke(Tiles);
         }
 
-        public bool IsColliding(int x, int y, int sizeX, int sizeY , Component.ComponentHelpers.Component? exception = null)
+        public bool IsColliding(int x, int y, int sizeX, int sizeY , Components.Component? exception = null)
         {
             if (!IsInGrid(x, y, sizeX, sizeY))
             {
@@ -97,7 +99,7 @@ namespace CAP_Core
         }
         public bool RotateComponentBy90CounterClockwise(int tileX, int tileY)
         {
-            Component.ComponentHelpers.Component? component = GetComponentAt(tileX, tileY);
+            Component? component = GetComponentAt(tileX, tileY);
             if (component == null) return false;
             var tile = Tiles[tileX, tileY];
             if (tile == null || tile.Component == null) return false;
@@ -124,7 +126,7 @@ namespace CAP_Core
         {
             return x >= 0 && y >= 0 && x + width <= Width && y + height <= Height;
         }
-        public Component.ComponentHelpers.Component? GetComponentAt(int x, int y, int searchAreaWidth = 1 , int searchAreaHeight = 1)
+        public Component? GetComponentAt(int x, int y, int searchAreaWidth = 1 , int searchAreaHeight = 1)
         {
             for (int i = 0; i < searchAreaWidth; i++)
             {
@@ -143,9 +145,9 @@ namespace CAP_Core
             }
             return null;
         }
-        public List<Component.ComponentHelpers.Component> GetAllComponents()
+        public List<Component> GetAllComponents()
         {
-            List<Component.ComponentHelpers.Component> components = new();
+            List<Component> components = new();
             foreach(Tile tile in Tiles)
             {
                 if (tile.Component == null) continue;
@@ -153,7 +155,7 @@ namespace CAP_Core
             }
             return components.Distinct().ToList();
         }
-        public void PlaceComponent(int x, int y, Component.ComponentHelpers.Component component)
+        public void PlaceComponent(int x, int y, Component component)
         {
             if (IsColliding(x, y, component.WidthInTiles, component.HeightInTiles))
             {
@@ -174,7 +176,7 @@ namespace CAP_Core
         }
         public void UnregisterComponentAt(int x, int y)
         {
-            Component.ComponentHelpers.Component? item = GetComponentAt(x, y);
+            Component? item = GetComponentAt(x, y);
             if (item == null) return;
             x = item.GridXMainTile;
             y = item.GridYMainTile;
@@ -190,7 +192,7 @@ namespace CAP_Core
         }
         public bool MoveComponent(int x, int y, int sourceX, int sourceY)
         {
-            Component.ComponentHelpers.Component? component = GetComponentAt(sourceX, sourceY);
+            Component? component = GetComponentAt(sourceX, sourceY);
             if(component == null) return false;
             int oldMainGridX = component.GridXMainTile;
             int oldMainGridY = component.GridYMainTile;
@@ -208,7 +210,7 @@ namespace CAP_Core
             return false;
         }
 
-        public List<ParentAndChildTile> GetConnectedNeighborsOfComponent(Component.ComponentHelpers.Component component)
+        public List<ParentAndChildTile> GetConnectedNeighborsOfComponent(Component component)
         {
             if (component is null) return new List<ParentAndChildTile>();
             List<ParentAndChildTile> neighbors = new();

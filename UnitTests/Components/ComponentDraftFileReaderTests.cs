@@ -1,5 +1,5 @@
 ﻿using CAP_Contracts.Logger;
-using CAP_Core.Component.ComponentHelpers;
+using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.Tiles;
 using Components.ComponentDraftMapper;
 using Components.ComponentDraftMapper.DTOs;

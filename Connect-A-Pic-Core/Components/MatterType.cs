@@ -1,4 +1,4 @@
-﻿namespace CAP_Core.Component.ComponentHelpers
+﻿namespace CAP_Core.Components
 {
     public enum MatterType
     {

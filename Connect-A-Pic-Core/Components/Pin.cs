@@ -4,7 +4,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
-namespace CAP_Core.Component.ComponentHelpers
+namespace CAP_Core.Components
 {
     public class Pin : INotifyPropertyChanged, ICloneable
     {

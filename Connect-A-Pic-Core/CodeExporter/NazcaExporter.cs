@@ -1,4 +1,4 @@
-using CAP_Core.Component.ComponentHelpers;
+using CAP_Core.Components;
 using CAP_Core.ExternalPorts;
 using CAP_Core.Helpers;
 using CAP_Core.Tiles;
@@ -9,7 +9,7 @@ namespace CAP_Core.CodeExporter
     public class NazcaExporter : IExporter
     {
         private Grid grid;
-        private List<Component.ComponentHelpers.Component> AlreadyProcessedComponents;
+        private List<Component> AlreadyProcessedComponents;
         private StringBuilder ExportAllConnectedTiles(Tile connectedParent, Tile child)
         {
             var nazcaString = new StringBuilder();
@@ -26,7 +26,7 @@ namespace CAP_Core.CodeExporter
         public string Export(Grid grid)
         {
             this.grid = grid;
-            AlreadyProcessedComponents = new List<Component.ComponentHelpers.Component>();
+            AlreadyProcessedComponents = new List<Component>();
             StringBuilder NazcaCode = new();
             NazcaCode.Append(PythonResources.CreateHeader(Resources.NazcaPDKName, Resources.NazcaStandardInputCellName));
             AddComponentsConnectedToStandardInputs(NazcaCode);

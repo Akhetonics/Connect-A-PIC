@@ -1,6 +1,6 @@
 ﻿using CAP_Core;
 using CAP_Core.Component;
-using CAP_Core.Component.ComponentHelpers;
+using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.LightFlow;
 using CAP_Core.Tiles;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;

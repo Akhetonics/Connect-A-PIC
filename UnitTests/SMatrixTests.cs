@@ -1,5 +1,5 @@
 using CAP_Core;
-using CAP_Core.Component.ComponentHelpers;
+using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.LightFlow;
 using System.Numerics;
 
@@ -14,7 +14,7 @@ namespace UnitTests
             var grid = new Grid(20,10);
             grid.PlaceComponent(0, grid.ExternalPorts[0].TilePositionY, directionalCoupler);
             var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid);
-            var lightPropagation = gridSMatrixAnalyzer.CalculateLightPropagation(grid.ExternalPorts[0].Color);
+            var lightPropagation = gridSMatrixAnalyzer.CalculateLightPropagation(grid.ExternalPorts[0].InputLaserType);
 
             // test directionalCoupler
             var allComponentsSMatrices = gridSMatrixAnalyzer.GetAllComponentsSMatrices();
@@ -53,7 +53,7 @@ namespace UnitTests
             grid.PlaceComponent(0, inputPort.TilePositionY + 1, rotatedStraight);
 
             var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid);
-            var lightValues = gridSMatrixAnalyzer.CalculateLightPropagation(inputPort.Color);
+            var lightValues = gridSMatrixAnalyzer.CalculateLightPropagation(inputPort.InputLaserType);
             var allComponentsSMatrices = gridSMatrixAnalyzer.GetAllComponentsSMatrices();
             var Straight_LiRoConnection = allComponentsSMatrices[0].GetNonNullValues().Single(b => b.Key == (straight.PinIdLeftIn(), straight.PinIdRightOut())).Value;
             var Straight_RiLoConnection = allComponentsSMatrices[0].GetNonNullValues().Single(b => b.Key == (straight.PinIdRightIn(), straight.PinIdLeftOut())).Value;

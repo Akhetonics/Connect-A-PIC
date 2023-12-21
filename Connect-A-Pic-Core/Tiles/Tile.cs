@@ -1,4 +1,4 @@
-using CAP_Core.Component.ComponentHelpers;
+using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.Helpers;
 using System.Globalization;
 
