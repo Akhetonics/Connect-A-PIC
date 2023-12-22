@@ -129,51 +129,48 @@ namespace CAP_Core.Components
 
             return clonedParts;
         }
-        public object Clone()
+
+        private Dictionary<Guid, Guid> MapPinIDsWithNewIDs(Part[,] clonedParts)
         {
-            var clonedParts = CloneParts();
-            // Create a mapping from old pin IDs to new pin IDs
-            Dictionary<Guid, Guid> oldToNewPinIds = new Dictionary<Guid, Guid>();
-            List<Guid> newPinIds = new List<Guid>();
-            for (int i = 0; i < Parts.GetLength(0); i++)
+            Dictionary<Guid, Guid> pinIdMapping = new Dictionary<Guid, Guid>();
+            for (int x = 0; x < Parts.GetLength(0); x++)
             {
-                for (int j = 0; j < Parts.GetLength(1); j++)
+                for (int y = 0; y < Parts.GetLength(1); y++)
                 {
-                    var oldPart = Parts[i, j];
-                    var newPart = clonedParts[i, j];
+                    var oldPart = Parts[x, y];
+                    var newPart = clonedParts[x, y];
 
                     if (oldPart != null && newPart != null)
                     {
-                        for (int k = 0; k < oldPart.Pins.Count; k++)
+                        for (int p = 0; p < oldPart.Pins.Count; p++)
                         {
-                            var oldPin = oldPart.Pins[k];
-                            var newPin = newPart.Pins[k];
-                            oldToNewPinIds[oldPin.IDInFlow] = newPin.IDInFlow;
-                            oldToNewPinIds[oldPin.IDOutFlow] = newPin.IDOutFlow;
-                            newPinIds.Add(newPin.IDInFlow);
-                            newPinIds.Add(newPin.IDOutFlow);
+                            var oldPin = oldPart.Pins[p];
+                            var newPin = newPart.Pins[p];
+                            pinIdMapping[oldPin.IDInFlow] = newPin.IDInFlow;
+                            pinIdMapping[oldPin.IDOutFlow] = newPin.IDOutFlow;
                         }
                     }
                 }
             }
 
-            // Clone the existing connections and update with new pin IDs
-            var oldConnections = this.Connections.GetNonNullValues();
-            var newConnections = new Dictionary<(Guid, Guid), Complex>();
-
-            foreach (var oldConnection in oldConnections)
-            {
-                var oldInflowId = oldConnection.Key.PinIdStart;
-                var oldOutflowId = oldConnection.Key.PinIdEnd;
-                var newInflowId = oldToNewPinIds[oldInflowId];
-                var newOutflowId = oldToNewPinIds[oldOutflowId];
-                newConnections[(newInflowId, newOutflowId)] = oldConnection.Value;
-            }
-
-            var clonedSMatrix = new SMatrix(newPinIds);
-            clonedSMatrix.SetValues(newConnections);
-            var newComponent = new Component(clonedSMatrix, NazcaFunctionName, NazcaFunctionParameters, clonedParts, TypeNumber, Rotation90CounterClock);
-            return newComponent;
+            return pinIdMapping;
         }
+        public object Clone()
+        {
+            var clonedParts = CloneParts();
+            // Create a mapping from old pin IDs to new pin IDs
+            Dictionary<Guid, Guid> oldToNewPinIds = MapPinIDsWithNewIDs(clonedParts);
+
+            // Clone the existing connections and update with new pin IDs
+            var clonedRawConnections = RawConnections.Select(c => new Connection()
+            {
+                FromPin = oldToNewPinIds[c.FromPin],
+                ToPin = oldToNewPinIds[c.ToPin],
+                Magnitude = c.Magnitude,
+                WireLengthNM = c.WireLengthNM
+            }).ToList();
+            return new Component(clonedRawConnections, NazcaFunctionName, NazcaFunctionParameters, clonedParts, TypeNumber, Rotation90CounterClock);
+        }
+
     }
 }

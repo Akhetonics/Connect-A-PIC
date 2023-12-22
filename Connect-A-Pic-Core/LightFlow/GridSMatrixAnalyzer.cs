@@ -3,6 +3,7 @@ using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.ExternalPorts;
 using CAP_Core.Helpers;
 using CAP_Core.Tiles;
+using System.Linq;
 using System.Numerics;
 namespace CAP_Core.LightFlow
 {
@@ -32,7 +33,7 @@ namespace CAP_Core.LightFlow
 
         private void UpdateSystemSMatrix()
         {
-            var allComponentsSMatrices = GetAllComponentsSMatrices();
+            var allComponentsSMatrices = GetAllComponentsSMatrices(InputLaserType.WaveLengthInNm);
             SMatrix allConnectionsSMatrix = CreateAllConnectionsMatrix();
             allComponentsSMatrices.Add(allConnectionsSMatrix);
             SystemSMatrix = SMatrix.CreateSystemSMatrix(allComponentsSMatrices);
@@ -50,10 +51,9 @@ namespace CAP_Core.LightFlow
             return allConnectionsSMatrix;
         }
 
-        public List<SMatrix> GetAllComponentsSMatrices()
+        public List<SMatrix> GetAllComponentsSMatrices(double waveLength)
         {
-            
-            return Grid.GetAllComponents().Select(c => c.Connections).ToList();
+            return Grid.GetAllComponents().Select(c => c.Connections(waveLength)).ToList();
         }
         private void CalcAllConnectionsBetweenComponents()
         {

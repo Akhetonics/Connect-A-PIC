@@ -1,3 +1,4 @@
+using CAP_Core.Components;
 using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.Helpers;
 using System.Globalization;
@@ -8,7 +9,7 @@ namespace CAP_Core.Tiles
     public class Tile
     {
         private const string PythonFunctionIndention = "        ";
-        public Component.ComponentHelpers.Component Component { get; set; }
+        public Component Component { get; set; }
         public int GridX { get; private set; }
         public int GridY { get; private set; }
 

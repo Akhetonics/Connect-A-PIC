@@ -41,9 +41,9 @@ namespace UnitTests
                     tileOffsetY = -1, // trigger ErrorOverlayOffsetYSmaller0
                 }
             },
-                connections = new List<Connection>
+                connections = new List<Components.ComponentDraftMapper.DTOs.Connection>
             {
-                new Connection { fromPinNr = 999, toPinNr = 998 } // trigger ErrorFromPinNrInvalid and ErrorToPinNrInvalid
+                new (){ fromPinNr = 999, toPinNr = 998 } // trigger ErrorFromPinNrInvalid and ErrorToPinNrInvalid
             }
             };
             var result = validator.Validate(draft);
@@ -105,16 +105,16 @@ namespace UnitTests
                         name = "east0",
                     }
                 },
-                connections = new List<Connection>()
+                connections = new List<Components.ComponentDraftMapper.DTOs.Connection>()
                 {
-                    new Connection()
+                    new ()
                     {
                         fromPinNr = 1,
                         toPinNr = 2,
                         magnitude = 1,
                         wireLengthNM = 0.02f,
                     },
-                    new Connection()
+                    new ()
                     {
                         fromPinNr = 2,
                         toPinNr = 1,

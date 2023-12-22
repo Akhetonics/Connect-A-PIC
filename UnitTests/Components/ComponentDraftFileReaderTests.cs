@@ -44,7 +44,7 @@ namespace UnitTests
                 {
                     new PinDraft()
                     {
-                        matterType = MatterType.Light,
+                        matterType = CAP_Core.Components.MatterType.Light,
                         name = "west0",
                         number = 1,
                         partX = 0,
@@ -54,7 +54,7 @@ namespace UnitTests
                 },
                 connections = new List<Connection>
                 {
-                    new Connection()
+                    new ()
                     {
                         fromPinNr = 1,
                         toPinNr = 1,
@@ -64,7 +64,7 @@ namespace UnitTests
                 },
                 overlays = new List<Overlay>
                 {
-                    new Overlay()
+                    new ()
                     {
                         overlayAnimTexturePath = "res://Scenes/Components/DirectionalCoupler.tscn",
                         tileOffsetX = 0,

@@ -51,7 +51,7 @@ namespace CAP_Core.LightFlow
         public override string ToString()
         {
             string Debug_allConnections = GetSMatrixWithPinNames(Analyzer.CreateAllConnectionsMatrix());
-            var allComponentsSMatrices = Analyzer.GetAllComponentsSMatrices();
+            var allComponentsSMatrices = Analyzer.GetAllComponentsSMatrices(Analyzer.InputLaserType.WaveLengthInNm);
             string SystemSMatrixWithNamedPins = GetSMatrixWithPinNames(Analyzer.SystemSMatrix);
 
             string all = $"All connections: \n{Debug_allConnections}\n";

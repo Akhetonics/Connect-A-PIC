@@ -14,10 +14,10 @@ namespace UnitTests
             var grid = new Grid(20,10);
             grid.PlaceComponent(0, grid.ExternalPorts[0].TilePositionY, directionalCoupler);
             var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid);
-            var lightPropagation = gridSMatrixAnalyzer.CalculateLightPropagation(grid.ExternalPorts[0].InputLaserType);
+            var lightPropagation = gridSMatrixAnalyzer.CalculateLightPropagation(grid.GetUsedExternalInputs().First().Input.LaserType);
 
             // test directionalCoupler
-            var allComponentsSMatrices = gridSMatrixAnalyzer.GetAllComponentsSMatrices();
+            var allComponentsSMatrices = gridSMatrixAnalyzer.GetAllComponentsSMatrices(gridSMatrixAnalyzer.InputLaserType.WaveLengthInNm);
             var debug_directionalComponentMatrix = gridSMatrixAnalyzer.ToString();
             var UpperToRightConnection = allComponentsSMatrices[0].GetNonNullValues().Single(e =>e.Key ==(directionalCoupler.PinIdLeftIn(0,0), directionalCoupler.PinIdRightOut(1, 0))).Value;
             var LowerToRightConnection = allComponentsSMatrices[0].GetNonNullValues().Single(e =>e.Key ==(directionalCoupler.PinIdLeftIn(0,1), directionalCoupler.PinIdRightOut(1, 1))).Value;
@@ -53,8 +53,9 @@ namespace UnitTests
             grid.PlaceComponent(0, inputPort.TilePositionY + 1, rotatedStraight);
 
             var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid);
-            var lightValues = gridSMatrixAnalyzer.CalculateLightPropagation(inputPort.InputLaserType);
-            var allComponentsSMatrices = gridSMatrixAnalyzer.GetAllComponentsSMatrices();
+            var laserType = grid.GetUsedExternalInputs().First().Input.LaserType;
+            var lightValues = gridSMatrixAnalyzer.CalculateLightPropagation(laserType);
+            var allComponentsSMatrices = gridSMatrixAnalyzer.GetAllComponentsSMatrices(laserType.WaveLengthInNm);
             var Straight_LiRoConnection = allComponentsSMatrices[0].GetNonNullValues().Single(b => b.Key == (straight.PinIdLeftIn(), straight.PinIdRightOut())).Value;
             var Straight_RiLoConnection = allComponentsSMatrices[0].GetNonNullValues().Single(b => b.Key == (straight.PinIdRightIn(), straight.PinIdLeftOut())).Value;
 
