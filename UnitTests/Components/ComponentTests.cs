@@ -21,9 +21,8 @@ namespace UnitTests
         {
             var grid = new Grid(10, 10);
             var component = TestComponentFactory.CreateDirectionalCoupler();
-            grid.PlaceComponent(0, 0, component);
-            var command = new RotateComponentCommand(grid);
-            var args = new RotateComponentArgs(0, 0);
+            var portY = grid.ExternalPorts.First().TilePositionY;
+            grid.PlaceComponent(0, portY, component);
             var PinLeft = component.GetPartAt(0, 0).GetPinAt(RectSide.Left);
             var PinRight = component.GetPartAt(1, 0).GetPinAt(RectSide.Right);
             var PinDownLeft = component.GetPartAt(0, 1).GetPinAt(RectSide.Left);
@@ -34,7 +33,8 @@ namespace UnitTests
             var PartDownRight = component.GetPartAt(1, 1);
             var laserType = grid.GetUsedExternalInputs().First().Input.LaserType;
             component.Connections(laserType.WaveLengthInNm).GetNonNullValues();
-
+            var command = new RotateComponentCommand(grid);
+            var args = new RotateComponentArgs(component.GridXMainTile, component.GridYMainTile);
             command.Execute(args);
             Assert.Equal(2, component.WidthInTiles);
             Assert.Equal(2, component.HeightInTiles);

@@ -10,22 +10,25 @@ namespace CAP_Core.LightFlow
     public class GridSMatrixAnalyzer
     {
         public readonly Grid Grid;
-        public Dictionary<(Guid, Guid), Complex> InterComponentConnections { get; private set; }
-        public SMatrix SystemSMatrix { get; private set; }
-        public LaserType InputLaserType { get; private set; }
+        public Dictionary<(Guid, Guid), Complex>? InterComponentConnections { get; private set; }
+        public SMatrix? SystemSMatrix { get; private set; }
+        public double LaserWaveLengthInNm { get; }
 
-        public GridSMatrixAnalyzer(Grid grid)
+        public GridSMatrixAnalyzer(Grid grid, double laserWaveLengthInNm)
         {
             Grid = grid;
-            UpdateSystemSMatrix();
+            LaserWaveLengthInNm = laserWaveLengthInNm;
         }
 
         // calculates the light intensity and phase at a given PIN-ID for both light-flow-directions "in" and "out" for a given period of steps
-        public Dictionary<Guid, Complex> CalculateLightPropagation(LaserType inputLaserType)
+        public Dictionary<Guid, Complex> CalculateLightPropagation()
         {
-            InputLaserType = inputLaserType;
+            if(SystemSMatrix == null)
+            {
+                UpdateSystemSMatrix();
+            }
             var stepCount = SystemSMatrix.PinReference.Count() * 2;
-            var usedInputs = Grid.GetUsedExternalInputs().Where(i => i.Input.LaserType.WaveLengthInNm == inputLaserType.WaveLengthInNm).ToList();
+            var usedInputs = Grid.GetUsedExternalInputs().Where(i => i.Input.LaserType.WaveLengthInNm == LaserWaveLengthInNm).ToList();
             UpdateSystemSMatrix();
             var inputVector = UsedInputConverter.ToVector(usedInputs, SystemSMatrix);
             return SystemSMatrix.GetLightPropagation(inputVector, stepCount) ?? new Dictionary<Guid, Complex>();
@@ -33,7 +36,7 @@ namespace CAP_Core.LightFlow
 
         private void UpdateSystemSMatrix()
         {
-            var allComponentsSMatrices = GetAllComponentsSMatrices(InputLaserType.WaveLengthInNm);
+            var allComponentsSMatrices = GetAllComponentsSMatrices(LaserWaveLengthInNm);
             SMatrix allConnectionsSMatrix = CreateAllConnectionsMatrix();
             allComponentsSMatrices.Add(allConnectionsSMatrix);
             SystemSMatrix = SMatrix.CreateSystemSMatrix(allComponentsSMatrices);

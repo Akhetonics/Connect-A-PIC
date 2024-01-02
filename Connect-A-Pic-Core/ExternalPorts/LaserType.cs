@@ -19,6 +19,10 @@ namespace CAP_Core.ExternalPorts
         }
         public LightColor Color { get; }
         public double WaveLengthInNm { get; }
+        public override string ToString()
+        {
+            return $"color: {Color.ToReadableString()}, WaveLength: {WaveLengthInNm}nm";
+        }
     }
 
 }

@@ -50,7 +50,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             CreateEmptyField();
             this.Grid.OnComponentPlacedOnTile += Grid_OnComponentPlacedOnTile;
             this.Grid.OnComponentRemoved += Grid_OnComponentRemoved;
-            MatrixAnalyzer = new GridSMatrixAnalyzer(this.Grid);
+            MatrixAnalyzer = new GridSMatrixAnalyzer(this.Grid, StandardWaveLengths.RedNM);
         }
 
         private void Grid_OnComponentRemoved(Component component, int x, int y)
@@ -124,8 +124,8 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
 
         public Dictionary<Guid, Complex> GetLightVector(LaserType inputLight)
         {
-            MatrixAnalyzer = new GridSMatrixAnalyzer(this.Grid);
-            return MatrixAnalyzer.CalculateLightPropagation(inputLight);
+            MatrixAnalyzer = new GridSMatrixAnalyzer(this.Grid, inputLight.WaveLengthInNm);
+            return MatrixAnalyzer.CalculateLightPropagation();
         }
 
         public void ShowLightPropagation()
@@ -133,9 +133,9 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             var inputPorts = Grid.GetUsedExternalInputs();
             foreach (var port in inputPorts)
             {
-                var lightVectorRed = GetLightVector(port.Input.LaserType);
+                var inputLightVector = GetLightVector(port.Input.LaserType);
                 // go through the whole grid and send all 
-                AssignLightToComponentViews(lightVectorRed, port.Input.LaserType);
+                AssignLightToComponentViews(inputLightVector, port.Input.LaserType);
             }
         }
 

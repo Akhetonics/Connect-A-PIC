@@ -51,7 +51,7 @@ namespace CAP_Core.LightFlow
         public override string ToString()
         {
             string Debug_allConnections = GetSMatrixWithPinNames(Analyzer.CreateAllConnectionsMatrix());
-            var allComponentsSMatrices = Analyzer.GetAllComponentsSMatrices(Analyzer.InputLaserType.WaveLengthInNm);
+            var allComponentsSMatrices = Analyzer.GetAllComponentsSMatrices(Analyzer.LaserWaveLengthInNm);
             string SystemSMatrixWithNamedPins = GetSMatrixWithPinNames(Analyzer.SystemSMatrix);
 
             string all = $"All connections: \n{Debug_allConnections}\n";
@@ -71,7 +71,7 @@ namespace CAP_Core.LightFlow
             foreach (var externalPort in Analyzer.Grid.GetUsedExternalInputs().DistinctBy(d=>d.Input.LaserType.WaveLengthInNm))
             {
                 var usedLaserType = externalPort.Input.LaserType;
-                foreach (var lightIntensity in Analyzer.CalculateLightPropagation(usedLaserType))
+                foreach (var lightIntensity in Analyzer.CalculateLightPropagation())
                 {
                     string lightColorName = usedLaserType.Color.ToReadableString();
                     Guid pinId = lightIntensity.Key;

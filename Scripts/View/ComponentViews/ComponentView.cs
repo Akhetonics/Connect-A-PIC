@@ -81,7 +81,6 @@ namespace ConnectAPIC.LayoutWindow.View
             InitializeLightOverlays();
             foreach (var slotData in slotDataSets)
             {
-                
                 if(slotData.LightFlowOverlay== null)
                 {
                     Logger.PrintErr(nameof(slotData.LightFlowOverlay) + " is null in TypeNR: " + componentTypeNumber );
@@ -206,6 +205,18 @@ namespace ConnectAPIC.LayoutWindow.View
             }
         }
 
+        public Godot.Color? GetShaderLightVector(LightAtPin lightAtPin)
+        {
+            foreach(var slot in AnimationSlots)
+            {
+                if(AnimationSlot.TryFindMatching(AnimationSlots,lightAtPin))
+            }
+            if (slot?.BaseOverlaySprite?.Material is ShaderMaterial shaderMat)
+            {
+                return (Godot.Color)shaderMat.GetShaderParameter("lightColor");
+            }
+            return null;
+        }
         public override void _GuiInput(InputEvent inputEvent)
         {
             base._GuiInput(inputEvent);
@@ -251,7 +262,7 @@ namespace ConnectAPIC.LayoutWindow.View
             var tileOffset = new Vector2I(tileOffsetX, tileOffsetY);
             return new List<AnimationSlot>()
             {
-                new AnimationSlot(new LaserType(LightColor.Red,StandardWaveLengths.RedNM), tileOffset, inflowSide, OverlayRed, overlayAnimTexture,new Vector2I(WidthInTiles, HeightInTiles)),
+                new AnimationSlot(LaserType.Red, tileOffset, inflowSide, OverlayRed, overlayAnimTexture,new Vector2I(WidthInTiles, HeightInTiles)),
                 new AnimationSlot(LaserType.Green,tileOffset, inflowSide, OverlayGreen, overlayAnimTexture, new Vector2I(WidthInTiles, HeightInTiles)),
                 new AnimationSlot(LaserType.Blue,tileOffset, inflowSide, OverlayBlue, overlayAnimTexture, new Vector2I(WidthInTiles, HeightInTiles)),
             };
