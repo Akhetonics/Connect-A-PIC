@@ -8,14 +8,25 @@ namespace CAP_Core.ExternalPorts
     
     public class LaserType
     {
-        public static LaserType Red = new LaserType(LightColor.Red, StandardWaveLengths.RedNM);
-        public static LaserType Green = new LaserType(LightColor.Green, StandardWaveLengths.GreenNM);
-        public static LaserType Blue = new LaserType(LightColor.Blue, StandardWaveLengths.BlueNM);
+        public static LaserType Red = new (LightColor.Red);
+        public static LaserType Green = new (LightColor.Green);
+        public static LaserType Blue = new (LightColor.Blue);
 
-        public LaserType(LightColor lightColor, double waveLengthInNm)
+        public LaserType(LightColor lightColor)
         {
             Color = lightColor;
-            WaveLengthInNm = waveLengthInNm;
+            switch (lightColor)
+            {
+                case LightColor.Red:
+                    WaveLengthInNm = StandardWaveLengths.RedNM;
+                    break;
+                case LightColor.Green:
+                    WaveLengthInNm = StandardWaveLengths.GreenNM;
+                    break;
+                case LightColor.Blue:
+                    WaveLengthInNm = StandardWaveLengths.BlueNM;
+                    break;
+            }
         }
         public LightColor Color { get; }
         public double WaveLengthInNm { get; }

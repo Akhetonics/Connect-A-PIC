@@ -174,6 +174,7 @@ namespace Components.ComponentDraftMapper
             }
             return "";
         }
+
         private static string ValidateConnection(List<PinDraft> pins, Connection connection)
         {
             string errorMsg = "";

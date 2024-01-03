@@ -81,9 +81,9 @@ namespace ConnectAPIC.LayoutWindow.View
             InitializeLightOverlays();
             foreach (var slotData in slotDataSets)
             {
-                if(slotData.LightFlowOverlay== null)
+                if (slotData.LightFlowOverlay == null)
                 {
-                    Logger.PrintErr(nameof(slotData.LightFlowOverlay) + " is null in TypeNR: " + componentTypeNumber );
+                    Logger.PrintErr(nameof(slotData.LightFlowOverlay) + " is null in TypeNR: " + componentTypeNumber);
                 }
                 AnimationSlots.AddRange(CreateRGBAnimSlots(slotData.Side, slotData.LightFlowOverlay, slotData.OffsetX, slotData.OffsetY));
             }
@@ -169,25 +169,33 @@ namespace ConnectAPIC.LayoutWindow.View
             {
                 if (slot?.BaseOverlaySprite?.Material is ShaderMaterial shaderMat)
                 {
-                    shaderMat.SetShaderParameter("lightInFlow" + shaderAnimationNumber, new Vector4());
-                    shaderMat.SetShaderParameter("lightOutFlow" + shaderAnimationNumber, new Vector4());
+                    shaderMat.SetShaderParameter("lightInFlow" + shaderAnimationNumber, Vector4.Zero);
+                    shaderMat.SetShaderParameter("lightOutFlow" + shaderAnimationNumber, Vector4.Zero);
                     shaderMat.SetShaderParameter("animation" + shaderAnimationNumber, emptyTexture);
-                    shaderMat.SetShaderParameter("lightColor", new Godot.Color(1, 0, 0));
+                    shaderMat.SetShaderParameter("lightColor", new Godot.Color(0, 0, 0));
                 }
                 shaderAnimationNumber++;
             }
         }
 
         public virtual void DisplayLightVector(List<LightAtPin> lightsAtPins)
-    {
+        {
+            
             int shaderAnimNumber = 1;
             foreach (LightAtPin light in lightsAtPins)
             {
-                var animationSlot = AnimationSlot.TryFindMatching(AnimationSlots, light);
-                if (animationSlot == null) continue;
-                AssignInAndOutFlowShaderData(animationSlot, light, shaderAnimNumber);
-                shaderAnimNumber += 1;
+                var matchingSlots = AnimationSlot.FindMatching(AnimationSlots, light);
+                matchingSlots.ForEach(slot =>
+                {
+                    AssignInAndOutFlowShaderData(slot, light, shaderAnimNumber);
+                    shaderAnimNumber ++;
+                });
             }
+            HideLightVector();
+
+            shaderMat.GetShaderParameter("lightInFlow" + shaderAnimationNumber, InFlowDataAndPosition);
+            //AssignInAndOutFlowShaderData(AnimationSlots.Where(s => s.MatchingLaser.Color == LightColor.Green).First(), new LightAtPin(0,0,RectSide.Left,LaserType.Green,0,0),1);
+            //AssignInAndOutFlowShaderData(AnimationSlots.Where(s => s.MatchingLaser.Color == LightColor.Blue).First(), new LightAtPin(0, 0, RectSide.Left, LaserType.Green, 0, 0), 1);
             OverlayRed?.Show();
             OverlayGreen?.Show();
             OverlayBlue?.Show();
@@ -196,26 +204,13 @@ namespace ConnectAPIC.LayoutWindow.View
         {
             if (slot?.BaseOverlaySprite?.Material is ShaderMaterial shaderMat)
             {
-                var InFlowDataAndPosition = new Godot.Vector4((float)lightAtPin.lightInFlow.Magnitude, (float)lightAtPin.lightInFlow.Phase,0,0);
-                var outFlowDataAndPosition = new Vector4((float)lightAtPin.lightOutFlow.Magnitude, (float)lightAtPin.lightOutFlow.Phase,0,0);
+                var InFlowDataAndPosition = new Godot.Vector4((float)lightAtPin.lightInFlow.Magnitude, (float)lightAtPin.lightInFlow.Phase, 0, 0);
+                var outFlowDataAndPosition = new Vector4((float)lightAtPin.lightOutFlow.Magnitude, (float)lightAtPin.lightOutFlow.Phase, 0, 0);
                 shaderMat.SetShaderParameter("lightInFlow" + shaderAnimationNumber, InFlowDataAndPosition);
                 shaderMat.SetShaderParameter("lightOutFlow" + shaderAnimationNumber, outFlowDataAndPosition);
                 shaderMat.SetShaderParameter("animation" + shaderAnimationNumber, slot.Texture);
                 shaderMat.SetShaderParameter("lightColor", slot.MatchingLaser.Color.ToGodotColor());
             }
-        }
-
-        public Godot.Color? GetShaderLightVector(LightAtPin lightAtPin)
-        {
-            foreach(var slot in AnimationSlots)
-            {
-                if(AnimationSlot.TryFindMatching(AnimationSlots,lightAtPin))
-            }
-            if (slot?.BaseOverlaySprite?.Material is ShaderMaterial shaderMat)
-            {
-                return (Godot.Color)shaderMat.GetShaderParameter("lightColor");
-            }
-            return null;
         }
         public override void _GuiInput(InputEvent inputEvent)
         {

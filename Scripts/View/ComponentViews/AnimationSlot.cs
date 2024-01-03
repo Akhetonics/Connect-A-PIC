@@ -8,6 +8,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 
 namespace ConnectAPIC.LayoutWindow.View
 {
@@ -23,30 +24,31 @@ namespace ConnectAPIC.LayoutWindow.View
             this.Texture = texture;
             ComponentSizeInTiles = componentSizeInTiles;
         }
-		public bool IsMatchingWithLightVector(LightAtPin lightVector )
+
+        /// <summary>
+        /// Determines if the current object's properties match with those of the provided LightAtPin object.
+        /// </summary>
+        /// <param name="lightVector">LightAtPin object to compare.</param>
+        /// <returns>
+        /// A tuple with a boolean indicating if a match is found and an Exception detailing the mismatch reason if any.
+        /// The Exception is null for a successful match.
+        /// </returns>
+        /// <remarks>
+        /// Mismatch is checked for X and Y tile offsets, 'Side', and laser wavelength in nm.
+        /// Specific exceptions are returned for each type of mismatch.
+        /// </remarks>
+        public (bool isMatching, Exception misMatchReason) IsMatchingWithLightVector(LightAtPin lightVector )
 		{
-			if (TileOffset.X != lightVector.partOffsetX) return false;
-			if (TileOffset.Y != lightVector.partOffsetY) return false;
-			if (Side != lightVector.side) return false;
-			if (MatchingLaser.WaveLengthInNm != lightVector.lightType.WaveLengthInNm) return false;
-			return true;
+			if (TileOffset.X != lightVector.partOffsetX) return (false , new OffsetWrongException($"X = {TileOffset.X}, but Lightvector: {lightVector.partOffsetX}"));
+			if (TileOffset.Y != lightVector.partOffsetY) return (false, new OffsetWrongException($"Y = {TileOffset.Y}, but Lightvector: {lightVector.partOffsetY}"));
+            if (Side != lightVector.side) return (false, new SideNotMatchingException());
+            if (MatchingLaser.WaveLengthInNm != lightVector.lightType.WaveLengthInNm) return (false, new WaveLengthNotMatchingException("laserWaveLength: "+MatchingLaser.WaveLengthInNm));
+			return (true,null);
 		}
-		public static AnimationSlot TryFindMatching(List<AnimationSlot> slots, LightAtPin lightVector)
+		public static List<AnimationSlot> FindMatching( List<AnimationSlot> slots, LightAtPin lightVector)
 		{
-			try
-			{
-				return slots.SingleOrDefault(s => s.IsMatchingWithLightVector(lightVector));
-			}
-			catch (Exception ex)
-			{
-				GameManager.Instance?.Logger?.PrintErr( "Error at TryFindMatching slots - Could not find lightVector: " + lightVector.ToString() + " " +  ex.Message);
-				throw;
-			}
+            return slots.Where(s => s.IsMatchingWithLightVector(lightVector).isMatching).ToList();
 		}
-        private Vector2I RotateOffsetBy90Clockwise(Vector2I offset)
-        {
-            return new Vector2I(ComponentSizeInTiles.Y - 1 - offset.Y, offset.X);
-        }
         private Vector2I RotateOffsetBy90CounterClockwise(Vector2I offset)
         {
             return new Vector2I(offset.Y, ComponentSizeInTiles.X - 1 - offset.X);
@@ -77,5 +79,20 @@ namespace ConnectAPIC.LayoutWindow.View
     {
         public WrongSizeException() { }
         public WrongSizeException(string message) : base(message) { }
+    }
+    public class WaveLengthNotMatchingException : Exception
+    {
+        public WaveLengthNotMatchingException() { }
+        public WaveLengthNotMatchingException(string message) : base(message) { }
+    }
+    public class SideNotMatchingException : Exception
+    {
+        public SideNotMatchingException() { }
+        public SideNotMatchingException(string message) : base(message) { }
+    }
+    public class OffsetWrongException : Exception
+    {
+        public OffsetWrongException() { }
+        public OffsetWrongException(string message) : base(message) { }
     }
 }

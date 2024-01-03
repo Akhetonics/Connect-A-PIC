@@ -30,9 +30,9 @@ namespace CAP_Core
             Width = width;
             Height = height;
             ExternalPorts = new List<ExternalPort>() {
-                    new ExternalInput("io0",new LaserType(LightColor.Red, 300), 2,1),
-                    new ExternalInput("io1",new LaserType(LightColor.Green, 400), 3, 1),
-                    new ExternalInput("io2",new LaserType(LightColor.Blue,500) , 4, 1),
+                    new ExternalInput("io0",new LaserType(LightColor.Red), 2,1),
+                    new ExternalInput("io1",new LaserType(LightColor.Green), 3, 1),
+                    new ExternalInput("io2",new LaserType(LightColor.Blue) , 4, 1),
                     new ExternalOutput("io3",5),
                     new ExternalOutput("io4",6),
                     new ExternalOutput("io5",7),
