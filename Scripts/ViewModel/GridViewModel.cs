@@ -32,7 +32,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         public Grid Grid { get; set; }
         public ILogger Logger { get; }
         public GridView GridView { get; set; }
-        public GridSMatrixAnalyzer MatrixAnalyzer { get; private set; } 
+        public GridSMatrixAnalyzer MatrixAnalyzer { get; private set; }
         public int MaxTileCount { get => Width * Height; }
 
         public GridViewModel(GridView gridView, Grid grid, ILogger logger)
@@ -42,7 +42,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             Logger = logger;
             //this.GridView.Columns = grid.Width;
             this.GridComponentViews = new ComponentView[grid.Width, grid.Height];
-            CreateComponentCommand = new CreateComponentCommand(grid,ComponentFactory.Instance);
+            CreateComponentCommand = new CreateComponentCommand(grid, ComponentFactory.Instance);
             DeleteComponentCommand = new DeleteComponentCommand(grid);
             RotateComponentCommand = new RotateComponentCommand(grid);
             MoveComponentCommand = new MoveComponentCommand(grid);
@@ -125,6 +125,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         public Dictionary<Guid, Complex> GetLightVector(LaserType inputLight)
         {
             MatrixAnalyzer = new GridSMatrixAnalyzer(this.Grid, inputLight.WaveLengthInNm);
+            
             return MatrixAnalyzer.CalculateLightPropagation();
         }
 
@@ -144,9 +145,17 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             List<Component> components = Grid.GetAllComponents();
             foreach (var componentModel in components)
             {
-                var componentView = GridComponentViews[componentModel.GridXMainTile, componentModel.GridYMainTile];
-                List<LightAtPin> lightAtPins = CalculateLightAtPins(lightVector, laserType, componentModel);
-                componentView.DisplayLightVector(lightAtPins);   
+                try
+                {
+                    var componentView = GridComponentViews[componentModel.GridXMainTile, componentModel.GridYMainTile];
+                    List<LightAtPin> lightAtPins = CalculateLightAtPins(lightVector, laserType, componentModel);
+                    componentView.DisplayLightVector(lightAtPins);
+                }
+                catch (Exception ex)
+                {
+                    Logger.PrintErr(ex.Message);
+                }
+
             }
         }
 

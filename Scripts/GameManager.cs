@@ -33,7 +33,7 @@ namespace ConnectAPic.LayoutWindow
 		GridView IProvide<GridView>.Value() => GridView;
 		Grid IProvide<Grid>.Value() => Grid;
 		GridViewModel IProvide<GridViewModel>.Value() => GridViewModel;
-		GameManager IProvide<GameManager>.Value() => Instance;
+        GameManager IProvide<GameManager>.Value() => Instance;
         Console IProvide<Console>.Value() => InGameConsole;
         ComponentViewFactory IProvide<ComponentViewFactory>.Value() => GridView.ComponentViewFactory;
         System.Version IProvide<System.Version>.Value() => Version;

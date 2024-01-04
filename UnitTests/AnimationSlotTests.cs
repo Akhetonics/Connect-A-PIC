@@ -32,7 +32,7 @@ namespace UnitTests
         [Fact]
         public void TestMismatchInXOffset()
         {
-            AnimationSlot slot = new AnimationSlot(
+            AnimationSlot slot = new(
                 LaserType.Red,
                 new Vector2I(1, 0), // Intentional mismatch in X offset
                 RectSide.Right,
