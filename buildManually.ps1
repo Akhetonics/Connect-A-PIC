@@ -27,8 +27,8 @@ $godotProcess = Start-Process -FilePath $godotPath -ArgumentList $godotArgs -Pas
 $godotProcess.WaitForExit()
 
 # Zip Release Build
-$zipPath = Join-Path "$releaseDir" "ConnectAPIC.zip"
-Compress-Archive -Path "$releaseDir\*" -DestinationPath $zipPath
+# $zipPath = Join-Path "$releaseDir" "ConnectAPIC.zip"
+# Compress-Archive -Path "$releaseDir\*" -DestinationPath $zipPath
 
 # List files in Release Directory
 Write-Host "list files in folder $releaseDir"

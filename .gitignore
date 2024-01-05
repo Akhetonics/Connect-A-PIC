@@ -1,5 +1,5 @@
 # ignore the .godot
-.godot/*
+.godot/mono/
 
 # allow those folders as we need them when using pck files it seems
 !.godot/exported/
