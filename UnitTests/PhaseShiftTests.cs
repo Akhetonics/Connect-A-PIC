@@ -1,14 +1,8 @@
 ﻿using CAP_Core.CodeExporter;
-using CAP_Core.Component;
 using CAP_Core.ExternalPorts;
 using CAP_Core;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Numerics;
-using CAP_Core.Component.ComponentHelpers;
+using CAP_Core.Components.ComponentHelpers;
 
 namespace UnitTests
 {
@@ -18,8 +12,8 @@ namespace UnitTests
         [Fact]
         public static void ComplexFactorTest()
         {
-            Complex factor1 = PhaseShiftCalculator.GetDegrees(PhaseShiftCalculator.TileWidthInNM, PhaseShiftCalculator.laserWaveLengthRedNM); // widthInTiles is 1 for the first component
-            Complex factor2 = PhaseShiftCalculator.GetDegrees(PhaseShiftCalculator.TileWidthInNM, PhaseShiftCalculator.laserWaveLengthRedNM); // widthInTiles is 1 also for the second component
+            Complex factor1 = PhaseShiftCalculator.GetDegrees(PhaseShiftCalculator.TileWidthInNM, StandardWaveLengths.RedNM); // widthInTiles is 1 for the first component
+            Complex factor2 = PhaseShiftCalculator.GetDegrees(PhaseShiftCalculator.TileWidthInNM, StandardWaveLengths.RedNM); // widthInTiles is 1 also for the second component
 
             Complex result = factor1 * factor2; 
 

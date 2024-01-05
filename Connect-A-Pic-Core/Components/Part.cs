@@ -1,7 +1,7 @@
 using CAP_Core.Helpers;
 using CAP_Core.Tiles;
 
-namespace CAP_Core.Component.ComponentHelpers
+namespace CAP_Core.Components
 {
     public class Part : ICloneable
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace CAP_Core.Component.ComponentHelpers
+namespace CAP_Core.Components.ComponentHelpers
 {
     [Serializable]
     public class ComponentCannotBePlacedException : Exception

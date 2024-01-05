@@ -1,6 +1,6 @@
 ﻿using CAP_Core;
-using CAP_Core.Component.ComponentHelpers;
-using ConnectAPIC.LayoutWindow.View;
+using CAP_Core.Components;
+using CAP_Core.Components.Creation;
 using System;
 using System.Windows.Input;
 

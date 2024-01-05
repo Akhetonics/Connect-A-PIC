@@ -1,16 +1,17 @@
 using CAP_Contracts.Logger;
 using CAP_Core;
-using CAP_Core.Component.ComponentHelpers;
+using CAP_Core.Components;
+using CAP_Core.Components.Creation;
 using CAP_Core.ExternalPorts;
-using CAP_Core.LightFlow;
 using CAP_DataAccess;
 using CAP_DataAccess.Components.ComponentDraftMapper;
-using CAP_DataAccess.Helpers;
 using Chickensoft.AutoInject;
 using Components.ComponentDraftMapper;
 using Components.ComponentDraftMapper.DTOs;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel;
+using ConnectAPIC.Scenes.ToolBox;
+using ConnectAPIC.Scenes.InGameConsole;
 using ConnectAPIC.Scripts.Helpers;
 using ConnectAPIC.Scripts.View.ComponentFactory;
 using Godot;
@@ -18,17 +19,14 @@ using SuperNodes.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 using System.Reflection;
-using System.Text;
-using YamlDotNet.Core;
 
 namespace ConnectAPic.LayoutWindow
 {
-	[SuperNode (typeof(Provider))]
+    [SuperNode (typeof(Provider))]
 	public partial class GameManager : Node, 
 		IProvide<ToolBox> , IProvide<ILogger>, IProvide<GridView>, IProvide<Grid>, IProvide<GridViewModel>, IProvide<GameManager>,
-		IProvide<Console> , IProvide<System.Version> , IProvide<ComponentViewFactory> 
+		IProvide<GameConsole> , IProvide<System.Version> , IProvide<ComponentViewFactory> 
     {
         #region Dependency Injection
         public override partial void _Notification(int what);
@@ -37,8 +35,8 @@ namespace ConnectAPic.LayoutWindow
 		GridView IProvide<GridView>.Value() => GridView;
 		Grid IProvide<Grid>.Value() => Grid;
 		GridViewModel IProvide<GridViewModel>.Value() => GridViewModel;
-		GameManager IProvide<GameManager>.Value() => Instance;
-        Console IProvide<Console>.Value() => InGameConsole;
+        GameManager IProvide<GameManager>.Value() => Instance;
+        GameConsole IProvide<GameConsole>.Value() => InGameConsole;
         ComponentViewFactory IProvide<ComponentViewFactory>.Value() => GridView.ComponentViewFactory;
         System.Version IProvide<System.Version>.Value() => Version;
         #endregion 
@@ -53,7 +51,7 @@ namespace ConnectAPic.LayoutWindow
 		[Export] public TextureRect ExternalInputRedTemplate { get; set; }
 		[Export] public TextureRect ExternalInputGreenTemplate { get; set; }
 		[Export] public TextureRect ExternalInputBlueTemplate { get; set; }
-		[Export] public Console InGameConsole { get; set; }
+		[Export] public GameConsole InGameConsole { get; set; }
 		private PCKLoader PCKLoader { get; set; }
 		public static int TilePixelSize { get; private set; } = 62;
 		public static int TileBorderLeftDown { get; private set; } = 2;
@@ -192,11 +190,11 @@ namespace ConnectAPic.LayoutWindow
 				TextureRect view;
 				if (port is ExternalInput input)
 				{
-					if (input.Color == LightColor.Red)
+					if (input.LaserType == LaserType.Red) 
 					{
 						view = (TextureRect)ExternalInputRedTemplate.Duplicate();
 					}
-					else if (input.Color == LightColor.Green)
+					else if (input.LaserType == LaserType.Green)
 					{
 						view = (TextureRect)ExternalInputGreenTemplate.Duplicate();
 					}

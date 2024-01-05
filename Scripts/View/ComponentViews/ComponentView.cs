@@ -1,5 +1,6 @@
 ﻿using CAP_Contracts.Logger;
-using CAP_Core.Component.ComponentHelpers;
+using CAP_Core.Components;
+using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.ExternalPorts;
 using CAP_Core.Helpers;
 using CAP_Core.Tiles;
@@ -80,10 +81,9 @@ namespace ConnectAPIC.LayoutWindow.View
             InitializeLightOverlays();
             foreach (var slotData in slotDataSets)
             {
-                
-                if(slotData.LightFlowOverlay== null)
+                if (slotData.LightFlowOverlay == null)
                 {
-                    Logger.PrintErr(nameof(slotData.LightFlowOverlay) + " is null in TypeNR: " + componentTypeNumber );
+                    Logger.PrintErr(nameof(slotData.LightFlowOverlay) + " is null in TypeNR: " + componentTypeNumber);
                 }
                 AnimationSlots.AddRange(CreateRGBAnimSlots(slotData.Side, slotData.LightFlowOverlay, slotData.OffsetX, slotData.OffsetY));
             }
@@ -163,48 +163,50 @@ namespace ConnectAPIC.LayoutWindow.View
 
         private void ResetAllShaderParametersToZero()
         {
-            int shaderAnimationNumber = 1;
             var emptyTexture = new Texture();
             foreach (AnimationSlot slot in AnimationSlots)
             {
                 if (slot?.BaseOverlaySprite?.Material is ShaderMaterial shaderMat)
                 {
-                    shaderMat.SetShaderParameter("lightInFlow" + shaderAnimationNumber, new Vector4());
-                    shaderMat.SetShaderParameter("lightOutFlow" + shaderAnimationNumber, new Vector4());
-                    shaderMat.SetShaderParameter("animation" + shaderAnimationNumber, emptyTexture);
-                    shaderMat.SetShaderParameter("lightColor", new Godot.Color(1, 0, 0));
+                    for(int i = 0; i < AnimationSlot.MaxShaderAnimationSlots; i++) // all parameters in the whole shader should be set to zero
+                    {
+                        shaderMat.SetShaderParameter(ShaderParameterNames.LightInFlow + i, Vector4.Zero);
+                        shaderMat.SetShaderParameter(ShaderParameterNames.LightOutFlow + i, Vector4.Zero);
+                        shaderMat.SetShaderParameter(ShaderParameterNames.Animation + i, emptyTexture);
+                        shaderMat.SetShaderParameter(ShaderParameterNames.LightColor, new Godot.Color(0, 0, 0));
+                    }   
                 }
-                shaderAnimationNumber++;
             }
         }
 
         public virtual void DisplayLightVector(List<LightAtPin> lightsAtPins)
-    {
+        {
             int shaderAnimNumber = 1;
             foreach (LightAtPin light in lightsAtPins)
             {
-                var animationSlot = AnimationSlot.TryFindMatching(AnimationSlots, light);
-                if (animationSlot == null) continue;
-                AssignInAndOutFlowShaderData(animationSlot, light, shaderAnimNumber);
-                shaderAnimNumber += 1;
+                var matchingSlots = AnimationSlot.FindMatching(AnimationSlots, light);
+                matchingSlots.ForEach(slot =>
+                {
+                    AssignInAndOutFlowShaderData(slot, light, shaderAnimNumber);
+                    shaderAnimNumber ++;
+                });
             }
             OverlayRed?.Show();
             OverlayGreen?.Show();
             OverlayBlue?.Show();
         }
-        protected void AssignInAndOutFlowShaderData(AnimationSlot slot, LightAtPin lightAtPin, int shaderAnimationNumber)
+        protected void AssignInAndOutFlowShaderData(AnimationSlot slot, LightAtPin lightAtPin, int shaderSlotNumber)
         {
             if (slot?.BaseOverlaySprite?.Material is ShaderMaterial shaderMat)
             {
-                var InFlowDataAndPosition = new Godot.Vector4((float)lightAtPin.lightInFlow.Magnitude, (float)lightAtPin.lightInFlow.Phase,0,0);
-                var outFlowDataAndPosition = new Vector4((float)lightAtPin.lightOutFlow.Magnitude, (float)lightAtPin.lightOutFlow.Phase,0,0);
-                shaderMat.SetShaderParameter("lightInFlow" + shaderAnimationNumber, InFlowDataAndPosition);
-                shaderMat.SetShaderParameter("lightOutFlow" + shaderAnimationNumber, outFlowDataAndPosition);
-                shaderMat.SetShaderParameter("animation" + shaderAnimationNumber, slot.Texture);
-                shaderMat.SetShaderParameter("lightColor", slot.Color.ToGodotColor());
+                var InFlowDataAndPosition = new Godot.Vector4((float)lightAtPin.lightInFlow.Magnitude, (float)lightAtPin.lightInFlow.Phase, 0, 0);
+                var outFlowDataAndPosition = new Vector4((float)lightAtPin.lightOutFlow.Magnitude, (float)lightAtPin.lightOutFlow.Phase, 0, 0);
+                shaderMat.SetShaderParameter(ShaderParameterNames.LightInFlow + shaderSlotNumber, InFlowDataAndPosition);
+                shaderMat.SetShaderParameter(ShaderParameterNames.LightOutFlow + shaderSlotNumber, outFlowDataAndPosition);
+                shaderMat.SetShaderParameter(ShaderParameterNames.Animation + shaderSlotNumber, slot.Texture);
+                shaderMat.SetShaderParameter(ShaderParameterNames.LightColor, slot.MatchingLaser.Color.ToGodotColor());
             }
         }
-
         public override void _GuiInput(InputEvent inputEvent)
         {
             base._GuiInput(inputEvent);
@@ -250,9 +252,9 @@ namespace ConnectAPIC.LayoutWindow.View
             var tileOffset = new Vector2I(tileOffsetX, tileOffsetY);
             return new List<AnimationSlot>()
             {
-                new AnimationSlot(LightColor.Red, tileOffset, inflowSide, OverlayRed, overlayAnimTexture,new Vector2I(WidthInTiles, HeightInTiles)),
-                new AnimationSlot(LightColor.Green,tileOffset, inflowSide, OverlayGreen, overlayAnimTexture, new Vector2I(WidthInTiles, HeightInTiles)),
-                new AnimationSlot(LightColor.Blue,tileOffset, inflowSide, OverlayBlue, overlayAnimTexture, new Vector2I(WidthInTiles, HeightInTiles)),
+                new (LaserType.Red, tileOffset, inflowSide, OverlayRed, overlayAnimTexture,new Vector2I(WidthInTiles, HeightInTiles)),
+                new (LaserType.Green,tileOffset, inflowSide, OverlayGreen, overlayAnimTexture, new Vector2I(WidthInTiles, HeightInTiles)),
+                new (LaserType.Blue,tileOffset, inflowSide, OverlayBlue, overlayAnimTexture, new Vector2I(WidthInTiles, HeightInTiles)),
             };
         }
 

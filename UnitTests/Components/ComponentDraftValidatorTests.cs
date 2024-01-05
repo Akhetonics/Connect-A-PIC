@@ -1,4 +1,5 @@
-﻿using CAP_Core.Tiles;
+﻿using CAP_Core.Components;
+using CAP_Core.Tiles;
 using Components.ComponentDraftMapper;
 using Components.ComponentDraftMapper.DTOs;
 
@@ -40,9 +41,9 @@ namespace UnitTests
                     tileOffsetY = -1, // trigger ErrorOverlayOffsetYSmaller0
                 }
             },
-                connections = new List<Connection>
+                connections = new List<Components.ComponentDraftMapper.DTOs.Connection>
             {
-                new Connection { fromPinNr = 999, toPinNr = 998 } // trigger ErrorFromPinNrInvalid and ErrorToPinNrInvalid
+                new (){ fromPinNr = 999, toPinNr = 998 } // trigger ErrorFromPinNrInvalid and ErrorToPinNrInvalid
             }
             };
             var result = validator.Validate(draft);
@@ -91,7 +92,7 @@ namespace UnitTests
                         number = 1,
                         partX = 0,
                         partY = 0,
-                        matterType = CAP_Core.Component.ComponentHelpers.MatterType.Light,
+                        matterType = MatterType.Light,
                         side = RectSide.Left,
                         name = "west0",
                     },
@@ -99,21 +100,21 @@ namespace UnitTests
                         number = 2,
                         partX = 1,
                         partY = 0,
-                        matterType = CAP_Core.Component.ComponentHelpers.MatterType.Light,
+                        matterType = MatterType.Light,
                         side = RectSide.Right,
                         name = "east0",
                     }
                 },
-                connections = new List<Connection>()
+                connections = new List<Components.ComponentDraftMapper.DTOs.Connection>()
                 {
-                    new Connection()
+                    new ()
                     {
                         fromPinNr = 1,
                         toPinNr = 2,
                         magnitude = 1,
                         wireLengthNM = 0.02f,
                     },
-                    new Connection()
+                    new ()
                     {
                         fromPinNr = 2,
                         toPinNr = 1,

@@ -2,8 +2,13 @@
 {
     public class UsedInput
     {
-        public ExternalInput Input { get; set; }
-        public Guid AttachedComponentPinId { get; set; }
+        public UsedInput(ExternalInput input, Guid attachedComponentPinId)
+        {
+            Input = input;
+            AttachedComponentPinId = attachedComponentPinId;
+        }
+        public ExternalInput Input { get; }
+        public Guid AttachedComponentPinId { get;}
 
     }
 }

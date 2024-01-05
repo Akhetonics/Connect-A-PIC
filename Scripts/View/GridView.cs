@@ -1,6 +1,7 @@
 using CAP_Contracts.Logger;
 using CAP_Core;
-using CAP_Core.Component.ComponentHelpers;
+using CAP_Core.Components;
+using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.ExternalPorts;
 using ConnectAPic.LayoutWindow;
 using ConnectAPIC.LayoutWindow.ViewModel;

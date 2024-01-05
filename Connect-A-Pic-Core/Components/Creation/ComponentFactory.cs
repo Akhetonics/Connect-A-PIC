@@ -1,7 +1,6 @@
-
 using CAP_Core.Helpers;
 
-namespace CAP_Core.Component.ComponentHelpers
+namespace CAP_Core.Components.Creation
 {
     public class ComponentFactory
     {
@@ -28,7 +27,7 @@ namespace CAP_Core.Component.ComponentHelpers
         }
         public void InitializeComponentDrafts(List<Component> componentDrafts)
         {
-            this.ComponentDrafts = componentDrafts;
+            ComponentDrafts = componentDrafts;
         }
     }
 }

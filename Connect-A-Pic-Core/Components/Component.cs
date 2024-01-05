@@ -1,10 +1,11 @@
+using CAP_Core.Components.Creation;
 using CAP_Core.Helpers;
 using CAP_Core.LightFlow;
 using CAP_Core.Tiles;
 using System.Numerics;
 using System.Text.Json.Serialization;
 
-namespace CAP_Core.Component.ComponentHelpers
+namespace CAP_Core.Components
 {
     public class Component : ICloneable
     {
@@ -15,7 +16,8 @@ namespace CAP_Core.Component.ComponentHelpers
         [JsonIgnore] public int GridXMainTile { get; protected set; }
         [JsonIgnore] public int GridYMainTile { get; protected set; }
         public Part[,] Parts { get; protected set; }
-        public SMatrix Connections { get; protected set; }
+        private List<Connection> RawConnections;
+        public SMatrix Connections(double waveLength) => SMatrixFactory.GetSMatrix(RawConnections, Parts, waveLength);
         public string NazcaFunctionName { get; set; }
         public string NazcaFunctionParameters { get; set; }
         private DiscreteRotation _discreteRotation;
@@ -31,12 +33,12 @@ namespace CAP_Core.Component.ComponentHelpers
                 }
             }
         }
-        public Component(SMatrix connections ,string nazcaFunctionName, string nazcaFunctionParameters, Part[,] parts, int typeNumber, DiscreteRotation discreteRotationCounterClock)
+        public Component(List<Connection> connections , string nazcaFunctionName, string nazcaFunctionParameters, Part[,] parts, int typeNumber, DiscreteRotation discreteRotationCounterClock)
         {
             Parts = parts;
             TypeNumber = typeNumber;
             _discreteRotation = discreteRotationCounterClock;
-            Connections = connections;
+            RawConnections = connections;
             NazcaFunctionName = nazcaFunctionName;
             NazcaFunctionParameters = nazcaFunctionParameters;
         }
@@ -96,7 +98,7 @@ namespace CAP_Core.Component.ComponentHelpers
                    $"Grid Y (Main Tile): {GridYMainTile} \n" +
                    $"Rotation: {Rotation90CounterClock} \n" +
                    $"Parts Length: {Parts?.Length} \n" +
-                   $"Connections PinReferences Count: {Connections?.PinReference?.Count}";
+                   $"Connections Count: {RawConnections.Count}";
         }
         public List<Pin> GetAllPins()
         {
@@ -127,51 +129,48 @@ namespace CAP_Core.Component.ComponentHelpers
 
             return clonedParts;
         }
-        public object Clone()
+
+        private Dictionary<Guid, Guid> MapPinIDsWithNewIDs(Part[,] clonedParts)
         {
-            var clonedParts = CloneParts();
-            // Create a mapping from old pin IDs to new pin IDs
-            Dictionary<Guid, Guid> oldToNewPinIds = new Dictionary<Guid, Guid>();
-            List<Guid> newPinIds = new List<Guid>();
-            for (int i = 0; i < Parts.GetLength(0); i++)
+            Dictionary<Guid, Guid> pinIdMapping = new Dictionary<Guid, Guid>();
+            for (int x = 0; x < Parts.GetLength(0); x++)
             {
-                for (int j = 0; j < Parts.GetLength(1); j++)
+                for (int y = 0; y < Parts.GetLength(1); y++)
                 {
-                    var oldPart = Parts[i, j];
-                    var newPart = clonedParts[i, j];
+                    var oldPart = Parts[x, y];
+                    var newPart = clonedParts[x, y];
 
                     if (oldPart != null && newPart != null)
                     {
-                        for (int k = 0; k < oldPart.Pins.Count; k++)
+                        for (int p = 0; p < oldPart.Pins.Count; p++)
                         {
-                            var oldPin = oldPart.Pins[k];
-                            var newPin = newPart.Pins[k];
-                            oldToNewPinIds[oldPin.IDInFlow] = newPin.IDInFlow;
-                            oldToNewPinIds[oldPin.IDOutFlow] = newPin.IDOutFlow;
-                            newPinIds.Add(newPin.IDInFlow);
-                            newPinIds.Add(newPin.IDOutFlow);
+                            var oldPin = oldPart.Pins[p];
+                            var newPin = newPart.Pins[p];
+                            pinIdMapping[oldPin.IDInFlow] = newPin.IDInFlow;
+                            pinIdMapping[oldPin.IDOutFlow] = newPin.IDOutFlow;
                         }
                     }
                 }
             }
 
-            // Clone the existing connections and update with new pin IDs
-            var oldConnections = this.Connections.GetNonNullValues();
-            var newConnections = new Dictionary<(Guid, Guid), Complex>();
-
-            foreach (var oldConnection in oldConnections)
-            {
-                var oldInflowId = oldConnection.Key.PinIdStart;
-                var oldOutflowId = oldConnection.Key.PinIdEnd;
-                var newInflowId = oldToNewPinIds[oldInflowId];
-                var newOutflowId = oldToNewPinIds[oldOutflowId];
-                newConnections[(newInflowId, newOutflowId)] = oldConnection.Value;
-            }
-
-            var clonedSMatrix = new SMatrix(newPinIds);
-            clonedSMatrix.SetValues(newConnections);
-            var newComponent = new Component(clonedSMatrix, NazcaFunctionName, NazcaFunctionParameters, clonedParts, TypeNumber, Rotation90CounterClock);
-            return newComponent;
+            return pinIdMapping;
         }
+        public object Clone()
+        {
+            var clonedParts = CloneParts();
+            // Create a mapping from old pin IDs to new pin IDs
+            Dictionary<Guid, Guid> oldToNewPinIds = MapPinIDsWithNewIDs(clonedParts);
+
+            // Clone the existing connections and update with new pin IDs
+            var clonedRawConnections = RawConnections.Select(c => new Connection()
+            {
+                FromPin = oldToNewPinIds[c.FromPin],
+                ToPin = oldToNewPinIds[c.ToPin],
+                Magnitude = c.Magnitude,
+                WireLengthNM = c.WireLengthNM
+            }).ToList();
+            return new Component(clonedRawConnections, NazcaFunctionName, NazcaFunctionParameters, clonedParts, TypeNumber, Rotation90CounterClock);
+        }
+
     }
 }

@@ -1,11 +1,9 @@
 ﻿using CAP_Core;
-using CAP_Core.Component;
-using CAP_Core.Component.ComponentHelpers;
-using CAP_Core.LightFlow;
+using CAP_Core.Components;
+using CAP_Core.ExternalPorts;
 using CAP_Core.Tiles;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using Newtonsoft.Json;
-using System.Numerics;
 
 namespace UnitTests
 {
@@ -23,9 +21,8 @@ namespace UnitTests
         {
             var grid = new Grid(10, 10);
             var component = TestComponentFactory.CreateDirectionalCoupler();
-            grid.PlaceComponent(0, 0, component);
-            var command = new RotateComponentCommand(grid);
-            var args = new RotateComponentArgs(0, 0);
+            var portY = grid.ExternalPorts.First().TilePositionY;
+            grid.PlaceComponent(0, portY, component);
             var PinLeft = component.GetPartAt(0, 0).GetPinAt(RectSide.Left);
             var PinRight = component.GetPartAt(1, 0).GetPinAt(RectSide.Right);
             var PinDownLeft = component.GetPartAt(0, 1).GetPinAt(RectSide.Left);
@@ -34,8 +31,10 @@ namespace UnitTests
             var PartRight = component.GetPartAt(1, 0);
             var PartDownLeft = component.GetPartAt(0, 1);
             var PartDownRight = component.GetPartAt(1, 1);
-            component.Connections.GetNonNullValues();
-
+            var laserType = grid.GetUsedExternalInputs().First().Input.LaserType;
+            component.Connections(laserType.WaveLengthInNm).GetNonNullValues();
+            var command = new RotateComponentCommand(grid);
+            var args = new RotateComponentArgs(component.GridXMainTile, component.GridYMainTile);
             command.Execute(args);
             Assert.Equal(2, component.WidthInTiles);
             Assert.Equal(2, component.HeightInTiles);
@@ -69,9 +68,11 @@ namespace UnitTests
             var grid = new Grid(10, 10);
             var componentOld = TestComponentFactory.CreateDirectionalCoupler();
             var component = componentOld.Clone() as Component;
-            grid.PlaceComponent(0, 0, component);
+            var laserY = grid.ExternalPorts[0].TilePositionY;
+            grid.PlaceComponent(0, laserY, component);
+            var laserType = grid.GetUsedExternalInputs().First().Input.LaserType;
 
-            var connections = component.Connections.GetNonNullValues();
+            var connections = component.Connections(laserType.WaveLengthInNm).GetNonNullValues();
 
             // every light based Pin of the whole component that is defined should exist in the connection-S-Matrix.
             foreach (var part in component.Parts)

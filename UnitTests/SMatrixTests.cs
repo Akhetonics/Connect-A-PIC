@@ -1,5 +1,5 @@
 using CAP_Core;
-using CAP_Core.Component.ComponentHelpers;
+using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.LightFlow;
 using System.Numerics;
 
@@ -13,11 +13,12 @@ namespace UnitTests
             var directionalCoupler = TestComponentFactory.CreateDirectionalCoupler();
             var grid = new Grid(20,10);
             grid.PlaceComponent(0, grid.ExternalPorts[0].TilePositionY, directionalCoupler);
-            var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid);
-            var lightPropagation = gridSMatrixAnalyzer.CalculateLightPropagation(grid.ExternalPorts[0].Color);
+            var laserType = grid.GetUsedExternalInputs().First().Input.LaserType;
+            var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid, laserType.WaveLengthInNm);
+            var lightPropagation = gridSMatrixAnalyzer.CalculateLightPropagation();
 
             // test directionalCoupler
-            var allComponentsSMatrices = gridSMatrixAnalyzer.GetAllComponentsSMatrices();
+            var allComponentsSMatrices = gridSMatrixAnalyzer.GetAllComponentsSMatrices(gridSMatrixAnalyzer.LaserWaveLengthInNm);
             var debug_directionalComponentMatrix = gridSMatrixAnalyzer.ToString();
             var UpperToRightConnection = allComponentsSMatrices[0].GetNonNullValues().Single(e =>e.Key ==(directionalCoupler.PinIdLeftIn(0,0), directionalCoupler.PinIdRightOut(1, 0))).Value;
             var LowerToRightConnection = allComponentsSMatrices[0].GetNonNullValues().Single(e =>e.Key ==(directionalCoupler.PinIdLeftIn(0,1), directionalCoupler.PinIdRightOut(1, 1))).Value;
@@ -52,9 +53,10 @@ namespace UnitTests
             grid.PlaceComponent(3, inputPort.TilePositionY, secondStraight);
             grid.PlaceComponent(0, inputPort.TilePositionY + 1, rotatedStraight);
 
-            var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid);
-            var lightValues = gridSMatrixAnalyzer.CalculateLightPropagation(inputPort.Color);
-            var allComponentsSMatrices = gridSMatrixAnalyzer.GetAllComponentsSMatrices();
+            var laserType = grid.GetUsedExternalInputs().First().Input.LaserType;
+            var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid, laserType.WaveLengthInNm);
+            var lightValues = gridSMatrixAnalyzer.CalculateLightPropagation();
+            var allComponentsSMatrices = gridSMatrixAnalyzer.GetAllComponentsSMatrices(laserType.WaveLengthInNm);
             var Straight_LiRoConnection = allComponentsSMatrices[0].GetNonNullValues().Single(b => b.Key == (straight.PinIdLeftIn(), straight.PinIdRightOut())).Value;
             var Straight_RiLoConnection = allComponentsSMatrices[0].GetNonNullValues().Single(b => b.Key == (straight.PinIdRightIn(), straight.PinIdLeftOut())).Value;
 

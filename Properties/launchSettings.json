@@ -6,7 +6,7 @@
       "commandLineArgs": "--path . --verbose",
       "workingDirectory": "."
     },
-    "Run GD Tests": {
+    "Debug GD Tests": {
       "commandName": "Executable",
       "executablePath": "C:\\Program Files\\Godot_v4.1\\Godot_v4.1.exe",
       "commandLineArgs": "--path . --run-tests --quit-on-finish --verbose",

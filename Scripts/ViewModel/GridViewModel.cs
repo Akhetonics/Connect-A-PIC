@@ -1,16 +1,16 @@
 ﻿using CAP_Contracts.Logger;
 using CAP_Core;
 using CAP_Core.CodeExporter;
-using CAP_Core.Component.ComponentHelpers;
+using CAP_Core.Components;
+using CAP_Core.Components.ComponentHelpers;
+using CAP_Core.Components.Creation;
 using CAP_Core.ExternalPorts;
 using CAP_Core.LightFlow;
 using CAP_Core.Tiles;
-using Chickensoft.AutoInject;
+using ConnectAPic.LayoutWindow;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scripts.Helpers;
-using Godot;
-using SuperNodes.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -32,7 +32,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         public Grid Grid { get; set; }
         public ILogger Logger { get; }
         public GridView GridView { get; set; }
-        public GridSMatrixAnalyzer MatrixAnalyzer { get; private set; } 
+        public GridSMatrixAnalyzer MatrixAnalyzer { get; private set; }
         public int MaxTileCount { get => Width * Height; }
 
         public GridViewModel(GridView gridView, Grid grid, ILogger logger)
@@ -42,7 +42,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             Logger = logger;
             //this.GridView.Columns = grid.Width;
             this.GridComponentViews = new ComponentView[grid.Width, grid.Height];
-            CreateComponentCommand = new CreateComponentCommand(grid,ComponentFactory.Instance);
+            CreateComponentCommand = new CreateComponentCommand(grid, ComponentFactory.Instance);
             DeleteComponentCommand = new DeleteComponentCommand(grid);
             RotateComponentCommand = new RotateComponentCommand(grid);
             MoveComponentCommand = new MoveComponentCommand(grid);
@@ -50,7 +50,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             CreateEmptyField();
             this.Grid.OnComponentPlacedOnTile += Grid_OnComponentPlacedOnTile;
             this.Grid.OnComponentRemoved += Grid_OnComponentRemoved;
-            MatrixAnalyzer = new GridSMatrixAnalyzer(this.Grid);
+            MatrixAnalyzer = new GridSMatrixAnalyzer(this.Grid, StandardWaveLengths.RedNM);
         }
 
         private void Grid_OnComponentRemoved(Component component, int x, int y)
@@ -122,35 +122,44 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             return ComponentView;
         }
 
-        public Dictionary<Guid, Complex> GetLightVector(LightColor color)
+        public Dictionary<Guid, Complex> GetLightVector(LaserType inputLight)
         {
-            MatrixAnalyzer = new GridSMatrixAnalyzer(this.Grid);
-            return MatrixAnalyzer.CalculateLightPropagation(color);
+            MatrixAnalyzer = new GridSMatrixAnalyzer(this.Grid, inputLight.WaveLengthInNm);
+            
+            return MatrixAnalyzer.CalculateLightPropagation();
         }
 
         public void ShowLightPropagation()
         {
-            var lightVectorRed = GetLightVector(LightColor.Red);
-            var lightVectorGreen = GetLightVector(LightColor.Green);
-            var lightVectorBlue = GetLightVector(LightColor.Blue);
-            // go through the whole grid and send all 
-            AssignLightToComponentViews(lightVectorRed, LightColor.Red);
-            AssignLightToComponentViews(lightVectorGreen, LightColor.Green);
-            AssignLightToComponentViews(lightVectorBlue, LightColor.Blue);
+            var inputPorts = Grid.GetUsedExternalInputs();
+            foreach (var port in inputPorts)
+            {
+                var inputLightVector = GetLightVector(port.Input.LaserType);
+                // go through the whole grid and send all 
+                AssignLightToComponentViews(inputLightVector, port.Input.LaserType);
+            }
         }
 
-        private void AssignLightToComponentViews(Dictionary<Guid, Complex> lightVector, LightColor color)
+        private void AssignLightToComponentViews(Dictionary<Guid, Complex> lightVector, LaserType laserType)
         {
             List<Component> components = Grid.GetAllComponents();
             foreach (var componentModel in components)
             {
-                var componentView = GridComponentViews[componentModel.GridXMainTile, componentModel.GridYMainTile];
-                List<LightAtPin> lightAtPins = CalculateLightAtPins(lightVector, color, componentModel);
-                componentView.DisplayLightVector(lightAtPins);   
+                try
+                {
+                    var componentView = GridComponentViews[componentModel.GridXMainTile, componentModel.GridYMainTile];
+                    List<LightAtPin> lightAtPins = CalculateLightAtPins(lightVector, laserType, componentModel);
+                    componentView.DisplayLightVector(lightAtPins);
+                }
+                catch (Exception ex)
+                {
+                    Logger.PrintErr(ex.Message);
+                }
+
             }
         }
 
-        public static List<LightAtPin> CalculateLightAtPins(Dictionary<Guid, Complex> lightVector, LightColor color, Component componentModel)
+        public static List<LightAtPin> CalculateLightAtPins(Dictionary<Guid, Complex> lightVector, LaserType laserType, Component componentModel)
         {
             List<LightAtPin> lightAtPins = new();
 
@@ -167,7 +176,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
                             offsetX,
                             offsetY,
                             localSide,
-                            color,
+                            laserType,
                             lightVector.TryGetVal(pin.IDInFlow),
                             lightVector.TryGetVal(pin.IDOutFlow)
                             );

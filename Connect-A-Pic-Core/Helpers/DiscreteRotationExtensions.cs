@@ -1,4 +1,4 @@
-﻿using CAP_Core.Component.ComponentHelpers;
+﻿using CAP_Core.Components;
 using CAP_Core.Tiles;
 
 namespace CAP_Core.Helpers

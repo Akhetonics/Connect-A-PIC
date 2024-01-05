@@ -8,7 +8,6 @@ namespace CAP_Core.ExternalPorts
         Green,
         Blue
     }
-
     public static class LightColorExtensions
     {
         public static Color ToColor(this LightColor lc)
@@ -18,7 +17,7 @@ namespace CAP_Core.ExternalPorts
                 case LightColor.Red:
                     return Color.Red;
                 case LightColor.Green:
-                    return Color.FromArgb(0,255,0);
+                    return Color.FromArgb(0, 255, 0);
                 case LightColor.Blue:
                     return Color.Blue;
                 default:

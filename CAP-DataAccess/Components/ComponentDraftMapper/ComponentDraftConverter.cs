@@ -1,5 +1,6 @@
 ﻿using CAP_Contracts.Logger;
-using CAP_Core.Component.ComponentHelpers;
+using CAP_Core.Components;
+using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.LightFlow;
 using Components.ComponentDraftMapper.DTOs;
 using System.Numerics;
@@ -14,87 +15,68 @@ namespace Components.ComponentDraftMapper
         {
             Logger = logger;
         }
+
         public List<Component> ToComponentModels(List<ComponentDraft> componentDrafts)
         {
-            var modelComponents = new List<Component>();
-            int typeNumber = 0;
-            foreach (var draft in componentDrafts)
-            {
-                try
-                {
-                    modelComponents.Add(ToComponentModel(typeNumber, draft));
-                }
-                catch (Exception ex)
-                {
-                    Logger.PrintErr($"Exception at converting draft to Component: '{draft.identifier}' path: '{draft.sceneResPath}' msg: '{ex.Message}' ");
-                }
-                typeNumber++;
-            }
-
-            return modelComponents;
+            return componentDrafts.Select((draft, index) => ConvertDraftToComponent(draft, index)).ToList();
         }
 
-        public static Component ToComponentModel(int typeNumber, ComponentDraft draft)
+        private Component ConvertDraftToComponent(ComponentDraft draft, int typeNumber)
         {
-            // convert PinDrafts to Model Pins
-            Dictionary<(int x, int y), List<PinDraft>> PinDraftsByXY = new();
-            foreach (var p in draft.pins)
+            try
             {
-                if (PinDraftsByXY.ContainsKey((p.partX, p.partY)))
-                {
-                    PinDraftsByXY[(p.partX, p.partY)].Add(p);
-                }
-                else
-                {
-                    PinDraftsByXY.Add((p.partX, p.partY), new List<PinDraft>() { p });
-                }
+                var parts = CreatePartsFromDraft(draft);
+                var connections = CreateConnectionsFromDraft(draft, parts);
+                return new Component(connections, draft.nazcaFunctionName, draft.nazcaFunctionParameters, parts, typeNumber, DiscreteRotation.R0);
             }
-
-            // Create Model Parts
-            Part[,] parts = new Part[draft.widthInTiles, draft.heightInTiles];
-            foreach (var pinDraft in PinDraftsByXY)
+            catch (Exception ex)
             {
-                var realPins = pinDraft.Value.Select(pinDraft => new Pin(pinDraft.name, pinDraft.matterType, pinDraft.side)).ToList();
-                parts[pinDraft.Key.x, pinDraft.Key.y] = new Part(realPins);
+                Logger.PrintErr($"Exception at converting draft to Component: '{draft.identifier}' path: '{draft.sceneResPath}' msg: '{ex.Message}' ");
+                return null; // Or handle the exception as required
             }
-
-            // Create S-Matrix Connections
-            // get all real Pins
-            Dictionary<Guid, Pin> ModelPins = new();
-            foreach (Part part in parts)
-            {
-                part.Pins.ForEach(p => ModelPins.Add(p.IDInFlow, p));
-                part.Pins.ForEach(p => ModelPins.Add(p.IDOutFlow, p));
-            }
-
-            Dictionary<int, PinDraft> PinDraftsByNumber = new();
-            draft.pins.ForEach(p => PinDraftsByNumber.Add(p.number, p));
-            List<Guid> allPinGuids = new();
-            allPinGuids.AddRange(ModelPins.Values.Select(p => p.IDInFlow).Distinct());
-            allPinGuids.AddRange(ModelPins.Values.Select(p => p.IDOutFlow).Distinct());
-
-            SMatrix componentConnectionsRed = CreateSMatrix(draft, parts, PinDraftsByNumber, allPinGuids, PhaseShiftCalculator.laserWaveLengthRedNM);
-            return new Component(componentConnectionsRed, draft.nazcaFunctionName, draft.nazcaFunctionParameters, parts, typeNumber, DiscreteRotation.R0);
         }
-
-        private static SMatrix CreateSMatrix(ComponentDraft draft, Part[,] parts, Dictionary<int, PinDraft> PinDraftsByNumber, List<Guid> allPinGuids, double laserWaveLengthNM)
+        private Part[,] CreatePartsFromDraft(ComponentDraft draft)
         {
-            var componentConnections = new SMatrix(allPinGuids);
-            var connectionWeights = new Dictionary<(Guid, Guid), Complex>();
-            foreach (Connection connectionDraft in draft.connections)
+            var parts = new Part[draft.widthInTiles, draft.heightInTiles];
+            var pinsGroupedByPosition = draft.pins
+                .GroupBy(p => (p.partX, p.partY))
+                .ToDictionary(g => g.Key, g => g.ToList());
+
+            foreach (var group in pinsGroupedByPosition)
             {
-                var fromPin = PinDraftsByNumber[connectionDraft.fromPinNr];
-                var toPin = PinDraftsByNumber[connectionDraft.toPinNr];
-                Pin fromModelPin = GetModelPin(parts, fromPin);
-                var toModelPin = GetModelPin(parts, toPin);
+                var (x, y) = group.Key;
+                var realPins = group.Value.Select(pinDraft => new Pin(pinDraft.name, pinDraft.matterType, pinDraft.side)).ToList();
+                parts[x, y] = new Part(realPins);
+            }
 
-                var phaseShiftDegreesRed = PhaseShiftCalculator.GetDegrees(connectionDraft.wireLengthNM, laserWaveLengthNM);
-                connectionWeights.Add((fromModelPin.IDInFlow, toModelPin.IDOutFlow), Complex.FromPolarCoordinates(connectionDraft.magnitude, phaseShiftDegreesRed));
-            };
-
-            componentConnections.SetValues(connectionWeights);
-            return componentConnections;
+            return parts;
         }
+
+        private List<CAP_Core.Components.Connection> CreateConnectionsFromDraft(ComponentDraft draft, Part[,] parts)
+        {
+            return draft.connections.Select(dto =>
+            {
+                var fromPinDTO = draft.pins.Single(p => p.number == dto.fromPinNr);
+                var toPinDTO = draft.pins.Single(p => p.number == dto.toPinNr);
+
+                var fromPinModel = FindModelPin(parts, fromPinDTO);
+                var toPinModel = FindModelPin(parts, toPinDTO);
+
+                return new CAP_Core.Components.Connection
+                {
+                    FromPin = fromPinModel.IDInFlow,
+                    ToPin = toPinModel.IDOutFlow,
+                    Magnitude = dto.magnitude,
+                    WireLengthNM = dto.wireLengthNM
+                };
+            }).ToList();
+        }
+
+        private static Pin FindModelPin(Part[,] parts, PinDraft pinDraft)
+        {
+            return parts[pinDraft.partX, pinDraft.partY].Pins.Single(p => p.Side == pinDraft.side && p.MatterType == pinDraft.matterType);
+        }
+
         private static Pin GetModelPin(Part[,] parts, PinDraft pinDraft)
         {
             return parts[pinDraft.partX, pinDraft.partY].Pins.Single(p => p.Side == pinDraft.side && p.MatterType == pinDraft.matterType);

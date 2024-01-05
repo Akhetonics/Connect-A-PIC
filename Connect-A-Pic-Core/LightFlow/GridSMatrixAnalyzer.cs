@@ -1,38 +1,39 @@
-﻿using CAP_Core.Component.ComponentHelpers;
+﻿using CAP_Core.Components;
+using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.ExternalPorts;
 using CAP_Core.Helpers;
 using CAP_Core.Tiles;
+using System.Linq;
 using System.Numerics;
 namespace CAP_Core.LightFlow
 {
     public class GridSMatrixAnalyzer
     {
         public readonly Grid Grid;
-        public Dictionary<(Guid, Guid), Complex> InterComponentConnections { get; private set; }
-        public SMatrix SystemSMatrix { get; private set; }
-        private Dictionary<Guid, Complex> LightPropagation;
-        public LightColor InputLightColor { get; private set; }
+        public Dictionary<(Guid, Guid), Complex>? InterComponentConnections { get; private set; }
+        public SMatrix? SystemSMatrix { get; private set; }
+        public double LaserWaveLengthInNm { get; }
 
-        public GridSMatrixAnalyzer(Grid grid)
+        public GridSMatrixAnalyzer(Grid grid, double laserWaveLengthInNm)
         {
             Grid = grid;
-            UpdateSystemSMatrix();
+            LaserWaveLengthInNm = laserWaveLengthInNm;
         }
 
         // calculates the light intensity and phase at a given PIN-ID for both light-flow-directions "in" and "out" for a given period of steps
-        public Dictionary<Guid, Complex> CalculateLightPropagation(LightColor newLightColor)
+        public Dictionary<Guid, Complex> CalculateLightPropagation()
         {
-            InputLightColor = newLightColor;
-            var stepCount = SystemSMatrix.PinReference.Count() * 2;
-            var usedInputs = Grid.GetUsedExternalInputs().Where(i => i.Input.Color == newLightColor).ToList();
             UpdateSystemSMatrix();
+            var stepCount = SystemSMatrix.PinReference.Count() * 2;
+            var usedInputs = Grid.GetUsedExternalInputs().Where(i => i.Input.LaserType.WaveLengthInNm == LaserWaveLengthInNm).ToList();
+            
             var inputVector = UsedInputConverter.ToVector(usedInputs, SystemSMatrix);
             return SystemSMatrix.GetLightPropagation(inputVector, stepCount) ?? new Dictionary<Guid, Complex>();
         }
 
         private void UpdateSystemSMatrix()
         {
-            var allComponentsSMatrices = GetAllComponentsSMatrices();
+            var allComponentsSMatrices = GetAllComponentsSMatrices(LaserWaveLengthInNm);
             SMatrix allConnectionsSMatrix = CreateAllConnectionsMatrix();
             allComponentsSMatrices.Add(allConnectionsSMatrix);
             SystemSMatrix = SMatrix.CreateSystemSMatrix(allComponentsSMatrices);
@@ -45,15 +46,15 @@ namespace CAP_Core.LightFlow
                 CalcAllConnectionsBetweenComponents();
             }
             var allUsedPinIDs = InterComponentConnections.SelectMany(c => new[] { c.Key.Item1, c.Key.Item2 }).Distinct().ToList();
+            Grid.GetUsedExternalInputs().ForEach(input => allUsedPinIDs.Add(input.AttachedComponentPinId)); // Grating coupler has no internal connections and might be only connected to the Laser directly
             var allConnectionsSMatrix = new SMatrix(allUsedPinIDs);
             allConnectionsSMatrix.SetValues(InterComponentConnections);
             return allConnectionsSMatrix;
         }
 
-        public List<SMatrix> GetAllComponentsSMatrices()
+        public List<SMatrix> GetAllComponentsSMatrices(double waveLength)
         {
-            
-            return Grid.GetAllComponents().Select(c => c.Connections).ToList();
+            return Grid.GetAllComponents().Select(c => c.Connections(waveLength)).ToList();
         }
         private void CalcAllConnectionsBetweenComponents()
         {
