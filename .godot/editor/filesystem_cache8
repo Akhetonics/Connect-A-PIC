@@ -1,10 +1,10 @@
 ea4bc82a6ad023ab7ee23ee620429895
-::res://::1704461335
+::res://::1704462426
 cspell.json::JSON::-1::1702550109::0::1::::<><>::
 export_presets.cfg::TextFile::-1::1704447755::0::1::::<><>::
 global.json::JSON::-1::1702561495::0::1::::<><>::
 GodotTestVSIntegration.md::TextFile::-1::1702550109::0::1::::<><>::
-icon.svg::CompressedTexture2D::5422298365437308311::1689315118::1702563491::1::::<><>::
+icon.svg::CompressedTexture2D::5422298365437308311::1689315118::1704462426::1::::<><>::
 LICENSE.txt::TextFile::-1::1702550109::0::1::::<><>::
 logs.txt::TextFile::-1::1702550109::0::1::::<><>::
 MathNet.Numerics.xml::TextFile::-1::1691051016::0::1::::<><>::
@@ -17,17 +17,17 @@ renovate.json::JSON::-1::1702550109::0::1::::<><>::
 LogSaver.cs::CSharpScript::-1::1702550109::0::1::::<><>::
 ::res://CAP-DataAccess/bin/::1702546421
 ::res://CAP-DataAccess/bin/Debug/::1700207031
-::res://CAP-DataAccess/bin/Debug/net6.0/::1704460354
-CAP-DataAccess.deps.json::JSON::-1::1704460354::0::1::::<><>::
-CAP-DataAccess.runtimeconfig.json::JSON::-1::1704460354::0::1::::<><>::
+::res://CAP-DataAccess/bin/Debug/net6.0/::1704462339
+CAP-DataAccess.deps.json::JSON::-1::1704462430::0::1::::<><>::
+CAP-DataAccess.runtimeconfig.json::JSON::-1::1704462430::0::1::::<><>::
 ::res://CAP-DataAccess/bin/ExportDebug/::1702546421
 ::res://CAP-DataAccess/bin/ExportDebug/net6.0/::1702546424
 CAP-DataAccess.deps.json::JSON::-1::1702546424::0::1::::<><>::
 CAP-DataAccess.runtimeconfig.json::JSON::-1::1702546424::0::1::::<><>::
 ::res://CAP-DataAccess/bin/ExportRelease/::1702463136
-::res://CAP-DataAccess/bin/ExportRelease/net6.0/::1704460890
-CAP-DataAccess.deps.json::JSON::-1::1704460890::0::1::::<><>::
-CAP-DataAccess.runtimeconfig.json::JSON::-1::1704460890::0::1::::<><>::
+::res://CAP-DataAccess/bin/ExportRelease/net6.0/::1704462288
+CAP-DataAccess.deps.json::JSON::-1::1704462363::0::1::::<><>::
+CAP-DataAccess.runtimeconfig.json::JSON::-1::1704462363::0::1::::<><>::
 ::res://CAP-DataAccess/Components/::1702550109
 ::res://CAP-DataAccess/Components/ComponentDraftMapper/::1704447759
 ComponentDescriptionDraft.json::JSON::-1::1702550109::0::1::::<><>::
@@ -42,18 +42,18 @@ Overlay.cs::CSharpScript::-1::1702550109::0::1::::<><>::
 PinDraft.cs::CSharpScript::-1::1704447759::0::1::::<><>::
 ::res://CAP-DataAccess/Helpers/::1702550109
 FileFinder.cs::CSharpScript::-1::1702550109::0::1::::<><>::
-::res://CAP-DataAccess/obj/::1704460889
-CAP-DataAccess.csproj.nuget.dgspec.json::JSON::-1::1704460889::0::1::::<><>::
+::res://CAP-DataAccess/obj/::1704462429
+CAP-DataAccess.csproj.nuget.dgspec.json::JSON::-1::1704462429::0::1::::<><>::
 CAP-DataAccessLayer.csproj.nuget.dgspec.json::JSON::-1::1700207039::0::1::::<><>::
 DataAccessLayer.csproj.nuget.dgspec.json::JSON::-1::1700207032::0::1::::<><>::
-project.assets.json::JSON::-1::1704460889::0::1::::<><>::
+project.assets.json::JSON::-1::1704462429::0::1::::<><>::
 ::res://CAP-DataAccess/obj/Debug/::1700207031
-::res://CAP-DataAccess/obj/Debug/net6.0/::1704460354
+::res://CAP-DataAccess/obj/Debug/net6.0/::1704462339
 .NETCoreApp,Version=v6.0.AssemblyAttributes.cs::CSharpScript::-1::1701678238::0::1::::<><>::
-CAP-DataAccess.AssemblyInfo.cs::CSharpScript::-1::1704460354::0::1::::<><>::
+CAP-DataAccess.AssemblyInfo.cs::CSharpScript::-1::1704462339::0::1::::<><>::
 CAP-DataAccess.csproj.FileListAbsolute.txt::TextFile::-1::1702470909::0::1::::<><>::
 CAP-DataAccess.GlobalUsings.g.cs::CSharpScript::-1::1700207075::0::1::::<><>::
-CAP-DataAccess.sourcelink.json::JSON::-1::1704460354::0::1::::<><>::
+CAP-DataAccess.sourcelink.json::JSON::-1::1704462339::0::1::::<><>::
 CAP-DataAccessLayer.AssemblyInfo.cs::CSharpScript::-1::1700207039::0::1::::<><>::
 CAP-DataAccessLayer.GlobalUsings.g.cs::CSharpScript::-1::1700207039::0::1::::<><>::
 DataAccessLayer.AssemblyInfo.cs::CSharpScript::-1::1700207031::0::1::::<><>::
@@ -69,9 +69,9 @@ CAP-DataAccess.GlobalUsings.g.cs::CSharpScript::-1::1702546421::0::1::::<><>::
 ::res://CAP-DataAccess/obj/ExportDebug/net6.0/ref/::1702546424
 ::res://CAP-DataAccess/obj/ExportDebug/net6.0/refint/::1702546424
 ::res://CAP-DataAccess/obj/ExportRelease/::1702463136
-::res://CAP-DataAccess/obj/ExportRelease/net6.0/::1704460890
+::res://CAP-DataAccess/obj/ExportRelease/net6.0/::1704462288
 .NETCoreApp,Version=v6.0.AssemblyAttributes.cs::CSharpScript::-1::1702463138::0::1::::<><>::
-CAP-DataAccess.AssemblyInfo.cs::CSharpScript::-1::1704460890::0::1::::<><>::
+CAP-DataAccess.AssemblyInfo.cs::CSharpScript::-1::1704462288::0::1::::<><>::
 CAP-DataAccess.csproj.FileListAbsolute.txt::TextFile::-1::1702471098::0::1::::<><>::
 CAP-DataAccess.GlobalUsings.g.cs::CSharpScript::-1::1702463136::0::1::::<><>::
 ::res://CAP-DataAccess/obj/ExportRelease/net6.0/ref/::1702463139
@@ -82,28 +82,28 @@ IDirectoryAccess.cs::CSharpScript::-1::1702550109::0::1::::<><>::
 IResourcePathChecker.cs::CSharpScript::-1::1702550109::0::1::::<><>::
 ::res://CAP_Contracts/bin/::1702546421
 ::res://CAP_Contracts/bin/Debug/::1700556960
-::res://CAP_Contracts/bin/Debug/net6.0/::1704460353
-CAP_Contracts.deps.json::JSON::-1::1704460353::0::1::::<><>::
+::res://CAP_Contracts/bin/Debug/net6.0/::1704462338
+CAP_Contracts.deps.json::JSON::-1::1704462429::0::1::::<><>::
 ::res://CAP_Contracts/bin/ExportDebug/::1702546421
 ::res://CAP_Contracts/bin/ExportDebug/net6.0/::1702546423
 CAP_Contracts.deps.json::JSON::-1::1702546423::0::1::::<><>::
 ::res://CAP_Contracts/bin/ExportRelease/::1702463136
-::res://CAP_Contracts/bin/ExportRelease/net6.0/::1704460889
-CAP_Contracts.deps.json::JSON::-1::1704460889::0::1::::<><>::
+::res://CAP_Contracts/bin/ExportRelease/net6.0/::1704462287
+CAP_Contracts.deps.json::JSON::-1::1704462362::0::1::::<><>::
 ::res://CAP_Contracts/Logger/::1702913099
 ILogger.cs::CSharpScript::-1::1702913099::0::1::::<><>::
 Log.cs::CSharpScript::-1::1702550109::0::1::::<><>::
 LogLevel.cs::CSharpScript::-1::1702550109::0::1::::<><>::
-::res://CAP_Contracts/obj/::1704460889
-CAP_Contracts.csproj.nuget.dgspec.json::JSON::-1::1704460889::0::1::::<><>::
-project.assets.json::JSON::-1::1704460889::0::1::::<><>::
+::res://CAP_Contracts/obj/::1704462429
+CAP_Contracts.csproj.nuget.dgspec.json::JSON::-1::1704462429::0::1::::<><>::
+project.assets.json::JSON::-1::1704462429::0::1::::<><>::
 ::res://CAP_Contracts/obj/Debug/::1700556960
 ::res://CAP_Contracts/obj/Debug/net6.0/::1702470909
 .NETCoreApp,Version=v6.0.AssemblyAttributes.cs::CSharpScript::-1::1701678237::0::1::::<><>::
-CAP_Contracts.AssemblyInfo.cs::CSharpScript::-1::1704460352::0::1::::<><>::
+CAP_Contracts.AssemblyInfo.cs::CSharpScript::-1::1704462338::0::1::::<><>::
 CAP_Contracts.csproj.FileListAbsolute.txt::TextFile::-1::1702470909::0::1::::<><>::
 CAP_Contracts.GlobalUsings.g.cs::CSharpScript::-1::1700556960::0::1::::<><>::
-CAP_Contracts.sourcelink.json::JSON::-1::1704460352::0::1::::<><>::
+CAP_Contracts.sourcelink.json::JSON::-1::1704462338::0::1::::<><>::
 ::res://CAP_Contracts/obj/Debug/net6.0/ref/::1702470909
 ::res://CAP_Contracts/obj/Debug/net6.0/refint/::1702470909
 ::res://CAP_Contracts/obj/ExportDebug/::1702546421
@@ -117,7 +117,7 @@ CAP_Contracts.GlobalUsings.g.cs::CSharpScript::-1::1702546421::0::1::::<><>::
 ::res://CAP_Contracts/obj/ExportRelease/::1702463136
 ::res://CAP_Contracts/obj/ExportRelease/net6.0/::1702471098
 .NETCoreApp,Version=v6.0.AssemblyAttributes.cs::CSharpScript::-1::1702463136::0::1::::<><>::
-CAP_Contracts.AssemblyInfo.cs::CSharpScript::-1::1704460889::0::1::::<><>::
+CAP_Contracts.AssemblyInfo.cs::CSharpScript::-1::1704462287::0::1::::<><>::
 CAP_Contracts.csproj.FileListAbsolute.txt::TextFile::-1::1702471098::0::1::::<><>::
 CAP_Contracts.GlobalUsings.g.cs::CSharpScript::-1::1702463136::0::1::::<><>::
 ::res://CAP_Contracts/obj/ExportRelease/net6.0/ref/::1702463137
@@ -129,17 +129,17 @@ README.md::TextFile::-1::1702550109::0::1::::<><>::
 Resources.Designer.cs::CSharpScript::-1::1698759205::0::1::::<><>::
 ::res://Connect-A-Pic-Core/bin/::1702463136
 ::res://Connect-A-Pic-Core/bin/Debug/::1695357361
-::res://Connect-A-Pic-Core/bin/Debug/net6.0/::1704460353
-CAP-Core.deps.json::JSON::-1::1704460353::0::1::::<><>::
-CAP-Core.runtimeconfig.json::JSON::-1::1704460353::0::1::::<><>::
+::res://Connect-A-Pic-Core/bin/Debug/net6.0/::1704462339
+CAP-Core.deps.json::JSON::-1::1704462430::0::1::::<><>::
+CAP-Core.runtimeconfig.json::JSON::-1::1704462430::0::1::::<><>::
 ::res://Connect-A-Pic-Core/bin/ExportDebug/::1698921635
 ::res://Connect-A-Pic-Core/bin/ExportDebug/net6.0/::1702546424
 CAP-Core.deps.json::JSON::-1::1702546423::0::1::::<><>::
 CAP-Core.runtimeconfig.json::JSON::-1::1702546423::0::1::::<><>::
 ::res://Connect-A-Pic-Core/bin/ExportRelease/::1702463136
-::res://Connect-A-Pic-Core/bin/ExportRelease/net6.0/::1704460889
-CAP-Core.deps.json::JSON::-1::1704460889::0::1::::<><>::
-CAP-Core.runtimeconfig.json::JSON::-1::1704460889::0::1::::<><>::
+::res://Connect-A-Pic-Core/bin/ExportRelease/net6.0/::1704462287
+CAP-Core.deps.json::JSON::-1::1704462363::0::1::::<><>::
+CAP-Core.runtimeconfig.json::JSON::-1::1704462363::0::1::::<><>::
 ::res://Connect-A-Pic-Core/CodeExporter/::1704447759
 IExporter.cs::CSharpScript::-1::1698759205::0::1::::<><>::
 NazcaExporter.cs::CSharpScript::-1::1704447759::0::1::::<><>::
@@ -179,16 +179,16 @@ GridSMatrixAnalyzer.cs::CSharpScript::-1::1704447759::0::1::::<><>::
 GridSMatrixPrinter.cs::CSharpScript::-1::1704447759::0::1::::<><>::
 LightFlow.cs::CSharpScript::-1::1698759205::0::1::::<><>::
 SMatrix.cs::CSharpScript::-1::1703169364::0::1::::<><>::
-::res://Connect-A-Pic-Core/obj/::1704460889
-CAP-Core.csproj.nuget.dgspec.json::JSON::-1::1704460889::0::1::::<><>::
-project.assets.json::JSON::-1::1704460889::0::1::::<><>::
+::res://Connect-A-Pic-Core/obj/::1704462429
+CAP-Core.csproj.nuget.dgspec.json::JSON::-1::1704462429::0::1::::<><>::
+project.assets.json::JSON::-1::1704462429::0::1::::<><>::
 ::res://Connect-A-Pic-Core/obj/Debug/::1695357361
-::res://Connect-A-Pic-Core/obj/Debug/net6.0/::1704460353
+::res://Connect-A-Pic-Core/obj/Debug/net6.0/::1704462338
 .NETCoreApp,Version=v6.0.AssemblyAttributes.cs::CSharpScript::-1::1701678238::0::1::::<><>::
-CAP-Core.AssemblyInfo.cs::CSharpScript::-1::1704460353::0::1::::<><>::
+CAP-Core.AssemblyInfo.cs::CSharpScript::-1::1704462338::0::1::::<><>::
 CAP-Core.csproj.FileListAbsolute.txt::TextFile::-1::1702470909::0::1::::<><>::
 CAP-Core.GlobalUsings.g.cs::CSharpScript::-1::1695357361::0::1::::<><>::
-CAP-Core.sourcelink.json::JSON::-1::1704460353::0::1::::<><>::
+CAP-Core.sourcelink.json::JSON::-1::1704462338::0::1::::<><>::
 ::res://Connect-A-Pic-Core/obj/Debug/net6.0/ref/::1702470909
 ::res://Connect-A-Pic-Core/obj/Debug/net6.0/refint/::1702470909
 ::res://Connect-A-Pic-Core/obj/ExportDebug/::1698921635
@@ -200,9 +200,9 @@ CAP-Core.GlobalUsings.g.cs::CSharpScript::-1::1698921635::0::1::::<><>::
 ::res://Connect-A-Pic-Core/obj/ExportDebug/net6.0/ref/::1698921636
 ::res://Connect-A-Pic-Core/obj/ExportDebug/net6.0/refint/::1698921636
 ::res://Connect-A-Pic-Core/obj/ExportRelease/::1702463136
-::res://Connect-A-Pic-Core/obj/ExportRelease/net6.0/::1704460889
+::res://Connect-A-Pic-Core/obj/ExportRelease/net6.0/::1704462287
 .NETCoreApp,Version=v6.0.AssemblyAttributes.cs::CSharpScript::-1::1702463137::0::1::::<><>::
-CAP-Core.AssemblyInfo.cs::CSharpScript::-1::1704460889::0::1::::<><>::
+CAP-Core.AssemblyInfo.cs::CSharpScript::-1::1704462287::0::1::::<><>::
 CAP-Core.csproj.FileListAbsolute.txt::TextFile::-1::1702471098::0::1::::<><>::
 CAP-Core.GlobalUsings.g.cs::CSharpScript::-1::1702463136::0::1::::<><>::
 ::res://Connect-A-Pic-Core/obj/ExportRelease/net6.0/ref/::1702463138
@@ -223,75 +223,75 @@ Tile.cs::CSharpScript::-1::1704447759::0::1::::<><>::
 ::res://PDK/__pycache__/::1704445770
 ::res://Properties/::1704447759
 launchSettings.json::JSON::-1::1704447759::0::1::::<><>::
-::res://Release/::1704461449
-::res://Scenes/::1704460362
+::res://Release/::1704462455
+::res://Scenes/::1704462428
 LightAnimationOverlay.gdshader::Shader::-1::1702558419::0::1::::<><>::
-Main.tscn::PackedScene::5443265518100438891::1704460350::0::1::::<><>::res://Scripts/Main.cs<>uid://cu6wqy6xwjfo1::::res://Scenes/PICEditor.tscn
-NotificationBox.tscn::PackedScene::3654941554423857871::1701171747::0::1::::<><>::uid://bedcptshxxv1e
-PICEditor.tscn::PackedScene::6241979606590157906::1704460362::0::1::::<><>::res://Scripts/GameManager.cs<>res://Scripts/View/GridView.cs<>res://Scripts/View/DragDropProxy.cs<>res://Scripts/View/StandardDialogs/NotificationManager.cs<>res://Scripts/View/ComponentViews/ComponentView.cs<>uid://jcla22kq5xkl::::res://Scenes/ToolBox/ScreenshotMockUp.png<>res://Scripts/View/ComponentFactory/ComponentViewFactory.cs<>uid://dfrjm1onsjusf::::res://Scenes/ToolBox/Tool_box.tscn<>uid://bscqmaslppyt8::::res://Scenes/NotificationBox.tscn<>uid://batxcdg720fpl::::res://Scenes/ExternalInputs/external_input_blue_template.tscn<>uid://bd8isg4mddv21::::res://Scenes/InGameConsole/InGameConsole.tscn<>uid://b6do0hy7ny7x2::::res://Scenes/ExternalInputs/external_input_red_template.tscn<>uid://c4uqvn0fwc10d::::res://Scenes/ExternalInputs/external_input_green_template.tscn<>uid://c0mcgj6g7ik52::::res://Scenes/ExternalInputs/external_output_template.tscn
+Main.tscn::PackedScene::5443265518100438891::1704462428::0::1::::<><>::res://Scripts/Main.cs<>uid://cu6wqy6xwjfo1::::res://Scenes/PICEditor.tscn
+NotificationBox.tscn::PackedScene::3654941554423857871::1701171747::0::1::::<><>::uid://bedcptshxxv1e::::res://Scripts/View/Styles/NotificationBoxGreen.tres<>res://Scripts/View/StandardDialogs/NotificationBox.cs<>uid://dntmuikjv8oe4::::res://Scripts/View/Styles/NotificationBoxRed.tres
+PICEditor.tscn::PackedScene::6241979606590157906::1704462337::0::1::::<><>::res://Scripts/GameManager.cs<>res://Scripts/View/GridView.cs<>res://Scripts/View/DragDropProxy.cs<>res://Scripts/View/StandardDialogs/NotificationManager.cs<>res://Scripts/View/ComponentViews/ComponentView.cs<>uid://jcla22kq5xkl::::res://Scenes/ToolBox/ScreenshotMockUp.png<>res://Scripts/View/ComponentFactory/ComponentViewFactory.cs<>uid://dfrjm1onsjusf::::res://Scenes/ToolBox/Tool_box.tscn<>uid://bscqmaslppyt8::::res://Scenes/NotificationBox.tscn<>uid://batxcdg720fpl::::res://Scenes/ExternalInputs/external_input_blue_template.tscn<>uid://bd8isg4mddv21::::res://Scenes/InGameConsole/InGameConsole.tscn<>uid://b6do0hy7ny7x2::::res://Scenes/ExternalInputs/external_input_red_template.tscn<>uid://c4uqvn0fwc10d::::res://Scenes/ExternalInputs/external_input_green_template.tscn<>uid://c0mcgj6g7ik52::::res://Scenes/ExternalInputs/external_output_template.tscn
 StartMenu.tscn::PackedScene::8874605089607124177::1702550109::0::1::::<><>::res://Scripts/MainMenu.cs
 ::res://Scenes/Assets/::1691560574
 ::res://Scenes/Assets/Character/::1691560574
-::res://Scenes/Components/::1704447759
-Component X.png::CompressedTexture2D::3246678973727536362::1698759205::1702563491::1::::<><>::
-Delay.png::CompressedTexture2D::153382441727571823::1698759205::1702563491::1::::<><>::
+::res://Scenes/Components/::1704462426
+Component X.png::CompressedTexture2D::3246678973727536362::1698759205::1704462426::1::::<><>::
+Delay.png::CompressedTexture2D::153382441727571823::1698759205::1704462426::1::::<><>::
 LightOverlayShaded.tres::Shader::5598435287496701008::1702558419::0::1::::<><>::
-MMI.png::CompressedTexture2D::9214897748433556150::1698759205::1702563491::1::::<><>::
-Ring Resonator.png::CompressedTexture2D::8249889833193901462::1698759205::1702563491::1::::<><>::
-Terminator.png::CompressedTexture2D::4632694545358350402::1698759205::1702563491::1::::<><>::
+MMI.png::CompressedTexture2D::9214897748433556150::1698759205::1704462426::1::::<><>::
+Ring Resonator.png::CompressedTexture2D::8249889833193901462::1698759205::1704462426::1::::<><>::
+Terminator.png::CompressedTexture2D::4632694545358350402::1698759205::1704462426::1::::<><>::
 ::res://Scenes/Components/Component X/::1702550109
-::res://Scenes/Components/Component X/Overlay/::1702563491
-Component X_Mirror_Overlay.png::CompressedTexture2D::4274801305568573571::1702550109::1702563491::1::::<><>::
-Component X_Mirror_Rotate90_Overlay.png::CompressedTexture2D::4591902435445627802::1702550109::1702563491::1::::<><>::
-Component X_Mirror_Rotate180_Overlay.png::CompressedTexture2D::3760221472079432125::1702550109::1702563491::1::::<><>::
-Component X_Mirror_Rotate270_Overlay.png::CompressedTexture2D::9191729661328408921::1702550109::1702563491::1::::<><>::
-Component X_Overlay.png::CompressedTexture2D::3975043941368792005::1702550109::1702563491::1::::<><>::
-Component X_Rotate90_Overlay.png::CompressedTexture2D::1357763959270646294::1702550109::1702563491::1::::<><>::
-Component X_Rotate180_Overlay.png::CompressedTexture2D::7872414347070000268::1702550109::1702563491::1::::<><>::
-Component X_Rotate270_Overlay.png::CompressedTexture2D::4142828625501053892::1702550109::1702563491::1::::<><>::
+::res://Scenes/Components/Component X/Overlay/::1704462426
+Component X_Mirror_Overlay.png::CompressedTexture2D::4274801305568573571::1702550109::1704462426::1::::<><>::
+Component X_Mirror_Rotate90_Overlay.png::CompressedTexture2D::4591902435445627802::1702550109::1704462426::1::::<><>::
+Component X_Mirror_Rotate180_Overlay.png::CompressedTexture2D::3760221472079432125::1702550109::1704462426::1::::<><>::
+Component X_Mirror_Rotate270_Overlay.png::CompressedTexture2D::9191729661328408921::1702550109::1704462426::1::::<><>::
+Component X_Overlay.png::CompressedTexture2D::3975043941368792005::1702550109::1704462426::1::::<><>::
+Component X_Rotate90_Overlay.png::CompressedTexture2D::1357763959270646294::1702550109::1704462426::1::::<><>::
+Component X_Rotate180_Overlay.png::CompressedTexture2D::7872414347070000268::1702550109::1704462426::1::::<><>::
+Component X_Rotate270_Overlay.png::CompressedTexture2D::4142828625501053892::1702550109::1704462426::1::::<><>::
 ::res://Scenes/Components/Delay Line/::1702550109
-::res://Scenes/Components/Delay Line/Overlay/::1702563491
-Delay Line_A_Overlay.png::CompressedTexture2D::7066921502641044961::1702550109::1702563491::1::::<><>::
-Delay Line_B_Overlay.png::CompressedTexture2D::4487042318641116986::1702550109::1702563491::1::::<><>::
+::res://Scenes/Components/Delay Line/Overlay/::1704462426
+Delay Line_A_Overlay.png::CompressedTexture2D::7066921502641044961::1702550109::1704462426::1::::<><>::
+Delay Line_B_Overlay.png::CompressedTexture2D::4487042318641116986::1702550109::1704462426::1::::<><>::
 ::res://Scenes/Components/MMI/::1702550109
-::res://Scenes/Components/MMI/Overlay/::1702563491
-MMI_A_Overlay.png::CompressedTexture2D::896423584707417823::1702550109::1702563491::1::::<><>::
-MMI_B_Overlay.png::CompressedTexture2D::8633619945174197089::1702550109::1702563491::1::::<><>::
-MMI_C_Overlay.png::CompressedTexture2D::8404601621424130117::1702550109::1702563491::1::::<><>::
-MMI_Single_1_Overlay.png::CompressedTexture2D::3618985714261161089::1702550109::1702563491::1::::<><>::
-MMI_Single_2_Overlay.png::CompressedTexture2D::5744897028273471450::1702550109::1702563491::1::::<><>::
-MMI_Single_3_Overlay.png::CompressedTexture2D::4563618062955569635::1702550109::1702563491::1::::<><>::
-MMI_Single_4_Overlay.png::CompressedTexture2D::7653375800238049521::1702550109::1702563491::1::::<><>::
-MMI_Single_5_Overlay.png::CompressedTexture2D::2459192280150662533::1702550109::1702563491::1::::<><>::
-MMI_Single_6_Overlay.png::CompressedTexture2D::6282809498808693756::1702550109::1702563491::1::::<><>::
+::res://Scenes/Components/MMI/Overlay/::1704462426
+MMI_A_Overlay.png::CompressedTexture2D::896423584707417823::1702550109::1704462426::1::::<><>::
+MMI_B_Overlay.png::CompressedTexture2D::8633619945174197089::1702550109::1704462426::1::::<><>::
+MMI_C_Overlay.png::CompressedTexture2D::8404601621424130117::1702550109::1704462426::1::::<><>::
+MMI_Single_1_Overlay.png::CompressedTexture2D::3618985714261161089::1702550109::1704462426::1::::<><>::
+MMI_Single_2_Overlay.png::CompressedTexture2D::5744897028273471450::1702550109::1704462426::1::::<><>::
+MMI_Single_3_Overlay.png::CompressedTexture2D::4563618062955569635::1702550109::1704462426::1::::<><>::
+MMI_Single_4_Overlay.png::CompressedTexture2D::7653375800238049521::1702550109::1704462426::1::::<><>::
+MMI_Single_5_Overlay.png::CompressedTexture2D::2459192280150662533::1702550109::1704462426::1::::<><>::
+MMI_Single_6_Overlay.png::CompressedTexture2D::6282809498808693756::1702550109::1704462426::1::::<><>::
 ::res://Scenes/Components/Ring Resonator/::1702550109
-::res://Scenes/Components/Ring Resonator/Overlay/::1702563491
-Ring Resonator Overlay.png::CompressedTexture2D::6347150362519440248::1702550109::1702563491::1::::<><>::
-Ring Resonator Single 1 Overlay.png::CompressedTexture2D::1410394404647506235::1702550109::1702563491::1::::<><>::
-Ring Resonator Single 2 Overlay.png::CompressedTexture2D::4784254973995130198::1702550109::1702563491::1::::<><>::
-Ring Resonator_Overlay.png::CompressedTexture2D::2508575505581805915::1702550109::1702563491::1::::<><>::
-Ring Resonator_Single_1_Overlay.png::CompressedTexture2D::1321776715703829045::1702550109::1702563491::1::::<><>::
-Ring Resonator_Single_2_Overlay.png::CompressedTexture2D::5439955998702943599::1702550109::1702563491::1::::<><>::
+::res://Scenes/Components/Ring Resonator/Overlay/::1704462426
+Ring Resonator Overlay.png::CompressedTexture2D::6347150362519440248::1702550109::1704462426::1::::<><>::
+Ring Resonator Single 1 Overlay.png::CompressedTexture2D::1410394404647506235::1702550109::1704462426::1::::<><>::
+Ring Resonator Single 2 Overlay.png::CompressedTexture2D::4784254973995130198::1702550109::1704462426::1::::<><>::
+Ring Resonator_Overlay.png::CompressedTexture2D::2508575505581805915::1702550109::1704462426::1::::<><>::
+Ring Resonator_Single_1_Overlay.png::CompressedTexture2D::1321776715703829045::1702550109::1704462426::1::::<><>::
+Ring Resonator_Single_2_Overlay.png::CompressedTexture2D::5439955998702943599::1702550109::1704462426::1::::<><>::
 ::res://Scenes/Components/Termination/::1702550109
-::res://Scenes/Components/Termination/Overlay/::1702563491
-Termination Overlay.png::CompressedTexture2D::4415835012735870838::1702550109::1702563491::1::::<><>::
-Termination_Overlay.png::CompressedTexture2D::6552316931368034388::1702550109::1702563491::1::::<><>::
-::res://Scenes/ExternalInputs/::1702563491
-ExternalInputBlue.png::CompressedTexture2D::7235593121742467163::1702550109::1702563491::1::::<><>::
-ExternalInputGreen.png::CompressedTexture2D::7545945396156064021::1702550109::1702563491::1::::<><>::
-ExternalInputRed.png::CompressedTexture2D::6709514977275138517::1702550109::1702563491::1::::<><>::
-ExternalOutput.png::CompressedTexture2D::3073056228358212768::1702550109::1702563491::1::::<><>::
-external_input_blue_template.tscn::PackedScene::2427044091771555733::1702550109::0::1::::<><>::uid://dbc8fq12pwjqx
-external_input_green_template.tscn::PackedScene::6850615083206951309::1702550109::0::1::::<><>::uid://dfrkvavwush2t
-external_input_red_template.tscn::PackedScene::4569363058691681209::1702550109::0::1::::<><>::uid://c2uey4rct0iyn
-external_output_template.tscn::PackedScene::6552467661049481855::1702550109::0::1::::<><>::uid://bj1u105ivy4eu
+::res://Scenes/Components/Termination/Overlay/::1704462426
+Termination Overlay.png::CompressedTexture2D::4415835012735870838::1702550109::1704462426::1::::<><>::
+Termination_Overlay.png::CompressedTexture2D::6552316931368034388::1702550109::1704462426::1::::<><>::
+::res://Scenes/ExternalInputs/::1704462426
+ExternalInputBlue.png::CompressedTexture2D::7235593121742467163::1702550109::1704462426::1::::<><>::
+ExternalInputGreen.png::CompressedTexture2D::7545945396156064021::1702550109::1704462426::1::::<><>::
+ExternalInputRed.png::CompressedTexture2D::6709514977275138517::1702550109::1704462426::1::::<><>::
+ExternalOutput.png::CompressedTexture2D::3073056228358212768::1702550109::1704462426::1::::<><>::
+external_input_blue_template.tscn::PackedScene::2427044091771555733::1702550109::0::1::::<><>::uid://dbc8fq12pwjqx::::res://Scenes/ExternalInputs/ExternalInputBlue.png
+external_input_green_template.tscn::PackedScene::6850615083206951309::1702550109::0::1::::<><>::uid://dfrkvavwush2t::::res://Scenes/ExternalInputs/ExternalInputGreen.png
+external_input_red_template.tscn::PackedScene::4569363058691681209::1702550109::0::1::::<><>::uid://c2uey4rct0iyn::::res://Scenes/ExternalInputs/ExternalInputRed.png
+external_output_template.tscn::PackedScene::6552467661049481855::1702550109::0::1::::<><>::uid://bj1u105ivy4eu::::res://Scenes/ExternalInputs/ExternalOutput.png
 ::res://Scenes/InGameConsole/::1704447759
-GameConsole.cs::CSharpScript::-1::1704447759::0::1::::<><>::
+GameConsole.cs::CSharpScript::-1::1704447759::0::1::::<>ScrollContainer<>::
 InGameConsole.tscn::PackedScene::2665629921212396812::1704447759::0::1::::<><>::res://Scenes/InGameConsole/GameConsole.cs
-::res://Scenes/ToolBox/::1704447759
-ScreenshotMockUp.png::CompressedTexture2D::636497695487956907::1702550109::1702563491::1::::<><>::
+::res://Scenes/ToolBox/::1704462426
+ScreenshotMockUp.png::CompressedTexture2D::636497695487956907::1702550109::1704462426::1::::<><>::
 ToolBox.cs::CSharpScript::-1::1704447759::0::1::::<>Node<>::
-Tool_box.tscn::PackedScene::7545869961399695809::1702550109::0::1::::<><>::res://Scenes/ToolBox/ToolBox.cs<>uid://jcla22kq5xkl
+Tool_box.tscn::PackedScene::7545869961399695809::1702550109::0::1::::<><>::res://Scenes/ToolBox/ToolBox.cs<>uid://jcla22kq5xkl::::res://Scenes/ToolBox/ScreenshotMockUp.png
 ::res://Scripts/::1704447759
 GameManager.cs::CSharpScript::-1::1704447759::0::1::::<>Node<>::
 Main.cs::CSharpScript::-1::1702550109::0::1::::<>Node2D<>::
@@ -364,13 +364,13 @@ UnitTests.runtimeconfig.json::JSON::-1::1704190510::0::1::::<><>::
 ::res://UnitTests/bin/Debug/net6.0/EmptyFiles/::1701167968
 ::res://UnitTests/bin/Debug/net6.0/EmptyFiles/archive/::1702470910
 ::res://UnitTests/bin/Debug/net6.0/EmptyFiles/document/::1702470910
-::res://UnitTests/bin/Debug/net6.0/EmptyFiles/image/::1702563491
-empty.bmp::CompressedTexture2D::1917374354199239125::1680258362::1702563491::1::::<><>::
+::res://UnitTests/bin/Debug/net6.0/EmptyFiles/image/::1704462426
+empty.bmp::CompressedTexture2D::1917374354199239125::1680258362::1704462426::1::::<><>::
 empty.dds::ImageTexture::-1::1680258362::0::1::::<><>::
-empty.jpg::CompressedTexture2D::4427300817981396207::1680258362::1702563491::1::::<><>::
-empty.png::CompressedTexture2D::3189801167803603247::1680258362::1702563491::1::::<><>::
-empty.tga::CompressedTexture2D::3003287179892743375::1680258362::1702563491::1::::<><>::
-empty.webp::CompressedTexture2D::6767339925737171257::1680258362::1702563491::1::::<><>::
+empty.jpg::CompressedTexture2D::4427300817981396207::1680258362::1704462426::1::::<><>::
+empty.png::CompressedTexture2D::3189801167803603247::1680258362::1704462426::1::::<><>::
+empty.tga::CompressedTexture2D::3003287179892743375::1680258362::1704462426::1::::<><>::
+empty.webp::CompressedTexture2D::6767339925737171257::1680258362::1704462426::1::::<><>::
 ::res://UnitTests/bin/Debug/net6.0/EmptyFiles/sheet/::1702470910
 ::res://UnitTests/bin/Debug/net6.0/EmptyFiles/slide/::1702470910
 ::res://UnitTests/bin/Debug/net6.0/es/::1702470910

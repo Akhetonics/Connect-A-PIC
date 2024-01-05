@@ -1,5 +1,4 @@
 res://Scenes/Main.tscn
-res://Scenes/PICEditor.tscn
 res://Scenes/InGameConsole/GameConsole.cs
 res://Scenes/ToolBox/ToolBox.cs
 res://Scripts/GameManager.cs
