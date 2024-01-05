@@ -190,11 +190,11 @@ namespace ConnectAPic.LayoutWindow
 				TextureRect view;
 				if (port is ExternalInput input)
 				{
-					if (input.LaserType.WaveLengthInNm == LaserType.Red.WaveLengthInNm)
+					if (input.LaserType == LaserType.Red) 
 					{
 						view = (TextureRect)ExternalInputRedTemplate.Duplicate();
 					}
-					else if (input.LaserType.WaveLengthInNm == LaserType.Green.WaveLengthInNm)
+					else if (input.LaserType == LaserType.Green)
 					{
 						view = (TextureRect)ExternalInputGreenTemplate.Duplicate();
 					}
