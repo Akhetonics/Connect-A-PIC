@@ -1,11 +1,7 @@
-# ignore the .godot
-.godot/
-
-# allow those folders as we need them when using pck files it seems
-!.godot/exported/
-!.godot/exported/*/
-!.godot/exported/**/*
-!.godot/global_script_class_cache.cfg
+# ignore the .godot folder but only some as we need exported and imported and global_script_class_cache for building
+.godot/shader_cache/
+.godot/mono/
+.godot/editor/
 
 Exports/
 
