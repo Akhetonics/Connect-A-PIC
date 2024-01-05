@@ -10,6 +10,8 @@ using Components.ComponentDraftMapper;
 using Components.ComponentDraftMapper.DTOs;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel;
+using ConnectAPIC.Scenes.ToolBox;
+using ConnectAPIC.Scenes.InGameConsole;
 using ConnectAPIC.Scripts.Helpers;
 using ConnectAPIC.Scripts.View.ComponentFactory;
 using Godot;
@@ -24,7 +26,7 @@ namespace ConnectAPic.LayoutWindow
     [SuperNode (typeof(Provider))]
 	public partial class GameManager : Node, 
 		IProvide<ToolBox> , IProvide<ILogger>, IProvide<GridView>, IProvide<Grid>, IProvide<GridViewModel>, IProvide<GameManager>,
-		IProvide<Console> , IProvide<System.Version> , IProvide<ComponentViewFactory> 
+		IProvide<GameConsole> , IProvide<System.Version> , IProvide<ComponentViewFactory> 
     {
         #region Dependency Injection
         public override partial void _Notification(int what);
@@ -34,7 +36,7 @@ namespace ConnectAPic.LayoutWindow
 		Grid IProvide<Grid>.Value() => Grid;
 		GridViewModel IProvide<GridViewModel>.Value() => GridViewModel;
         GameManager IProvide<GameManager>.Value() => Instance;
-        Console IProvide<Console>.Value() => InGameConsole;
+        GameConsole IProvide<GameConsole>.Value() => InGameConsole;
         ComponentViewFactory IProvide<ComponentViewFactory>.Value() => GridView.ComponentViewFactory;
         System.Version IProvide<System.Version>.Value() => Version;
         #endregion 
@@ -49,7 +51,7 @@ namespace ConnectAPic.LayoutWindow
 		[Export] public TextureRect ExternalInputRedTemplate { get; set; }
 		[Export] public TextureRect ExternalInputGreenTemplate { get; set; }
 		[Export] public TextureRect ExternalInputBlueTemplate { get; set; }
-		[Export] public Console InGameConsole { get; set; }
+		[Export] public GameConsole InGameConsole { get; set; }
 		private PCKLoader PCKLoader { get; set; }
 		public static int TilePixelSize { get; private set; } = 62;
 		public static int TileBorderLeftDown { get; private set; } = 2;
