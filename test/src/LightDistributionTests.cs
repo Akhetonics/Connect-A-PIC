@@ -78,9 +78,9 @@ public class LightDistributionTests : TestClass
         };
         RotatedCurve.DisplayLightVector(lightAtPins);
         gameManager.GridViewModel.ShowLightPropagation();
-        RotatedCurve.AnimationSlots[0].Rotation.ShouldBe(RotatedCurve.RotationCC, "Animationslot should rotate according to the rotation of the component");
-        RotatedCurve.AnimationSlots[1].Rotation.ShouldBe(RotatedCurve.RotationCC, "Animationslot should rotate according to the rotation of the component");
-        RotatedCurve.AnimationSlots[2].Rotation.ShouldBe(RotatedCurve.RotationCC, "Animationslot should rotate according to the rotation of the component");
+        RotatedCurve.AnimationSlots[0].Rotation.ShouldBe(RotatedCurve.RotationCC, "AnimationSlot should rotate according to the rotation of the component");
+        RotatedCurve.AnimationSlots[1].Rotation.ShouldBe(RotatedCurve.RotationCC, "AnimationSlot should rotate according to the rotation of the component");
+        RotatedCurve.AnimationSlots[2].Rotation.ShouldBe(RotatedCurve.RotationCC, "AnimationSlot should rotate according to the rotation of the component");
     }
     [Test]
     public void TestShaderAssignment()
@@ -118,7 +118,7 @@ public class LightDistributionTests : TestClass
                     }
                     if(slot.Side == CAP_Core.Tiles.RectSide.Right)
                     {
-                        inflowAndPosition.X.ShouldBe(0, "Inflow should be 0 onthe right side");
+                        inflowAndPosition.X.ShouldBe(0, "Inflow should be 0 on the right side");
                         outflowAndPosition.X.ShouldBe(expectedLightMagnitude, $"outflow should be {expectedLightMagnitude} on the right side (inflow side) for laser: " + slot.MatchingLaser);
                     }
                 } else

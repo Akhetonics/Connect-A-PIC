@@ -53,7 +53,7 @@ public class GratingCouplerTests : TestClass
             new (0,0,inflowSide,redLaser,1,0),
             upperLightVector,
         };
-        GratingCoupler.ShouldNotBeNull("the gratingcoupler should have been loaded successfully but it didn't" );
+        GratingCoupler.ShouldNotBeNull("the grating coupler should have been loaded successfully but it didn't" );
         GratingCoupler.DisplayLightVector(lightAtPins);
         GameManager.GridViewModel.ShowLightPropagation();
         var inflowShaderParam = (Vector4)(GratingCoupler.AnimationSlots[0].BaseOverlaySprite.Material as ShaderMaterial).GetShaderParameter(ShaderParameterNames.LightInFlow + 1);

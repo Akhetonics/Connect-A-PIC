@@ -40,8 +40,8 @@ namespace ConnectAPIC.LayoutWindow.View
         /// </remarks>
         public (bool isMatching, Exception misMatchReason) IsMatchingWithLightVector(LightAtPin lightVector)
         {
-            if (TileOffset.X != lightVector.partOffsetX) return (false, new OffsetWrongException($"X = {TileOffset.X}, but Lightvector: {lightVector.partOffsetX}"));
-            if (TileOffset.Y != lightVector.partOffsetY) return (false, new OffsetWrongException($"Y = {TileOffset.Y}, but Lightvector: {lightVector.partOffsetY}"));
+            if (TileOffset.X != lightVector.partOffsetX) return (false, new OffsetWrongException($"X = {TileOffset.X}, but lightVector: {lightVector.partOffsetX}"));
+            if (TileOffset.Y != lightVector.partOffsetY) return (false, new OffsetWrongException($"Y = {TileOffset.Y}, but lightVector: {lightVector.partOffsetY}"));
             if (Side != lightVector.side) return (false, new SideNotMatchingException());
             if (MatchingLaser.WaveLengthInNm != lightVector.lightType.WaveLengthInNm) return (false, new WaveLengthNotMatchingException("laserWaveLength: " + MatchingLaser.WaveLengthInNm));
             return (true, null);
