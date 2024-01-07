@@ -89,8 +89,20 @@ class TestPDK(object):
             nd.text(text='Directional Coupler', height=15, layer=self._TextLayer, align='lb').put(self._CellSize * 0.05, self._CellSize * 0.4)
 
             # TODO: Wrong Coupler
-            nd.strt(length=self._CellSize * 2, width=self._WGWidth, layer=self._SiNLayer).put(0, 0)
-            nd.strt(length=self._CellSize * 2, width=self._WGWidth, layer=self._SiNLayer).put(0, -self._CellSize)
+            cangle = 59.8
+            dist = 100 - 32.137
+            nd.bend(angle=-cangle, radius=self._CellSize * 0.5, width=self._WGWidth, layer=self._SiNLayer).put(0, 0)
+            nd.bend(angle=cangle, radius=self._CellSize * 0.5, width=self._WGWidth, layer=self._SiNLayer).put()
+            nd.strt(length=dist, width=self._WGWidth, layer=self._SiNLayer).put()
+            nd.bend(angle=cangle, radius=self._CellSize * 0.5, width=self._WGWidth, layer=self._SiNLayer).put()
+            nd.bend(angle=-cangle, radius=self._CellSize * 0.5, width=self._WGWidth, layer=self._SiNLayer).put()
+
+            
+            nd.bend(angle=cangle, radius=self._CellSize * 0.5, width=self._WGWidth, layer=self._SiNLayer).put(0, -self._CellSize)
+            nd.bend(angle=-cangle, radius=self._CellSize * 0.5, width=self._WGWidth, layer=self._SiNLayer).put()
+            nd.strt(length=dist, width=self._WGWidth, layer=self._SiNLayer).put()
+            nd.bend(angle=-cangle, radius=self._CellSize * 0.5, width=self._WGWidth, layer=self._SiNLayer).put()
+            nd.bend(angle=cangle, radius=self._CellSize * 0.5, width=self._WGWidth, layer=self._SiNLayer).put()
 
             nd.Pin('west0', width=self._WGWidth).put(0, 0, 180)
             nd.Pin('west1', width=self._WGWidth).put(0, -self._CellSize, 180)
@@ -106,10 +118,10 @@ class TestPDK(object):
 
             # TODO: Not the correct length, has to be coordinated with straight * 4 and deltalength with phase shift
             nd.bend(angle=90, radius=self._CellSize * 0.5, width=self._WGWidth, layer=self._SiNLayer).put(0, 0)
-            nd.strt(length=deltaLength, width=self._WGWidth, layer=self._SiNLayer).put(0, 0)
-            nd.bend(angle=-180, radius=self._CellSize * 0.5, width=self._WGWidth, layer=self._SiNLayer).put(0, 0)
-            nd.strt(length=deltaLength, width=self._WGWidth, layer=self._SiNLayer).put(0, 0)
-            nd.bend(angle=90, radius=self._CellSize * 0.5, width=self._WGWidth, layer=self._SiNLayer).put(0, 0)
+            nd.strt(length=deltaLength, width=self._WGWidth, layer=self._SiNLayer).put()
+            nd.bend(angle=-180, radius=self._CellSize * 0.5, width=self._WGWidth, layer=self._SiNLayer).put()
+            nd.strt(length=deltaLength, width=self._WGWidth, layer=self._SiNLayer).put()
+            nd.bend(angle=90, radius=self._CellSize * 0.5, width=self._WGWidth, layer=self._SiNLayer).put()
 
             nd.Pin('west', width=self._WGWidth).put(0, 0, 180)
             nd.Pin('east', width=self._WGWidth).put(self._CellSize * 2, 0, 0)
