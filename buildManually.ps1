@@ -21,6 +21,11 @@ if (-not (Test-Path $releaseDir)) {
     New-Item -ItemType Directory -Path $releaseDir
 }
 
+# create the .godot folder
+$godotArgs = "--headless", "--build-solutions", "--quit || exit 0"
+$godotProcess = Start-Process -FilePath $godotPath -ArgumentList $godotArgs -PassThru
+$godotProcess.WaitForExit()
+
 # Build Windows EXE
 $godotArgs = "--headless", "--export-release", "`"Windows Desktop`""
 $godotProcess = Start-Process -FilePath $godotPath -ArgumentList $godotArgs -PassThru
