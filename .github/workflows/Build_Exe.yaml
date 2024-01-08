@@ -29,26 +29,33 @@ jobs:
       - name: Print extracted Project version
         run: echo "The extracted Godot version is $PROJECTVERSION"
 
-      - name: Read Godot version from global.json
-        run: |
-          godotVersion=$(grep '"Godot.NET.Sdk"' global.json | awk -F '"' '{ print $4 }')
-          echo "GODOTVERSION=$godotVersion" >> $GITHUB_ENV
-        shell: bash
+      - name: 💽 Setup .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          # Use the .NET SDK from global.json in the root of the repository.
+          global-json-file: global.json
 
-      - name: Print extracted Godot version
-        run: echo "The extracted Godot version is $GODOTVERSION"
+      - name: 📦 Restore Dependencies
+        run: dotnet restore
 
-      - name: Setup Godot
+      - name: 🤖 Setup Godot
         uses: chickensoft-games/setup-godot@v1
         with:
-          version: ${{ env.GODOTVERSION }}
+          # In this case, we are using the version from global.json.
+          #
+          # This allows checks on renovatebot PR's to succeed whenever
+          # renovatebot updates the Godot SDK version.
+          version: global.json
 
       - name: Create Build Directory
         run: mkdir -p $GITHUB_WORKSPACE/Release
 
+      - name: 🧑‍🔬 Generate .NET Bindings
+        run: godot --headless --build-solutions --quit || exit 0
+
       - name: Build Windows EXE
         run: |
-          $GODOT --headless --export-release "Windows Desktop"
+          godot --headless --export-release "Windows Desktop"
           if [ $? -ne 0 ]; then
             echo "Build failed with exit code $?"
             exit 1

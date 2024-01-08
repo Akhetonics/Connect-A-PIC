@@ -1,7 +1,5 @@
 # ignore the .godot folder but only some as we need exported and imported and global_script_class_cache for building
-.godot/shader_cache/
-.godot/mono/
-.godot/editor/
+.godot/
 
 Exports/
 
