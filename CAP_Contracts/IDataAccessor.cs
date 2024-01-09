@@ -3,6 +3,7 @@
     public interface IDataAccessor : IResourcePathChecker
     {
         public string ReadAsText(string FilePath);
-        bool Write(string filePath, string text);
+        Task<bool> Write(string filePath, string text);
+        
     }
 }

@@ -1,7 +1,6 @@
 ﻿using CAP_Contracts.Logger;
 using CAP_Core.Components;
 using CAP_Core.Components.ComponentHelpers;
-using CAP_Core.LightFlow;
 using Components.ComponentDraftMapper.DTOs;
 using System.Numerics;
 
@@ -27,7 +26,7 @@ namespace Components.ComponentDraftMapper
             {
                 var parts = CreatePartsFromDraft(draft);
                 var connections = CreateConnectionsFromDraft(draft, parts);
-                return new Component(connections, draft.nazcaFunctionName, draft.nazcaFunctionParameters, parts, typeNumber, DiscreteRotation.R0);
+                return new Component(connections, draft.nazcaFunctionName, draft.nazcaFunctionParameters, parts, typeNumber, draft.identifier, DiscreteRotation.R0);
             }
             catch (Exception ex)
             {

@@ -1,5 +1,6 @@
 using CAP_Core.Components;
 using CAP_Core.ExternalPorts;
+using CAP_Core.Grid;
 using CAP_Core.Helpers;
 using CAP_Core.Tiles;
 using System.Text;
@@ -8,7 +9,7 @@ namespace CAP_Core.CodeExporter
 {
     public class NazcaExporter : IExporter
     {
-        private Grid grid;
+        private GridManager grid;
         private List<Component> AlreadyProcessedComponents;
         private StringBuilder ExportAllConnectedTiles(Tile connectedParent, Tile child)
         {
@@ -23,7 +24,7 @@ namespace CAP_Core.CodeExporter
             }
             return nazcaString;
         }
-        public string Export(Grid grid)
+        public string Export(GridManager grid)
         {
             this.grid = grid;
             AlreadyProcessedComponents = new List<Component>();

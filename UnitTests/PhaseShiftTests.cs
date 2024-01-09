@@ -1,8 +1,8 @@
 ﻿using CAP_Core.CodeExporter;
 using CAP_Core.ExternalPorts;
-using CAP_Core;
 using System.Numerics;
 using CAP_Core.Components.ComponentHelpers;
+using CAP_Core.Grid;
 
 namespace UnitTests
 {
@@ -21,7 +21,7 @@ namespace UnitTests
         [Fact]
         public void NazcaCompilerTest()
         {
-            Grid grid = new(24, 12);
+            GridManager grid = new(24, 12);
             var inputs = grid.ExternalPorts.Where(p => p.GetType() == typeof(ExternalInput)).ToList();
             int inputHeight = inputs.FirstOrDefault()?.TilePositionY ?? throw new Exception("there is no StandardInput defined");
             var firstComponent = TestComponentFactory.CreateStraightWaveGuide();

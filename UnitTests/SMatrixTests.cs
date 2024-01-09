@@ -1,6 +1,7 @@
 using CAP_Core;
 using CAP_Core.Components.ComponentHelpers;
-using CAP_Core.LightFlow;
+using CAP_Core.Grid;
+using CAP_Core.Tiles.Grid;
 using System.Numerics;
 
 namespace UnitTests
@@ -8,10 +9,10 @@ namespace UnitTests
     public class SMatrixTests
     {
         [Fact]
-        public void TestDirectionalCoupler()
+        public async Task TestDirectionalCoupler()
         {
             var directionalCoupler = TestComponentFactory.CreateDirectionalCoupler();
-            var grid = new Grid(20,10);
+            var grid = new GridManager(20,10);
             grid.PlaceComponent(0, grid.ExternalPorts[0].TilePositionY, directionalCoupler);
             var laserType = grid.GetUsedExternalInputs().First().Input.LaserType;
             var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid, laserType.WaveLengthInNm);
@@ -25,8 +26,8 @@ namespace UnitTests
             var UpperToLeftConnection = allComponentsSMatrices[0].GetNonNullValues().Single(e =>e.Key ==(directionalCoupler.PinIdRightIn(1,0), directionalCoupler.PinIdLeftOut(0,0))).Value;
             var LowerToLeftConnection = allComponentsSMatrices[0].GetNonNullValues().Single(e =>e.Key ==(directionalCoupler.PinIdRightIn(1,1), directionalCoupler.PinIdLeftOut(0,1))).Value;
 
-            var directionalCouplerLightIn = lightPropagation[directionalCoupler.PinIdLeftIn()];
-            var directionalCouplerLightOut = lightPropagation[directionalCoupler.PinIdRightOut(1,0)];
+            var directionalCouplerLightIn = (await lightPropagation)[directionalCoupler.PinIdLeftIn()];
+            var directionalCouplerLightOut = (await lightPropagation)[directionalCoupler.PinIdRightOut(1,0)];
 
             Assert.Equal(0.5, UpperToRightConnection.Real);
             Assert.Equal(0.5, LowerToRightConnection.Real);
@@ -38,7 +39,7 @@ namespace UnitTests
         }
         
         [Fact]
-        public void TestSMatrixForGrid()
+        public async Task TestSMatrixForGrid()
         {
             var straight = TestComponentFactory.CreateStraightWaveGuide();
             var rotatedStraight = TestComponentFactory.CreateStraightWaveGuide();
@@ -46,7 +47,7 @@ namespace UnitTests
             var secondStraight = TestComponentFactory.CreateStraightWaveGuide();
 
             rotatedStraight.RotateBy90CounterClockwise();
-            var grid = new Grid(20, 10);
+            var grid = new GridManager(20, 10);
             var inputPort = grid.ExternalPorts[0];
             grid.PlaceComponent(0, inputPort.TilePositionY, straight);
             grid.PlaceComponent(1, inputPort.TilePositionY, directionalCoupler);
@@ -55,7 +56,7 @@ namespace UnitTests
 
             var laserType = grid.GetUsedExternalInputs().First().Input.LaserType;
             var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid, laserType.WaveLengthInNm);
-            var lightValues = gridSMatrixAnalyzer.CalculateLightPropagation();
+            var lightValues = await gridSMatrixAnalyzer.CalculateLightPropagation();
             var allComponentsSMatrices = gridSMatrixAnalyzer.GetAllComponentsSMatrices(laserType.WaveLengthInNm);
             var Straight_LiRoConnection = allComponentsSMatrices[0].GetNonNullValues().Single(b => b.Key == (straight.PinIdLeftIn(), straight.PinIdRightOut())).Value;
             var Straight_RiLoConnection = allComponentsSMatrices[0].GetNonNullValues().Single(b => b.Key == (straight.PinIdRightIn(), straight.PinIdLeftOut())).Value;
@@ -64,7 +65,7 @@ namespace UnitTests
             var straightCompLightVal = lightValues[straight.PinIdRightOut()];
 
             // test whole circuit's light throughput
-            var circuitLightVal = lightValues[secondStraight.PinIdLeftIn()]; // the light flows into the grating and therefore leaves the circuit.
+            var circuitLightVal =  lightValues[secondStraight.PinIdLeftIn()]; // the light flows into the grating and therefore leaves the circuit.
             string allDebugInformation = gridSMatrixAnalyzer.ToString();
 
             Assert.Contains(secondStraight.PinIdLeftOut(), lightValues);

@@ -2,7 +2,7 @@ using System.Text;
 using System.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 
-namespace CAP_Core.LightFlow
+namespace CAP_Core.Tiles.Grid
 {
     public class SMatrix : ICloneable
     {

@@ -1,7 +1,7 @@
 using CAP_Core.Components.Creation;
 using CAP_Core.Helpers;
-using CAP_Core.LightFlow;
 using CAP_Core.Tiles;
+using CAP_Core.Tiles.Grid;
 using System.Numerics;
 using System.Text.Json.Serialization;
 
@@ -12,6 +12,7 @@ namespace CAP_Core.Components
         public int WidthInTiles => Parts.GetLength(0);
         public int HeightInTiles => Parts.GetLength(1);
         public int TypeNumber { get; set; }
+        public string Identifier{ get; set; }
         private bool IsPlacedInGrid { get; set; }
         [JsonIgnore] public int GridXMainTile { get; protected set; }
         [JsonIgnore] public int GridYMainTile { get; protected set; }
@@ -33,14 +34,15 @@ namespace CAP_Core.Components
                 }
             }
         }
-        public Component(List<Connection> connections , string nazcaFunctionName, string nazcaFunctionParameters, Part[,] parts, int typeNumber, DiscreteRotation discreteRotationCounterClock)
+        public Component(List<Connection> connections , string nazcaFunctionName, string nazcaFunctionParams, Part[,] parts, int typeNumber, string identifier, DiscreteRotation rotationCounterClock)
         {
             Parts = parts;
             TypeNumber = typeNumber;
-            _discreteRotation = discreteRotationCounterClock;
+            Identifier = identifier;
+            _discreteRotation = rotationCounterClock;
             RawConnections = connections;
             NazcaFunctionName = nazcaFunctionName;
-            NazcaFunctionParameters = nazcaFunctionParameters;
+            NazcaFunctionParameters = nazcaFunctionParams;
         }
 
         public void RegisterPositionInGrid(int gridX, int gridY)
@@ -169,7 +171,7 @@ namespace CAP_Core.Components
                 Magnitude = c.Magnitude,
                 WireLengthNM = c.WireLengthNM
             }).ToList();
-            return new Component(clonedRawConnections, NazcaFunctionName, NazcaFunctionParameters, clonedParts, TypeNumber, Rotation90CounterClock);
+            return new Component(clonedRawConnections, NazcaFunctionName, NazcaFunctionParameters, clonedParts, TypeNumber, Identifier, Rotation90CounterClock);
         }
 
     }

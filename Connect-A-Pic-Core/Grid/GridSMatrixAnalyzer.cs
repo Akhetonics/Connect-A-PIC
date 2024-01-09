@@ -1,34 +1,36 @@
 ﻿using CAP_Core.Components;
 using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.ExternalPorts;
+using CAP_Core.Grid;
 using CAP_Core.Helpers;
-using CAP_Core.Tiles;
 using System.Linq;
 using System.Numerics;
-namespace CAP_Core.LightFlow
+namespace CAP_Core.Tiles.Grid
 {
     public class GridSMatrixAnalyzer
     {
-        public readonly Grid Grid;
+        public readonly GridManager Grid;
         public Dictionary<(Guid, Guid), Complex>? InterComponentConnections { get; private set; }
         public SMatrix? SystemSMatrix { get; private set; }
         public double LaserWaveLengthInNm { get; }
 
-        public GridSMatrixAnalyzer(Grid grid, double laserWaveLengthInNm)
+        public GridSMatrixAnalyzer(GridManager grid, double laserWaveLengthInNm)
         {
             Grid = grid;
             LaserWaveLengthInNm = laserWaveLengthInNm;
         }
 
         // calculates the light intensity and phase at a given PIN-ID for both light-flow-directions "in" and "out" for a given period of steps
-        public Dictionary<Guid, Complex> CalculateLightPropagation()
+        public async Task<Dictionary<Guid, Complex>> CalculateLightPropagation()
         {
-            UpdateSystemSMatrix();
-            var stepCount = SystemSMatrix.PinReference.Count() * 2;
-            var usedInputs = Grid.GetUsedExternalInputs().Where(i => i.Input.LaserType.WaveLengthInNm == LaserWaveLengthInNm).ToList();
-            
-            var inputVector = UsedInputConverter.ToVector(usedInputs, SystemSMatrix);
-            return SystemSMatrix.GetLightPropagation(inputVector, stepCount) ?? new Dictionary<Guid, Complex>();
+            return await Task.Run(() => {
+                UpdateSystemSMatrix();
+                var stepCount = SystemSMatrix.PinReference.Count() * 2;
+                var usedInputs = Grid.GetUsedExternalInputs().Where(i => i.Input.LaserType.WaveLengthInNm == LaserWaveLengthInNm).ToList();
+
+                var inputVector = UsedInputConverter.ToVector(usedInputs, SystemSMatrix);
+                return SystemSMatrix.GetLightPropagation(inputVector, stepCount) ?? new Dictionary<Guid, Complex>();
+            });
         }
 
         private void UpdateSystemSMatrix()

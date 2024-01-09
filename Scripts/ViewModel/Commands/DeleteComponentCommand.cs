@@ -1,4 +1,4 @@
-﻿using CAP_Core;
+﻿using CAP_Core.Grid;
 using System;
 using System.Windows.Input;
 
@@ -6,11 +6,11 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 {
     public class DeleteComponentCommand :ICommand
     {
-        private readonly Grid grid;
+        private readonly GridManager grid;
 
         public event EventHandler CanExecuteChanged;
         
-        public DeleteComponentCommand(Grid grid)
+        public DeleteComponentCommand(GridManager grid)
         {
             this.grid = grid;
         }

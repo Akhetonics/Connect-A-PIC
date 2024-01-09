@@ -1,7 +1,6 @@
 ﻿using CAP_Core.ExternalPorts;
-using CAP_Core.Tiles;
 
-namespace CAP_Core.LightFlow
+namespace CAP_Core.Tiles.Grid
 {
     public class GridSMatrixPrinter
     {
@@ -68,10 +67,11 @@ namespace CAP_Core.LightFlow
             var outputString = all;
             outputString += "\n\nLightPropagationVector:\n\n";
 
-            foreach (var externalPort in Analyzer.Grid.GetUsedExternalInputs().DistinctBy(d=>d.Input.LaserType.WaveLengthInNm))
+            foreach (var externalPort in Analyzer.Grid.GetUsedExternalInputs().DistinctBy(d => d.Input.LaserType.WaveLengthInNm))
             {
                 var usedLaserType = externalPort.Input.LaserType;
-                foreach (var lightIntensity in Analyzer.CalculateLightPropagation())
+                var lightPropagation = Analyzer.CalculateLightPropagation().Result;
+                foreach (var lightIntensity in lightPropagation)
                 {
                     string lightColorName = usedLaserType.Color.ToReadableString();
                     Guid pinId = lightIntensity.Key;

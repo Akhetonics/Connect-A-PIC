@@ -1,5 +1,4 @@
 using CAP_Contracts.Logger;
-using CAP_Core;
 using CAP_Core.Components;
 using CAP_Core.Components.Creation;
 using CAP_Core.ExternalPorts;
@@ -20,12 +19,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using CAP_Core.Grid;
 
 namespace ConnectAPic.LayoutWindow
 {
     [SuperNode (typeof(Provider))]
 	public partial class GameManager : Node, 
-		IProvide<ToolBox> , IProvide<ILogger>, IProvide<GridView>, IProvide<Grid>, IProvide<GridViewModel>, IProvide<GameManager>,
+		IProvide<ToolBox> , IProvide<ILogger>, IProvide<GridView>, IProvide<GridManager>, IProvide<GridViewModel>, IProvide<GameManager>,
 		IProvide<GameConsole> , IProvide<System.Version> , IProvide<ComponentViewFactory> 
     {
         #region Dependency Injection
@@ -33,7 +33,7 @@ namespace ConnectAPic.LayoutWindow
 		ToolBox IProvide<ToolBox>.Value() => MainToolBox;
         ILogger IProvide<ILogger>.Value() => Logger;
 		GridView IProvide<GridView>.Value() => GridView;
-		Grid IProvide<Grid>.Value() => Grid;
+		GridManager IProvide<GridManager>.Value() => Grid;
 		GridViewModel IProvide<GridViewModel>.Value() => GridViewModel;
         GameManager IProvide<GameManager>.Value() => Instance;
         GameConsole IProvide<GameConsole>.Value() => InGameConsole;
@@ -57,7 +57,7 @@ namespace ConnectAPic.LayoutWindow
 		public static int TileBorderLeftDown { get; private set; } = 2;
 		public GridView GridView { get; set; }
 		public System.Version Version => Assembly.GetExecutingAssembly().GetName().Version; // Get the version from the assembly
-		public Grid Grid { get; set; }
+		public GridManager Grid { get; set; }
 		public static GameManager instance;
 		public ILogger Logger { get; set; }
 		private LogSaver LogSaver { get; set; }
@@ -153,7 +153,7 @@ namespace ConnectAPic.LayoutWindow
 		{
 			GridView = GetNode<GridView>(GridViewPath);
 			this.CheckForNull(x => GridView);
-			Grid = new Grid(FieldWidth, FieldHeight);
+			Grid = new GridManager(FieldWidth, FieldHeight);
 			GridViewModel = new GridViewModel(GridView, Grid, Logger);
 			GridView.Initialize(GridViewModel, Logger);
             InitializationLogs.Add(("Initialized GridView and Grid and GridViewModel", false));

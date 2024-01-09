@@ -1,6 +1,6 @@
-﻿using CAP_Core;
-using CAP_Core.Components;
+﻿using CAP_Core.Components;
 using CAP_Core.Components.Creation;
+using CAP_Core.Grid;
 using System;
 using System.Windows.Input;
 
@@ -10,10 +10,10 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
     public class CreateComponentCommand : ICommand
     {
         public event EventHandler CanExecuteChanged;
-        private Grid GridModel;
+        private GridManager GridModel;
         private readonly ComponentFactory ComponentFactory;
 
-        public CreateComponentCommand(Grid mainGrid , ComponentFactory componentFactory)
+        public CreateComponentCommand(GridManager mainGrid , ComponentFactory componentFactory)
         {
             this.GridModel = mainGrid;
             this.ComponentFactory = componentFactory;

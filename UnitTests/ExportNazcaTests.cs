@@ -1,8 +1,8 @@
-using CAP_Core;
 using CAP_Core.CodeExporter;
 using CAP_Core.Components;
 using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.ExternalPorts;
+using CAP_Core.Grid;
 using CAP_Core.Tiles;
 
 namespace UnitTests
@@ -12,7 +12,7 @@ namespace UnitTests
         [Fact]
         public void NazcaCompilerTest()
         {
-            Grid grid = new(24,12);
+            GridManager grid = new(24,12);
             var inputs = grid.ExternalPorts.Where(p => p.GetType() == typeof(ExternalInput)).ToList();
             int inputHeight = inputs.FirstOrDefault()?.TilePositionY ?? throw new Exception("there is no StandardInput defined");
             var firstComponent = TestComponentFactory.CreateDirectionalCoupler();
@@ -42,7 +42,7 @@ namespace UnitTests
         [Fact]
         public void GetConnectedNeighborsTest()
         {
-            Grid grid = new(24, 12);
+            GridManager grid = new(24, 12);
             var inputs = grid.ExternalPorts.Where(p => p.GetType() == typeof(ExternalInput)).ToList();
             var firstInput = inputs.FirstOrDefault();
             if (firstInput == null) throw new Exception("Inputs not found, they seem not to be declared in the grid. Please do that now");
@@ -63,7 +63,7 @@ namespace UnitTests
             Assert.Contains(firstComponentMainTile, grid.GetConnectedNeighborsOfComponent(secondComponent).Select(b => b.Child));
         }
         
-        public static Component PlaceAndConcatenateComponent(Grid grid, Component parentComponent)
+        public static Component PlaceAndConcatenateComponent(GridManager grid, Component parentComponent)
         {
             Component newComponent = TestComponentFactory.CreateStraightWaveGuide();
             var GridXSecondComponent = parentComponent.GridXMainTile + parentComponent.WidthInTiles;

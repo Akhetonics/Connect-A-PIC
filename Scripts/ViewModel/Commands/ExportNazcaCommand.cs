@@ -1,5 +1,6 @@
 ﻿using CAP_Core;
 using CAP_Core.CodeExporter;
+using CAP_Core.Grid;
 using CAP_Core.Helpers;
 using System;
 using System.IO;
@@ -12,9 +13,9 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
     {
         public event EventHandler CanExecuteChanged;
         private readonly IExporter compiler;
-        private readonly Grid grid;
+        private readonly GridManager grid;
 
-        public ExportNazcaCommand(IExporter compiler, Grid grid)
+        public ExportNazcaCommand(IExporter compiler, GridManager grid)
         { 
             this.compiler = compiler;
             this.grid = grid;

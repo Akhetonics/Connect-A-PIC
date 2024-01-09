@@ -14,17 +14,8 @@ using System.Threading.Tasks;
 
 namespace UnitTests
 {
-    public class ComponentDraftFileReaderTests
+    public partial class ComponentDraftFileReaderTests
     {
-        public class FileDataAccessor : IDataAccessor
-        {
-            public bool DoesResourceExist(string resourcePath) => File.Exists(resourcePath);
-            public string ReadAsText(string filePath) => File.ReadAllText(filePath);
-            public bool Write(string filePath, string componentJson) {
-                File.WriteAllText(filePath , componentJson);
-                return true;
-            }
-        }
 
         [Fact]
         public async Task TestReadWrite()
@@ -76,7 +67,7 @@ namespace UnitTests
 
             // Act
             var reader = new ComponentDraftFileReader(new FileDataAccessor());
-            reader.Write(tempFilePath, originalComponentDraft);
+            await reader.Write(tempFilePath, originalComponentDraft);
             bool fileIsUsed = true;
             int counter = 0;
             ComponentDraft readComponentDraft = null;

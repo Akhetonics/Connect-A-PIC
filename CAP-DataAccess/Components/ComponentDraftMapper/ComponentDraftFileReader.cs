@@ -41,10 +41,10 @@ namespace Components.ComponentDraftMapper
             return (null, "File does not exist: " + godotFilePath);
         }
 
-        public (bool isSuccess,string error) Write(string filePath, ComponentDraft componentDraft)
+        public async Task<(bool isSuccess,string error)> Write(string filePath, ComponentDraft componentDraft)
         {
             var componentJson = JsonSerializer.Serialize(componentDraft);
-            bool success = DataAccessor.Write(filePath, componentJson);
+            bool success = await DataAccessor.Write(filePath, componentJson);
             if (!success)
             {
                 return (success, "Failed to open file for writing: " + filePath);

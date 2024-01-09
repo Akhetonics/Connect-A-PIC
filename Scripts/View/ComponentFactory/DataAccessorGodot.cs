@@ -1,5 +1,6 @@
 ﻿using Components.ComponentDraftMapper;
 using Godot;
+using System.Threading.Tasks;
 
 namespace ConnectAPIC.Scripts.View.ComponentFactory
 {
@@ -29,16 +30,19 @@ namespace ConnectAPIC.Scripts.View.ComponentFactory
             }
         }
 
-        public bool Write(string godotFilePath, string componentJson)
+        public async Task<bool> Write(string godotFilePath, string componentJson)
         {
-            var file = FileAccess.Open(godotFilePath, FileAccess.ModeFlags.Write);
-            if (file != null)
+            return await Task.Run(() =>
             {
-                file.StoreString(componentJson);
-                file.Close();
-                return true;
-            }
-            return false;
+                var file = FileAccess.Open(godotFilePath, FileAccess.ModeFlags.Write);
+                if (file != null)
+                {
+                    file.StoreString(componentJson);
+                    file.Close();
+                    return true;
+                }
+                return false;
+            });
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using CAP_Core;
 using CAP_Core.Components;
 using CAP_Core.ExternalPorts;
+using CAP_Core.Grid;
 using CAP_Core.Tiles;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using Newtonsoft.Json;
@@ -19,7 +20,7 @@ namespace UnitTests
         [Fact]
         public void TestComponentRotation()
         {
-            var grid = new Grid(10, 10);
+            var grid = new GridManager(10, 10);
             var component = TestComponentFactory.CreateDirectionalCoupler();
             var portY = grid.ExternalPorts.First().TilePositionY;
             grid.PlaceComponent(0, portY, component);
@@ -65,7 +66,7 @@ namespace UnitTests
         [Fact]
         public void TestComponentPinIDsInConnectionMatrix()
         {
-            var grid = new Grid(10, 10);
+            var grid = new GridManager(10, 10);
             var componentOld = TestComponentFactory.CreateDirectionalCoupler();
             var component = componentOld.Clone() as Component;
             var laserY = grid.ExternalPorts[0].TilePositionY;
@@ -107,7 +108,7 @@ namespace UnitTests
         [Fact]
         public void TestSecondComponentHasDifferentPinIDs()
         {
-            var grid = new Grid(10, 10);
+            var grid = new GridManager(10, 10);
             var componentOld = TestComponentFactory.CreateDirectionalCoupler();
             var component = componentOld.Clone() as Component;
             var component2 = componentOld.Clone() as Component;

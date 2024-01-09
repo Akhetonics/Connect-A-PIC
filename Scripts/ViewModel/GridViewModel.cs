@@ -1,12 +1,12 @@
 ﻿using CAP_Contracts.Logger;
-using CAP_Core;
 using CAP_Core.CodeExporter;
 using CAP_Core.Components;
 using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.Components.Creation;
 using CAP_Core.ExternalPorts;
-using CAP_Core.LightFlow;
+using CAP_Core.Grid;
 using CAP_Core.Tiles;
+using CAP_Core.Tiles.Grid;
 using ConnectAPic.LayoutWindow;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace ConnectAPIC.LayoutWindow.ViewModel
@@ -29,13 +30,13 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         public ComponentView[,] GridComponentViews { get; private set; }
         public int Width { get => GridComponentViews.GetLength(0); }
         public int Height { get => GridComponentViews.GetLength(1); }
-        public Grid Grid { get; set; }
+        public GridManager Grid { get; set; }
         public ILogger Logger { get; }
         public GridView GridView { get; set; }
         public GridSMatrixAnalyzer MatrixAnalyzer { get; private set; }
         public int MaxTileCount { get => Width * Height; }
 
-        public GridViewModel(GridView gridView, Grid grid, ILogger logger)
+        public GridViewModel(GridView gridView, GridManager grid, ILogger logger)
         {
             this.GridView = gridView;
             this.Grid = grid;
@@ -122,19 +123,19 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             return ComponentView;
         }
 
-        public Dictionary<Guid, Complex> GetLightVector(LaserType inputLight)
+        public async Task<Dictionary<Guid, Complex>> GetLightVector(LaserType inputLight)
         {
             MatrixAnalyzer = new GridSMatrixAnalyzer(this.Grid, inputLight.WaveLengthInNm);
             
-            return MatrixAnalyzer.CalculateLightPropagation();
+            return await MatrixAnalyzer.CalculateLightPropagation();
         }
 
-        public void ShowLightPropagation()
+        public async Task ShowLightPropagation()
         {
             var inputPorts = Grid.GetUsedExternalInputs();
             foreach (var port in inputPorts)
             {
-                var inputLightVector = GetLightVector(port.Input.LaserType);
+                var inputLightVector = await GetLightVector(port.Input.LaserType);
                 // go through the whole grid and send all 
                 AssignLightToComponentViews(inputLightVector, port.Input.LaserType);
             }

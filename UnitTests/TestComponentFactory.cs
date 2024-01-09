@@ -1,6 +1,5 @@
 ﻿using CAP_Core.Components;
 using CAP_Core.Components.ComponentHelpers;
-using CAP_Core.LightFlow;
 using CAP_Core.Tiles;
 using System.Numerics;
 
@@ -31,7 +30,7 @@ namespace UnitTests
                 new Connection { FromPin = rightIn, ToPin = leftOut, Magnitude = 1, WireLengthNM = 0 }
             };
 
-            return new Component(connections, "placeCell_StraightWG", "", parts, 0, DiscreteRotation.R0);
+            return new Component(connections, "placeCell_StraightWG", "", parts, 0, "Straight", DiscreteRotation.R0);
         }
 
         public static Component CreateDirectionalCoupler()
@@ -68,7 +67,7 @@ namespace UnitTests
                 new() { FromPin = rightDownIn, ToPin = leftUpOut, Magnitude = 0.5f, WireLengthNM = 0 },
                 new() { FromPin = rightDownIn, ToPin = leftDownOut, Magnitude = 0.5f, WireLengthNM = 0 }
             };
-            return new Component(connections, "placeCell_DirectionalCoupler", "", parts, 0, DiscreteRotation.R0);
+            return new Component(connections, "placeCell_DirectionalCoupler", "", parts, 0,"DirectionalCoupler", DiscreteRotation.R0);
         }
 
     }

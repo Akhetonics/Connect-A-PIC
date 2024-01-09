@@ -6,12 +6,12 @@ using CAP_Core.Tiles;
 using System.ComponentModel;
 using Component = CAP_Core.Components.Component;
 
-namespace CAP_Core
+namespace CAP_Core.Grid
 {
-    public class Grid
+    public class GridManager
     {
         public delegate void OnGridCreatedHandler(Tile[,] Tiles);
-        public delegate void OnComponentChangedEventHandler(Components.Component component, int x, int y);
+        public delegate void OnComponentChangedEventHandler(Component component, int x, int y);
         public event OnGridCreatedHandler OnGridCreated;
         public event OnComponentChangedEventHandler OnComponentPlacedOnTile;
         public event OnComponentChangedEventHandler OnComponentRemoved;
@@ -24,15 +24,15 @@ namespace CAP_Core
         public int Height { get; private set; }
         public const int MinHeight = 10;
 
-        public Grid(int width, int height)
+        public GridManager(int width, int height)
         {
             if (height < MinHeight) height = MinHeight;
             Width = width;
             Height = height;
             ExternalPorts = new List<ExternalPort>() {
-                    new ExternalInput("io0",new LaserType(LightColor.Red), 2,1),
-                    new ExternalInput("io1",new LaserType(LightColor.Green), 3, 1),
-                    new ExternalInput("io2",new LaserType(LightColor.Blue) , 4, 1),
+                    new ExternalInput("io0",LaserType.Red, 2,1),
+                    new ExternalInput("io1",LaserType.Green, 3, 1),
+                    new ExternalInput("io2",LaserType.Blue , 4, 1),
                     new ExternalOutput("io3",5),
                     new ExternalOutput("io4",6),
                     new ExternalOutput("io5",7),
@@ -55,10 +55,10 @@ namespace CAP_Core
                     var connectedPartOfComponent = Tiles[0, inputY].Component.GetPartAtGridXY(0, inputY);
                     if (connectedPartOfComponent == null) continue;
                     Pin componentPin = connectedPartOfComponent.GetPinAt(RectSide.Left);
-                    if(componentPin?.MatterType != MatterType.Light) continue; // if the component does not have a connected pin, then we ignore it.
+                    if (componentPin?.MatterType != MatterType.Light) continue; // if the component does not have a connected pin, then we ignore it.
                     Guid pinId = componentPin.IDInFlow;
-                    
-                    inputsFound.Add(new UsedInput(input, pinId) );
+
+                    inputsFound.Add(new UsedInput(input, pinId));
                 }
             }
             return inputsFound;
@@ -76,7 +76,7 @@ namespace CAP_Core
             OnGridCreated?.Invoke(Tiles);
         }
 
-        public bool IsColliding(int x, int y, int sizeX, int sizeY , Components.Component? exception = null)
+        public bool IsColliding(int x, int y, int sizeX, int sizeY, Component? exception = null)
         {
             if (!IsInGrid(x, y, sizeX, sizeY))
             {
@@ -126,15 +126,15 @@ namespace CAP_Core
         {
             return x >= 0 && y >= 0 && x + width <= Width && y + height <= Height;
         }
-        public Component? GetComponentAt(int x, int y, int searchAreaWidth = 1 , int searchAreaHeight = 1)
+        public Component? GetComponentAt(int x, int y, int searchAreaWidth = 1, int searchAreaHeight = 1)
         {
             for (int i = 0; i < searchAreaWidth; i++)
             {
-                for(int j = 0; j < searchAreaHeight; j++)
+                for (int j = 0; j < searchAreaHeight; j++)
                 {
                     int currentX = x + i;
                     int currentY = y + j;
-                    if (!IsInGrid(currentX , currentY, 1, 1)) return null;
+                    if (!IsInGrid(currentX, currentY, 1, 1)) return null;
 
                     var componentFound = Tiles[currentX, currentY].Component;
                     if (componentFound != null)
@@ -148,7 +148,7 @@ namespace CAP_Core
         public List<Component> GetAllComponents()
         {
             List<Component> components = new();
-            foreach(Tile tile in Tiles)
+            foreach (Tile tile in Tiles)
             {
                 if (tile.Component == null) continue;
                 components.Add(tile.Component);
@@ -193,7 +193,7 @@ namespace CAP_Core
         public bool MoveComponent(int x, int y, int sourceX, int sourceY)
         {
             Component? component = GetComponentAt(sourceX, sourceY);
-            if(component == null) return false;
+            if (component == null) return false;
             int oldMainGridX = component.GridXMainTile;
             int oldMainGridY = component.GridYMainTile;
             UnregisterComponentAt(component.GridXMainTile, component.GridYMainTile); // to avoid blocking itself from moving only one tile into its own subTiles
