@@ -1,4 +1,5 @@
-﻿using System;
+﻿using CAP_Contracts;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,12 @@ namespace CAP_DataAccess.Helpers
 
         public IDirectoryAccess DirectoryAccess { get; }
 
+        /// <summary>
+        /// returns a list of paths of all found files with the given extension pck for example or json
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="extensionPattern">The extension pattern should only be the extension without * or a dot</param>
+        /// <returns></returns>
         public List<string> FindRecursively(string path, string extensionPattern)
         {
             var paths = new List<string>();

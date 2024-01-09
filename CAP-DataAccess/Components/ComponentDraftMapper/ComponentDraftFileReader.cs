@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
+using CAP_Contracts;
 using Components.ComponentDraftMapper.DTOs;
 
 namespace Components.ComponentDraftMapper
@@ -16,11 +17,11 @@ namespace Components.ComponentDraftMapper
 
         public IDataAccessor DataAccessor { get; }
 
-        public (ComponentDraft? draft, string error) TryRead(string godotFilePath)
+        public (ComponentDraft? draft, string error) TryReadJson(string path)
         {
-            if (DataAccessor.DoesResourceExist(godotFilePath))
+            if (DataAccessor.DoesResourceExist(path))
             {
-                var fileContent = DataAccessor.ReadAsText(godotFilePath);
+                var fileContent = DataAccessor.ReadAsText(path);
                 if (fileContent != null)
                 {
                     try
@@ -29,16 +30,16 @@ namespace Components.ComponentDraftMapper
                     }
                     catch (Exception ex)
                     {
-                        var err = "Error Deserializing Json-file: " + godotFilePath + "  ex: " + ex.Message + " " + ex.StackTrace;
+                        var err = "Error Deserializing Json-file: " + path + "  ex: " + ex.Message + " " + ex.StackTrace;
                         return (null , err);
                     }
                 }
                 else
                 {
-                    return (null , "could not open file to read, it might be blocked somehow: " + godotFilePath);
+                    return (null , "could not open file to read, it might be blocked somehow: " + path);
                 }
             }
-            return (null, "File does not exist: " + godotFilePath);
+            return (null, "File does not exist: " + path);
         }
 
         public async Task<(bool isSuccess,string error)> Write(string filePath, ComponentDraft componentDraft)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using CAP_Contracts;
 using Components.ComponentDraftMapper.DTOs;
 
 namespace Components.ComponentDraftMapper

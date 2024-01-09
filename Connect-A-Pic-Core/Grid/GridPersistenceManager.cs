@@ -1,4 +1,7 @@
-﻿using Components.ComponentDraftMapper;
+﻿using CAP_Contracts;
+using CAP_Core.Components;
+using CAP_Core.Components.Creation;
+using CAP_Core.Tiles;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,16 +13,18 @@ namespace CAP_Core.Grid
 {
     public class GridPersistenceManager
     {
-        public GridPersistenceManager(GridManager myGrid , IDataAccessor dataAccessor)
+        public GridPersistenceManager(GridManager myGrid , IDataAccessor dataAccessor , IComponentFactory componentFactory)
         {
             MyGrid = myGrid;
             DataAccessor = dataAccessor;
+            ComponentFactory = componentFactory;
         }
 
         public GridManager MyGrid { get; }
         public IDataAccessor DataAccessor { get; }
+        public IComponentFactory ComponentFactory { get; }
 
-        public async void Save(string path)
+        public async Task SaveAsync(string path)
         {
             List<GridComponentData> gridData = new ();
             for (int x = 0 ; x < MyGrid.Tiles.GetLength(0); x++)
@@ -41,9 +46,21 @@ namespace CAP_Core.Grid
             var json = JsonSerializer.Serialize(gridData);
             await DataAccessor.Write(path,json);
         }
-        public void Load(string path)
+        public async Task LoadAsync(string path)
         {
+            await Task.Run(() =>
+            {
+                var json = DataAccessor.ReadAsText(path);
+                var gridData = JsonSerializer.Deserialize<List<GridComponentData>>(json);
+                MyGrid.DeleteAllComponents();
 
+                foreach (var data in gridData)
+                {
+                    var component = ComponentFactory.CreateComponentByIdentifier(data.Identifier);
+                    component.Rotation90CounterClock = (DiscreteRotation)data.Rotation;
+                    MyGrid.PlaceComponent(data.X, data.Y, component);
+                }
+            });
         }
 
         public class GridComponentData

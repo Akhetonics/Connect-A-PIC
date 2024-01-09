@@ -1,4 +1,4 @@
-﻿namespace Components.ComponentDraftMapper
+﻿namespace CAP_Contracts
 {
     public interface IResourcePathChecker
     {

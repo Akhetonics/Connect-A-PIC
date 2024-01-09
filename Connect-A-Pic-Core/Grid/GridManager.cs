@@ -155,6 +155,14 @@ namespace CAP_Core.Grid
             }
             return components.Distinct().ToList();
         }
+        public void DeleteAllComponents()
+        {
+            foreach (Tile tile in Tiles)
+            {
+                if (tile.Component == null) continue;
+                UnregisterComponentAt(tile.GridX, tile.GridY);
+            }
+        }
         public void PlaceComponent(int x, int y, Component component)
         {
             if (IsColliding(x, y, component.WidthInTiles, component.HeightInTiles))

@@ -1,6 +1,7 @@
 ﻿using CAP_DataAccess.Helpers;
 using Components.ComponentDraftMapper.DTOs;
 using Components.ComponentDraftMapper;
+using CAP_Contracts;
 
 namespace CAP_DataAccess.Components.ComponentDraftMapper
 {
@@ -17,7 +18,7 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
         {
             ComponentDraftFileReader reader = new(DataAccessor);
             var draftsAndErrors = FindRecursively(componentFolderPath, "json")
-                .Select(file => reader.TryRead(file))
+                .Select(file => reader.TryReadJson(file))
                 .ToList();
 
             // validate the list and add errors if elements are invalid

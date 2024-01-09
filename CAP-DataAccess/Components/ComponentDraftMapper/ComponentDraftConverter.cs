@@ -75,10 +75,5 @@ namespace Components.ComponentDraftMapper
         {
             return parts[pinDraft.partX, pinDraft.partY].Pins.Single(p => p.Side == pinDraft.side && p.MatterType == pinDraft.matterType);
         }
-
-        private static Pin GetModelPin(Part[,] parts, PinDraft pinDraft)
-        {
-            return parts[pinDraft.partX, pinDraft.partY].Pins.Single(p => p.Side == pinDraft.side && p.MatterType == pinDraft.matterType);
-        }
     }
 }

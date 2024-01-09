@@ -2,10 +2,10 @@ using CAP_Core.Helpers;
 
 namespace CAP_Core.Components.Creation
 {
-    public class ComponentFactory
+    public class ComponentFactory : IComponentFactory
     {
         private List<Component> ComponentDrafts { set; get; } = new List<Component>();
-        private static ComponentFactory instance = instance ?? new ComponentFactory();
+        private static ComponentFactory instance = instance ?? new ComponentFactory() ;
         public static ComponentFactory Instance
         {
             get
@@ -19,6 +19,11 @@ namespace CAP_Core.Components.Creation
             var newComponent = ComponentDrafts.Single(component => component.TypeNumber == componentTypeNumber);
             return (Component)newComponent.Clone();
         }
+        public Component CreateComponentByIdentifier(string identifier)
+        {
+            var newComponent = ComponentDrafts.Single(component => component.Identifier == identifier);
+            return (Component)newComponent.Clone();
+        }
 
         public IntVector GetDimensions(int componentTypeNumber)
         {
@@ -30,4 +35,6 @@ namespace CAP_Core.Components.Creation
             ComponentDrafts = componentDrafts;
         }
     }
+
+    
 }

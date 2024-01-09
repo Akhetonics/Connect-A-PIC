@@ -1,4 +1,5 @@
-﻿using Components.ComponentDraftMapper;
+﻿using CAP_Contracts;
+using Components.ComponentDraftMapper;
 
 namespace UnitTests
 {

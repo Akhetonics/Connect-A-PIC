@@ -1,3 +1,4 @@
+using CAP_Contracts;
 using CAP_Core.Components;
 using CAP_Core.ExternalPorts;
 using CAP_Core.Grid;

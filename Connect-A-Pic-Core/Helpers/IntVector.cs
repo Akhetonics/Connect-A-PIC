@@ -1,4 +1,6 @@
-﻿using CAP_Core.Tiles;
+﻿
+using CAP_Contracts;
+using CAP_Core.Tiles;
 
 namespace CAP_Core.Helpers
 {

@@ -75,7 +75,7 @@ namespace UnitTests
             {
                 try
                 {
-                    var readResult = reader.TryRead(tempFilePath);
+                    var readResult = reader.TryReadJson(tempFilePath);
                     if(readResult.error == null)
                     {
                         throw new IOException(readResult.error);
