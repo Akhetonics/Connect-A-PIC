@@ -7,7 +7,7 @@ render_mode blend_add;
 
 uniform vec4 laserColor;
 
-uniform vec4 lightInFlow1; // x = intensity, y = phase, z = offsetx, w = offsety
+uniform vec4 lightInFlow1; // x = intensity, y = phase but in RAD, z = offsetx, w = offsety
 uniform vec4 lightOutFlow1;
 uniform vec4 lightInFlow2; 
 uniform vec4 lightOutFlow2;
@@ -39,10 +39,13 @@ vec4 getAnimationFrameColor(sampler2D animationTexture, vec2 uvCoord, float elap
 	float elapsedTime = round(TIME * speed);
     float lightPhase = lightAttributes.y;
 	float animationOffset = elapsedTime + round(lightPhase * speed);
-	    
-    int currentFrameIndex = int(animationOffset) % int(numAnimationColumns);
-    float frameShift = float(currentFrameIndex) / numAnimationColumns;
-	if(speed < 0.0)
+	
+	// currentColumn is the current Column that we are reading the data from
+    int currentColumn = int(animationOffset) % int(numAnimationColumns);
+	// frameshift is the offset of where the image is being read like 0, 0.25, 0.5, 0,75
+	// because we only want to read the lines of the images in a certain column as the image is divided in 4 columns. (or numAnimationColumns, which is 4)
+    float frameShift = float(currentColumn) / numAnimationColumns;
+	if(speed < 0.0) // if the speed is negative, then the animation should playbackwards, so 0.75, 0.5, 0.25, 0
 	{
 		 frameShift = 1.0 -abs(frameShift- 1.0/numAnimationColumns);
 	}

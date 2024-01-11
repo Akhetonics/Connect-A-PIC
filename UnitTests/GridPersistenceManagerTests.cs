@@ -19,6 +19,49 @@ namespace UnitTests
 {
     public class GridPersistenceManagerTests
     {
+        private static string StraightWGJsonString = @"
+        {
+            ""fileFormatVersion"": 1,
+            ""identifier"": ""Straight"",
+            ""nazcaFunctionParameters"": """",
+            ""nazcaFunctionName"": ""placeCell_StraightWG"",
+            ""sceneResPath"": ""res://Scenes/Components/Straight/StraightWaveGuide.tscn"",
+            ""deltaLength"": 0,
+            ""widthInTiles"": 1,
+            ""heightInTiles"": 1,
+            ""pins"": [
+                {
+                    ""number"": 0,
+                    ""name"": ""west"",
+                    ""matterType"": 1,
+                    ""side"": 2,
+                    ""partX"": 0,
+                    ""partY"": 0
+                },
+                {
+                    ""number"": 1,
+                    ""name"": ""east"",
+                    ""matterType"": 1,
+                    ""side"": 0,
+                    ""partX"": 0,
+                    ""partY"": 0
+                }
+            ],
+            ""connections"": [
+                {
+                    ""fromPinNr"": 0,
+                    ""toPinNr"": 1,
+                    ""magnitude"": 1,
+                    ""wireLengthNM"" : 250000.0
+                },
+                {
+                    ""fromPinNr"": 1,
+                    ""toPinNr"": 0,
+                    ""magnitude"": 1,
+                    ""wireLengthNM"" : 250000.0
+                }
+            ]
+        }";
         [Fact]
         public async Task SaveAndLoadGridManager()
         {

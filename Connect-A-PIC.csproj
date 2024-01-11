@@ -70,6 +70,7 @@
     <None Include="README.md" />
     <None Include="RunGodotTests.ps1" />
     <None Include="Scenes\InGameConsole\InGameConsole.tscn" />
+    <None Include="Scenes\LightAnimationOverlay.gdshader" />
     <None Include="Scenes\Main.tscn" />
     <None Include="Scenes\NotificationBox.tscn" />
     <None Include="Scenes\PICEditor.tscn" />

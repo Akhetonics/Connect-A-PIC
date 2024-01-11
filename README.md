@@ -32,6 +32,7 @@ Our Target Audience is students and scientists that are interested in photonics.
 
 # Setup Code
 * Install Visual Studio 
+* Download the Visual Studio components: "Game Development with Unity" just in case
 * Install Godot Engine and add a System Variable called "GODOT" to the Path to the godot mono exe file like so:
 	* open your command prompt (WINDOWS+R, type 'cmd' and press enter)
 ```shell
@@ -42,6 +43,7 @@ setx GODOT "C:\Program Files\Godot_v4.1\Godot_v4.1.exe" /M
 	* "Path to the executable to run" is the Path to your godot_v4.0-beta_mono_win64.exe 
 	* Command Line Arguments is `--path . --verbose`
 	* Working Directory is '.'
+* git clone this project
 * Install Submodules using 'git submodule init' and then 'git submodule update --recursive --remote'
  * [Create two external Tools in Visual studio](https://github.com/Akhetonics/Connect-A-PIC/blob/feature/ComponentPackaging/GodotTestVSIntegration.md) to be able to manually run the GoDotTest - Unit tests for Godot.
 * Install Submodules using `git submodule init` and then `git submodule update --recursive --remote`
