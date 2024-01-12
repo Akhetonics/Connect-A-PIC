@@ -13,25 +13,23 @@ namespace CAP_Core.Grid
 {
     public class GridPersistenceManager
     {
-        public GridPersistenceManager(GridManager myGrid , IDataAccessor dataAccessor , IComponentFactory componentFactory)
+        public GridPersistenceManager(GridManager myGrid, IDataAccessor dataAccessor)
         {
             MyGrid = myGrid;
             DataAccessor = dataAccessor;
-            ComponentFactory = componentFactory;
         }
 
         public GridManager MyGrid { get; }
         public IDataAccessor DataAccessor { get; }
-        public IComponentFactory ComponentFactory { get; }
 
-        public async Task SaveAsync(string path)
+        public async Task<bool> SaveAsync(string path)
         {
-            List<GridComponentData> gridData = new ();
-            for (int x = 0 ; x < MyGrid.Tiles.GetLength(0); x++)
+            List<GridComponentData> gridData = new();
+            for (int x = 0; x < MyGrid.Tiles.GetLength(0); x++)
             {
-                for(int y = 0; y < MyGrid.Tiles.GetLength(1); y++)
+                for (int y = 0; y < MyGrid.Tiles.GetLength(1); y++)
                 {
-                    if (MyGrid.Tiles[x, y]?.Component == null ) continue;
+                    if (MyGrid.Tiles[x, y]?.Component == null) continue;
                     var component = MyGrid.Tiles[x, y].Component;
                     if (x != component.GridXMainTile || y != component.GridYMainTile) continue;
                     gridData.Add(new GridComponentData()
@@ -40,27 +38,24 @@ namespace CAP_Core.Grid
                         Rotation = (int)component.Rotation90CounterClock,
                         X = x,
                         Y = y,
-                    }) ;
+                    });
                 }
             }
             var json = JsonSerializer.Serialize(gridData);
-            await DataAccessor.Write(path,json);
+            return await DataAccessor.Write(path, json);
         }
-        public async Task LoadAsync(string path)
+        public async Task LoadAsync(string path, IComponentFactory componentFactory)
         {
-            await Task.Run(() =>
-            {
-                var json = DataAccessor.ReadAsText(path);
-                var gridData = JsonSerializer.Deserialize<List<GridComponentData>>(json);
-                MyGrid.DeleteAllComponents();
+            var json = DataAccessor.ReadAsText(path);
+            var gridData = JsonSerializer.Deserialize<List<GridComponentData>>(json);
+            MyGrid.DeleteAllComponents();
 
-                foreach (var data in gridData)
-                {
-                    var component = ComponentFactory.CreateComponentByIdentifier(data.Identifier);
-                    component.Rotation90CounterClock = (DiscreteRotation)data.Rotation;
-                    MyGrid.PlaceComponent(data.X, data.Y, component);
-                }
-            });
+            foreach (var data in gridData)
+            {
+                var component = componentFactory.CreateComponentByIdentifier(data.Identifier);
+                component.Rotation90CounterClock = (DiscreteRotation)data.Rotation;
+                MyGrid.PlaceComponent(data.X, data.Y, component);
+            }
         }
 
         public class GridComponentData

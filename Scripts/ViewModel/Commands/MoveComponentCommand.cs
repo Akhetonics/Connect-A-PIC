@@ -1,6 +1,7 @@
 ﻿using CAP_Core.Grid;
+using ConnectAPIC.Scripts.ViewModel.Commands;
 using System;
-using System.Windows.Input;
+using System.Threading.Tasks;
 
 namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 {
@@ -34,11 +35,12 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             }
             return true;
         }
-        public void Execute(object parameter)
+        public Task ExecuteAsync(object parameter)
         {
-            if (CanExecute(parameter) == false) return;
+            if (CanExecute(parameter) == false) return default;
             var args = (MoveComponentArgs)parameter;
             grid.MoveComponent(args.TargetX, args.TargetY, args.SourceX, args.SourceY);
+            return Task.CompletedTask;
         }
     }
     public class MoveComponentArgs

@@ -22,7 +22,7 @@ namespace UnitTests
         public void NazcaCompilerTest()
         {
             GridManager grid = new(24, 12);
-            var inputs = grid.ExternalPorts.Where(p => p.GetType() == typeof(ExternalInput)).ToList();
+            var inputs = grid.GetAllExternalInputs();
             int inputHeight = inputs.FirstOrDefault()?.TilePositionY ?? throw new Exception("there is no StandardInput defined");
             var firstComponent = TestComponentFactory.CreateStraightWaveGuide();
             grid.PlaceComponent(0, inputHeight, firstComponent);
