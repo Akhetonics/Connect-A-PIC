@@ -21,6 +21,10 @@ namespace ConnectAPIC.LayoutWindow.View
 
         [Export] public DragDropProxy DragDropProxy;
         [Export] public ComponentViewFactory ComponentViewFactory;
+        [Export] public Texture2D LightOnTexture;
+        [Export] public Texture2D LightOffTexture;
+        [Export] public Button LightOnButton;
+
         private GridViewModel ViewModel;
         public bool lightPropagationIsPressed;
         public const string GridSaveFileExtensionPatterns = "*.pic|*.PIC|*.txt|*.TXT";
@@ -32,6 +36,9 @@ namespace ConnectAPIC.LayoutWindow.View
             base._Ready();
             this.CheckForNull(x => DragDropProxy);
             this.CheckForNull(x => ComponentViewFactory);
+            this.CheckForNull(x => LightOnTexture);
+            this.CheckForNull(x => LightOffTexture);
+            this.CheckForNull(x => LightOnButton);
         }
         public void Initialize(GridViewModel viewModel, ILogger logger)
         {
@@ -73,10 +80,13 @@ namespace ConnectAPIC.LayoutWindow.View
                 {
                     ViewModel.HideLightPropagation();
                     ViewModel.ShowLightPropagation();
+                    LightOnButton.Icon = LightOnTexture;
+
                 }
                 else
                 {
                     ViewModel.HideLightPropagation();
+                    LightOnButton.Icon = LightOffTexture;
                 }
             }
             catch (Exception ex)

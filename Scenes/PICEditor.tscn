@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://cu6wqy6xwjfo1"]
+[gd_scene load_steps=22 format=3 uid="uid://cu6wqy6xwjfo1"]
 
 [ext_resource type="Script" path="res://Scripts/GameManager.cs" id="1_1g8p6"]
 [ext_resource type="Script" path="res://Scripts/View/GridView.cs" id="1_2pqex"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://Scripts/View/StandardDialogs/NotificationManager.cs" id="2_nntly"]
 [ext_resource type="Script" path="res://Scripts/View/ComponentViews/ComponentView.cs" id="3_hlrce"]
 [ext_resource type="Texture2D" uid="uid://jcla22kq5xkl" path="res://Scenes/ToolBox/ScreenshotMockUp.png" id="5_hhcry"]
+[ext_resource type="Texture2D" uid="uid://bt4gh5kxvtjmy" path="res://Scenes/MenuBar/LightOn.png" id="6_4fcg3"]
 [ext_resource type="Script" path="res://Scripts/View/ComponentFactory/ComponentViewFactory.cs" id="7_x7uef"]
 [ext_resource type="PackedScene" uid="uid://dfrjm1onsjusf" path="res://Scenes/ToolBox/Tool_box.tscn" id="10_ir1q2"]
 [ext_resource type="PackedScene" uid="uid://bscqmaslppyt8" path="res://Scenes/NotificationBox.tscn" id="12_o0640"]
@@ -449,7 +450,7 @@ InGameConsole = NodePath("InGameConsole")
 script = ExtResource("7_x7uef")
 ComponentBaseScriptPath = ExtResource("3_hlrce")
 
-[node name="GridView" type="TileMap" parent="." node_paths=PackedStringArray("DragDropProxy", "ComponentViewFactory")]
+[node name="GridView" type="TileMap" parent="." node_paths=PackedStringArray("DragDropProxy", "ComponentViewFactory", "LightOnButton")]
 position = Vector2(155.395, 42.7)
 tile_set = SubResource("TileSet_47324")
 format = 2
@@ -457,6 +458,9 @@ layer_0/tile_data = PackedInt32Array(131072, 65536, 1, 131073, 65536, 1, 131074,
 script = ExtResource("1_2pqex")
 DragDropProxy = NodePath("DragDropProxy")
 ComponentViewFactory = NodePath("../ComponentViewFactory")
+LightOnTexture = ExtResource("6_4fcg3")
+LightOffTexture = ExtResource("15_ell83")
+LightOnButton = NodePath("../MenuBar2/HBoxContainer/btnShowLightPropagation")
 
 [node name="DragDropProxy" type="Control" parent="GridView"]
 layout_mode = 3
