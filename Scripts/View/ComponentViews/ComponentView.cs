@@ -222,14 +222,14 @@ namespace ConnectAPIC.LayoutWindow.View
                 }
                 if (mouseEvent.ButtonIndex == MouseButton.Middle && mouseEvent.Pressed)
                 {
-                    ViewModel.DeleteComponentCommand.Execute(new DeleteComponentArgs(GridX, GridY));
+                    ViewModel.DeleteComponentCommand.ExecuteAsync(new DeleteComponentArgs(GridX, GridY)).RunSynchronously();
                 }
                 if (mouseEvent.ButtonIndex == MouseButton.Right && mouseEvent.Pressed)
                 {
                     var args = new RotateComponentArgs(GridX, GridY);
                     if (ViewModel.RotateComponentCommand.CanExecute(args))
                     {
-                        ViewModel.RotateComponentCommand.Execute(args);
+                        ViewModel.RotateComponentCommand.ExecuteAsync(args).RunSynchronously();
                     }
                     else
                     {

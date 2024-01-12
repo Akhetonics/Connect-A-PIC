@@ -63,6 +63,12 @@ namespace CAP_Core.Grid
             }
             return inputsFound;
         }
+        public List<ExternalInput> GetAllExternalInputs() => 
+            ExternalPorts
+            .Where(p => p is ExternalInput)
+            .Select(p=>(ExternalInput)p)
+            .ToList();
+
         private void GenerateAllTiles()
         {
             Tiles = new Tile[Width, Height];

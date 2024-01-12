@@ -1,10 +1,12 @@
-﻿using CAP_Core;
+﻿using CAP_Contracts;
+using CAP_Core;
 using CAP_Core.CodeExporter;
 using CAP_Core.Grid;
 using CAP_Core.Helpers;
+using ConnectAPIC.Scripts.ViewModel.Commands;
 using System;
 using System.IO;
-using System.Windows.Input;
+using System.Threading.Tasks;
 
 namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 {
@@ -14,11 +16,13 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
         public event EventHandler CanExecuteChanged;
         private readonly IExporter compiler;
         private readonly GridManager grid;
+        private readonly IDataAccessor dataAccessor;
 
-        public ExportNazcaCommand(IExporter compiler, GridManager grid)
+        public ExportNazcaCommand(IExporter compiler, GridManager grid, IDataAccessor dataAccessor)
         { 
             this.compiler = compiler;
             this.grid = grid;
+            this.dataAccessor = dataAccessor;
         }
         
         public bool CanExecute(object parameter)
@@ -30,15 +34,15 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             return false;
         }
         
-        public void Execute(object parameter)
+        public async Task ExecuteAsync(object parameter)
         {
             if (!CanExecute(parameter)) return;
             var nazcaParams = (ExportNazcaParameters)parameter;
             var pythonCode = compiler.Export(this.grid);
-            FileSaver.SaveToFile(pythonCode, nazcaParams.Path);
+            await this.dataAccessor.Write(nazcaParams.Path, pythonCode);
             string directoryPath = Path.GetDirectoryName(nazcaParams.Path);
-            string fullPath = Path.Combine(directoryPath, Resources.PDKFileName);
-            FileSaver.SaveToFile(Resources.PDK, fullPath);
+            string fullPDKPath = Path.Combine(directoryPath, Resources.PDKFileName);
+            await this.dataAccessor.Write(fullPDKPath, Resources.PDK);
         }
     }
 

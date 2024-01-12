@@ -1,8 +1,9 @@
 ﻿using CAP_Core.Components;
 using CAP_Core.Components.Creation;
 using CAP_Core.Grid;
+using ConnectAPIC.Scripts.ViewModel.Commands;
 using System;
-using System.Windows.Input;
+using System.Threading.Tasks;
 
 namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 {
@@ -32,13 +33,14 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             return false;
         }
 
-        public void Execute(object parameter)
+        public Task ExecuteAsync(object parameter)
         {
-            if ( !CanExecute(parameter) ) return;
+            if ( !CanExecute(parameter) ) return default;
             var compParams = (CreateComponentArgs)parameter;
             Component component = ComponentFactory.CreateComponent(compParams.ComponentTypeNumber);
             component.Rotation90CounterClock = compParams.Rotation;
             GridModel.PlaceComponent(compParams.GridX, compParams.GridY, component);
+            return Task.CompletedTask;
 
         }
     }

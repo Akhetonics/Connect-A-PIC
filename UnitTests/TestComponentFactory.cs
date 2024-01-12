@@ -15,8 +15,8 @@ namespace UnitTests
             Part[,] parts = new Part[widthInTiles, heightInTiles];
 
             parts[0, 0] = new Part(new List<Pin>() {
-                new Pin("west0", MatterType.Light, RectSide.Left),
-                new Pin("east0", MatterType.Light, RectSide.Right)
+                new ("west0", MatterType.Light, RectSide.Left),
+                new ("east0", MatterType.Light, RectSide.Right)
             });
 
             var leftIn = parts[0, 0].GetPinAt(RectSide.Left).IDInFlow;
@@ -26,8 +26,8 @@ namespace UnitTests
 
             var connections = new List<Connection>
             {
-                new Connection { FromPin = leftIn, ToPin = rightOut, Magnitude = 1, WireLengthNM = 0 },
-                new Connection { FromPin = rightIn, ToPin = leftOut, Magnitude = 1, WireLengthNM = 0 }
+                new () { FromPin = leftIn, ToPin = rightOut, Magnitude = 1, WireLengthNM = 0 },
+                new () { FromPin = rightIn, ToPin = leftOut, Magnitude = 1, WireLengthNM = 0 }
             };
 
             return new Component(connections, "placeCell_StraightWG", "", parts, 0, "Straight", DiscreteRotation.R0);

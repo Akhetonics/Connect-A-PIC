@@ -63,7 +63,8 @@ namespace ConnectAPic.LayoutWindow
 		private LogSaver LogSaver { get; set; }
 		private List<(String log, bool isError)> InitializationLogs = new();
 		public GridViewModel GridViewModel { get; private set; }
-		public static GameManager Instance
+        public ComponentFactory ComponentModelFactory { get; set; }
+        public static GameManager Instance
 		{
 			get { return instance; }
 		}
@@ -79,7 +80,8 @@ namespace ConnectAPic.LayoutWindow
                     instance = this;
                     InitializeLoggingSystemAndConsole();
                     InitializationLogs.Add(("Program Version: " + Version, false));
-                    InitializeGridAndGridView();
+                    ComponentModelFactory = new ComponentFactory();
+                    InitializeGridAndGridView(ComponentModelFactory);
                     InitializeExternalPortViews(Grid.ExternalPorts);
                     PCKLoader = new(ComponentFolderPath, Logger);
                 }
@@ -103,11 +105,12 @@ namespace ConnectAPic.LayoutWindow
                 PCKLoader.LoadStandardPCKs();
                 List<ComponentDraft> componentDrafts = EquipViewComponentFactoryWithJSONDrafts();
                 this.CheckForNull(x => x.ToolBoxPath);
+                List<Component> modelComponents = new ComponentDraftConverter(Logger).ToComponentModels(componentDrafts);
+                ComponentModelFactory.InitializeComponentDrafts(modelComponents);
+                InitializationLogs.Add(("Initialized ComponentDrafts",false));
+
                 MainToolBox = GetNode<ToolBox>(ToolBoxPath);
                 this.CheckForNull(x => x.MainToolBox);
-                List<Component> modelComponents = new ComponentDraftConverter(Logger).ToComponentModels(componentDrafts);
-                ComponentFactory.Instance.InitializeComponentDrafts(modelComponents);
-                InitializationLogs.Add(("Initialized ComponentDrafts",false));
             }
             catch (Exception ex)
             {
@@ -149,12 +152,12 @@ namespace ConnectAPic.LayoutWindow
             InitializationLogs.Add(("Initialized LoggingSystem",false));
 		}
 
-		private void InitializeGridAndGridView()
+		private void InitializeGridAndGridView(ComponentFactory componentFactory)
 		{
 			GridView = GetNode<GridView>(GridViewPath);
 			this.CheckForNull(x => GridView);
 			Grid = new GridManager(FieldWidth, FieldHeight);
-			GridViewModel = new GridViewModel(GridView, Grid, Logger);
+			GridViewModel = new GridViewModel(GridView, Grid, Logger, componentFactory);
 			GridView.Initialize(GridViewModel, Logger);
             InitializationLogs.Add(("Initialized GridView and Grid and GridViewModel", false));
 		}

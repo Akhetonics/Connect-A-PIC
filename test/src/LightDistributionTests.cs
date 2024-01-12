@@ -55,8 +55,8 @@ namespace ConnectAPIC.test.src
             RedLaser = (firstLaserInput as ExternalInput).LaserType;
             GreenLaser = (secondLaserInput as ExternalInput).LaserType;
 
-            MyGameManager.GridViewModel.CreateComponentCommand.Execute(new CreateComponentArgs(straightComponentNr, 0, secondInputTileY, DiscreteRotation.R0));
-            MyGameManager.GridViewModel.CreateComponentCommand.Execute(new CreateComponentArgs(curveComponentNr, 0, firstInputTileY, DiscreteRotation.R270));
+            await MyGameManager.GridViewModel.CreateComponentCommand.ExecuteAsync(new CreateComponentArgs(straightComponentNr, 0, secondInputTileY, DiscreteRotation.R0));
+            await MyGameManager.GridViewModel.CreateComponentCommand.ExecuteAsync(new CreateComponentArgs(curveComponentNr, 0, firstInputTileY, DiscreteRotation.R270));
             // create a curve at the position of one of the standardInputs and rotate it by 90 degrees and then start light distribution
             RotatedCurve = MyGameManager.GridViewModel.GridComponentViews[0, firstInputTileY];
             StraightLine = MyGameManager.GridViewModel.GridComponentViews[0, secondInputTileY];

@@ -32,7 +32,7 @@ namespace ConnectAPIC.test.src
             var firstLaserInput = MyGameManager.Grid.ExternalPorts[0];
             var firstInputTileY = firstLaserInput.TilePositionY;
 
-            MyGameManager.GridViewModel.CreateComponentCommand.Execute(new CreateComponentArgs(gratingComponentNr, 0, firstInputTileY, DiscreteRotation.R0));
+            await MyGameManager.GridViewModel.CreateComponentCommand.ExecuteAsync(new CreateComponentArgs(gratingComponentNr, 0, firstInputTileY, DiscreteRotation.R0));
             GratingCoupler = MyGameManager.GridViewModel.GridComponentViews[0, firstInputTileY];
 
         }

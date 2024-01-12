@@ -18,7 +18,7 @@ namespace UnitTests
             var couplerText = JsonConvert.SerializeObject(coupler);
         }
         [Fact]
-        public void TestComponentRotation()
+        public async Task TestComponentRotation()
         {
             var grid = new GridManager(10, 10);
             var component = TestComponentFactory.CreateDirectionalCoupler();
@@ -36,7 +36,7 @@ namespace UnitTests
             component.Connections(laserType.WaveLengthInNm).GetNonNullValues();
             var command = new RotateComponentCommand(grid);
             var args = new RotateComponentArgs(component.GridXMainTile, component.GridYMainTile);
-            command.Execute(args);
+            await command.ExecuteAsync(args);
             Assert.Equal(2, component.WidthInTiles);
             Assert.Equal(2, component.HeightInTiles);
             Assert.Equal(DiscreteRotation.R90, component.Rotation90CounterClock);
@@ -50,15 +50,15 @@ namespace UnitTests
             Assert.Equal(component.GetPartAt(0, 0).GetPinAt(RectSide.Up), PinRight);
             Assert.Equal(component.GetPartAt(1, 1).GetPinAt(RectSide.Down), PinDownLeft);
             Assert.Equal(component.GetPartAt(1, 0).GetPinAt(RectSide.Up), PinDownRight);
-            command.Execute(args);
+            await command.ExecuteAsync(args);
             Assert.Equal(2, component.WidthInTiles);
             Assert.Equal(2, component.HeightInTiles);
             Assert.Equal(DiscreteRotation.R180, component.Rotation90CounterClock);
-            command.Execute(args);
+            await command.ExecuteAsync(args);
             Assert.Equal(2, component.WidthInTiles);
             Assert.Equal(2, component.HeightInTiles);
             Assert.Equal(DiscreteRotation.R270, component.Rotation90CounterClock);
-            command.Execute(args);
+            await command.ExecuteAsync(args);
             Assert.Equal(2, component.WidthInTiles);
             Assert.Equal(2, component.HeightInTiles);
             Assert.Equal(DiscreteRotation.R0, component.Rotation90CounterClock);

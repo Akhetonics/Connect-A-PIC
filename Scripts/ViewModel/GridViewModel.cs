@@ -5,18 +5,20 @@ using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.Components.Creation;
 using CAP_Core.ExternalPorts;
 using CAP_Core.Grid;
+using CAP_Core.Helpers;
 using CAP_Core.Tiles;
 using CAP_Core.Tiles.Grid;
 using ConnectAPic.LayoutWindow;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scripts.Helpers;
+using ConnectAPIC.Scripts.View.ComponentFactory;
+using ConnectAPIC.Scripts.ViewModel.Commands;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
-using System.Windows.Input;
 
 namespace ConnectAPIC.LayoutWindow.ViewModel
 {
@@ -27,27 +29,33 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         public ICommand DeleteComponentCommand { get; set; }
         public ICommand RotateComponentCommand { get; set; }
         public ICommand ExportToNazcaCommand { get; set; }
+        public ICommand SaveGridCommand { get; internal set; }
+        public ICommand LoadGridCommand { get; internal set; }
         public ComponentView[,] GridComponentViews { get; private set; }
         public int Width { get => GridComponentViews.GetLength(0); }
         public int Height { get => GridComponentViews.GetLength(1); }
         public GridManager Grid { get; set; }
         public ILogger Logger { get; }
+        public ComponentFactory ComponentModelFactory { get; }
         public GridView GridView { get; set; }
         public GridSMatrixAnalyzer MatrixAnalyzer { get; private set; }
         public int MaxTileCount { get => Width * Height; }
 
-        public GridViewModel(GridView gridView, GridManager grid, ILogger logger)
+        public GridViewModel(GridView gridView, GridManager grid, ILogger logger, ComponentFactory componentModelFactory)
         {
             this.GridView = gridView;
             this.Grid = grid;
             Logger = logger;
+            this.ComponentModelFactory = componentModelFactory;
             //this.GridView.Columns = grid.Width;
             this.GridComponentViews = new ComponentView[grid.Width, grid.Height];
-            CreateComponentCommand = new CreateComponentCommand(grid, ComponentFactory.Instance);
+            CreateComponentCommand = new CreateComponentCommand(grid, componentModelFactory);
             DeleteComponentCommand = new DeleteComponentCommand(grid);
             RotateComponentCommand = new RotateComponentCommand(grid);
             MoveComponentCommand = new MoveComponentCommand(grid);
-            ExportToNazcaCommand = new ExportNazcaCommand(new NazcaExporter(), grid);
+            SaveGridCommand = new SaveGridCommand(grid, new FileDataAccessor());
+            LoadGridCommand = new LoadGridCommand(grid, new FileDataAccessor(), componentModelFactory, this);
+            ExportToNazcaCommand = new ExportNazcaCommand(new NazcaExporter(), grid, new DataAccessorGodot());
             CreateEmptyField();
             this.Grid.OnComponentPlacedOnTile += Grid_OnComponentPlacedOnTile;
             this.Grid.OnComponentRemoved += Grid_OnComponentRemoved;
@@ -119,7 +127,9 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             var ComponentView = GridView.ComponentViewFactory.CreateComponentView(componentTypeNumber);
             ComponentView.RegisterInGrid(gridX, gridY, rotationCounterClockwise, this);
             RegisterComponentViewInGridView(ComponentView);
+            var parent = ComponentView.GetParent();
             GridView.DragDropProxy.AddChild(ComponentView); // it has to be the child of the DragDropArea to be displayed
+            var children = GridView.DragDropProxy.GetChildren();
             return ComponentView;
         }
 
