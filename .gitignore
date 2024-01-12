@@ -2,7 +2,8 @@
 .godot/
 
 Exports/
-
+# the grid save file format
+*.pic 
 # For debugging without Godot
 Scenes/obj/
 Scenes/bin/
