@@ -12,10 +12,8 @@ namespace UnitTests
         [Fact]
         public static void ComplexFactorTest()
         {
-            Complex factor1 = PhaseShiftCalculator.GetDegrees(PhaseShiftCalculator.TileWidthInNM, StandardWaveLengths.RedNM); // widthInTiles is 1 for the first component
-            Complex factor2 = PhaseShiftCalculator.GetDegrees(PhaseShiftCalculator.TileWidthInNM, StandardWaveLengths.RedNM); // widthInTiles is 1 also for the second component
-
-            Complex result = factor1 * factor2; 
+            Complex factor1 = PhaseShiftCalculator.CalculateInRad(PhaseShiftCalculator.TileWidthInNM, StandardWaveLengths.RedNM); // widthInTiles is 1 for the first component
+            Complex factor2 = PhaseShiftCalculator.CalculateInRad(PhaseShiftCalculator.TileWidthInNM, StandardWaveLengths.RedNM); // widthInTiles is 1 also for the second component
 
         }
         [Fact]

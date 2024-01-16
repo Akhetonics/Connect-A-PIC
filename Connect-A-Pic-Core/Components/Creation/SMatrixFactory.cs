@@ -20,8 +20,8 @@ namespace CAP_Core.Components.Creation
             var connectionWeights = new Dictionary<(Guid, Guid), Complex>();
             foreach (Connection connection in connections)
             {
-                var phaseShiftDegrees = PhaseShiftCalculator.GetDegrees(connection.WireLengthNM, laserWaveLengthNM);
-                connectionWeights.Add((connection.FromPin, connection.ToPin), Complex.FromPolarCoordinates(connection.Magnitude, phaseShiftDegrees));
+                var phaseShiftInRad = PhaseShiftCalculator.CalculateInRad(connection.WireLengthNM, laserWaveLengthNM);
+                connectionWeights.Add((connection.FromPin, connection.ToPin), Complex.FromPolarCoordinates(connection.Magnitude, phaseShiftInRad));
             };
 
             componentConnections.SetValues(connectionWeights);

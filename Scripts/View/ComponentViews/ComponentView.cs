@@ -36,6 +36,7 @@ namespace ConnectAPIC.LayoutWindow.View
         private new float RotationDegrees { get => base.RotationDegrees; set => base.RotationDegrees = value; }
         private new float Rotation { get => base.Rotation; set => base.Rotation = value; }
         private DiscreteRotation _rotationCC;
+        public ShaderMaterial LightOverlayShader { get; set; }
         public DiscreteRotation RotationCC
         {
             get => _rotationCC;
@@ -53,7 +54,7 @@ namespace ConnectAPIC.LayoutWindow.View
             RotationCC = _rotationCC;
         }
 
-        private void FindAndAssignOverlay()
+        private void FindAndAssignOverlayBlueprint()
         {
             OverlayBluePrint = FindChild("Overlay", true, false) as Sprite2D;
 
@@ -76,7 +77,9 @@ namespace ConnectAPIC.LayoutWindow.View
             this.TypeNumber = componentTypeNumber;
             this.WidthInTiles = widthInTiles;
             this.HeightInTiles = heightInTiles;
-            FindAndAssignOverlay();
+            LightOverlayShader = new ShaderMaterial();
+            LightOverlayShader.Shader = ResourceLoader.Singleton.Load("res://Scenes/Components/LightOverlayShaded.tres").Duplicate() as Shader;
+            FindAndAssignOverlayBlueprint();
             this.CheckForNull(x => x.OverlayBluePrint);
             InitializeLightOverlays();
             foreach (var slotData in slotDataSets)
@@ -146,11 +149,8 @@ namespace ConnectAPIC.LayoutWindow.View
             var newOverlay = overlayDraft.Duplicate() as Sprite2D;
             overlayDraft.GetParent().AddChild(newOverlay);
             newOverlay.Hide();
-            if (overlayDraft.Material is ShaderMaterial materialDraft)
-            {
-                newOverlay.Material = materialDraft.Duplicate(true) as ShaderMaterial;
-                (newOverlay.Material as ShaderMaterial).SetShaderParameter("laserColor", laserColor);
-            }
+            newOverlay.Material = LightOverlayShader.Duplicate() as ShaderMaterial;
+            (newOverlay.Material as ShaderMaterial).SetShaderParameter("laserColor", laserColor);
             return newOverlay;
         }
         public void HideLightVector()
