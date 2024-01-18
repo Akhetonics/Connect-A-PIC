@@ -15,7 +15,7 @@ namespace CAP_Core.Tiles.Grid
             if (matrix == null) return "";
             var allPinsInField = GetAllPinShortNames();
             var matrixStringified = matrix.ToString();
-            foreach (Guid guid in matrix.PinReference)
+            foreach (Guid guid in matrix.PinReference.Keys)
             {
                 matrixStringified = matrixStringified.Replace(guid.ToString()[..SMatrix.MaxToStringPinGuidSize], allPinsInField[guid]);
             }
