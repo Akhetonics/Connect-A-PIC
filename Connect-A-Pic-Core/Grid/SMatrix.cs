@@ -50,6 +50,11 @@ namespace CAP_Core.Tiles.Grid
             }
         }
 
+        public void SetValues(Matrix<Complex> sMatrix)
+        {
+            this.SMat = sMatrix;
+        }
+
         public Dictionary<(Guid PinIdStart, Guid PinIdEnd), Complex> GetNonNullValues()
         {
             var transfers = new Dictionary<(Guid, Guid), Complex>();
@@ -77,6 +82,21 @@ namespace CAP_Core.Tiles.Grid
 
             return sysMat;
         }
+
+        /*(1); PINA
+        (0)
+        (0)
+
+          A  B  C
+        A 0  0  0
+        B fun(a) 0 0 
+        C 0 1 0 
+
+        (0)
+        (0)
+        (1)
+        one could write a wrapper and then override the * function so that the func(a) will be calculated
+        */
 
         // n is the number of time steps to move forward "steps=3" would return the light propagation after 3 steps.
         public Dictionary<Guid, Complex> GetLightPropagation(MathNet.Numerics.LinearAlgebra.Vector<Complex> inputVector, int maxSteps)
