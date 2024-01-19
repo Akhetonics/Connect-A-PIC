@@ -2,8 +2,8 @@
 using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.Helpers;
 using CAP_Core.Tiles;
-using Components.ComponentDraftMapper;
-using Components.ComponentDraftMapper.DTOs;
+using CAP_DataAccess.Components.ComponentDraftMapper;
+using CAP_DataAccess.Components.ComponentDraftMapper.DTOs;
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -21,6 +21,7 @@ namespace UnitTests
         [Fact]
         public async Task TestReadWrite()
         {
+            // test if first writing and then reading of a componentdraft works as expected
             // Arrange
             var tempFilePath = Path.GetTempFileName();
             var originalComponentDraft = new ComponentDraft
@@ -38,20 +39,36 @@ namespace UnitTests
                     {
                         matterType = CAP_Core.Components.MatterType.Light,
                         name = "west0",
-                        number = 1,
+                        number = 0,
                         partX = 0,
                         partY = 0,
                         side = RectSide.Left,
+                    },
+                    new PinDraft()
+                    {
+                        matterType = CAP_Core.Components.MatterType.Light,
+                        name = "west0",
+                        number = 1,
+                        partX = 0,
+                        partY = 0,
+                        side = RectSide.Right,
                     }
                 },
                 connections = new List<Connection>
                 {
                     new ()
                     {
-                        fromPinNr = 1,
+                        fromPinNr = 0,
                         toPinNr = 1,
-                        magnitude = 1,
-                        wireLengthNM = 0.02f,
+                        realOrFormula = "1",
+                        imaginary = 0.02f,
+                    },
+                    new ()
+                    {
+                        fromPinNr = 1,
+                        toPinNr = 0,
+                        realOrFormula = "(1/PIN0) +PIN1*2",
+                        imaginary = 0.02f,
                     }
                 },
                 overlays = new List<Overlay>
@@ -71,15 +88,16 @@ namespace UnitTests
             await reader.Write(tempFilePath, originalComponentDraft);
             bool fileIsUsed = true;
             int counter = 0;
-            ComponentDraft readComponentDraft = null;
+            ComponentDraft? readComponentDraft = null;
             while (fileIsUsed)
             {
                 try
                 {
                     var readResult = reader.TryReadJson(tempFilePath);
-                    if(readResult.error == null)
+                    
+                    if(readResult.error != null)
                     {
-                        throw new IOException(readResult.error);
+                        throw new Exception(readResult.error);
                     }
                     readComponentDraft = readResult.draft;
                     fileIsUsed = false;
@@ -93,6 +111,7 @@ namespace UnitTests
             }
             // Assert
             Assert.Equal(JsonSerializer.Serialize(originalComponentDraft), JsonSerializer.Serialize(readComponentDraft));
+            
 
             // Clean up
             if (File.Exists(tempFilePath))

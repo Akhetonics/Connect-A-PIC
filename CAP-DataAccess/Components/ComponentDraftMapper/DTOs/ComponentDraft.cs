@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Components.ComponentDraftMapper.DTOs
+namespace CAP_DataAccess.Components.ComponentDraftMapper.DTOs
 {
     public class ComponentDraft
     {

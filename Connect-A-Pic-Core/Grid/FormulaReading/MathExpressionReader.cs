@@ -1,14 +1,56 @@
-﻿using System.Linq.Dynamic.Core;
+﻿using CAP_Core.Components;
+using MathNet.Numerics;
+using System.Linq.Dynamic.Core;
 using System.Linq.Expressions;
 using System.Numerics;
 using System.Text.RegularExpressions;
 using YamlDotNet.Core;
 
-namespace CAP_Core.Tiles.Grid
+namespace CAP_Core.Grid.FormulaReading
 {
     public static class MathExpressionReader
     {
         public const string PinParameterIdentifier = "PIN";
+
+        public static int ExtractPinNumber(string PinIdentifier)
+        {
+            // Regular expression pattern: 
+            // - (?i) for case-insensitivity
+            // - pin for matching the word "pin" or what is in PinParameterIdentifier
+            // - (\d+) for capturing one or more digits
+            var match = Regex.Match(PinIdentifier, @$"(?i){PinParameterIdentifier}(\d+)");
+
+            if (match.Success)
+            {
+                return int.Parse(match.Groups[1].Value);
+            }
+            else
+            {
+                throw new InvalidParameterException();
+            }
+        }
+
+        public static ConnectionFunction? ConvertToDelegate(string realOrFormula, List<Pin> allPins)
+        {
+            // create the non-linear function out of the string Formula
+            if (Double.TryParse(realOrFormula, out double realValue) == false)
+            {
+                // first get all parameters that are in the formula as string
+                var PinNumbersAsString = MathExpressionReader.FindParametersInExpression(realOrFormula)
+                    .Select(p => p.Name)
+                    .ToList();
+
+                // then map those strings to the Guids of the actual pins and create the delegate function
+                var stringToGuidMapper = new Dictionary<string, Guid>();
+                foreach (var param in PinNumbersAsString)
+                {
+                    if (param == null) continue;
+                    stringToGuidMapper.Add(param, allPins.Single(p => p.LocalNumberInFlow == MathExpressionReader.ExtractPinNumber(param)).IDInFlow);
+                }
+                return MathExpressionReader.ConvertToDelegate(realOrFormula, stringToGuidMapper);
+            }
+            return null;
+        }
 
         // Example: dynamically invoking with values
         // var values = new object[] { 1.0, 4.0 };
@@ -35,7 +77,9 @@ namespace CAP_Core.Tiles.Grid
                         var realArguments = complexParameters.Select(y => y.Real).Cast<object>().ToArray();
                         var imaginaryArguments = complexParameters.Select(y => y.Imaginary).Cast<object>().ToArray();
 
-                        // Invoke the lambda for real and imaginary parts separately
+                        // Invoke the lambda twice -> for real and imaginary parts separately
+                        // this ensures that we can use the normal Math.Sin() functions
+                        // that only work with double but not with complex values.
                         double realPart = (double)compiledLambda.DynamicInvoke(realArguments);
                         double imaginaryPart = (double)compiledLambda.DynamicInvoke(imaginaryArguments);
 

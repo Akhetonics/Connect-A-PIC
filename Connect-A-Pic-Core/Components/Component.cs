@@ -1,8 +1,7 @@
 using CAP_Core.Components.Creation;
+using CAP_Core.Grid.FormulaReading;
 using CAP_Core.Helpers;
-using CAP_Core.Tiles;
 using CAP_Core.Tiles.Grid;
-using System.Numerics;
 using System.Text.Json.Serialization;
 
 namespace CAP_Core.Components
@@ -17,8 +16,8 @@ namespace CAP_Core.Components
         [JsonIgnore] public int GridXMainTile { get; protected set; }
         [JsonIgnore] public int GridYMainTile { get; protected set; }
         public Part[,] Parts { get; protected set; }
-        private List<Connection> RawConnections;
-        public SMatrix Connections(double waveLength) => SMatrixFactory.GetSMatrix(RawConnections, Parts, waveLength);
+        private List<Connection> RawConnections { get; set; }
+        public SMatrix Connections(double waveLength) => SMatrixFactory.GetSMatrix(RawConnections, GetAllPins(), waveLength);
         public string NazcaFunctionName { get; set; }
         public string NazcaFunctionParameters { get; set; }
         private DiscreteRotation _discreteRotation;
@@ -80,15 +79,7 @@ namespace CAP_Core.Components
             }
             return Parts[offsetX, offsetY];
         }
-        public Part? CreatePart(params RectSide[] LightTransmittingSides)
-        {
-            var part = new Part();
-            foreach (RectSide side in LightTransmittingSides)
-            {
-                part.InitializePin(side, null, MatterType.Light);
-            }
-            return part;
-        }
+
         public override string ToString()
         {
             return $"Nazca Name: {NazcaFunctionName} \n" +
@@ -104,8 +95,12 @@ namespace CAP_Core.Components
         }
         public List<Pin> GetAllPins()
         {
+            return GetAllPins(Parts);
+        }
+        public static List<Pin> GetAllPins(Part[,]parts)
+        {
             var pinList = new List<Pin>();
-            foreach(var part in Parts)
+            foreach(var part in parts)
             {
                 pinList.AddRange(part.Pins);
             }
@@ -134,7 +129,7 @@ namespace CAP_Core.Components
 
         private Dictionary<Guid, Guid> MapPinIDsWithNewIDs(Part[,] clonedParts)
         {
-            Dictionary<Guid, Guid> pinIdMapping = new Dictionary<Guid, Guid>();
+            Dictionary<Guid, Guid> pinIdMapping = new ();
             for (int x = 0; x < Parts.GetLength(0); x++)
             {
                 for (int y = 0; y < Parts.GetLength(1); y++)
@@ -168,8 +163,11 @@ namespace CAP_Core.Components
             {
                 FromPin = oldToNewPinIds[c.FromPin],
                 ToPin = oldToNewPinIds[c.ToPin],
-                Magnitude = c.Magnitude,
-                WireLengthNM = c.WireLengthNM
+                RealValue = c.RealValue,
+                // also clone the guids in the formula..
+                NonLinearFunctionRaw = c.NonLinearFunctionRaw,
+                NonLinearConnectionFunction = MathExpressionReader.ConvertToDelegate(c.NonLinearFunctionRaw, GetAllPins()),
+                Imaginary = c.Imaginary
             }).ToList();
             return new Component(clonedRawConnections, NazcaFunctionName, NazcaFunctionParameters, clonedParts, TypeNumber, Identifier, Rotation90CounterClock);
         }

@@ -2,9 +2,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using CAP_Contracts;
-using Components.ComponentDraftMapper.DTOs;
+using CAP_DataAccess.Components.ComponentDraftMapper.DTOs;
 
-namespace Components.ComponentDraftMapper
+namespace CAP_DataAccess.Components.ComponentDraftMapper
 {
     public class ComponentDraftFileReader
     {

@@ -6,6 +6,7 @@ using System.Linq.Dynamic.Core;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Linq;
+using CAP_Core.Grid.FormulaReading;
 
 namespace CAP_Core.Tiles.Grid
 {
@@ -36,6 +37,7 @@ namespace CAP_Core.Tiles.Grid
                 PinReference.Add(allPinsInGrid[i], i );
             }
             reversePinReference = PinReference.ToDictionary(pair => pair.Value, pair => pair.Key);
+            NonLinearConnections = new();
         }
 
         public void SetNonLinearConnectionFunctions(Dictionary<(Guid PinIdStart, Guid PinIdEnd), ConnectionFunction> transfers)
@@ -82,7 +84,7 @@ namespace CAP_Core.Tiles.Grid
         public static SMatrix CreateSystemSMatrix(List<SMatrix> matrices)
         {
             var portsReference = matrices.SelectMany(x => x.PinReference).Distinct().ToList();
-            SMatrix sysMat = new(portsReference.Select(p=>p.Key).ToList());
+            SMatrix sysMat = new(portsReference.Select(p=>p.Key).Distinct().ToList());
 
             foreach (SMatrix matrix in matrices)
             {

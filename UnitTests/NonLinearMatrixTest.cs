@@ -1,5 +1,7 @@
-﻿using CAP_Core.Tiles.Grid;
+﻿using CAP_Core.Grid.FormulaReading;
+using CAP_Core.Tiles.Grid;
 using Chickensoft.GoDotTest;
+using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using Shouldly;
 using System;
@@ -18,25 +20,51 @@ namespace UnitTests
         [Fact]
         public void NonLinearMatrixCalculationTest()
         {
+            // initialize Pins
             List<Guid> pins = new() { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() };
-            var movementFunction = MathExpressionReader.ConvertToDelegate("PIN0 * 0.9", new Dictionary<string, Guid>() { { "Pin0", pins[0] } }); // the key is small letter to test if it fixes it
-            var inputLightStrength = new Complex(1, 0);
-            Complex[] inputValues = new Complex[] { inputLightStrength, new(0, 0), new(0, 0), new(0, 0) };
 
+            // defining the comlex value for the input light
+            var inputLightStrength = new Complex(1, 0);
+            // defining a linear factor defining how much light will be lost in the linear connections
+            var linearFactor = 0.9; 
+
+            // defining the intensity and pinPosition of light that we input into the circuit
+            Complex[] InputVectorIntensities = new Complex[] { inputLightStrength, new(0, 0), new(0, 0), new(0, 0) };
+            MathNet.Numerics.LinearAlgebra.Vector<Complex> inputVector = MathNet.Numerics.LinearAlgebra.Vector<Complex>.Build.Dense(InputVectorIntensities);
+
+            // defining our non-linear test function
+            var nonLinearLightFunction = new ConnectionFunction(
+                inputVectorValuesAtPinIDs => // the input is the complex value of the input vector at the index of the GUID of the pins of the next parameter
+                inputVectorValuesAtPinIDs[0] * new Complex(0.9, 0.32),
+                new List<Guid>() { pins[0] } // the Pin-GUIDs are used so that we know at which index of the inputVector we have to get the numbers from. Those Complex numbers will be fed into the connectionfunction-Lambda in that given order as a list.
+            );
+
+            // defining the dictionary that contains all non-linear functions
             Dictionary<(Guid inFlowPin, Guid outFlowPin), ConnectionFunction> nonLinearConnections = new()
             {
-                { (pins[0],pins[1]) , new( x=> x[0] * Complex.FromPolarCoordinates(0.9,Math.PI) , new List<Guid>(){ pins[0] } )},
-                { (pins[1],pins[2]) , new ( x=> new Complex(Math.Sin(x[0].Real),Math.Cos(x[0].Imaginary)) , new List<Guid>(){pins[1] } ) },
+                { 
+                    (pins[0],pins[1]) , // the non-linear connection starts at pin0 and goes to pin1
+                    nonLinearLightFunction
+                }
+            };
+
+            // we also define all linear functions with our linearFactor so that we lose 10% of light throughput
+            Dictionary<(Guid inFlowPin, Guid outFlowPin), Complex> linearConnections = new()
+            {
+                { (pins[1] , pins[2]) , 1},
+                { (pins[2] , pins[3]) , linearFactor}
             };
 
             SMatrix sMatrix = new(pins);
-            MathNet.Numerics.LinearAlgebra.Vector<Complex> inputVector = MathNet.Numerics.LinearAlgebra.Vector<Complex>.Build.Dense(inputValues);
             sMatrix.SetNonLinearConnectionFunctions(nonLinearConnections);
+            sMatrix.SetValues(linearConnections); // becau
             var outputLight = sMatrix.GetLightPropagation(inputVector, 10);
 
-            var exptectedResult = nonLinearConnections[(pins[0], pins[1])].CalcConnectionWeight(new List<Complex>() { inputLightStrength });
-
-            outputLight[pins[3]].ShouldBe(exptectedResult);
+            var expectedResult = linearFactor * nonLinearConnections[(pins[0], pins[1])].CalcConnectionWeight(new List<Complex>() { inputLightStrength });
+            var tolerance = 1e-12;
+            expectedResult.Real.ShouldBe(0.81, tolerance);
+            expectedResult.Imaginary.ShouldBe(0.288, tolerance);
+            outputLight[pins[3]].ShouldBe(expectedResult);
         }
         [Fact]
         public void FindParametersTest()

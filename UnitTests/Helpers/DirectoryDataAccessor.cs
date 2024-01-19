@@ -1,6 +1,6 @@
 ﻿using CAP_Contracts;
 using CAP_DataAccess.Helpers;
-using Components.ComponentDraftMapper;
+using CAP_DataAccess.Components.ComponentDraftMapper;
 
 namespace UnitTests
 {

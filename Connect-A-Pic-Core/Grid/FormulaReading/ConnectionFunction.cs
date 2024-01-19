@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace CAP_Core.Tiles.Grid
+namespace CAP_Core.Grid.FormulaReading
 {
     public record struct ConnectionFunction(Func<List<Complex>, Complex> CalcConnectionWeight, List<Guid> ParameterPinGuids)
     {

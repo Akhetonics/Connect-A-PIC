@@ -1,13 +1,6 @@
 using CAP_Contracts.Logger;
-using CAP_Core;
 using CAP_DataAccess.Helpers;
-using Components.ComponentDraftMapper;
-using Components.ComponentDraftMapper.DTOs;
-using ConnectAPic.LayoutWindow;
 using Godot;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 
 namespace ConnectAPIC.Scripts.View.ComponentFactory
 {

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using CAP_Contracts;
-using Components.ComponentDraftMapper.DTOs;
+using CAP_DataAccess.Components.ComponentDraftMapper.DTOs;
 
-namespace Components.ComponentDraftMapper
+namespace CAP_DataAccess.Components.ComponentDraftMapper
 {
     public class ComponentDraftValidator
     {

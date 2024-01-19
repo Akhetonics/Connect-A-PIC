@@ -133,6 +133,12 @@ namespace UnitTests
 
             Assert.False(isIDConflict, "there some IDs seem to overlap. Here is the first ID \n" + guidsReadable + " 1st of second comp: \n" + guids2Readable);
         }
+
+        [Fact]
+        public void TestComponentCloning()
+        {
+            Assert.Fail();
+        }
     }
 
 }

@@ -1,10 +1,11 @@
 ﻿using CAP_Contracts.Logger;
 using CAP_Core.Components;
 using CAP_Core.Components.ComponentHelpers;
-using Components.ComponentDraftMapper.DTOs;
+using CAP_Core.Grid.FormulaReading;
+using CAP_DataAccess.Components.ComponentDraftMapper.DTOs;
 using System.Numerics;
 
-namespace Components.ComponentDraftMapper
+namespace CAP_DataAccess.Components.ComponentDraftMapper
 {
     public class ComponentDraftConverter
     {
@@ -44,7 +45,7 @@ namespace Components.ComponentDraftMapper
             foreach (var group in pinsGroupedByPosition)
             {
                 var (x, y) = group.Key;
-                var realPins = group.Value.Select(pinDraft => new Pin(pinDraft.name, pinDraft.matterType, pinDraft.side)).ToList();
+                var realPins = group.Value.Select(pinDraft => new Pin(pinDraft.name, pinDraft.number, pinDraft.matterType, pinDraft.side)).ToList();
                 parts[x, y] = new Part(realPins);
             }
 
@@ -53,6 +54,7 @@ namespace Components.ComponentDraftMapper
 
         private List<CAP_Core.Components.Connection> CreateConnectionsFromDraft(ComponentDraft draft, Part[,] parts)
         {
+            var allPins = Component.GetAllPins(parts);
             return draft.connections.Select(dto =>
             {
                 var fromPinDTO = draft.pins.Single(p => p.number == dto.fromPinNr);
@@ -60,13 +62,23 @@ namespace Components.ComponentDraftMapper
 
                 var fromPinModel = FindModelPin(parts, fromPinDTO);
                 var toPinModel = FindModelPin(parts, toPinDTO);
+                
+                double realValue = 0;
+                ConnectionFunction? function = MathExpressionReader.ConvertToDelegate(dto.realOrFormula, allPins);
+                // if there is no nonlinear funtion, then there might only be a value
+                if(function == null )
+                {
+                    Double.TryParse(dto.realOrFormula, out realValue);
+                }
 
                 return new CAP_Core.Components.Connection
                 {
                     FromPin = fromPinModel.IDInFlow,
                     ToPin = toPinModel.IDOutFlow,
-                    Magnitude = dto.magnitude,
-                    WireLengthNM = dto.wireLengthNM
+                    RealValue = realValue,
+                    NonLinearFunctionRaw = dto.realOrFormula,
+                    NonLinearConnectionFunction = function,
+                    Imaginary = dto.imaginary
                 };
             }).ToList();
         }

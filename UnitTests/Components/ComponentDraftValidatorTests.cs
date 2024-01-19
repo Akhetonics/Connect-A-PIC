@@ -1,8 +1,9 @@
 ﻿using CAP_Contracts;
 using CAP_Core.Components;
 using CAP_Core.Tiles;
-using Components.ComponentDraftMapper;
-using Components.ComponentDraftMapper.DTOs;
+using CAP_DataAccess.Components.ComponentDraftMapper;
+using CAP_DataAccess.Components.ComponentDraftMapper;
+using CAP_DataAccess.Components.ComponentDraftMapper.DTOs;
 
 namespace UnitTests
 {
@@ -42,7 +43,7 @@ namespace UnitTests
                     tileOffsetY = -1, // trigger ErrorOverlayOffsetYSmaller0
                 }
             },
-                connections = new List<Components.ComponentDraftMapper.DTOs.Connection>
+                connections = new List<CAP_DataAccess.Components.ComponentDraftMapper.DTOs.Connection>
             {
                 new (){ fromPinNr = 999, toPinNr = 998 } // trigger ErrorFromPinNrInvalid and ErrorToPinNrInvalid
             }
@@ -106,21 +107,21 @@ namespace UnitTests
                         name = "east0",
                     }
                 },
-                connections = new List<Components.ComponentDraftMapper.DTOs.Connection>()
+                connections = new List<CAP_DataAccess.Components.ComponentDraftMapper.DTOs.Connection>()
                 {
                     new ()
                     {
                         fromPinNr = 1,
                         toPinNr = 2,
-                        magnitude = 1,
-                        wireLengthNM = 0.02f,
+                        realOrFormula = "1+PIN0",
+                        imaginary= 0.02f,
                     },
                     new ()
                     {
                         fromPinNr = 2,
                         toPinNr = 1,
-                        magnitude = 1,
-                        wireLengthNM = 0.02f,
+                        realOrFormula = "1",
+                        imaginary = 0.02f,
                     },
                 },
             };

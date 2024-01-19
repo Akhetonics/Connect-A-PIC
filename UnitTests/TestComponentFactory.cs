@@ -15,8 +15,8 @@ namespace UnitTests
             Part[,] parts = new Part[widthInTiles, heightInTiles];
 
             parts[0, 0] = new Part(new List<Pin>() {
-                new ("west0", MatterType.Light, RectSide.Left),
-                new ("east0", MatterType.Light, RectSide.Right)
+                new ("west0",0, MatterType.Light, RectSide.Left),
+                new ("east0",1, MatterType.Light, RectSide.Right)
             });
 
             var leftIn = parts[0, 0].GetPinAt(RectSide.Left).IDInFlow;
@@ -26,8 +26,8 @@ namespace UnitTests
 
             var connections = new List<Connection>
             {
-                new () { FromPin = leftIn, ToPin = rightOut, Magnitude = 1, WireLengthNM = 0 },
-                new () { FromPin = rightIn, ToPin = leftOut, Magnitude = 1, WireLengthNM = 0 }
+                new () { FromPin = leftIn, ToPin = rightOut, RealValue = 1, Imaginary = 0 },
+                new () { FromPin = rightIn, ToPin = leftOut, RealValue= 1, Imaginary = 0 }
             };
 
             return new Component(connections, "placeCell_StraightWG", "", parts, 0, "Straight", DiscreteRotation.R0);
@@ -41,10 +41,10 @@ namespace UnitTests
             Part[,] parts = new Part[widthInTiles, heightInTiles];
 
 
-            parts[0, 0] = new Part(new List<Pin>() { new Pin("west0", MatterType.Light, RectSide.Left) });
-            parts[1, 0] = new Part(new List<Pin>() { new Pin("east0", MatterType.Light, RectSide.Right) });
-            parts[1, 1] = new Part(new List<Pin>() { new Pin("east1", MatterType.Light, RectSide.Right) });
-            parts[0, 1] = new Part(new List<Pin>() { new Pin("west1", MatterType.Light, RectSide.Left) });
+            parts[0, 0] = new Part(new List<Pin>() { new Pin("west0", 0, MatterType.Light, RectSide.Left) });
+            parts[1, 0] = new Part(new List<Pin>() { new Pin("east0",1, MatterType.Light, RectSide.Right) });
+            parts[1, 1] = new Part(new List<Pin>() { new Pin("east1",2, MatterType.Light, RectSide.Right) });
+            parts[0, 1] = new Part(new List<Pin>() { new Pin("west1",3, MatterType.Light, RectSide.Left) });
 
             // setting up the connections
             var leftUpIn = parts[0, 0].GetPinAt(RectSide.Left).IDInFlow;
@@ -58,14 +58,14 @@ namespace UnitTests
             
             var connections = new List<Connection>
             {
-                new() { FromPin = leftUpIn, ToPin = rightUpOut, Magnitude = 0.5f, WireLengthNM = 0 },
-                new() { FromPin = leftUpIn, ToPin = rightDownOut, Magnitude = 0.5f, WireLengthNM = 0 },
-                new() { FromPin = leftDownIn, ToPin = rightUpOut, Magnitude = 0.5f, WireLengthNM = 0 },
-                new() { FromPin = leftDownIn, ToPin = rightDownOut, Magnitude = 0.5f, WireLengthNM = 0 },
-                new() { FromPin = rightUpIn, ToPin = leftUpOut, Magnitude = 0.5f, WireLengthNM = 0 },
-                new() { FromPin = rightUpIn, ToPin = leftDownOut, Magnitude = 0.5f, WireLengthNM = 0 },
-                new() { FromPin = rightDownIn, ToPin = leftUpOut, Magnitude = 0.5f, WireLengthNM = 0 },
-                new() { FromPin = rightDownIn, ToPin = leftDownOut, Magnitude = 0.5f, WireLengthNM = 0 }
+                new() { FromPin = leftUpIn, ToPin = rightUpOut, RealValue = 0.5f, Imaginary = 0 },
+                new() { FromPin = leftUpIn, ToPin = rightDownOut, RealValue = 0.5f, Imaginary = 0 },
+                new() { FromPin = leftDownIn, ToPin = rightUpOut, RealValue = 0.5f, Imaginary = 0 },
+                new() { FromPin = leftDownIn, ToPin = rightDownOut, RealValue = 0.5f, Imaginary = 0 },
+                new() { FromPin = rightUpIn, ToPin = leftUpOut, RealValue = 0.5f, Imaginary = 0 },
+                new() { FromPin = rightUpIn, ToPin = leftDownOut, RealValue = 0.5f, Imaginary = 0 },
+                new() { FromPin = rightDownIn, ToPin = leftUpOut, RealValue = 0.5f, Imaginary = 0 },
+                new() { FromPin = rightDownIn, ToPin = leftDownOut, RealValue = 0.5f, Imaginary = 0 }
             };
             return new Component(connections, "placeCell_DirectionalCoupler", "", parts, 0,"DirectionalCoupler", DiscreteRotation.R0);
         }
