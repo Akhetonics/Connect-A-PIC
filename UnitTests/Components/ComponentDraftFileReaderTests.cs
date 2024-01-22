@@ -32,7 +32,7 @@ namespace UnitTests
                 nazcaFunctionParameters = "",
                 sceneResPath = "res://Scenes/Components/DirectionalCoupler.tscn",
                 widthInTiles = 1,
-                heightInTiles =1,
+                heightInTiles = 1,
                 pins = new List<PinDraft>
                 {
                     new PinDraft()
@@ -54,22 +54,27 @@ namespace UnitTests
                         side = RectSide.Right,
                     }
                 },
-                connections = new List<Connection>
-                {
-                    new ()
-                    {
-                        fromPinNr = 0,
-                        toPinNr = 1,
-                        realOrFormula = "1",
-                        imaginary = 0.02f,
-                    },
-                    new ()
-                    {
-                        fromPinNr = 1,
-                        toPinNr = 0,
-                        realOrFormula = "(1/PIN0) +PIN1*2",
-                        imaginary = 0.02f,
-                    }
+                sMatrices = new List<WaveLengthSpecificSMatrix> {
+                    new WaveLengthSpecificSMatrix() {
+                        waveLength = 1550,
+                        connections = new List<Connection>()
+                        {
+                            new Connection()
+                            {
+                                fromPinNr = 0,
+                                toPinNr = 1,
+                                realOrFormula = "PIN0 +1",
+                                imaginary = 0
+                            },
+                            new Connection()
+                            {
+                                fromPinNr = 1,
+                                toPinNr = 0,
+                                realOrFormula = "0.9",
+                                imaginary = 0.3
+                            }
+                        }
+                    } 
                 },
                 overlays = new List<Overlay>
                 {

@@ -27,5 +27,14 @@ namespace CAP_Core.Helpers
 
             return "[" + entries + "]";
         }
+        public static string ToCustomString<TKey, TValue>(this Dictionary<TKey, TValue> dictionary)
+        {
+            StringBuilder sb = new StringBuilder();
+            foreach (var kvp in dictionary)
+            {
+                sb.AppendLine($"key: {kvp.Key}, val: {kvp.Value}");
+            }
+            return sb.ToString();
+        }
     }
 }

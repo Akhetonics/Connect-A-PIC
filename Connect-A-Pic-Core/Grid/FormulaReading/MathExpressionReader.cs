@@ -85,6 +85,7 @@ namespace CAP_Core.Grid.FormulaReading
 
                         return new Complex(realPart, imaginaryPart);
                     },
+                    expression,
                     parameters.Select(p => PinPlaceHolderToGuids[p.Name]).ToList()
                 );
             return connectionFunction;

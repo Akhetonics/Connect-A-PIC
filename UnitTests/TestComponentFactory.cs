@@ -1,6 +1,7 @@
 ﻿using CAP_Core.Components;
 using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.Tiles;
+using CAP_Core.Tiles.Grid;
 using System.Numerics;
 
 namespace UnitTests
@@ -19,15 +20,22 @@ namespace UnitTests
                 new ("east0",1, MatterType.Light, RectSide.Right)
             });
 
+
             var leftIn = parts[0, 0].GetPinAt(RectSide.Left).IDInFlow;
             var rightOut = parts[0, 0].GetPinAt(RectSide.Right).IDOutFlow;
             var rightIn = parts[0, 0].GetPinAt(RectSide.Right).IDInFlow;
             var leftOut = parts[0, 0].GetPinAt(RectSide.Left).IDOutFlow;
 
-            var connections = new List<Connection>
+            var allPins = Component.GetAllPins(parts).SelectMany(p => new[] { p.IDInFlow, p.IDOutFlow }).ToList();
+            var matrixRed = new SMatrix(allPins);
+            // set the connections
+            matrixRed.SetValues(new(){
+                { (leftIn, rightOut), 1 },
+                { (rightIn, leftOut), 1 },
+            });
+            var connections = new Dictionary<int,SMatrix>
             {
-                new () { FromPin = leftIn, ToPin = rightOut, RealValue = 1, Imaginary = 0 },
-                new () { FromPin = rightIn, ToPin = leftOut, RealValue= 1, Imaginary = 0 }
+                {(int)StandardWaveLengths.RedNM, matrixRed},
             };
 
             return new Component(connections, "placeCell_StraightWG", "", parts, 0, "Straight", DiscreteRotation.R0);
@@ -56,16 +64,25 @@ namespace UnitTests
             var rightDownIn = parts[1, 1].GetPinAt(RectSide.Right).IDInFlow;
             var rightDownOut = parts[1, 1].GetPinAt(RectSide.Right).IDOutFlow;
             
-            var connections = new List<Connection>
+            var allPins = Component.GetAllPins(parts).SelectMany(p => new[] { p.IDInFlow, p.IDOutFlow }).ToList();
+            var matrixRed = new SMatrix(allPins);
+            // set the connections
+            matrixRed.SetValues(new(){
+                { (leftUpIn, rightUpOut), 0.5f },
+                { (leftUpIn, rightDownOut), 0.5f },
+                { (leftDownIn, rightUpOut), 0.5f },
+                { (leftDownIn, rightDownOut), 0.5f },
+                { (rightUpIn, leftUpOut), 0.5f },
+                { (rightUpIn, leftDownOut), 0.5f },
+                { (rightDownIn, leftUpOut), 0.5f },
+                { (rightDownIn, leftDownOut), 0.5f },
+                
+            });
+            var connections = new Dictionary<int, SMatrix>
             {
-                new() { FromPin = leftUpIn, ToPin = rightUpOut, RealValue = 0.5f, Imaginary = 0 },
-                new() { FromPin = leftUpIn, ToPin = rightDownOut, RealValue = 0.5f, Imaginary = 0 },
-                new() { FromPin = leftDownIn, ToPin = rightUpOut, RealValue = 0.5f, Imaginary = 0 },
-                new() { FromPin = leftDownIn, ToPin = rightDownOut, RealValue = 0.5f, Imaginary = 0 },
-                new() { FromPin = rightUpIn, ToPin = leftUpOut, RealValue = 0.5f, Imaginary = 0 },
-                new() { FromPin = rightUpIn, ToPin = leftDownOut, RealValue = 0.5f, Imaginary = 0 },
-                new() { FromPin = rightDownIn, ToPin = leftUpOut, RealValue = 0.5f, Imaginary = 0 },
-                new() { FromPin = rightDownIn, ToPin = leftDownOut, RealValue = 0.5f, Imaginary = 0 }
+                {(int)StandardWaveLengths.RedNM, matrixRed},
+                {(int)StandardWaveLengths.GreenNM, matrixRed},
+                {(int)StandardWaveLengths.BlueNM, matrixRed},
             };
             return new Component(connections, "placeCell_DirectionalCoupler", "", parts, 0,"DirectionalCoupler", DiscreteRotation.R0);
         }

@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using CAP_Contracts;
+using CAP_Core.Components.ComponentHelpers;
 using CAP_DataAccess.Components.ComponentDraftMapper.DTOs;
 
 namespace CAP_DataAccess.Components.ComponentDraftMapper
@@ -27,6 +29,7 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
         public static readonly string ErrorToPinNrInvalid = "Err_016";
         public static readonly string ErrorPinPartYBiggerMaxHeight = "Err_017";
         public static readonly string ErrorPinPartXBiggerMaxHeight = "Err_018";
+        public static readonly string ErrorMatrixNotDefinedForWaveLength = "Err_019";
 
         public IResourcePathChecker ResourcePathChecker { get; }
 
@@ -95,10 +98,17 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
             {
                 errorMsg += ValidatePin(pin, draft.widthInTiles, draft.heightInTiles);
             }
-            foreach (var connection in draft.connections)
+            if(draft.sMatrices == null)
             {
-                errorMsg += ValidateConnection(draft.pins, connection);
+                errorMsg += $"{ErrorMatrixNotDefinedForWaveLength} sMatrix is not defined for any WaveLength";
+            } else
+            {
+                foreach (var connection in draft.sMatrices)
+                {
+                    errorMsg += ValidateConnection(draft.pins, draft.sMatrices);
+                }
             }
+            
 
             bool success = true;
             if (errorMsg.Length > 0)
@@ -176,19 +186,38 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
             return "";
         }
 
-        private static string ValidateConnection(List<PinDraft> pins, Connection connection)
+        private static string ValidateConnection(List<PinDraft> pins, List<WaveLengthSpecificSMatrix> matrixDrafts)
         {
             string errorMsg = "";
-            // the pinIDs on the connections should exist
-            var allPinNumbers = pins.Select(p => p.number).ToHashSet();
-            if (!allPinNumbers.Contains(connection.fromPinNr))
+            // test if the SMatrices are defined for all given standard wavelengths
+            var definedWaveLengths = matrixDrafts.Select(m => m.waveLength).ToList(); 
+            // we use Reflection to get all properties as this class is used as an enum
+            foreach (PropertyInfo prop in typeof(StandardWaveLengths).GetProperties(BindingFlags.Public | BindingFlags.Static)) 
             {
-                errorMsg += ErrorFromPinNrInvalid + $" The number '{nameof(Connection.fromPinNr)}' is not defined in the list of Pins\n";
+                double value = (double)prop.GetValue(null);
+                if (!definedWaveLengths.Contains((int)value))
+                {
+                    errorMsg += ErrorMatrixNotDefinedForWaveLength + $" SMatrix is not defined for the waveLength: '{nameof(Connection.fromPinNr)}' \n";
+                }
             }
-            if (!allPinNumbers.Contains(connection.toPinNr))
+
+            // test if all pins exist that are being used in the connections of the SMatrices
+            foreach(var matrix in matrixDrafts)
             {
-                errorMsg += ErrorToPinNrInvalid + $"the number '{nameof(Connection.toPinNr)}' is not defined in the list of Pins\n";
+                foreach(var connection in matrix.connections)
+                {
+                    var allPinNumbers = pins.Select(p => p.number).ToHashSet();
+                    if (!allPinNumbers.Contains(connection.fromPinNr))
+                    {
+                        errorMsg += ErrorFromPinNrInvalid + $" The number '{nameof(Connection.fromPinNr)}' is not defined in the list of Pins\n";
+                    }
+                    if (!allPinNumbers.Contains(connection.toPinNr))
+                    {
+                        errorMsg += ErrorToPinNrInvalid + $"the number '{nameof(Connection.toPinNr)}' is not defined in the list of Pins\n";
+                    }
+                }
             }
+            
             return errorMsg;
         }
 

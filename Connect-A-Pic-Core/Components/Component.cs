@@ -2,6 +2,7 @@ using CAP_Core.Components.Creation;
 using CAP_Core.Grid.FormulaReading;
 using CAP_Core.Helpers;
 using CAP_Core.Tiles.Grid;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
 namespace CAP_Core.Components
@@ -16,8 +17,7 @@ namespace CAP_Core.Components
         [JsonIgnore] public int GridXMainTile { get; protected set; }
         [JsonIgnore] public int GridYMainTile { get; protected set; }
         public Part[,] Parts { get; protected set; }
-        private List<Connection> RawConnections { get; set; }
-        public SMatrix Connections(double waveLength) => SMatrixFactory.GetSMatrix(RawConnections, GetAllPins(), waveLength);
+        public Dictionary<int, SMatrix> LaserWaveLengthToSMatrixMap { get; set; }
         public string NazcaFunctionName { get; set; }
         public string NazcaFunctionParameters { get; set; }
         private DiscreteRotation _discreteRotation;
@@ -33,13 +33,13 @@ namespace CAP_Core.Components
                 }
             }
         }
-        public Component(List<Connection> connections , string nazcaFunctionName, string nazcaFunctionParams, Part[,] parts, int typeNumber, string identifier, DiscreteRotation rotationCounterClock)
+        public Component(Dictionary<int,SMatrix> laserWaveLengthToSMatrixMap , string nazcaFunctionName, string nazcaFunctionParams, Part[,] parts, int typeNumber, string identifier, DiscreteRotation rotationCounterClock)
         {
             Parts = parts;
             TypeNumber = typeNumber;
             Identifier = identifier;
             _discreteRotation = rotationCounterClock;
-            RawConnections = connections;
+            LaserWaveLengthToSMatrixMap = laserWaveLengthToSMatrixMap;
             NazcaFunctionName = nazcaFunctionName;
             NazcaFunctionParameters = nazcaFunctionParams;
         }
@@ -91,7 +91,7 @@ namespace CAP_Core.Components
                    $"Grid Y (Main Tile): {GridYMainTile} \n" +
                    $"Rotation: {Rotation90CounterClock} \n" +
                    $"Parts Length: {Parts?.Length} \n" +
-                   $"Connections Count: {RawConnections.Count}";
+                   $"Defined SMatrices: {LaserWaveLengthToSMatrixMap.ToCustomString<int,SMatrix>()}";
         }
         public List<Pin> GetAllPins()
         {
@@ -114,12 +114,13 @@ namespace CAP_Core.Components
             {
                 for (int j = 0; j < Parts.GetLength(1); j++)
                 {
-                    // set new PinIDs as they should differ from the cloned original object but cloning makes them have the same ones.
+                    // clone all Parts which also clones the Pins. 
                     clonedParts[i, j] = Parts[i, j]?.Clone() as Part;
-                    foreach (Pin p in clonedParts[i, j].Pins)
+                    // set new PinIDs as they should differ from the cloned original object but cloning makes them have the same ones.
+                    foreach (Pin pin in clonedParts[i, j].Pins)
                     {
-                        p.IDInFlow = Guid.NewGuid();
-                        p.IDOutFlow = Guid.NewGuid();
+                        pin.IDInFlow = Guid.NewGuid();
+                        pin.IDOutFlow = Guid.NewGuid();
                     }
                 }
             }
@@ -155,21 +156,33 @@ namespace CAP_Core.Components
         public object Clone()
         {
             var clonedParts = CloneParts();
+            var clonedPins = GetAllPins(clonedParts);
             // Create a mapping from old pin IDs to new pin IDs
             Dictionary<Guid, Guid> oldToNewPinIds = MapPinIDsWithNewIDs(clonedParts);
 
             // Clone the existing connections and update with new pin IDs
-            var clonedRawConnections = RawConnections.Select(c => new Connection()
+            foreach (var laserAndMatrix in LaserWaveLengthToSMatrixMap)
             {
-                FromPin = oldToNewPinIds[c.FromPin],
-                ToPin = oldToNewPinIds[c.ToPin],
-                RealValue = c.RealValue,
-                // also clone the guids in the formula..
-                NonLinearFunctionRaw = c.NonLinearFunctionRaw,
-                NonLinearConnectionFunction = MathExpressionReader.ConvertToDelegate(c.NonLinearFunctionRaw, GetAllPins()),
-                Imaginary = c.Imaginary
-            }).ToList();
-            return new Component(clonedRawConnections, NazcaFunctionName, NazcaFunctionParameters, clonedParts, TypeNumber, Identifier, Rotation90CounterClock);
+                var oldMatrix = laserAndMatrix.Value;
+                var newMat = new SMatrix(oldMatrix.PinReference.Keys.ToList());
+                // assign the linear connections
+                newMat.SetValues(oldMatrix.GetNonNullValues());
+
+                // now recreate the nonLinearConnections and assign them to the Matrix
+                var nonLinearTransfers = new Dictionary<(Guid PinIdStart, Guid PinIdEnd), ConnectionFunction>();
+                foreach (var nonLin in oldMatrix.NonLinearConnections)
+                {
+                    // convert the old Key to the new one.
+                    var newKey = (oldToNewPinIds[nonLin.Key.PinIdStart] , oldToNewPinIds[nonLin.Key.PinIdEnd]);
+                    // recreate the non linear function with the new Pins.
+                    var newFunction = MathExpressionReader.ConvertToDelegate(nonLin.Value.ConnectionsFunctionRaw, clonedPins);
+                    // assign the new Pin and new function to our dictionary
+                    nonLinearTransfers.Add(newKey, (ConnectionFunction)newFunction);
+                }
+                newMat.SetNonLinearConnectionFunctions(nonLinearTransfers);
+            }
+
+            return new Component(LaserWaveLengthToSMatrixMap, NazcaFunctionName, NazcaFunctionParameters, clonedParts, TypeNumber, Identifier, Rotation90CounterClock);
         }
 
     }

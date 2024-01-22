@@ -16,7 +16,7 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper.DTOs
         public int widthInTiles { get; set; }
         public int heightInTiles { get; set; }
         public List<PinDraft> pins { get; set; }
-        public List<Connection> connections { get; set; }
+        public List<WaveLengthSpecificSMatrix> sMatrices;
         public List<Overlay> overlays { get; set; }
         public string sceneResPath { get; set; }
 

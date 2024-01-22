@@ -2,6 +2,7 @@
 using CAP_Core.Components;
 using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.Grid.FormulaReading;
+using CAP_Core.Tiles.Grid;
 using CAP_DataAccess.Components.ComponentDraftMapper.DTOs;
 using System.Numerics;
 
@@ -26,7 +27,7 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
             try
             {
                 var parts = CreatePartsFromDraft(draft);
-                var connections = CreateConnectionsFromDraft(draft, parts);
+                var connections = CreateWaveLengthSpecificSMatricesFromDrafts(draft, parts);
                 return new Component(connections, draft.nazcaFunctionName, draft.nazcaFunctionParameters, parts, typeNumber, draft.identifier, DiscreteRotation.R0);
             }
             catch (Exception ex)
@@ -52,35 +53,85 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
             return parts;
         }
 
-        private List<CAP_Core.Components.Connection> CreateConnectionsFromDraft(ComponentDraft draft, Part[,] parts)
+        private Dictionary<int, SMatrix> CreateWaveLengthSpecificSMatricesFromDrafts(ComponentDraft draft, Part[,] parts)
         {
+            var definedMatrices = new Dictionary<int, SMatrix>();
             var allPins = Component.GetAllPins(parts);
-            return draft.connections.Select(dto =>
-            {
-                var fromPinDTO = draft.pins.Single(p => p.number == dto.fromPinNr);
-                var toPinDTO = draft.pins.Single(p => p.number == dto.toPinNr);
+            var allPinsGuids = allPins.SelectMany(p => new[] { p.IDInFlow, p.IDOutFlow }).ToList();
+            var pinNumberToModelMap = CreatePinNumberToModelMap(draft, parts);
 
-                var fromPinModel = FindModelPin(parts, fromPinDTO);
-                var toPinModel = FindModelPin(parts, toPinDTO);
-                
-                double realValue = 0;
-                ConnectionFunction? function = MathExpressionReader.ConvertToDelegate(dto.realOrFormula, allPins);
-                // if there is no nonlinear funtion, then there might only be a value
-                if(function == null )
+            foreach (var matrixDraft in draft.sMatrices)
+            {
+                var matrixModel = new SMatrix(allPinsGuids);
+                var connections = new Dictionary<(Guid, Guid), Complex>();
+                var nonLinearConnectionFunctions = new Dictionary<(Guid, Guid), ConnectionFunction>();
+
+                foreach (var connectionDraft in matrixDraft.connections)
                 {
-                    Double.TryParse(dto.realOrFormula, out realValue);
+                    if (!pinNumberToModelMap.TryGetValue(connectionDraft.fromPinNr, out var fromPinModel))
+                    {
+                        Logger.PrintErr($"Kein passender Pin für 'fromPinNr' {connectionDraft.fromPinNr} gefunden.");
+                        continue;
+                    }
+                    if (!pinNumberToModelMap.TryGetValue(connectionDraft.toPinNr, out var toPinModel))
+                    {
+                        Logger.PrintErr($"Kein passender Pin für 'toPinNr' {connectionDraft.fromPinNr} gefunden.");
+                        continue;
+                    }
+
+                    if (TryGetConnectionValue(connectionDraft, allPins, out var connectionValue))
+                    {
+                        connections.Add((fromPinModel.IDInFlow, toPinModel.IDOutFlow), connectionValue);
+                    }
+                    else if (TryGetNonLinearConnectionFunction(connectionDraft, allPins, out var connectionFunction))
+                    {
+                        nonLinearConnectionFunctions.Add((fromPinModel.IDInFlow, toPinModel.IDOutFlow), connectionFunction);
+                    }
                 }
 
-                return new CAP_Core.Components.Connection
+                matrixModel.SetValues(connections);
+                matrixModel.SetNonLinearConnectionFunctions(nonLinearConnectionFunctions);
+                definedMatrices.Add(matrixDraft.waveLength, matrixModel);
+            }
+
+            return definedMatrices;
+        }
+
+        public static Dictionary<int, Pin> CreatePinNumberToModelMap(ComponentDraft draft, Part[,] parts)
+        {
+            var map = new Dictionary<int, Pin>();
+            foreach (var pin in draft.pins)
+            {
+                var modelPin = FindModelPin(parts, pin);
+                if (modelPin != null)
                 {
-                    FromPin = fromPinModel.IDInFlow,
-                    ToPin = toPinModel.IDOutFlow,
-                    RealValue = realValue,
-                    NonLinearFunctionRaw = dto.realOrFormula,
-                    NonLinearConnectionFunction = function,
-                    Imaginary = dto.imaginary
-                };
-            }).ToList();
+                    map[pin.number] = modelPin;
+                }
+            }
+            return map;
+        }
+
+        public static bool TryGetConnectionValue(DTOs.Connection connectionDraft, List<Pin> allPins, out Complex value)
+        {
+            value = default;
+            if (double.TryParse(connectionDraft.realOrFormula, out double realValue))
+            {
+                value = new Complex(realValue, connectionDraft.imaginary);
+                return true;
+            }
+            return false;
+        }
+
+        private bool TryGetNonLinearConnectionFunction(DTOs.Connection connectionDraft, List<Pin> allPins, out ConnectionFunction function)
+        {
+            function = default;
+            var convertedFunction = MathExpressionReader.ConvertToDelegate(connectionDraft.realOrFormula, allPins);
+            if (convertedFunction != null)
+            {
+                function = (ConnectionFunction)convertedFunction;
+                return true;
+            }
+            return false;
         }
 
         private static Pin FindModelPin(Part[,] parts, PinDraft pinDraft)
