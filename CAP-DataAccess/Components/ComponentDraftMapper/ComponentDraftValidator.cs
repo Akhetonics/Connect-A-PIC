@@ -6,6 +6,7 @@ using System.Reflection;
 using CAP_Contracts;
 using CAP_Core.Components.ComponentHelpers;
 using CAP_DataAccess.Components.ComponentDraftMapper.DTOs;
+using MathNet.Numerics;
 
 namespace CAP_DataAccess.Components.ComponentDraftMapper
 {
@@ -49,15 +50,19 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
         public (bool isValid, string errorMsg) Validate(ComponentDraft draft)
         {
             string errorMsg = "";
-            if (draft.overlays.Count == 0)
+            if(draft == null)
             {
-                errorMsg += ErrorOverlayCountIsNull + $" {nameof(draft.overlays)}.count is null\n";
+                throw new Exception("Draft cannot be null - there might have been some error while parsing the json of the component draft");
+            }
+            if (draft.overlays == null || draft.overlays.Count == 0)
+            {
+                errorMsg += ErrorOverlayCountIsNull + $" {nameof(draft.overlays)}.count is 0 - no overlays are defined\n";
             }
             if (draft.fileFormatVersion > ComponentDraftFileReader.CurrentFileVersion)
             {
                 errorMsg += ErrorFileVersionNotSupported + $" {nameof(draft.fileFormatVersion)} is higher than what this software can handle. The max Version readable is {ComponentDraftFileReader.CurrentFileVersion}\n";
             }
-            if (draft.pins.Count == 0)
+            if (draft.pins == null ||draft.pins.Count == 0)
             {
                 errorMsg += ErrorNoPinsDefined + $" There are no {nameof(draft.pins)} defined at all. At least 1 pin should be defined\n";
             }
@@ -89,18 +94,26 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
             {
                 errorMsg += ErrorIdentifierNotSet + $" {nameof(draft.identifier)} has to be defined\n";
             }
-            foreach (var overlay in draft.overlays)
+            if(draft?.overlays != null)
             {
-                errorMsg += ValidateOverlay(overlay);
+                foreach (var overlay in draft.overlays)
+                {
+                    errorMsg += ValidateOverlay(overlay);
+                }
             }
+            
             errorMsg += ValidatePinNumbersAreUnique(draft.pins);
-            foreach (var pin in draft.pins)
+            if(draft?.pins != null)
             {
-                errorMsg += ValidatePin(pin, draft.widthInTiles, draft.heightInTiles);
+                foreach (var pin in draft.pins)
+                {
+                    errorMsg += ValidatePin(pin, draft.widthInTiles, draft.heightInTiles);
+                }
             }
-            if(draft.sMatrices == null)
+            
+            if(draft?.sMatrices == null)
             {
-                errorMsg += $"{ErrorMatrixNotDefinedForWaveLength} sMatrix is not defined for any WaveLength";
+                errorMsg += $"{ErrorMatrixNotDefinedForWaveLength} sMatrix is not defined for any WaveLength\n";
             } else
             {
                 foreach (var connection in draft.sMatrices)
@@ -113,7 +126,7 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
             bool success = true;
             if (errorMsg.Length > 0)
             {
-                errorMsg += $"in ComponentDraft {draft.GetType().Name}\n";
+                errorMsg += $"in ComponentDraft {draft.identifier}\n";
                 success = false;
             }
             return (success, errorMsg);
@@ -194,10 +207,10 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
             // we use Reflection to get all properties as this class is used as an enum
             foreach (PropertyInfo prop in typeof(StandardWaveLengths).GetProperties(BindingFlags.Public | BindingFlags.Static)) 
             {
-                double value = (double)prop.GetValue(null);
-                if (!definedWaveLengths.Contains((int)value))
+                int waveLength = (int)prop.GetValue(null);
+                if (!definedWaveLengths.Contains(waveLength))
                 {
-                    errorMsg += ErrorMatrixNotDefinedForWaveLength + $" SMatrix is not defined for the waveLength: '{nameof(Connection.fromPinNr)}' \n";
+                    errorMsg += ErrorMatrixNotDefinedForWaveLength + $" SMatrix is not defined for the standard-waveLength: '{waveLength} nanometer' \n";
                 }
             }
 

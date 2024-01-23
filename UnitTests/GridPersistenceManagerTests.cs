@@ -76,21 +76,43 @@ namespace UnitTests
                     ""partY"": 0
                 }
             ],
-            ""connections"": [
+            ""sMatrices"": [
                 {
-                    ""fromPinNr"": 0,
-                    ""toPinNr"": 1,
-                    ""magnitude"": 1,
-                    ""wireLengthNM"" : 250000.0
+                    ""waveLength"" : 1550,
+                    ""connections"": [
+                    {
+                        ""fromPinNr"": 0,
+                        ""toPinNr"": 1,
+                        ""realOrFormula"": ""1"",
+                        ""imaginary"" : 2.0
+                    },
+                    {
+                        ""fromPinNr"": 1,
+                        ""toPinNr"": 0,
+                        ""realOrFormula"": ""1"",
+                        ""imaginary"" : 1.0
+                    }
+                    ]
                 },
-                {
-                    ""fromPinNr"": 1,
-                    ""toPinNr"": 0,
-                    ""magnitude"": 1,
-                    ""wireLengthNM"" : 250000.0
+{
+                    ""waveLength"" : 1310,
+                    ""connections"": [
+                    ]
+                },
+{
+                    ""waveLength"" : 980,
+                    ""connections"": [
+                    ]
                 }
-            ]
-        }";
+            ],
+            ""overlays"":[
+            {
+                ""overlayAnimTexturePath"" : ""res://dummypath.png"",
+                ""rectSide"" : 2,
+                ""tileOffsetX"" : 0,
+                ""tileOffsetY"" : 1
+            }
+        ]}";
         [Fact]
         public async Task SaveAndLoadGridManager()
         {
@@ -124,7 +146,21 @@ namespace UnitTests
         private static ComponentFactory InitializeComponentFactory(GridManager grid)
         {
             var dummyJsonDataAccessor = new DummyDataAccessor(StraightWGJsonString);
-            var drafts = new List<ComponentDraft>() { new ComponentDraftFileReader(dummyJsonDataAccessor).TryReadJson("").draft };
+            var straightComponentDraft = new ComponentDraftFileReader(dummyJsonDataAccessor).TryReadJson("").draft;
+            if(straightComponentDraft == null)
+            {
+                throw new Exception("JSON could not be parsed");
+            }
+            var drafts = new List<ComponentDraft>() { straightComponentDraft };
+            var validator = new ComponentDraftValidator(dummyJsonDataAccessor);
+            string draftErrors = "";
+            foreach (var item in drafts.Select(d => validator.Validate(d)).ToList())
+            {
+                draftErrors += item.errorMsg;
+            };
+            if(String.IsNullOrEmpty(draftErrors)==false)
+                throw new Exception(draftErrors);
+
             var draftConverter = new ComponentDraftConverter(new Logger());
             var componentDrafts = draftConverter.ToComponentModels(drafts);
             var componentFactory = new ComponentFactory();

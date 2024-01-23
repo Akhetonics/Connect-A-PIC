@@ -2,8 +2,8 @@
 {
     public class StandardWaveLengths
     {
-        public static double RedNM { get; set; } = 1550.0;
-        public static double GreenNM { get; set; } = 1310.0;
-        public static double BlueNM { get; set; } = 980.0;
+        public static int RedNM { get; set; } = 1550;
+        public static int GreenNM { get; set; } = 1310;
+        public static int BlueNM { get; set; } = 980;
     }
 }

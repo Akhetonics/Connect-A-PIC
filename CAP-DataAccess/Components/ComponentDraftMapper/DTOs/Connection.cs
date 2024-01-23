@@ -4,7 +4,7 @@
     {
         public int fromPinNr { get; set; }
         public int toPinNr { get; set; }
-        public string realOrFormula { get; set; }
+        public string? realOrFormula { get; set; }
         public double imaginary { get; set; }
     }
 }

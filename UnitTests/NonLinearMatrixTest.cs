@@ -36,6 +36,7 @@ namespace UnitTests
             var nonLinearLightFunction = new ConnectionFunction(
                 inputVectorValuesAtPinIDs => // the input is the complex value of the input vector at the index of the GUID of the pins of the next parameter
                 inputVectorValuesAtPinIDs[0] * new Complex(0.9, 0.32),
+                "PIN0 * (0.9+0.32i)",
                 new List<Guid>() { pins[0] } // the Pin-GUIDs are used so that we know at which index of the inputVector we have to get the numbers from. Those Complex numbers will be fed into the connectionfunction-Lambda in that given order as a list.
             );
 
@@ -57,7 +58,7 @@ namespace UnitTests
 
             SMatrix sMatrix = new(pins);
             sMatrix.SetNonLinearConnectionFunctions(nonLinearConnections);
-            sMatrix.SetValues(linearConnections); // becau
+            sMatrix.SetValues(linearConnections);
             var outputLight = sMatrix.GetLightPropagation(inputVector, 10);
 
             var expectedResult = linearFactor * nonLinearConnections[(pins[0], pins[1])].CalcConnectionWeight(new List<Complex>() { inputLightStrength });

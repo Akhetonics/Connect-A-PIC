@@ -12,9 +12,9 @@ namespace CAP_Core.Tiles.Grid
         public readonly GridManager Grid;
         public Dictionary<(Guid, Guid), Complex>? InterComponentConnections { get; private set; }
         public SMatrix? SystemSMatrix { get; private set; }
-        public double LaserWaveLengthInNm { get; }
+        public int LaserWaveLengthInNm { get; }
 
-        public GridSMatrixAnalyzer(GridManager grid, double laserWaveLengthInNm)
+        public GridSMatrixAnalyzer(GridManager grid, int laserWaveLengthInNm)
         {
             Grid = grid;
             LaserWaveLengthInNm = laserWaveLengthInNm;
@@ -60,7 +60,7 @@ namespace CAP_Core.Tiles.Grid
             var allSMatrices = new List<SMatrix>();
             foreach(var component in allComponents)
             {
-                if(!component.LaserWaveLengthToSMatrixMap.TryGetValue(waveLength, out var matrixFound))
+                if(component.LaserWaveLengthToSMatrixMap.TryGetValue(waveLength, out var matrixFound))
                 {
                     allSMatrices.Add(matrixFound);
                 } else

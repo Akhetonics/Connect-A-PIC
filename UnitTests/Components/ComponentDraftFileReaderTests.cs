@@ -102,16 +102,16 @@ namespace UnitTests
                     
                     if(readResult.error != null)
                     {
-                        throw new Exception(readResult.error);
+                        throw new IOException(readResult.error);
                     }
                     readComponentDraft = readResult.draft;
                     fileIsUsed = false;
-                } catch (IOException)
+                } catch (IOException ex)
                 {
                     await Task.Delay(10);
                     counter++;
                     if (counter > 100)
-                        throw;
+                        throw ex;
                 }
             }
             // Assert

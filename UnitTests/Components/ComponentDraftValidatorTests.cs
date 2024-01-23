@@ -1,6 +1,8 @@
 ﻿using CAP_Contracts;
 using CAP_Core.Components;
+using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.Tiles;
+using CAP_Core.Tiles.Grid;
 using CAP_DataAccess.Components.ComponentDraftMapper;
 using CAP_DataAccess.Components.ComponentDraftMapper;
 using CAP_DataAccess.Components.ComponentDraftMapper.DTOs;
@@ -21,6 +23,7 @@ namespace UnitTests
         public void ValidateTest()
         {
             var validator = new ComponentDraftValidator(new PathCheckerDummy());
+            
             var draft = new ComponentDraft()
             {
                 fileFormatVersion = ComponentDraftFileReader.CurrentFileVersion + 1, // trigger ErrorFileVersionNotSupported
@@ -43,11 +46,20 @@ namespace UnitTests
                     tileOffsetY = -1, // trigger ErrorOverlayOffsetYSmaller0
                 }
             },
-                connections = new List<CAP_DataAccess.Components.ComponentDraftMapper.DTOs.Connection>
-            {
-                new (){ fromPinNr = 999, toPinNr = 998 } // trigger ErrorFromPinNrInvalid and ErrorToPinNrInvalid
-            }
+                sMatrices = new List<WaveLengthSpecificSMatrix>(){
+                    new()
+                    {
+                        waveLength = StandardWaveLengths.RedNM, 
+                        connections = new List<CAP_DataAccess.Components.ComponentDraftMapper.DTOs.Connection>()
+                        {
+                             new (){ fromPinNr = 999, toPinNr = 998 } // trigger ErrorFromPinNrInvalid and ErrorToPinNrInvalid
+                        }
+                    }
+                    // the other wavelengths are not defined which should trigger ErrorMatrixNotDefinedForWaveLength
+                }
             };
+
+
             var result = validator.Validate(draft);
 
             Assert.False(result.isValid);
@@ -65,6 +77,7 @@ namespace UnitTests
             Assert.Contains(ComponentDraftValidator.ErrorOverlayOffsetYSmaller0, result.errorMsg);
             Assert.Contains(ComponentDraftValidator.ErrorFromPinNrInvalid, result.errorMsg);
             Assert.Contains(ComponentDraftValidator.ErrorToPinNrInvalid, result.errorMsg);
+            Assert.Contains(ComponentDraftValidator.ErrorMatrixNotDefinedForWaveLength, result.errorMsg);
         }
 
         [Fact]
@@ -107,23 +120,70 @@ namespace UnitTests
                         name = "east0",
                     }
                 },
-                connections = new List<CAP_DataAccess.Components.ComponentDraftMapper.DTOs.Connection>()
-                {
-                    new ()
-                    {
-                        fromPinNr = 1,
-                        toPinNr = 2,
-                        realOrFormula = "1+PIN0",
-                        imaginary= 0.02f,
+                sMatrices = new List<WaveLengthSpecificSMatrix>(){
+                    new() {
+                        waveLength = StandardWaveLengths.RedNM,
+                        connections = new List<CAP_DataAccess.Components.ComponentDraftMapper.DTOs.Connection>()
+                        {
+                            new ()
+                            {
+                                fromPinNr = 1,
+                                toPinNr = 2,
+                                realOrFormula = "1+PIN0",
+                                imaginary= 0.02f,
+                            },
+                            new ()
+                            {
+                                fromPinNr = 2,
+                                toPinNr = 1,
+                                realOrFormula = "1",
+                                imaginary = 0.02f,
+                            },
+                        },
                     },
-                    new ()
-                    {
-                        fromPinNr = 2,
-                        toPinNr = 1,
-                        realOrFormula = "1",
-                        imaginary = 0.02f,
+                    new() {
+                        waveLength = StandardWaveLengths.GreenNM,
+                        connections = new List<CAP_DataAccess.Components.ComponentDraftMapper.DTOs.Connection>()
+                        {
+                            new ()
+                            {
+                                fromPinNr = 1,
+                                toPinNr = 2,
+                                realOrFormula = "1+PIN0",
+                                imaginary= 0.02f,
+                            },
+                            new ()
+                            {
+                                fromPinNr = 2,
+                                toPinNr = 1,
+                                realOrFormula = "1",
+                                imaginary = 0.02f,
+                            },
+                        },
                     },
-                },
+                    new() {
+                        waveLength = StandardWaveLengths.BlueNM,
+                        connections = new List<CAP_DataAccess.Components.ComponentDraftMapper.DTOs.Connection>()
+                        {
+                            new ()
+                            {
+                                fromPinNr = 1,
+                                toPinNr = 2,
+                                realOrFormula = "1+PIN0",
+                                imaginary= 0.02f,
+                            },
+                            new ()
+                            {
+                                fromPinNr = 2,
+                                toPinNr = 1,
+                                realOrFormula = "1",
+                                imaginary = 0.02f,
+                            },
+                        },
+                    }
+                    // the other wavelengths are not defined which should trigger ErrorMatrixNotDefinedForWaveLength
+                }
+                
             };
 
             // Act

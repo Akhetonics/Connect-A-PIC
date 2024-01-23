@@ -35,7 +35,9 @@ namespace UnitTests
             });
             var connections = new Dictionary<int,SMatrix>
             {
-                {(int)StandardWaveLengths.RedNM, matrixRed},
+                { StandardWaveLengths.RedNM, matrixRed},
+                { StandardWaveLengths.GreenNM, matrixRed},
+                { StandardWaveLengths.BlueNM, matrixRed},
             };
 
             return new Component(connections, "placeCell_StraightWG", "", parts, 0, "Straight", DiscreteRotation.R0);
@@ -80,9 +82,9 @@ namespace UnitTests
             });
             var connections = new Dictionary<int, SMatrix>
             {
-                {(int)StandardWaveLengths.RedNM, matrixRed},
-                {(int)StandardWaveLengths.GreenNM, matrixRed},
-                {(int)StandardWaveLengths.BlueNM, matrixRed},
+                {StandardWaveLengths.RedNM, matrixRed},
+                {StandardWaveLengths.GreenNM, matrixRed},
+                {StandardWaveLengths.BlueNM, matrixRed},
             };
             return new Component(connections, "placeCell_DirectionalCoupler", "", parts, 0,"DirectionalCoupler", DiscreteRotation.R0);
         }

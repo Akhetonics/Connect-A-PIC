@@ -3,6 +3,7 @@ using CAP_Core.Grid.FormulaReading;
 using CAP_Core.Helpers;
 using CAP_Core.Tiles.Grid;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Text.Json.Serialization;
 
 namespace CAP_Core.Components
@@ -161,29 +162,42 @@ namespace CAP_Core.Components
             Dictionary<Guid, Guid> oldToNewPinIds = MapPinIDsWithNewIDs(clonedParts);
 
             // Clone the existing connections and update with new pin IDs
+            Dictionary<int, SMatrix> clonedLaserSMatrixMap = new();
             foreach (var laserAndMatrix in LaserWaveLengthToSMatrixMap)
             {
                 var oldMatrix = laserAndMatrix.Value;
-                var newMat = new SMatrix(oldMatrix.PinReference.Keys.ToList());
+                var newMat = new SMatrix(clonedPins.SelectMany(p=>new[] {p.IDInFlow , p.IDOutFlow}).ToList());
                 // assign the linear connections
-                newMat.SetValues(oldMatrix.GetNonNullValues());
+                var newConnections = CreateConnectionsWithUpdatedPins(oldToNewPinIds, oldMatrix);
+                newMat.SetValues(newConnections);
 
                 // now recreate the nonLinearConnections and assign them to the Matrix
                 var nonLinearTransfers = new Dictionary<(Guid PinIdStart, Guid PinIdEnd), ConnectionFunction>();
                 foreach (var nonLin in oldMatrix.NonLinearConnections)
                 {
                     // convert the old Key to the new one.
-                    var newKey = (oldToNewPinIds[nonLin.Key.PinIdStart] , oldToNewPinIds[nonLin.Key.PinIdEnd]);
+                    var newKey = (oldToNewPinIds[nonLin.Key.PinIdStart], oldToNewPinIds[nonLin.Key.PinIdEnd]);
                     // recreate the non linear function with the new Pins.
                     var newFunction = MathExpressionReader.ConvertToDelegate(nonLin.Value.ConnectionsFunctionRaw, clonedPins);
                     // assign the new Pin and new function to our dictionary
                     nonLinearTransfers.Add(newKey, (ConnectionFunction)newFunction);
                 }
                 newMat.SetNonLinearConnectionFunctions(nonLinearTransfers);
+                clonedLaserSMatrixMap.Add(laserAndMatrix.Key, newMat);
             }
 
-            return new Component(LaserWaveLengthToSMatrixMap, NazcaFunctionName, NazcaFunctionParameters, clonedParts, TypeNumber, Identifier, Rotation90CounterClock);
+            return new Component(clonedLaserSMatrixMap, NazcaFunctionName, NazcaFunctionParameters, clonedParts, TypeNumber, Identifier, Rotation90CounterClock);
         }
 
+        private static Dictionary<(Guid,Guid),Complex> CreateConnectionsWithUpdatedPins(Dictionary<Guid, Guid> oldToNewPinIds, SMatrix oldMatrix)
+        {
+            var newConnections = new Dictionary<(Guid, Guid), Complex>();
+            foreach (var oldConnection in oldMatrix.GetNonNullValues())
+            {
+                var newKey = (oldToNewPinIds[oldConnection.Key.PinIdStart], oldToNewPinIds[oldConnection.Key.PinIdEnd]);
+                newConnections.Add(newKey, oldConnection.Value);
+            }
+            return newConnections;
+        }
     }
 }
