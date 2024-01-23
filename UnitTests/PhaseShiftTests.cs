@@ -12,9 +12,11 @@ namespace UnitTests
         [Fact]
         public static void ComplexFactorTest()
         {
-            Complex factor1 = PhaseShiftCalculator.CalculateInRad(PhaseShiftCalculator.TileWidthInNM, StandardWaveLengths.RedNM); // widthInTiles is 1 for the first component
-            Complex factor2 = PhaseShiftCalculator.CalculateInRad(PhaseShiftCalculator.TileWidthInNM, StandardWaveLengths.RedNM); // widthInTiles is 1 also for the second component
-
+            // I use this test to calculate the different imaginary values of the phase shift for given wirelengths to get realistic dummy values
+            var imaginaryRed = PhaseShiftCalculator.CalculateImaginaryPart(250000, StandardWaveLengths.RedNM); 
+            var imaginaryGreen = PhaseShiftCalculator.CalculateImaginaryPart(250000, StandardWaveLengths.GreenNM); 
+            var imaginaryBlue = PhaseShiftCalculator.CalculateImaginaryPart(250000, StandardWaveLengths.BlueNM);
+            Console.WriteLine();
         }
         [Fact]
         public void NazcaCompilerTest()
