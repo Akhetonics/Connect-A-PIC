@@ -16,7 +16,7 @@ namespace UnitTests
             grid.PlaceComponent(0, grid.ExternalPorts[0].TilePositionY, directionalCoupler);
             var laserType = grid.GetUsedExternalInputs().First().Input.LaserType;
             var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid, laserType.WaveLengthInNm);
-            var lightPropagation = gridSMatrixAnalyzer.CalculateLightPropagation();
+            var lightPropagation = await gridSMatrixAnalyzer.CalculateLightPropagation();
 
             // test directionalCoupler
             var allComponentsSMatrices = gridSMatrixAnalyzer.GetAllComponentsSMatrices(gridSMatrixAnalyzer.LaserWaveLengthInNm);
@@ -26,8 +26,8 @@ namespace UnitTests
             var UpperToLeftConnection = allComponentsSMatrices[0].GetNonNullValues().Single(e =>e.Key ==(directionalCoupler.PinIdRightIn(1,0), directionalCoupler.PinIdLeftOut(0,0))).Value;
             var LowerToLeftConnection = allComponentsSMatrices[0].GetNonNullValues().Single(e =>e.Key ==(directionalCoupler.PinIdRightIn(1,1), directionalCoupler.PinIdLeftOut(0,1))).Value;
 
-            var directionalCouplerLightIn = (await lightPropagation)[directionalCoupler.PinIdLeftIn()];
-            var directionalCouplerLightOut = (await lightPropagation)[directionalCoupler.PinIdRightOut(1,0)];
+            var directionalCouplerLightIn = lightPropagation[directionalCoupler.PinIdLeftIn()];
+            var directionalCouplerLightOut = lightPropagation[directionalCoupler.PinIdRightOut(1,0)];
 
             Assert.Equal(0.5, UpperToRightConnection.Real);
             Assert.Equal(0.5, LowerToRightConnection.Real);

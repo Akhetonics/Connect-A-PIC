@@ -8,6 +8,7 @@ namespace UnitTests
 {
     public class TestComponentFactory
     {
+
         public static Component CreateStraightWaveGuide()
         {
             int widthInTiles = 1;

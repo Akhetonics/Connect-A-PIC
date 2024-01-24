@@ -133,21 +133,15 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             return ComponentView;
         }
 
-        public async Task<Dictionary<Guid, Complex>> GetLightVector(LaserType inputLight)
-        {
-            MatrixAnalyzer = new GridSMatrixAnalyzer(this.Grid, inputLight.WaveLengthInNm);
-            
-            return await MatrixAnalyzer.CalculateLightPropagation();
-        }
-
         public async Task ShowLightPropagation()
         {
             var inputPorts = Grid.GetUsedExternalInputs();
             foreach (var port in inputPorts)
             {
-                var inputLightVector = await GetLightVector(port.Input.LaserType);
-                // go through the whole grid and send all 
-                AssignLightToComponentViews(inputLightVector, port.Input.LaserType);
+                MatrixAnalyzer = new GridSMatrixAnalyzer(this.Grid, port.Input.LaserType.WaveLengthInNm);
+                var resultLightVector = await MatrixAnalyzer.CalculateLightPropagation();
+                Logger.Print(resultLightVector.ToCustomString());
+                AssignLightToComponentViews(resultLightVector, port.Input.LaserType);
             }
         }
 
@@ -159,7 +153,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
                 try
                 {
                     var componentView = GridComponentViews[componentModel.GridXMainTile, componentModel.GridYMainTile];
-                    List<LightAtPin> lightAtPins = CalculateLightAtPins(lightVector, laserType, componentModel);
+                    List<LightAtPin> lightAtPins = ConvertToLightAtPins(lightVector, laserType, componentModel);
                     componentView.DisplayLightVector(lightAtPins);
                 }
                 catch (Exception ex)
@@ -170,7 +164,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             }
         }
 
-        public static List<LightAtPin> CalculateLightAtPins(Dictionary<Guid, Complex> lightVector, LaserType laserType, Component componentModel)
+        public static List<LightAtPin> ConvertToLightAtPins(Dictionary<Guid, Complex> lightVector, LaserType laserType, Component componentModel)
         {
             List<LightAtPin> lightAtPins = new();
 

@@ -4,6 +4,7 @@ using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.Grid.FormulaReading;
 using CAP_Core.Tiles.Grid;
 using CAP_DataAccess.Components.ComponentDraftMapper.DTOs;
+using System.Globalization;
 using System.Numerics;
 
 namespace CAP_DataAccess.Components.ComponentDraftMapper
@@ -14,6 +15,9 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
 
         public ComponentDraftConverter(ILogger logger)
         {
+            CultureInfo englishCulture = CultureInfo.CreateSpecificCulture("en-US");
+            Thread.CurrentThread.CurrentCulture = englishCulture;
+            Thread.CurrentThread.CurrentUICulture = englishCulture;
             Logger = logger;
         }
 
@@ -79,7 +83,7 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
                         continue;
                     }
 
-                    if (TryGetConnectionValue(connectionDraft, allPins, out var connectionValue))
+                    if (TryGetConnectionValue(connectionDraft, out var connectionValue))
                     {
                         connections.Add((fromPinModel.IDInFlow, toPinModel.IDOutFlow), connectionValue);
                     }
@@ -111,7 +115,7 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
             return map;
         }
 
-        public static bool TryGetConnectionValue(DTOs.Connection connectionDraft, List<Pin> allPins, out Complex value)
+        public static bool TryGetConnectionValue(DTOs.Connection connectionDraft, out Complex value)
         {
             value = default;
             if (double.TryParse(connectionDraft.realOrFormula, out double realValue))

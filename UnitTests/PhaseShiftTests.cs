@@ -13,9 +13,10 @@ namespace UnitTests
         public static void ComplexFactorTest()
         {
             // I use this test to calculate the different imaginary values of the phase shift for given wirelengths to get realistic dummy values
-            var imaginaryRed = PhaseShiftCalculator.CalculateImaginaryPart(250000, StandardWaveLengths.RedNM); 
-            var imaginaryGreen = PhaseShiftCalculator.CalculateImaginaryPart(250000, StandardWaveLengths.GreenNM); 
-            var imaginaryBlue = PhaseShiftCalculator.CalculateImaginaryPart(250000, StandardWaveLengths.BlueNM);
+            var imaginaryRedAToC = PhaseShiftCalculator.CalculateWave(600000, StandardWaveLengths.RedNM) * Math.Sqrt(0.5); // from a to c  "e^i*PI" = -1
+            var imaginaryRedBToC = PhaseShiftCalculator.CalculateWave(600000, StandardWaveLengths.RedNM) * Math.Sqrt(0.5) * -1; // from e^i*PI = -1
+            
+            var powerAtC2 = imaginaryRedAToC.Magnitude * imaginaryRedBToC.Magnitude;
             Console.WriteLine();
         }
         [Fact]

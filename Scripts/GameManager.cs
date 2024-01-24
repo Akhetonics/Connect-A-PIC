@@ -20,6 +20,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using CAP_Core.Grid;
+using System.Globalization;
+using System.Threading;
 
 namespace ConnectAPic.LayoutWindow
 {
@@ -97,7 +99,7 @@ namespace ConnectAPic.LayoutWindow
                 QueueFree(); // delete this object as there is already another GameManager in the scene
             }
         }
-		
+
         public override void _Ready()
         {
             try

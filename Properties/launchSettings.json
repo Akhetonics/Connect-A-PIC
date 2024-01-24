@@ -2,13 +2,13 @@
   "profiles": {
     "Debug": {
       "commandName": "Executable",
-      "executablePath": "C:\\Program Files\\Godot_v4.1\\Godot_v4.1.exe",
+      "executablePath": "%Godot%",
       "commandLineArgs": "--path . --verbose",
       "workingDirectory": "."
     },
     "Debug GD Tests": {
       "commandName": "Executable",
-      "executablePath": "C:\\Program Files\\Godot_v4.1\\Godot_v4.1.exe",
+      "executablePath": "%Godot%",
       "commandLineArgs": "--path . --run-tests --quit-on-finish --verbose",
       "workingDirectory": "."
     }

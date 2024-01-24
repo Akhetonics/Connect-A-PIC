@@ -48,7 +48,7 @@ namespace UnitTests
     }
     public class GridPersistenceManagerTests
     {
-        private static string StraightWGJsonString = @"
+        public static string StraightWGJsonString { get; set; } = @"
         {
             ""fileFormatVersion"": 1,
             ""identifier"": ""Straight"",
@@ -83,13 +83,13 @@ namespace UnitTests
                     {
                         ""fromPinNr"": 0,
                         ""toPinNr"": 1,
-                        ""realOrFormula"": ""1"",
+                        ""realOrFormula"": ""1.0"",
                         ""imaginary"" : 2.0
                     },
                     {
                         ""fromPinNr"": 1,
                         ""toPinNr"": 0,
-                        ""realOrFormula"": ""1"",
+                        ""realOrFormula"": ""1.0"",
                         ""imaginary"" : 1.0
                     }
                     ]
@@ -134,11 +134,13 @@ namespace UnitTests
 
             string tempSavePath = Path.GetTempFileName();
             await gridPersistenceManager.SaveAsync(tempSavePath);
+            var firstComponentConnections = grid.GetComponentAt(0, inputHeight).LaserWaveLengthToSMatrixMap.Values.First().GetNonNullValues();
             await gridPersistenceManager.LoadAsync(tempSavePath, componentFactory);
             
             // Asserts
             grid.GetComponentAt(0, inputHeight).Rotation90CounterClock.ShouldBe(firstComponent.Rotation90CounterClock);
             grid.GetComponentAt(0, inputHeight).Identifier.ShouldBe(firstComponent.Identifier);
+            firstComponentConnections.First().Value.Real.ShouldBe(1);
             grid.GetComponentAt(orphanPos.X, orphanPos.Y).Rotation90CounterClock.ShouldBe(orphan.Rotation90CounterClock);
             grid.GetComponentAt(orphanPos.X, orphanPos.Y).Identifier.ShouldBe(orphan.Identifier);
         }
