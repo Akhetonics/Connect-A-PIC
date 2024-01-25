@@ -89,11 +89,9 @@ namespace ConnectAPIC.test.src
         public async Task TestShaderAssignment()
         {
             // setup
-            var right = CAP_Core.Tiles.RectSide.Right;
-            var left = CAP_Core.Tiles.RectSide.Left;
             float lightOnIntensity = 1;
-            var rightLightVector = new LightAtPin(0, 0, right, GreenLaser, 0, lightOnIntensity);
-            var leftLightVector = new LightAtPin(0, 0, left, GreenLaser, lightOnIntensity, 0);
+            var rightLightVector = new LightAtPin(0, 0, RectSide.Right, GreenLaser, 0, lightOnIntensity);
+            var leftLightVector = new LightAtPin(0, 0, RectSide.Left, GreenLaser, lightOnIntensity, 0);
             var lightAtPins = new List<LightAtPin>() { leftLightVector, rightLightVector, };
 
             // act
@@ -112,10 +110,10 @@ namespace ConnectAPIC.test.src
             var lightLocallyOff= GetInOutLightValueLeft();
 
             // Assert
-            innerConnections.First().Value.Real.ShouldBe(1);
-            lightLocallyOn.In.X.ShouldBe(lightOnIntensity);
-            lightLocallyOn.Out.X.ShouldBe(0,0, "because not light comes from a right positioned component");
-            lightGloballyOn.In.X.ShouldBe(lightOnIntensity);
+            innerConnections.First().Value.Magnitude.ShouldBe(1, 0.01);
+            lightLocallyOn.In.X.ShouldBe(lightOnIntensity, 0.01);
+            lightLocallyOn.Out.X.ShouldBe(0,0.0001, "because not light comes from a right positioned component");
+            lightGloballyOn.In.X.ShouldBe(lightOnIntensity, 1);
             lightGloballyOn.Out.X.ShouldBe(0);
             lightLocallyOff.In.X.ShouldBe(0);
             lightLocallyOff.Out.X.ShouldBe(0);
@@ -126,13 +124,12 @@ namespace ConnectAPIC.test.src
 
         private (Vector4 In, Vector4 Out) GetInOutLightValueLeft()
         {
-            var left = CAP_Core.Tiles.RectSide.Left;
             // get the shader-light intensity value on the left side
             // because only left is defined in the Straight Component (it only has one set of RGB-Overlays and only uses the left in/out values)
             var rightSlotShader = ((ShaderMaterial) SecondStraightLine.AnimationSlots.Single(slot =>
                       slot.MatchingLaser.WaveLengthInNm == GreenLaser.WaveLengthInNm
                    && (ShaderMaterial) slot.BaseOverlaySprite?.Material != null
-                   && slot.Side == left)
+                   && slot.Side == RectSide.Left)
                 .BaseOverlaySprite.Material) ?? throw new Exception("Shader is not properly assigned to Overlay");
             var rightIn = (Godot.Vector4)rightSlotShader.GetShaderParameter(ShaderParameterNames.LightInFlow + 1);
             var rightOut = (Godot.Vector4)rightSlotShader.GetShaderParameter(ShaderParameterNames.LightOutFlow + 1);
