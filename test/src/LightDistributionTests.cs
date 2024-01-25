@@ -99,7 +99,7 @@ namespace ConnectAPIC.test.src
             // act
             // first test if the connectionWeights are proper
             var compModel = MyGameManager.Grid.GetComponentAt(SecondStraightLine.GridX, SecondStraightLine.GridY);
-            var innerConections = compModel.LaserWaveLengthToSMatrixMap[GreenLaser.WaveLengthInNm].GetNonNullValues();
+            var innerConnections = compModel.LaserWaveLengthToSMatrixMap[GreenLaser.WaveLengthInNm].GetNonNullValues();
             // then test the light distribution
             SecondStraightLine.HideLightVector();
             SecondStraightLine.DisplayLightVector(lightAtPins);
@@ -112,7 +112,7 @@ namespace ConnectAPIC.test.src
             var lightLocallyOff= GetInOutLightValueLeft();
 
             // Assert
-            innerConections.First().Value.Real.ShouldBe(1);
+            innerConnections.First().Value.Real.ShouldBe(1);
             lightLocallyOn.In.X.ShouldBe(lightOnIntensity);
             lightLocallyOn.Out.X.ShouldBe(0,0, "because not light comes from a right positioned component");
             lightGloballyOn.In.X.ShouldBe(lightOnIntensity);

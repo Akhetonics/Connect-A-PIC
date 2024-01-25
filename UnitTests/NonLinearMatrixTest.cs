@@ -23,7 +23,7 @@ namespace UnitTests
             // initialize Pins
             List<Guid> pins = new() { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() };
 
-            // defining the comlex value for the input light
+            // defining the complex value for the input light
             var inputLightStrength = new Complex(1, 0);
             // defining a linear factor defining how much light will be lost in the linear connections
             var linearFactor = 0.9; 
@@ -37,7 +37,7 @@ namespace UnitTests
                 inputVectorValuesAtPinIDs => // the input is the complex value of the input vector at the index of the GUID of the pins of the next parameter
                 inputVectorValuesAtPinIDs[0] * new Complex(0.9, 0.32),
                 "PIN0 * (0.9+0.32i)",
-                new List<Guid>() { pins[0] } // the Pin-GUIDs are used so that we know at which index of the inputVector we have to get the numbers from. Those Complex numbers will be fed into the connectionfunction-Lambda in that given order as a list.
+                new List<Guid>() { pins[0] } // the Pin-GUIDs are used so that we know at which index of the inputVector we have to get the numbers from. Those Complex numbers will be fed into the connection-Function-Lambda in that given order as a list.
             );
 
             // defining the dictionary that contains all non-linear functions

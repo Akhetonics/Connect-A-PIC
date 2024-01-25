@@ -107,7 +107,7 @@ namespace UnitTests
             ],
             ""overlays"":[
             {
-                ""overlayAnimTexturePath"" : ""res://dummypath.png"",
+                ""overlayAnimTexturePath"" : ""res://dummyPath.png"",
                 ""rectSide"" : 2,
                 ""tileOffsetX"" : 0,
                 ""tileOffsetY"" : 1

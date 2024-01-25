@@ -14,7 +14,7 @@ namespace CAP_Core.Tiles.Grid
     {
         public Matrix<Complex> SMat; // the SMat works like SMat[PinNROutflow, PinNRInflow] --> so opposite from what one might expect
         public readonly Dictionary<Guid,int> PinReference; // all PinIDs inside of the matrix. the int is the index of the row/column in the SMat.. and also of the inputVector.
-        private readonly Dictionary<int, Guid> reversePinReference; // sometimes we want to finde the GUID and only have the ID
+        private readonly Dictionary<int, Guid> reversePinReference; // sometimes we want to find the GUID and only have the ID
         private readonly int size;
         public const int MaxToStringPinGuidSize = 6;
         public Dictionary<(Guid PinIdStart, Guid PinIdEnd), ConnectionFunction> NonLinearConnections;

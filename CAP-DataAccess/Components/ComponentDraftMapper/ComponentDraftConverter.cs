@@ -74,12 +74,12 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
                 {
                     if (!pinNumberToModelMap.TryGetValue(connectionDraft.FromPinNr, out var fromPinModel))
                     {
-                        Logger.PrintErr($"Kein passender Pin für 'fromPinNr' {connectionDraft.FromPinNr} gefunden.");
+                        Logger.PrintErr($"unable to find suitable pin for 'fromPinNr' {connectionDraft.FromPinNr}.");
                         continue;
                     }
                     if (!pinNumberToModelMap.TryGetValue(connectionDraft.ToPinNr, out var toPinModel))
                     {
-                        Logger.PrintErr($"Kein passender Pin für 'toPinNr' {connectionDraft.FromPinNr} gefunden.");
+                        Logger.PrintErr($"unable to find suitable pin for 'toPinNr' {connectionDraft.FromPinNr}.");
                         continue;
                     }
                     connections.Add((fromPinModel.IDInFlow, toPinModel.IDOutFlow), connectionDraft.ToComplexNumber());

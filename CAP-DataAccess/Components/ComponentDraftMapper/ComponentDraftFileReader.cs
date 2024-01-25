@@ -18,7 +18,7 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
         public IDataAccessor DataAccessor { get; }
 
         /// <summary>
-        /// error is null if everything goes right, otherwies draft is null and error is the errordescription.
+        /// error is null if everything goes right, otherwise draft is null and error is the error description.
         /// it does not throw any exception directly
         /// </summary>
         /// <param name="path"></param>
