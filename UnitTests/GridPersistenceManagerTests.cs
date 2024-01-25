@@ -83,13 +83,13 @@ namespace UnitTests
                     {
                         ""fromPinNr"": 0,
                         ""toPinNr"": 1,
-                        ""realOrFormula"": ""1.0"",
+                        ""real"": 1.0,
                         ""imaginary"" : 2.0
                     },
                     {
                         ""fromPinNr"": 1,
                         ""toPinNr"": 0,
-                        ""realOrFormula"": ""1.0"",
+                        ""real"": 1.0,
                         ""imaginary"" : 1.0
                     }
                     ]

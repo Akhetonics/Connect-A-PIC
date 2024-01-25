@@ -12,10 +12,16 @@ namespace UnitTests
         [Fact]
         public static void ComplexFactorTest()
         {
+            var power = 1.0;
             // I use this test to calculate the different imaginary values of the phase shift for given wirelengths to get realistic dummy values
-            var imaginaryRedAToC = PhaseShiftCalculator.CalculateWave(600000, StandardWaveLengths.RedNM) * Math.Sqrt(0.5); // from a to c  "e^i*PI" = -1
-            var imaginaryRedBToC = PhaseShiftCalculator.CalculateWave(600000, StandardWaveLengths.RedNM) * Math.Sqrt(0.5) * -1; // from e^i*PI = -1
-            
+            var imaginaryRedAToC = PhaseShiftCalculator.CalculateWave(196349, StandardWaveLengths.RedNM) * Math.Sqrt(power); // from a to c  "e^i*PI" = -1
+            var imaginaryRedBToC = PhaseShiftCalculator.CalculateWave(196349, StandardWaveLengths.RedNM) * Math.Sqrt(power) * -1; // from e^i*PI = -1
+
+            var imaginaryRedAToCGreen = PhaseShiftCalculator.CalculateWave(196349, StandardWaveLengths.GreenNM) * Math.Sqrt(power); // from a to c  "e^i*PI" = -1
+            var imaginaryRedBToCGreen = PhaseShiftCalculator.CalculateWave(196349, StandardWaveLengths.GreenNM) * Math.Sqrt(power) * -1; // from e^i*PI = -1
+
+            var imaginaryRedAToCBlue = PhaseShiftCalculator.CalculateWave(196349, StandardWaveLengths.BlueNM) * Math.Sqrt(power); // from a to c  "e^i*PI" = -1
+            var imaginaryRedBToCBlue = PhaseShiftCalculator.CalculateWave(196349, StandardWaveLengths.BlueNM) * Math.Sqrt(power) * -1; // from e^i*PI = -1
             var powerAtC2 = imaginaryRedAToC.Magnitude * imaginaryRedBToC.Magnitude;
             Console.WriteLine();
         }

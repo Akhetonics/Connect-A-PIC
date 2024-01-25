@@ -52,7 +52,7 @@ namespace UnitTests
                         waveLength = StandardWaveLengths.RedNM, 
                         connections = new List<CAP_DataAccess.Components.ComponentDraftMapper.DTOs.Connection>()
                         {
-                             new (){ fromPinNr = 999, toPinNr = 998 } // trigger ErrorFromPinNrInvalid and ErrorToPinNrInvalid
+                             new (){ FromPinNr = 999, ToPinNr = 998 } // trigger ErrorFromPinNrInvalid and ErrorToPinNrInvalid
                         }
                     }
                     // the other wavelengths are not defined which should trigger ErrorMatrixNotDefinedForWaveLength
@@ -127,17 +127,17 @@ namespace UnitTests
                         {
                             new ()
                             {
-                                fromPinNr = 1,
-                                toPinNr = 2,
-                                realOrFormula = "1+PIN0",
-                                imaginary= 0.02f,
+                                FromPinNr = 1,
+                                ToPinNr = 2,
+                                Formula = "1+PIN0",
+                                Imaginary= 0.02f,
                             },
                             new ()
                             {
-                                fromPinNr = 2,
-                                toPinNr = 1,
-                                realOrFormula = "1",
-                                imaginary = 0.02f,
+                                FromPinNr = 2,
+                                ToPinNr = 1,
+                                Real = 1,
+                                Imaginary = 0.02f,
                             },
                         },
                     },
@@ -147,17 +147,17 @@ namespace UnitTests
                         {
                             new ()
                             {
-                                fromPinNr = 1,
-                                toPinNr = 2,
-                                realOrFormula = "1+PIN0",
-                                imaginary= 0.02f,
+                                FromPinNr = 1,
+                                ToPinNr = 2,
+                                Formula = "1+PIN0",
+                                Imaginary= 0.02f,
                             },
                             new ()
                             {
-                                fromPinNr = 2,
-                                toPinNr = 1,
-                                realOrFormula = "1",
-                                imaginary = 0.02f,
+                                FromPinNr = 2,
+                                ToPinNr = 1,
+                                Real = 1,
+                                Imaginary = 0.02f,
                             },
                         },
                     },
@@ -167,17 +167,17 @@ namespace UnitTests
                         {
                             new ()
                             {
-                                fromPinNr = 1,
-                                toPinNr = 2,
-                                realOrFormula = "1+PIN0",
-                                imaginary= 0.02f,
+                                FromPinNr = 1,
+                                ToPinNr = 2,
+                                Formula = "1+PIN0",
+                                Imaginary= 0.02f,
                             },
                             new ()
                             {
-                                fromPinNr = 2,
-                                toPinNr = 1,
-                                realOrFormula = "1",
-                                imaginary = 0.02f,
+                                FromPinNr = 2,
+                                ToPinNr = 1,
+                                Real = 1,
+                                Imaginary = 0.02f,
                             },
                         },
                     }

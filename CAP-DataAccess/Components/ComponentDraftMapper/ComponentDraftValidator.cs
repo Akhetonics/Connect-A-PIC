@@ -220,13 +220,13 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
                 foreach(var connection in matrix.connections)
                 {
                     var allPinNumbers = pins.Select(p => p.number).ToHashSet();
-                    if (!allPinNumbers.Contains(connection.fromPinNr))
+                    if (!allPinNumbers.Contains(connection.FromPinNr))
                     {
-                        errorMsg += ErrorFromPinNrInvalid + $" The number '{nameof(Connection.fromPinNr)}' is not defined in the list of Pins\n";
+                        errorMsg += ErrorFromPinNrInvalid + $"The number '{nameof(Connection.FromPinNr)}' is not defined in the list of Pins\n";
                     }
-                    if (!allPinNumbers.Contains(connection.toPinNr))
+                    if (!allPinNumbers.Contains(connection.ToPinNr))
                     {
-                        errorMsg += ErrorToPinNrInvalid + $"the number '{nameof(Connection.toPinNr)}' is not defined in the list of Pins\n";
+                        errorMsg += ErrorToPinNrInvalid + $"The number '{nameof(Connection.ToPinNr)}' is not defined in the list of Pins\n";
                     }
                 }
             }

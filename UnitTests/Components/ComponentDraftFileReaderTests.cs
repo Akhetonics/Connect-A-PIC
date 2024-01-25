@@ -61,17 +61,17 @@ namespace UnitTests
                         {
                             new Connection()
                             {
-                                fromPinNr = 0,
-                                toPinNr = 1,
-                                realOrFormula = "PIN0 +1",
-                                imaginary = 0
+                                FromPinNr = 0,
+                                ToPinNr = 1,
+                                Formula = "PIN0 +1",
+                                Imaginary = 0
                             },
                             new Connection()
                             {
-                                fromPinNr = 1,
-                                toPinNr = 0,
-                                realOrFormula = "0.9",
-                                imaginary = 0.3
+                                FromPinNr = 1,
+                                ToPinNr = 0,
+                                Real = 0.9,
+                                Imaginary = 0.3
                             }
                         }
                     } 

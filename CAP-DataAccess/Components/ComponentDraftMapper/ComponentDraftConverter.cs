@@ -72,22 +72,18 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
 
                 foreach (var connectionDraft in matrixDraft.connections)
                 {
-                    if (!pinNumberToModelMap.TryGetValue(connectionDraft.fromPinNr, out var fromPinModel))
+                    if (!pinNumberToModelMap.TryGetValue(connectionDraft.FromPinNr, out var fromPinModel))
                     {
-                        Logger.PrintErr($"Kein passender Pin für 'fromPinNr' {connectionDraft.fromPinNr} gefunden.");
+                        Logger.PrintErr($"Kein passender Pin für 'fromPinNr' {connectionDraft.FromPinNr} gefunden.");
                         continue;
                     }
-                    if (!pinNumberToModelMap.TryGetValue(connectionDraft.toPinNr, out var toPinModel))
+                    if (!pinNumberToModelMap.TryGetValue(connectionDraft.ToPinNr, out var toPinModel))
                     {
-                        Logger.PrintErr($"Kein passender Pin für 'toPinNr' {connectionDraft.fromPinNr} gefunden.");
+                        Logger.PrintErr($"Kein passender Pin für 'toPinNr' {connectionDraft.FromPinNr} gefunden.");
                         continue;
                     }
-
-                    if (TryGetConnectionValue(connectionDraft, out var connectionValue))
-                    {
-                        connections.Add((fromPinModel.IDInFlow, toPinModel.IDOutFlow), connectionValue);
-                    }
-                    else if (TryGetNonLinearConnectionFunction(connectionDraft, allPins, out var connectionFunction))
+                    connections.Add((fromPinModel.IDInFlow, toPinModel.IDOutFlow), connectionDraft.ToComplexNumber());
+                    if (TryGetNonLinearConnectionFunction(connectionDraft, allPins, out var connectionFunction))
                     {
                         nonLinearConnectionFunctions.Add((fromPinModel.IDInFlow, toPinModel.IDOutFlow), connectionFunction);
                     }
@@ -114,22 +110,13 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
             }
             return map;
         }
-
-        public static bool TryGetConnectionValue(DTOs.Connection connectionDraft, out Complex value)
-        {
-            value = default;
-            if (double.TryParse(connectionDraft.realOrFormula, out double realValue))
-            {
-                value = new Complex(realValue, connectionDraft.imaginary);
-                return true;
-            }
-            return false;
-        }
-
         private bool TryGetNonLinearConnectionFunction(DTOs.Connection connectionDraft, List<Pin> allPins, out ConnectionFunction function)
         {
             function = default;
-            var convertedFunction = MathExpressionReader.ConvertToDelegate(connectionDraft.realOrFormula, allPins);
+            if (String.IsNullOrWhiteSpace(connectionDraft.Formula) || allPins?.Count == 0) 
+                return false;
+            
+            var convertedFunction = MathExpressionReader.ConvertToDelegate(connectionDraft.Formula, allPins);
             if (convertedFunction != null)
             {
                 function = (ConnectionFunction)convertedFunction;
