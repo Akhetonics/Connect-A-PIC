@@ -18,7 +18,7 @@ namespace CAP_Core.Tiles.Grid
         private readonly int size;
         public const int MaxToStringPinGuidSize = 6;
         public Dictionary<(Guid PinIdStart, Guid PinIdEnd), ConnectionFunction> NonLinearConnections;
-
+        
         public SMatrix(List<Guid> allPinsInGrid)
         {
             if (allPinsInGrid != null && allPinsInGrid.Count > 0)
@@ -108,6 +108,9 @@ namespace CAP_Core.Tiles.Grid
             for (int i = 1; i < maxSteps; i++)
             {
                 var oldInputAfterSteps = inputAfterSteps;
+                // recalculating non linear values because the inputvector has changed and could now change the connections like activate a logic gate for example.
+                RecomputeSMatNonLinearParts(inputAfterSteps); 
+                // multiplying the adjusted matrix and also adding the initial inputVector again because there is more light incoming
                 inputAfterSteps = SMat * inputAfterSteps + inputVector;
                 if (oldInputAfterSteps.Equals(inputAfterSteps)) break;
             }
@@ -115,7 +118,7 @@ namespace CAP_Core.Tiles.Grid
             return ConvertToDictWithGuids(inputAfterSteps);
         }
 
-        private List<Complex> CalculateWeightParameters(IEnumerable<Guid> parameterPinGuids, MathNet.Numerics.LinearAlgebra.Vector<Complex> inputVector)
+        private List<Complex> GetWeightParameters(IEnumerable<Guid> parameterPinGuids, MathNet.Numerics.LinearAlgebra.Vector<Complex> inputVector)
         {
             return parameterPinGuids.Select(p => PinReference[p])
                                     .Select(id => inputVector[id])
@@ -127,7 +130,7 @@ namespace CAP_Core.Tiles.Grid
             {
                 var indexStart = PinReference[connection.Key.PinIdStart];
                 var indexEnd = PinReference[connection.Key.PinIdEnd];
-                var weightParameters = CalculateWeightParameters(connection.Value.ParameterPinGuids, inputVector);
+                var weightParameters = GetWeightParameters(connection.Value.ParameterPinGuids, inputVector);
                 var calculatedWeight = connection.Value.CalcConnectionWeight(weightParameters);
                 SMat[indexEnd, indexStart] = calculatedWeight;
             }
