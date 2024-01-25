@@ -34,7 +34,7 @@ namespace UnitTests
             var PartDownLeft = component.GetPartAt(0, 1);
             var PartDownRight = component.GetPartAt(1, 1);
             var laserType = grid.GetUsedExternalInputs().First().Input.LaserType;
-            // test if I can get the nonNullvalues
+            // test if I can get the non-Null values
             component.LaserWaveLengthToSMatrixMap[StandardWaveLengths.RedNM].GetNonNullValues();
             var command = new RotateComponentCommand(grid);
             var args = new RotateComponentArgs(component.GridXMainTile, component.GridYMainTile);

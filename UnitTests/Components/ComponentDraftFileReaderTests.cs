@@ -21,7 +21,7 @@ namespace UnitTests
         [Fact]
         public async Task TestReadWrite()
         {
-            // test if first writing and then reading of a componentdraft works as expected
+            // test if first writing and then reading of a componentDraft works as expected
             // Arrange
             var tempFilePath = Path.GetTempFileName();
             var originalComponentDraft = new ComponentDraft
