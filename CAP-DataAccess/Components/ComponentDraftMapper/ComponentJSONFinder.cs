@@ -1,6 +1,6 @@
 ﻿using CAP_DataAccess.Helpers;
-using Components.ComponentDraftMapper.DTOs;
-using Components.ComponentDraftMapper;
+using CAP_DataAccess.Components.ComponentDraftMapper.DTOs;
+using CAP_DataAccess.Components.ComponentDraftMapper;
 using CAP_Contracts;
 
 namespace CAP_DataAccess.Components.ComponentDraftMapper

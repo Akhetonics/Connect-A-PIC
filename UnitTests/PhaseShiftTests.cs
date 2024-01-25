@@ -12,9 +12,18 @@ namespace UnitTests
         [Fact]
         public static void ComplexFactorTest()
         {
-            Complex factor1 = PhaseShiftCalculator.CalculateInRad(PhaseShiftCalculator.TileWidthInNM, StandardWaveLengths.RedNM); // widthInTiles is 1 for the first component
-            Complex factor2 = PhaseShiftCalculator.CalculateInRad(PhaseShiftCalculator.TileWidthInNM, StandardWaveLengths.RedNM); // widthInTiles is 1 also for the second component
+            var power = 1.0;
+            // I use this test to calculate the different imaginary values of the phase shift for given wire lengths to get realistic dummy values
+            var imaginaryRedAToC = PhaseShiftCalculator.CalculateWave(196349, StandardWaveLengths.RedNM) * Math.Sqrt(power); // from a to c  "e^i*PI" = -1
+            var imaginaryRedBToC = PhaseShiftCalculator.CalculateWave(196349, StandardWaveLengths.RedNM) * Math.Sqrt(power) * -1; // from e^i*PI = -1
 
+            var imaginaryRedAToCGreen = PhaseShiftCalculator.CalculateWave(196349, StandardWaveLengths.GreenNM) * Math.Sqrt(power); // from a to c  "e^i*PI" = -1
+            var imaginaryRedBToCGreen = PhaseShiftCalculator.CalculateWave(196349, StandardWaveLengths.GreenNM) * Math.Sqrt(power) * -1; // from e^i*PI = -1
+
+            var imaginaryRedAToCBlue = PhaseShiftCalculator.CalculateWave(196349, StandardWaveLengths.BlueNM) * Math.Sqrt(power); // from a to c  "e^i*PI" = -1
+            var imaginaryRedBToCBlue = PhaseShiftCalculator.CalculateWave(196349, StandardWaveLengths.BlueNM) * Math.Sqrt(power) * -1; // from e^i*PI = -1
+            var powerAtC2 = imaginaryRedAToC.Magnitude * imaginaryRedBToC.Magnitude;
+            Console.WriteLine();
         }
         [Fact]
         public void NazcaCompilerTest()

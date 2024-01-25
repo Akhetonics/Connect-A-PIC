@@ -2,8 +2,8 @@
 using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.Helpers;
 using CAP_Core.Tiles;
-using Components.ComponentDraftMapper;
-using Components.ComponentDraftMapper.DTOs;
+using CAP_DataAccess.Components.ComponentDraftMapper;
+using CAP_DataAccess.Components.ComponentDraftMapper.DTOs;
 using System;
 using System.CodeDom.Compiler;
 using System.Collections.Generic;
@@ -21,6 +21,7 @@ namespace UnitTests
         [Fact]
         public async Task TestReadWrite()
         {
+            // test if first writing and then reading of a componentDraft works as expected
             // Arrange
             var tempFilePath = Path.GetTempFileName();
             var originalComponentDraft = new ComponentDraft
@@ -31,9 +32,18 @@ namespace UnitTests
                 nazcaFunctionParameters = "",
                 sceneResPath = "res://Scenes/Components/DirectionalCoupler.tscn",
                 widthInTiles = 1,
-                heightInTiles =1,
+                heightInTiles = 1,
                 pins = new List<PinDraft>
                 {
+                    new PinDraft()
+                    {
+                        matterType = CAP_Core.Components.MatterType.Light,
+                        name = "west0",
+                        number = 0,
+                        partX = 0,
+                        partY = 0,
+                        side = RectSide.Left,
+                    },
                     new PinDraft()
                     {
                         matterType = CAP_Core.Components.MatterType.Light,
@@ -41,18 +51,30 @@ namespace UnitTests
                         number = 1,
                         partX = 0,
                         partY = 0,
-                        side = RectSide.Left,
+                        side = RectSide.Right,
                     }
                 },
-                connections = new List<Connection>
-                {
-                    new ()
-                    {
-                        fromPinNr = 1,
-                        toPinNr = 1,
-                        magnitude = 1,
-                        wireLengthNM = 0.02f,
-                    }
+                sMatrices = new List<WaveLengthSpecificSMatrix> {
+                    new WaveLengthSpecificSMatrix() {
+                        waveLength = 1550,
+                        connections = new List<Connection>()
+                        {
+                            new Connection()
+                            {
+                                FromPinNr = 0,
+                                ToPinNr = 1,
+                                Formula = "PIN0 +1",
+                                Imaginary = 0
+                            },
+                            new Connection()
+                            {
+                                FromPinNr = 1,
+                                ToPinNr = 0,
+                                Real = 0.9,
+                                Imaginary = 0.3
+                            }
+                        }
+                    } 
                 },
                 overlays = new List<Overlay>
                 {
@@ -71,28 +93,30 @@ namespace UnitTests
             await reader.Write(tempFilePath, originalComponentDraft);
             bool fileIsUsed = true;
             int counter = 0;
-            ComponentDraft readComponentDraft = null;
+            ComponentDraft? readComponentDraft = null;
             while (fileIsUsed)
             {
                 try
                 {
                     var readResult = reader.TryReadJson(tempFilePath);
-                    if(readResult.error == null)
+                    
+                    if(readResult.error != null)
                     {
                         throw new IOException(readResult.error);
                     }
                     readComponentDraft = readResult.draft;
                     fileIsUsed = false;
-                } catch (IOException)
+                } catch (IOException ex)
                 {
                     await Task.Delay(10);
                     counter++;
                     if (counter > 100)
-                        throw;
+                        throw ex;
                 }
             }
             // Assert
             Assert.Equal(JsonSerializer.Serialize(originalComponentDraft), JsonSerializer.Serialize(readComponentDraft));
+            
 
             // Clean up
             if (File.Exists(tempFilePath))

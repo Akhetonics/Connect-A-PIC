@@ -10,7 +10,9 @@ namespace CAP_Core.Components
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public string Name { get; set; } // the nazca name like b0, a0, a1}
-        public Guid IDInFlow { get; set; }
+        public int PinNumber { get; private set; }
+        public int LocalNumberInFlow { get; set; } // the number specified in the draft 
+        public Guid IDInFlow { get; set; } // each pin is divided into two IDs -> inflow and outflow ID.
         public Guid IDOutFlow { get; set; }
         [JsonIgnore] public Complex LightInflow { get; set; } // the light flowing into this component at this pin
         [JsonIgnore] public Complex LightOutflow { get; set; } // the light exiting this component at this pin
@@ -34,19 +36,20 @@ namespace CAP_Core.Components
                 NotifyPropertyChanged();
             }
         }
-        public Pin(string Name, MatterType newMatterType, RectSide side, Guid idInFlow, Guid idOutFlow) : this(Name, newMatterType, side)
+        public Pin(string Name, int pinNumber, MatterType newMatterType, RectSide side, Guid idInFlow, Guid idOutFlow) : this(Name, pinNumber,newMatterType, side)
         {
             IDInFlow = idInFlow;
             IDOutFlow = idOutFlow;
         }
-        public Pin(string Name, MatterType newMatterType, RectSide side) : this(Name, side)
+        public Pin(string Name, int pinNumber, MatterType newMatterType, RectSide side) : this(Name, pinNumber, side)
         {
             MatterType = newMatterType;
         }
-        protected Pin(string Name, RectSide side)
+        protected Pin(string Name, int pinNumber, RectSide side)
         {
             Side = side;
             this.Name = Name;
+            this.PinNumber = pinNumber;
             MatterType = MatterType.None;
             IDInFlow = Guid.NewGuid();
             IDOutFlow = Guid.NewGuid();
@@ -72,7 +75,7 @@ namespace CAP_Core.Components
 
         public object Clone()
         {
-            var clonedPin = new Pin(Name, MatterType, Side, IDInFlow , IDOutFlow);
+            var clonedPin = new Pin(Name, PinNumber, MatterType, Side, IDInFlow , IDOutFlow);
             return clonedPin;
         }
     }

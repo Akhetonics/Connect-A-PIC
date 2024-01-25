@@ -1,6 +1,6 @@
 ﻿using CAP_Core.Tiles;
 
-namespace Components.ComponentDraftMapper.DTOs
+namespace CAP_DataAccess.Components.ComponentDraftMapper.DTOs
 {
     public class Overlay
     {

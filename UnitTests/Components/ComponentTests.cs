@@ -1,5 +1,6 @@
 ﻿using CAP_Core;
 using CAP_Core.Components;
+using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.ExternalPorts;
 using CAP_Core.Grid;
 using CAP_Core.Tiles;
@@ -33,7 +34,8 @@ namespace UnitTests
             var PartDownLeft = component.GetPartAt(0, 1);
             var PartDownRight = component.GetPartAt(1, 1);
             var laserType = grid.GetUsedExternalInputs().First().Input.LaserType;
-            component.Connections(laserType.WaveLengthInNm).GetNonNullValues();
+            // test if I can get the non-Null values
+            component.LaserWaveLengthToSMatrixMap[StandardWaveLengths.RedNM].GetNonNullValues();
             var command = new RotateComponentCommand(grid);
             var args = new RotateComponentArgs(component.GridXMainTile, component.GridYMainTile);
             await command.ExecuteAsync(args);
@@ -64,16 +66,23 @@ namespace UnitTests
             Assert.Equal(DiscreteRotation.R0, component.Rotation90CounterClock);
         }
         [Fact]
-        public void TestComponentPinIDsInConnectionMatrix()
+        public void TestComponentPinIDsInConnectionMatrixAfterCloning()
         {
             var grid = new GridManager(10, 10);
             var componentOld = TestComponentFactory.CreateDirectionalCoupler();
+            // we also test the clone function here - it should be able to properly clone the object
             var component = componentOld.Clone() as Component;
-            var laserY = grid.ExternalPorts[0].TilePositionY;
-            grid.PlaceComponent(0, laserY, component);
-            var laserType = grid.GetUsedExternalInputs().First().Input.LaserType;
+            var inputLaserY = grid.ExternalPorts[0].TilePositionY;
+            grid.PlaceComponent(0, inputLaserY, component);
+            var inputLaserType = grid.GetUsedExternalInputs().First().Input.LaserType;
 
-            var connections = component.Connections(laserType.WaveLengthInNm).GetNonNullValues();
+            // after cloning the connections should have the new PinIDs
+            var connections = component.LaserWaveLengthToSMatrixMap[inputLaserType.WaveLengthInNm].GetNonNullValues();
+            // for debug reasons
+            var oldIDs = componentOld.LaserWaveLengthToSMatrixMap[inputLaserType.WaveLengthInNm].GetNonNullValues().Keys;
+            var newIDs = component.LaserWaveLengthToSMatrixMap[inputLaserType.WaveLengthInNm].GetNonNullValues().Keys;
+            var allNewIDs = Component.GetAllPins(component.Parts).SelectMany(p=>new[] { p.IDInFlow, p.IDOutFlow });
+            var allOldIDs = Component.GetAllPins(componentOld.Parts).SelectMany(p=>new[] { p.IDInFlow, p.IDOutFlow });
 
             // every light based Pin of the whole component that is defined should exist in the connection-S-Matrix.
             foreach (var part in component.Parts)

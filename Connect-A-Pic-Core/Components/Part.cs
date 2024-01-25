@@ -12,10 +12,10 @@ namespace CAP_Core.Components
             Rotation90 = DiscreteRotation.R0;
             Pins = new List<Pin>
             {
-                new Pin("west", MatterType.None, RectSide.Left),
-                new Pin("north", MatterType.None, RectSide.Up),
-                new Pin("east", MatterType.None, RectSide.Right),
-                new Pin("south", MatterType.None, RectSide.Down),
+                new Pin("west", 0, MatterType.None, RectSide.Left),
+                new Pin("north",1, MatterType.None, RectSide.Up),
+                new Pin("east", 2, MatterType.None, RectSide.Right),
+                new Pin("south", 3, MatterType.None, RectSide.Down),
             };
         }
         public Part(List<Pin> pins)

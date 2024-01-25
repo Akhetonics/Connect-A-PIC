@@ -1,5 +1,5 @@
 using CAP_Contracts.Logger;
-using Components.ComponentDraftMapper.DTOs;
+using CAP_DataAccess.Components.ComponentDraftMapper.DTOs;
 using ConnectAPic.LayoutWindow;
 using ConnectAPIC.Scripts.View.ComponentFactory;
 using Godot;
@@ -27,6 +27,7 @@ namespace ConnectAPIC.LayoutWindow.View
             Dictionary<int, ComponentSceneAndDraft> packedComponentScenes = new();
 
             int componentNumber = 0;
+            // load the PackedScene
             foreach (var componentDraft in drafts)
             {
                 PackedScene packedScene;

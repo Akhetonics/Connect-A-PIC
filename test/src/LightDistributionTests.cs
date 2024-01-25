@@ -13,6 +13,7 @@ using ConnectAPIC.LayoutWindow.View;
 using System.Collections.Generic;
 using ConnectAPIC.Scripts.Helpers;
 using CAP_Core.ExternalPorts;
+using CAP_Core.Tiles;
 
 namespace ConnectAPIC.test.src
 {
@@ -24,6 +25,7 @@ namespace ConnectAPIC.test.src
         public LightDistributionTests(Node testScene) : base(testScene) { }
         public ComponentView RotatedCurve { get; set; }
         public ComponentView StraightLine { get; set; }
+        public ComponentView SecondStraightLine { get; set; }
         public LaserType RedLaser { get; set; }
         public LaserType GreenLaser { get; set; }
         public void OnResolved()
@@ -56,26 +58,27 @@ namespace ConnectAPIC.test.src
             GreenLaser = (secondLaserInput as ExternalInput).LaserType;
 
             await MyGameManager.GridViewModel.CreateComponentCommand.ExecuteAsync(new CreateComponentArgs(straightComponentNr, 0, secondInputTileY, DiscreteRotation.R0));
+            await MyGameManager.GridViewModel.CreateComponentCommand.ExecuteAsync(new CreateComponentArgs(straightComponentNr, 1, secondInputTileY, DiscreteRotation.R0));
             await MyGameManager.GridViewModel.CreateComponentCommand.ExecuteAsync(new CreateComponentArgs(curveComponentNr, 0, firstInputTileY, DiscreteRotation.R270));
             // create a curve at the position of one of the standardInputs and rotate it by 90 degrees and then start light distribution
             RotatedCurve = MyGameManager.GridViewModel.GridComponentViews[0, firstInputTileY];
             StraightLine = MyGameManager.GridViewModel.GridComponentViews[0, secondInputTileY];
+            SecondStraightLine = MyGameManager.GridViewModel.GridComponentViews[1, secondInputTileY];
             var usedPorts = MyGameManager.Grid.GetUsedExternalInputs();
 
             // Assert if loading has worked properly
             usedPorts.Count.ShouldBe(2);
         }
         [Test]
-        public void TestLightVectorAssignment()
+        public void ComponentRotationTests()
         {
             var outflowSide = CAP_Core.Tiles.RectSide.Up;
             var inflowSide = CAP_Core.Tiles.RectSide.Left;
 
-            var upperLightVector = new LightAtPin(0, 0, outflowSide, RedLaser, 0, 1);
             var lightAtPins = new List<LightAtPin>() {
-            new (0,0,inflowSide,RedLaser,1,0),
-            upperLightVector,
-        };
+                new (0,0,inflowSide,RedLaser,1,0),
+                new (0, 0, outflowSide, RedLaser, 0, 1),
+            };
             RotatedCurve.DisplayLightVector(lightAtPins);
             MyGameManager.GridViewModel.ShowLightPropagation();
             RotatedCurve.AnimationSlots[0].Rotation.ShouldBe(RotatedCurve.RotationCC, "AnimationSlot should rotate according to the rotation of the component");
@@ -83,53 +86,54 @@ namespace ConnectAPIC.test.src
             RotatedCurve.AnimationSlots[2].Rotation.ShouldBe(RotatedCurve.RotationCC, "AnimationSlot should rotate according to the rotation of the component");
         }
         [Test]
-        public void TestShaderAssignment()
+        public async Task TestShaderAssignment()
         {
-            var outflowSide = CAP_Core.Tiles.RectSide.Right;
-            var inflowSide = CAP_Core.Tiles.RectSide.Left;
-            var rightLightVector = new LightAtPin(0, 0, outflowSide, GreenLaser, 0, 1);
-            var lightAtPins = new List<LightAtPin>() {
-            new (0,0,inflowSide,GreenLaser,1,0),
-            rightLightVector,
-        };
-            StraightLine.HideLightVector();
-            StraightLine.DisplayLightVector(lightAtPins);
-            TestStraightShaderParameters(GreenLaser, 1);
-            MyGameManager.GridViewModel.HideLightPropagation();
-            MyGameManager.GridViewModel.ShowLightPropagation();
-            TestStraightShaderParameters(GreenLaser, 1);
-            StraightLine.HideLightVector();
-            TestStraightShaderParameters(GreenLaser, 0);
-        }
-        private void TestStraightShaderParameters(LaserType activatedLaser, float expectedLightMagnitude)
-        {
-            foreach (var slot in StraightLine.AnimationSlots)
-            {
-                if (slot?.BaseOverlaySprite?.Material is ShaderMaterial shaderMat)
-                {
-                    var inflowAndPosition = (Godot.Vector4)shaderMat.GetShaderParameter(ShaderParameterNames.LightInFlow + 1);
-                    var outflowAndPosition = (Godot.Vector4)shaderMat.GetShaderParameter(ShaderParameterNames.LightOutFlow + 1);
-                    if (slot.MatchingLaser.WaveLengthInNm == activatedLaser.WaveLengthInNm)
-                    {
-                        if (slot.Side == CAP_Core.Tiles.RectSide.Left)
-                        {
-                            inflowAndPosition.X.ShouldBe(expectedLightMagnitude, $"Inflow should be {expectedLightMagnitude} on the left side (inflow side) for laser: " + slot.MatchingLaser);
-                            outflowAndPosition.X.ShouldBe(0, "Outflow should be 0 on the left side");
-                        }
-                        if (slot.Side == CAP_Core.Tiles.RectSide.Right)
-                        {
-                            inflowAndPosition.X.ShouldBe(0, "Inflow should be 0 on the right side");
-                            outflowAndPosition.X.ShouldBe(expectedLightMagnitude, $"outflow should be {expectedLightMagnitude} on the right side (inflow side) for laser: " + slot.MatchingLaser);
-                        }
-                    }
-                    else
-                    {
-                        inflowAndPosition.X.ShouldBe(0, "inflow must be zero for Laser: " + slot.MatchingLaser);
-                        outflowAndPosition.X.ShouldBe(0, "inflow must be zero for Laser: " + slot.MatchingLaser);
-                    }
+            // setup
+            float lightOnIntensity = 1;
+            var rightLightVector = new LightAtPin(0, 0, RectSide.Right, GreenLaser, 0, lightOnIntensity);
+            var leftLightVector = new LightAtPin(0, 0, RectSide.Left, GreenLaser, lightOnIntensity, 0);
+            var lightAtPins = new List<LightAtPin>() { leftLightVector, rightLightVector, };
 
-                }
-            }
+            // act
+            // first test if the connectionWeights are proper
+            var compModel = MyGameManager.Grid.GetComponentAt(SecondStraightLine.GridX, SecondStraightLine.GridY);
+            var innerConnections = compModel.LaserWaveLengthToSMatrixMap[GreenLaser.WaveLengthInNm].GetNonNullValues();
+            // then test the light distribution
+            SecondStraightLine.HideLightVector();
+            SecondStraightLine.DisplayLightVector(lightAtPins);
+            var lightLocallyOn = GetInOutLightValueLeft();
+            MyGameManager.GridViewModel.HideLightPropagation();
+            var lightGloballyOff = GetInOutLightValueLeft();
+            await MyGameManager.GridViewModel.ShowLightPropagation();
+            var lightGloballyOn= GetInOutLightValueLeft();
+            SecondStraightLine.HideLightVector();
+            var lightLocallyOff= GetInOutLightValueLeft();
+
+            // Assert
+            innerConnections.First().Value.Magnitude.ShouldBe(1, 0.01);
+            lightLocallyOn.In.X.ShouldBe(lightOnIntensity, 0.01);
+            lightLocallyOn.Out.X.ShouldBe(0,0.0001, "because not light comes from a right positioned component");
+            lightGloballyOn.In.X.ShouldBe(lightOnIntensity, 1);
+            lightGloballyOn.Out.X.ShouldBe(0);
+            lightLocallyOff.In.X.ShouldBe(0);
+            lightLocallyOff.Out.X.ShouldBe(0);
+            lightGloballyOff.In.X.ShouldBe(0);
+            lightGloballyOff.Out.X.ShouldBe(0);
+            
+        }
+
+        private (Vector4 In, Vector4 Out) GetInOutLightValueLeft()
+        {
+            // get the shader-light intensity value on the left side
+            // because only left is defined in the Straight Component (it only has one set of RGB-Overlays and only uses the left in/out values)
+            var rightSlotShader = ((ShaderMaterial) SecondStraightLine.AnimationSlots.Single(slot =>
+                      slot.MatchingLaser.WaveLengthInNm == GreenLaser.WaveLengthInNm
+                   && (ShaderMaterial) slot.BaseOverlaySprite?.Material != null
+                   && slot.Side == RectSide.Left)
+                .BaseOverlaySprite.Material) ?? throw new Exception("Shader is not properly assigned to Overlay");
+            var rightIn = (Godot.Vector4)rightSlotShader.GetShaderParameter(ShaderParameterNames.LightInFlow + 1);
+            var rightOut = (Godot.Vector4)rightSlotShader.GetShaderParameter(ShaderParameterNames.LightOutFlow + 1);
+            return (rightIn, rightOut);
         }
 
         [Cleanup]

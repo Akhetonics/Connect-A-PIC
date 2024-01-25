@@ -12,9 +12,9 @@ namespace CAP_Core.Tiles.Grid
         public readonly GridManager Grid;
         public Dictionary<(Guid, Guid), Complex>? InterComponentConnections { get; private set; }
         public SMatrix? SystemSMatrix { get; private set; }
-        public double LaserWaveLengthInNm { get; }
+        public int LaserWaveLengthInNm { get; }
 
-        public GridSMatrixAnalyzer(GridManager grid, double laserWaveLengthInNm)
+        public GridSMatrixAnalyzer(GridManager grid, int laserWaveLengthInNm)
         {
             Grid = grid;
             LaserWaveLengthInNm = laserWaveLengthInNm;
@@ -35,7 +35,7 @@ namespace CAP_Core.Tiles.Grid
 
         private void UpdateSystemSMatrix()
         {
-            var allComponentsSMatrices = GetAllComponentsSMatrices(LaserWaveLengthInNm);
+            var allComponentsSMatrices = GetAllComponentsSMatrices((int)LaserWaveLengthInNm);
             SMatrix allConnectionsSMatrix = CreateAllConnectionsMatrix();
             allComponentsSMatrices.Add(allConnectionsSMatrix);
             SystemSMatrix = SMatrix.CreateSystemSMatrix(allComponentsSMatrices);
@@ -54,9 +54,21 @@ namespace CAP_Core.Tiles.Grid
             return allConnectionsSMatrix;
         }
 
-        public List<SMatrix> GetAllComponentsSMatrices(double waveLength)
+        public List<SMatrix> GetAllComponentsSMatrices(int waveLength)
         {
-            return Grid.GetAllComponents().Select(c => c.Connections(waveLength)).ToList();
+            var allComponents = Grid.GetAllComponents();
+            var allSMatrices = new List<SMatrix>();
+            foreach(var component in allComponents)
+            {
+                if(component.LaserWaveLengthToSMatrixMap.TryGetValue(waveLength, out var matrixFound))
+                {
+                    allSMatrices.Add(matrixFound);
+                } else
+                {
+                    throw new InvalidDataException($"The Matrix was not defined for the specific waveLength: {waveLength} at component {component.Identifier}");
+                }
+            };
+            return allSMatrices;
         }
         private void CalcAllConnectionsBetweenComponents()
         {

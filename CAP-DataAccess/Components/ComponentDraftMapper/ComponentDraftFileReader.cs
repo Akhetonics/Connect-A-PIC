@@ -2,9 +2,9 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json;
 using CAP_Contracts;
-using Components.ComponentDraftMapper.DTOs;
+using CAP_DataAccess.Components.ComponentDraftMapper.DTOs;
 
-namespace Components.ComponentDraftMapper
+namespace CAP_DataAccess.Components.ComponentDraftMapper
 {
     public class ComponentDraftFileReader
     {
@@ -17,7 +17,13 @@ namespace Components.ComponentDraftMapper
 
         public IDataAccessor DataAccessor { get; }
 
-        public (ComponentDraft? draft, string error) TryReadJson(string path)
+        /// <summary>
+        /// error is null if everything goes right, otherwise draft is null and error is the error description.
+        /// it does not throw any exception directly
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public (ComponentDraft? draft, string? error) TryReadJson(string path)
         {
             if (DataAccessor.DoesResourceExist(path))
             {
@@ -26,7 +32,7 @@ namespace Components.ComponentDraftMapper
                 {
                     try
                     {   
-                        return (JsonSerializer.Deserialize<ComponentDraft>(fileContent) ?? new ComponentDraft(),"");
+                        return (JsonSerializer.Deserialize<ComponentDraft>(fileContent) ?? new ComponentDraft(), null);
                     }
                     catch (Exception ex)
                     {
