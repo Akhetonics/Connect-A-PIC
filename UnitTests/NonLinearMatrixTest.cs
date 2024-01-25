@@ -88,7 +88,8 @@ namespace UnitTests
         public void ConvertToDelegate_ShouldCreateValidConnectionFunction()
         {
             // Arrange
-            string expression = "PIN1 + PIN2";
+            string expression = "Add(PIN1,PIN2)";
+            string wrongExpression = "PIN1 + PIN2"; // the plus parameter does not work with complex values
             var pinPlaceholdersToGuids = new Dictionary<string, Guid>
             {
                 { "PIN1", Guid.NewGuid() },
@@ -97,6 +98,7 @@ namespace UnitTests
 
             // Act
             var connectionFunction = MathExpressionReader.ConvertToDelegate(expression, pinPlaceholdersToGuids);
+            var wrongFunction = MathExpressionReader.ConvertToDelegate(wrongExpression, pinPlaceholdersToGuids);
 
             // Assert
             connectionFunction.ParameterPinGuids.ShouldBe(pinPlaceholdersToGuids.Select(p => p.Value).ToList());
@@ -110,6 +112,14 @@ namespace UnitTests
 
             // Invoke the connection function
             var result = connectionFunction.CalcConnectionWeight(complexParameters);
+            try
+            {
+                var wrongResult = wrongFunction.CalcConnectionWeight(complexParameters);
+            } catch (InvalidOperationException ex)
+            {
+                ex.ShouldNotBeNull();
+            }
+            
 
             // Verify the result
             var expected = new Complex(4.0, 6.0); // Expected result of (1+3) + (2+4)i

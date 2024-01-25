@@ -39,7 +39,7 @@ namespace CAP_Core.Tiles.Grid
             reversePinReference = PinReference.ToDictionary(pair => pair.Value, pair => pair.Key);
             NonLinearConnections = new();
         }
-
+        
         public void SetNonLinearConnectionFunctions(Dictionary<(Guid PinIdStart, Guid PinIdEnd), ConnectionFunction> transfers)
         {
             NonLinearConnections = transfers;
@@ -103,6 +103,7 @@ namespace CAP_Core.Tiles.Grid
 
             // update the SMat using the non linear connections
             RecomputeSMatNonLinearParts(inputVector);
+
             var inputAfterSteps = SMat * inputVector;
             for (int i = 1; i < maxSteps; i++)
             {

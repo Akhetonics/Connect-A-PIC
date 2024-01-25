@@ -1,7 +1,8 @@
 ﻿using CAP_Core.Components;
 using MathNet.Numerics;
+using NCalc;
+using System.Globalization;
 using System.Linq.Dynamic.Core;
-using System.Linq.Expressions;
 using System.Numerics;
 using System.Text.RegularExpressions;
 using YamlDotNet.Core;
@@ -45,11 +46,36 @@ namespace CAP_Core.Grid.FormulaReading
                 foreach (var param in PinNumbersAsString)
                 {
                     if (param == null) continue;
-                    stringToGuidMapper.Add(param, allPins.Single(p => p.LocalNumberInFlow == MathExpressionReader.ExtractPinNumber(param)).IDInFlow);
+                    stringToGuidMapper.Add(param, allPins.Single(p => p.PinNumber == MathExpressionReader.ExtractPinNumber(param)).IDInFlow);
                 }
                 return MathExpressionReader.ConvertToDelegate(realOrFormula, stringToGuidMapper);
             }
             return null;
+        }
+        public class ComplexMath
+        {
+            public static Complex Add(Complex a, Complex b) => a + b;
+            public static Complex Subtract(Complex a, Complex b) => a - b;
+            
+        }
+      
+        private static void RegisterComplexFunctions(Expression e)
+        {
+            e.EvaluateFunction += delegate (string name, FunctionArgs args)
+            {
+                if (name == nameof(ComplexMath.Add))
+                {
+                    var a = (Complex)args.Parameters[0].Evaluate();
+                    var b = (Complex)args.Parameters[1].Evaluate();
+                    args.Result = ComplexMath.Add(a, b);
+                }
+                if (name == nameof(ComplexMath.Subtract))
+                {
+                    var a = (Complex)args.Parameters[0].Evaluate();
+                    var b = (Complex)args.Parameters[1].Evaluate();
+                    args.Result = ComplexMath.Subtract(a, b);
+                }
+            };
         }
 
         // Example: dynamically invoking with values
@@ -57,47 +83,52 @@ namespace CAP_Core.Grid.FormulaReading
         // double result = (double)compiledLambda.DynamicInvoke(values);
         //    return result;
         // this function is being called after loading the component from JSON, so PIN1 is in the list of PinDrafts
-        public static ConnectionFunction ConvertToDelegate(string expression, Dictionary<string, Guid> PinPlaceHolderToGuids)
+        public static ConnectionFunction ConvertToDelegate(string expressionDraft, Dictionary<string, Guid> PinPlaceHolderToGuids)
         {
-            expression = FixPlaceHolderNames(expression); // to make small letter pins also be capital letters..
+            expressionDraft = FixPlaceHolderNames(expressionDraft); // to make small letter pins also be capital letters..
             PinPlaceHolderToGuids = FixPlaceHolderNames(PinPlaceHolderToGuids); // also fix the keys here
-
-            var parameters = FindParametersInExpression(expression);
-            var lambda = DynamicExpressionParser.ParseLambda(parameters.ToArray(), null, expression);
-            var compiledLambda = lambda.Compile();
-
+            var parameters = FindParametersInExpression(expressionDraft);
+            // set the culture to en-US so that points get parsed properly
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US"); 
+            var expression = new Expression(expressionDraft); //DynamicExpressionParser.ParseLambda(parameters.ToArray(), null, expressionDraft);
+            RegisterComplexFunctions(expression);
+            
             var connectionFunction = new ConnectionFunction(
                     (complexParameters) =>
                     {
                         // Ensure we have the correct number of parameters
-                        if (complexParameters.Count != lambda.Parameters.Count)
-                            throw new InvalidOperationException($"Parameter count mismatch. Should be {lambda.Parameters.Count}, but is {complexParameters.Count} in function {expression}");
+                        if (parameters.Count != complexParameters.Count)
+                            throw new InvalidOperationException($"Parameter count mismatch. Should be {expression.Parameters.Count}, but is {complexParameters.Count} in function {expressionDraft}");
 
-                        // Split the complex parameters into real and imaginary parts
-                        var realArguments = complexParameters.Select(y => y.Real).Cast<object>().ToArray();
-                        var imaginaryArguments = complexParameters.Select(y => y.Imaginary).Cast<object>().ToArray();
+                        // transfer the parameters into the expression
+                        int index = 0;
+                        foreach(var parameterName in PinPlaceHolderToGuids.Keys)
+                        {
+                            expression.Parameters[parameterName] = complexParameters[index];
+                            index++;
+                        }
 
-                        // Invoke the lambda twice -> for real and imaginary parts separately
-                        // this ensures that we can use the normal Math.Sin() functions
-                        // that only work with double but not with complex values.
-                        double realPart = (double)compiledLambda.DynamicInvoke(realArguments);
-                        double imaginaryPart = (double)compiledLambda.DynamicInvoke(imaginaryArguments);
-
-                        return new Complex(realPart, imaginaryPart);
+                        // return the result
+                        var result = expression.Evaluate();
+                        if(result == null)
+                        {
+                            throw new InvalidOperationException("the formula cannot be computed. maybe you use operators that only support double but not complex numbers? " + expressionDraft);
+                        }
+                        return (Complex) result;
                     },
-                    expression,
+                    expressionDraft,
                     parameters.Select(p => PinPlaceHolderToGuids[p.Name]).ToList()
                 );
             return connectionFunction;
         }
 
-        public static List<ParameterExpression> FindParametersInExpression(string expression)
+        public static List<System.Linq.Expressions.ParameterExpression> FindParametersInExpression(string expression)
         {
             // Regular expression to find placeholders like {P1}, {P2}, etc.
             var placeholderRegex = new Regex(@$"{PinParameterIdentifier}\d+");
             var matches = placeholderRegex.Matches(expression);
 
-            var parameters = new List<ParameterExpression>();
+            var parameters = new List<System.Linq.Expressions.ParameterExpression>();
             foreach (Match match in matches)
             {
                 // Extract the placeholder name without curly braces
@@ -106,7 +137,7 @@ namespace CAP_Core.Grid.FormulaReading
                 // Check if a parameter with this name already exists to avoid duplicates
                 if (!parameters.Any(p => p.Name == placeholder))
                 {
-                    parameters.Add(Expression.Parameter(typeof(double), placeholder));
+                    parameters.Add(System.Linq.Expressions.Expression.Parameter(typeof(double), placeholder));
                 }
             }
             return parameters;

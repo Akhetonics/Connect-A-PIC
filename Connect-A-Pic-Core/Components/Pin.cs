@@ -10,8 +10,7 @@ namespace CAP_Core.Components
     {
         public event PropertyChangedEventHandler PropertyChanged;
         public string Name { get; set; } // the nazca name like b0, a0, a1}
-        public int PinNumber { get; private set; }
-        public int LocalNumberInFlow { get; set; } // the number specified in the draft 
+        public int PinNumber { get; private set; }// the number specified in the draft 
         public Guid IDInFlow { get; set; } // each pin is divided into two IDs -> inflow and outflow ID.
         public Guid IDOutFlow { get; set; }
         [JsonIgnore] public Complex LightInflow { get; set; } // the light flowing into this component at this pin
