@@ -1,8 +1,12 @@
-﻿namespace CAP_DataAccess.Components.ComponentDraftMapper.DTOs
+﻿using System.Text.Json.Serialization;
+
+namespace CAP_DataAccess.Components.ComponentDraftMapper.DTOs
 {
     public class WaveLengthSpecificSMatrix
     {
-        public int waveLength { get; set; }
-        public List<Connection> connections { get; set; }
+        [JsonPropertyName("waveLength")]
+        public int WaveLength { get; set; }
+        [JsonPropertyName("connections")]
+        public List<Connection> Connections { get; set; }
     }
 }

@@ -1,24 +1,11 @@
 ﻿using CAP_Contracts;
 using CAP_Core;
-using CAP_Core.Components;
 using CAP_Core.Components.Creation;
-using CAP_Core.ExternalPorts;
 using CAP_Core.Grid;
 using CAP_Core.Helpers;
 using CAP_DataAccess.Components.ComponentDraftMapper;
-using Castle.Components.DictionaryAdapter.Xml;
-using CAP_DataAccess.Components.ComponentDraftMapper;
 using CAP_DataAccess.Components.ComponentDraftMapper.DTOs;
-using ConnectAPIC.Scripts.View.ComponentFactory;
 using Shouldly;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using static UnitTests.ComponentDraftFileReaderTests;
 
 namespace UnitTests
 {

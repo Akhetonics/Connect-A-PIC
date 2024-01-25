@@ -27,7 +27,7 @@ namespace ConnectAPIC.test.src
             MyFixture = new Fixture(TestScene.GetTree());
             MyGameManager = await MyFixture.LoadAndAddScene<GameManager>("res://Scenes/PICEditor.tscn");
             // find proper tool from component factory
-            int gratingComponentNr = MyGameManager.GridView.ComponentViewFactory.PackedComponentCache.Single(c => c.Value.Draft.identifier == "GratingCoupler").Key;
+            int gratingComponentNr = MyGameManager.GridView.ComponentViewFactory.PackedComponentCache.Single(c => c.Value.Draft.Identifier == "GratingCoupler").Key;
             // instantiate tool at the height of the laserInput
             var firstLaserInput = MyGameManager.Grid.ExternalPorts[0];
             var firstInputTileY = firstLaserInput.TilePositionY;

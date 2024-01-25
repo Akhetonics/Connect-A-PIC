@@ -32,14 +32,14 @@ namespace ConnectAPIC.LayoutWindow.View
             {
                 PackedScene packedScene;
                 try {
-                    packedScene = GD.Load<PackedScene>(componentDraft.sceneResPath);
+                    packedScene = GD.Load<PackedScene>(componentDraft.SceneResPath);
                     if(packedScene == null)
                     {
-                        throw new ArgumentException(componentDraft.sceneResPath);
+                        throw new ArgumentException(componentDraft.SceneResPath);
                     }
                 } catch( Exception ex)
                 {
-                    Logger.PrintErr($"Error Loading PackedScene '{componentDraft?.sceneResPath}' of Component: {componentDraft?.identifier} ex: {ex.Message} )");
+                    Logger.PrintErr($"Error Loading PackedScene '{componentDraft?.SceneResPath}' of Component: {componentDraft?.Identifier} ex: {ex.Message} )");
                     continue;
                 }
                 packedComponentScenes.Add(componentNumber, new ComponentSceneAndDraft()
@@ -65,12 +65,12 @@ namespace ConnectAPIC.LayoutWindow.View
 
             try
             {
-                foreach (Overlay overlay in draft.overlays)
+                foreach (Overlay overlay in draft.Overlays)
                 {
                     var overlayBluePrint = ResourceLoader.Load<Texture2D>(overlay.overlayAnimTexturePath);
                     if(overlayBluePrint == null)
                     {
-                        Logger.PrintErr("BluePrint could not be loaded in Type: " + draft.identifier + " ComponentTypeNR: " + componentNR + " path: " + overlay.overlayAnimTexturePath);
+                        Logger.PrintErr("BluePrint could not be loaded in Type: " + draft.Identifier + " ComponentTypeNR: " + componentNR + " path: " + overlay.overlayAnimTexturePath);
                         continue;
                     }
                     slotDataSets.Add(new AnimationSlotOverlayData()
@@ -84,12 +84,12 @@ namespace ConnectAPIC.LayoutWindow.View
                 ComponentView componentView = new();
                 componentView._Ready();
                 componentView.AddChild((TextureRect)packedScene.Instantiate());
-                componentView.InitializeComponent(componentNR, slotDataSets, draft.widthInTiles, draft.heightInTiles , Logger);
+                componentView.InitializeComponent(componentNR, slotDataSets, draft.WidthInTiles, draft.HeightInTiles , Logger);
                 return componentView;
             }
             catch (Exception ex)
             {
-                Logger.PrintErr($"ComponentTemplate is not or not well defined: {draft?.identifier} - Exception: {ex.Message}");
+                Logger.PrintErr($"ComponentTemplate is not or not well defined: {draft?.Identifier} - Exception: {ex.Message}");
                 throw;
             }
         }
@@ -98,7 +98,7 @@ namespace ConnectAPIC.LayoutWindow.View
         {
             if(PackedComponentCache.TryGetValue(componentTypeNumber, out var component))
             {
-                return new Vector2I(component.Draft.widthInTiles, component.Draft.heightInTiles);
+                return new Vector2I(component.Draft.WidthInTiles, component.Draft.HeightInTiles);
             }
             Logger.PrintErr($"ComponentTypeNumber {componentTypeNumber} does not exist in ComponentViewFactory");
             throw new KeyNotFoundException( $"ComponentTypeNumber {componentTypeNumber} does not exist in ComponentViewFactory");

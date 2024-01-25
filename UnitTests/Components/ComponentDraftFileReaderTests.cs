@@ -26,38 +26,38 @@ namespace UnitTests
             var tempFilePath = Path.GetTempFileName();
             var originalComponentDraft = new ComponentDraft
             {
-                fileFormatVersion = 1,
-                identifier = "test",
-                nazcaFunctionName = "test",
-                nazcaFunctionParameters = "",
-                sceneResPath = "res://Scenes/Components/DirectionalCoupler.tscn",
-                widthInTiles = 1,
-                heightInTiles = 1,
-                pins = new List<PinDraft>
+                FileFormatVersion = 1,
+                Identifier = "test",
+                NazcaFunctionName = "test",
+                NazcaFunctionParameters = "",
+                SceneResPath = "res://Scenes/Components/DirectionalCoupler.tscn",
+                WidthInTiles = 1,
+                HeightInTiles = 1,
+                Pins = new List<PinDraft>
                 {
                     new PinDraft()
                     {
-                        matterType = CAP_Core.Components.MatterType.Light,
-                        name = "west0",
-                        number = 0,
-                        partX = 0,
-                        partY = 0,
-                        side = RectSide.Left,
+                        MatterType = CAP_Core.Components.MatterType.Light,
+                        Name = "west0",
+                        Number = 0,
+                        PartX = 0,
+                        PartY = 0,
+                        Side = RectSide.Left,
                     },
                     new PinDraft()
                     {
-                        matterType = CAP_Core.Components.MatterType.Light,
-                        name = "west0",
-                        number = 1,
-                        partX = 0,
-                        partY = 0,
-                        side = RectSide.Right,
+                        MatterType = CAP_Core.Components.MatterType.Light,
+                        Name = "west0",
+                        Number = 1,
+                        PartX = 0,
+                        PartY = 0,
+                        Side = RectSide.Right,
                     }
                 },
-                sMatrices = new List<WaveLengthSpecificSMatrix> {
+                SMatrices = new List<WaveLengthSpecificSMatrix> {
                     new WaveLengthSpecificSMatrix() {
-                        waveLength = 1550,
-                        connections = new List<Connection>()
+                        WaveLength = 1550,
+                        Connections = new List<Connection>()
                         {
                             new Connection()
                             {
@@ -76,7 +76,7 @@ namespace UnitTests
                         }
                     } 
                 },
-                overlays = new List<Overlay>
+                Overlays = new List<Overlay>
                 {
                     new ()
                     {
@@ -85,7 +85,7 @@ namespace UnitTests
                         tileOffsetY = 0,
                     }
                 },
-                deltaLength = 1,
+                DeltaLength = 1,
             };
 
             // Act

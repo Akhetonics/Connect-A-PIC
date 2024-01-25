@@ -47,8 +47,8 @@ namespace ConnectAPIC.test.src
 
             // first import all components so that we have curves. 
             // find proper tool from component factory
-            int curveComponentNr = MyGameManager.GridView.ComponentViewFactory.PackedComponentCache.Single(c => c.Value.Draft.identifier == "Bend").Key;
-            int straightComponentNr = MyGameManager.GridView.ComponentViewFactory.PackedComponentCache.Single(c => c.Value.Draft.identifier == "Straight").Key;
+            int curveComponentNr = MyGameManager.GridView.ComponentViewFactory.PackedComponentCache.Single(c => c.Value.Draft.Identifier == "Bend").Key;
+            int straightComponentNr = MyGameManager.GridView.ComponentViewFactory.PackedComponentCache.Single(c => c.Value.Draft.Identifier == "Straight").Key;
             // instantiate tool at position attached to laserInput
             var firstLaserInput = MyGameManager.Grid.ExternalPorts[0];
             var secondLaserInput = MyGameManager.Grid.ExternalPorts[1];

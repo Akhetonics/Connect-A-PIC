@@ -9,7 +9,7 @@ using YamlDotNet.Core;
 
 namespace CAP_Core.Grid.FormulaReading
 {
-    public static class MathExpressionReader
+    public static partial class MathExpressionReader
     {
         public const string PinParameterIdentifier = "PIN";
 
@@ -52,31 +52,6 @@ namespace CAP_Core.Grid.FormulaReading
             }
             return null;
         }
-        public class ComplexMath
-        {
-            public static Complex Add(Complex a, Complex b) => a + b;
-            public static Complex Subtract(Complex a, Complex b) => a - b;
-            
-        }
-      
-        private static void RegisterComplexFunctions(Expression e)
-        {
-            e.EvaluateFunction += delegate (string name, FunctionArgs args)
-            {
-                if (name == nameof(ComplexMath.Add))
-                {
-                    var a = (Complex)args.Parameters[0].Evaluate();
-                    var b = (Complex)args.Parameters[1].Evaluate();
-                    args.Result = ComplexMath.Add(a, b);
-                }
-                if (name == nameof(ComplexMath.Subtract))
-                {
-                    var a = (Complex)args.Parameters[0].Evaluate();
-                    var b = (Complex)args.Parameters[1].Evaluate();
-                    args.Result = ComplexMath.Subtract(a, b);
-                }
-            };
-        }
 
         // Example: dynamically invoking with values
         // var values = new object[] { 1.0, 4.0 };
@@ -91,7 +66,7 @@ namespace CAP_Core.Grid.FormulaReading
             // set the culture to en-US so that points get parsed properly
             Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US"); 
             var expression = new Expression(expressionDraft); //DynamicExpressionParser.ParseLambda(parameters.ToArray(), null, expressionDraft);
-            RegisterComplexFunctions(expression);
+            ComplexMath.RegisterComplexFunctions(expression);
             
             var connectionFunction = new ConnectionFunction(
                     (complexParameters) =>
