@@ -13,7 +13,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UnitTests
+namespace UnitTests.Components.FormulaReading
 {
     public class MathExpressionReaderTests
     {
@@ -21,10 +21,10 @@ namespace UnitTests
         [Fact]
         public void TestMathExpression()
         {
-            string expression =  "Add(Add(PIN1,PIN1),PIN2)";
-            var valueForPin1 = new Complex(2,4);
-            var valueForPin2 = new Complex(4,2.2);
-            var parametersFound = MathExpressionReader.FindParametersInExpression(expression);
+            string expression = "Add(Add(PIN1,PIN1),PIN2)";
+            var valueForPin1 = new Complex(2, 4);
+            var valueForPin2 = new Complex(4, 2.2);
+            var parametersFound = MathExpressionReader.FindPinParametersInExpression(expression);
             var parameterNumbers = parametersFound.Select(p => MathExpressionReader.ExtractPinNumber(p.Name)).ToList();
             List<Pin> pins = new List<Pin>() {
                 new("",parameterNumbers[0],MatterType.Light,RectSide.Right),
@@ -33,7 +33,15 @@ namespace UnitTests
             var computedDelegate = MathExpressionReader.ConvertToDelegate(expression, pins);
             var formulaResult = computedDelegate.Value.CalcConnectionWeight(new List<Complex>() { valueForPin1, valueForPin2 });
 
-            formulaResult.ShouldBe(new Complex(8,10.2));
+            formulaResult.ShouldBe(new Complex(8, 10.2));
+        }
+        [Fact]
+        public void TestMixedMathExpressions()
+        {
+            string expression = "Add(ToComplexFromPolar( 2-1.5 , 3.0774785178021489) , ToComplex(1,1.2))";
+            var computedDelegate = MathExpressionReader.ConvertToDelegate(expression, new List<Pin>());
+            var formulaResult = computedDelegate.Value.CalcConnectionWeight(new List<Complex>());
+            formulaResult.ShouldBe(Complex.FromPolarCoordinates(0.5, 3.0774785178021489) + new Complex(1, 1.2));
         }
 
         [Fact]
@@ -66,7 +74,7 @@ namespace UnitTests
             string expression = "pin1 + pin2";
 
             // Act
-            string result = MathExpressionReader.FixPlaceHolderNames(expression);
+            string result = MathExpressionReader.MakePlaceHoldersUpperCase(expression);
 
             // Assert
             Assert.Equal("PIN1 + PIN2", result);

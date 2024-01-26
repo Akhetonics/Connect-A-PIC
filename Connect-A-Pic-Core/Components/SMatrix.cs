@@ -6,19 +6,20 @@ using System.Linq.Dynamic.Core;
 using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Linq;
-using CAP_Core.Grid.FormulaReading;
+using CAP_Core.Components.FormulaReading;
 
-namespace CAP_Core.Tiles.Grid
+namespace CAP_Core.Components
 {
     public class SMatrix : ICloneable
     {
         public Matrix<Complex> SMat; // the SMat works like SMat[PinNROutflow, PinNRInflow] --> so opposite from what one might expect
-        public readonly Dictionary<Guid,int> PinReference; // all PinIDs inside of the matrix. the int is the index of the row/column in the SMat.. and also of the inputVector.
+        public readonly Dictionary<Guid, int> PinReference; // all PinIDs inside of the matrix. the int is the index of the row/column in the SMat.. and also of the inputVector.
+        public readonly Dictionary<int, double> SliderReference;
         private readonly Dictionary<int, Guid> reversePinReference; // sometimes we want to find the GUID and only have the ID
         private readonly int size;
         public const int MaxToStringPinGuidSize = 6;
         public Dictionary<(Guid PinIdStart, Guid PinIdEnd), ConnectionFunction> NonLinearConnections;
-        
+
         public SMatrix(List<Guid> allPinsInGrid)
         {
             if (allPinsInGrid != null && allPinsInGrid.Count > 0)
@@ -31,15 +32,15 @@ namespace CAP_Core.Tiles.Grid
             }
 
             SMat = Matrix<Complex>.Build.Dense(size, size);
-            PinReference = new ();
-            for(int i = 0; i < size; i++)
+            PinReference = new();
+            for (int i = 0; i < size; i++)
             {
-                PinReference.Add(allPinsInGrid[i], i );
+                PinReference.Add(allPinsInGrid[i], i);
             }
             reversePinReference = PinReference.ToDictionary(pair => pair.Value, pair => pair.Key);
             NonLinearConnections = new();
         }
-        
+
         public void SetNonLinearConnectionFunctions(Dictionary<(Guid PinIdStart, Guid PinIdEnd), ConnectionFunction> transfers)
         {
             NonLinearConnections = transfers;
@@ -75,7 +76,7 @@ namespace CAP_Core.Tiles.Grid
                 for (int iIn = 0; iIn < size; iIn++)
                 {
                     if (SMat[iOut, iIn] == Complex.Zero) continue;
-                    transfers[ (reversePinReference[iIn],reversePinReference[iOut]) ] = SMat[iOut, iIn];
+                    transfers[(reversePinReference[iIn], reversePinReference[iOut])] = SMat[iOut, iIn];
                 }
             }
             return transfers;
@@ -84,7 +85,7 @@ namespace CAP_Core.Tiles.Grid
         public static SMatrix CreateSystemSMatrix(List<SMatrix> matrices)
         {
             var portsReference = matrices.SelectMany(x => x.PinReference).Distinct().ToList();
-            SMatrix sysMat = new(portsReference.Select(p=>p.Key).Distinct().ToList());
+            SMatrix sysMat = new(portsReference.Select(p => p.Key).Distinct().ToList());
 
             foreach (SMatrix matrix in matrices)
             {
@@ -109,7 +110,7 @@ namespace CAP_Core.Tiles.Grid
             {
                 var oldInputAfterSteps = inputAfterSteps;
                 // recalculating non linear values because the inputvector has changed and could now change the connections like activate a logic gate for example.
-                RecomputeSMatNonLinearParts(inputAfterSteps); 
+                RecomputeSMatNonLinearParts(inputAfterSteps);
                 // multiplying the adjusted matrix and also adding the initial inputVector again because there is more light incoming
                 inputAfterSteps = SMat * inputAfterSteps + inputVector;
                 if (oldInputAfterSteps.Equals(inputAfterSteps)) break;
@@ -118,9 +119,31 @@ namespace CAP_Core.Tiles.Grid
             return ConvertToDictWithGuids(inputAfterSteps);
         }
 
-        private List<Complex> GetWeightParameters(IEnumerable<Guid> parameterPinGuids, MathNet.Numerics.LinearAlgebra.Vector<Complex> inputVector)
+        public class PinGuidOrSlider
         {
-            return parameterPinGuids.Select(p => PinReference[p])
+            public PinGuidOrSlider(int sliderNummer)
+            {
+                this.SliderNummer = sliderNummer;
+            }
+            public PinGuidOrSlider(Guid pinGuid)
+            {
+                this.PinID = pinGuid;
+            }
+            public int? SliderNummer { get; set; }
+            public Guid? PinID { get; set; }
+
+            public Complex GetWeighParameter()
+            {
+                
+            }
+        }
+        private Complex GetWeighParameterFromPins (IEnumerable<Guid>)
+        private List<Complex> GetWeightParameters(IEnumerable<PinGuidOrSlider> parameterPinOrSliderIDs, MathNet.Numerics.LinearAlgebra.Vector<Complex> inputVector)
+        {
+            return parameterPinOrSliderIDs.Select(p => {
+                    PinReference[p.PinID]
+                }
+            )
                                     .Select(id => inputVector[id])
                                     .ToList();
         }
@@ -186,7 +209,7 @@ namespace CAP_Core.Tiles.Grid
 
         public object Clone()
         {
-            var clonedSMatrix = new SMatrix(PinReference.Select(p=>p.Key).ToList());
+            var clonedSMatrix = new SMatrix(PinReference.Select(p => p.Key).ToList());
             clonedSMatrix.SetValues(GetNonNullValues());
             return clonedSMatrix;
         }

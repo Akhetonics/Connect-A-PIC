@@ -26,7 +26,7 @@ namespace ConnectAPIC.LayoutWindow.View
         [Export] public Button LightOnButton;
 
         private GridViewModel ViewModel;
-        public bool lightPropagationIsPressed;
+        public bool lightPropagationIsPressed; // is true if the lightPropagation (the bulb) is turned on
         public const string GridSaveFileExtensionPatterns = "*.pic|*.PIC|*.txt|*.TXT";
 
         public ILogger Logger { get; private set; }

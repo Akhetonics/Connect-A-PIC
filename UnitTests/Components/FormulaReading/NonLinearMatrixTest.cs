@@ -1,5 +1,6 @@
-﻿using CAP_Core.Grid.FormulaReading;
-using CAP_Core.Tiles.Grid;
+﻿using CAP_Core.Components;
+using CAP_Core.Components.FormulaReading;
+using CAP_Core.Grid.FormulaReading;
 using Chickensoft.GoDotTest;
 using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
@@ -13,7 +14,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace UnitTests
+namespace UnitTests.Components.FormulaReading
 {
     public class NonLinearMatrixTest
     {
@@ -26,7 +27,7 @@ namespace UnitTests
             // defining the complex value for the input light
             var inputLightStrength = new Complex(1, 0);
             // defining a linear factor defining how much light will be lost in the linear connections
-            var linearFactor = 0.9; 
+            var linearFactor = 0.9;
 
             // defining the intensity and pinPosition of light that we input into the circuit
             Complex[] InputVectorIntensities = new Complex[] { inputLightStrength, new(0, 0), new(0, 0), new(0, 0) };
@@ -36,14 +37,14 @@ namespace UnitTests
             var nonLinearLightFunction = new ConnectionFunction(
                 inputVectorValuesAtPinIDs => // the input is the complex value of the input vector at the index of the GUID of the pins of the next parameter
                 inputVectorValuesAtPinIDs[0] * new Complex(0.9, 0.32),
-                "PIN0 * (0.9+0.32i)",
+                "", // as we don't parse the rawfunction, we can leave it empty
                 new List<Guid>() { pins[0] } // the Pin-GUIDs are used so that we know at which index of the inputVector we have to get the numbers from. Those Complex numbers will be fed into the connection-Function-Lambda in that given order as a list.
             );
 
             // defining the dictionary that contains all non-linear functions
             Dictionary<(Guid inFlowPin, Guid outFlowPin), ConnectionFunction> nonLinearConnections = new()
             {
-                { 
+                {
                     (pins[0],pins[1]) , // the non-linear connection starts at pin0 and goes to pin1
                     nonLinearLightFunction
                 }
@@ -71,19 +72,11 @@ namespace UnitTests
         public void FindParametersTest()
         {
             var paramName = MathExpressionReader.PinParameterIdentifier + "0";
-            var parameters = MathExpressionReader.FindParametersInExpression(paramName + " * 0.9");
+            var parameters = MathExpressionReader.FindPinParametersInExpression(paramName + " * 0.9");
 
             parameters.Single().Name.ShouldBe(paramName);
         }
-        [Fact] 
-        public void ParseLambdaTests()
-        {
-            string expression = "PIN1 + PIN2";
-            var parameters = MathExpressionReader.FindParametersInExpression(expression);
-            var lambda = DynamicExpressionParser.ParseLambda(parameters.ToArray(), null, expression);
-            var result = lambda.Compile().DynamicInvoke(12, 13);
-            result.ShouldBe(25);
-        }
+
         [Fact]
         public void ConvertToDelegate_ShouldCreateValidConnectionFunction()
         {
@@ -115,11 +108,12 @@ namespace UnitTests
             try
             {
                 var wrongResult = wrongFunction.CalcConnectionWeight(complexParameters);
-            } catch (InvalidOperationException ex)
+            }
+            catch (InvalidOperationException ex)
             {
                 ex.ShouldNotBeNull();
             }
-            
+
 
             // Verify the result
             var expected = new Complex(4.0, 6.0); // Expected result of (1+3) + (2+4)i

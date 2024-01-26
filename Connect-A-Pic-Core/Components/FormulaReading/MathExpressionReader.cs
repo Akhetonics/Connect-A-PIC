@@ -1,4 +1,5 @@
 ﻿using CAP_Core.Components;
+using CAP_Core.Components.FormulaReading;
 using MathNet.Numerics;
 using NCalc;
 using System.Globalization;
@@ -37,7 +38,7 @@ namespace CAP_Core.Grid.FormulaReading
             if (Double.TryParse(realOrFormula, out double realValue) == false)
             {
                 // first get all parameters that are in the formula as string
-                var PinNumbersAsString = MathExpressionReader.FindParametersInExpression(realOrFormula)
+                var PinNumbersAsString = MathExpressionReader.FindPinParametersInExpression(realOrFormula)
                     .Select(p => p.Name)
                     .ToList();
 
@@ -53,19 +54,14 @@ namespace CAP_Core.Grid.FormulaReading
             return null;
         }
 
-        // Example: dynamically invoking with values
-        // var values = new object[] { 1.0, 4.0 };
-        // double result = (double)compiledLambda.DynamicInvoke(values);
-        //    return result;
-        // this function is being called after loading the component from JSON, so PIN1 is in the list of PinDrafts
         public static ConnectionFunction ConvertToDelegate(string expressionDraft, Dictionary<string, Guid> PinPlaceHolderToGuids)
         {
-            expressionDraft = FixPlaceHolderNames(expressionDraft); // to make small letter pins also be capital letters..
-            PinPlaceHolderToGuids = FixPlaceHolderNames(PinPlaceHolderToGuids); // also fix the keys here
-            var parameters = FindParametersInExpression(expressionDraft);
+            expressionDraft = MakePlaceHoldersUpperCase(expressionDraft); // make small letter pins also be capital letters..
+            PinPlaceHolderToGuids = MakePlaceHoldersUpperCase(PinPlaceHolderToGuids); // make everything capital letter
+            var parameters = FindPinParametersInExpression(expressionDraft);
             // set the culture to en-US so that points get parsed properly
             Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US"); 
-            var expression = new Expression(expressionDraft); //DynamicExpressionParser.ParseLambda(parameters.ToArray(), null, expressionDraft);
+            var expression = new Expression(expressionDraft);
             ComplexMath.RegisterComplexFunctions(expression);
             
             var connectionFunction = new ConnectionFunction(
@@ -97,7 +93,7 @@ namespace CAP_Core.Grid.FormulaReading
             return connectionFunction;
         }
 
-        public static List<System.Linq.Expressions.ParameterExpression> FindParametersInExpression(string expression)
+        public static List<System.Linq.Expressions.ParameterExpression> FindPinParametersInExpression(string expression)
         {
             // Regular expression to find placeholders like {P1}, {P2}, etc.
             var placeholderRegex = new Regex(@$"{PinParameterIdentifier}\d+");
@@ -112,13 +108,13 @@ namespace CAP_Core.Grid.FormulaReading
                 // Check if a parameter with this name already exists to avoid duplicates
                 if (!parameters.Any(p => p.Name == placeholder))
                 {
-                    parameters.Add(System.Linq.Expressions.Expression.Parameter(typeof(double), placeholder));
+                    parameters.Add(System.Linq.Expressions.Expression.Parameter(typeof(Complex), placeholder));
                 }
             }
             return parameters;
         }
 
-        public static Dictionary<string, Guid> FixPlaceHolderNames(Dictionary<string, Guid> originalDict)
+        public static Dictionary<string, Guid> MakePlaceHoldersUpperCase(Dictionary<string, Guid> originalDict)
         {
             // Create a new dictionary with the same capacity as the original for efficiency
             var fixedDict = new Dictionary<string, Guid>(originalDict.Count);
@@ -132,7 +128,7 @@ namespace CAP_Core.Grid.FormulaReading
             return fixedDict;
         }
 
-        public static string FixPlaceHolderNames(string expression)
+        public static string MakePlaceHoldersUpperCase(string expression)
         {
             return Regex.Replace(expression, PinParameterIdentifier.ToLower(), PinParameterIdentifier, RegexOptions.IgnoreCase);
         }

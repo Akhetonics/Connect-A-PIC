@@ -8,7 +8,6 @@ using CAP_Core.Grid;
 using CAP_Core.Helpers;
 using CAP_Core.Tiles;
 using CAP_Core.Tiles.Grid;
-using ConnectAPic.LayoutWindow;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scripts.Helpers;
@@ -65,20 +64,22 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         private void Grid_OnComponentRemoved(Component component, int x, int y)
         {
             ResetTilesAt(x, y, component.WidthInTiles, component.HeightInTiles);
+            RecalculateLightPropagation();
+        }
+
+        private void RecalculateLightPropagation()
+        {
             if (GridView.lightPropagationIsPressed)
             {
                 HideLightPropagation();
                 ShowLightPropagation();
             }
         }
+
         private void Grid_OnComponentPlacedOnTile(Component component, int gridX, int gridY)
         {
             CreateComponentView(gridX, gridY, component.Rotation90CounterClock, component.TypeNumber);
-            if (GridView.lightPropagationIsPressed)
-            {
-                HideLightPropagation();
-                ShowLightPropagation();
-            }
+            RecalculateLightPropagation();
         }
         public bool IsInGrid(int x, int y, int width, int height)
         {
@@ -126,10 +127,17 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         {
             var ComponentView = GridView.ComponentViewFactory.CreateComponentView(componentTypeNumber);
             ComponentView.RegisterInGrid(gridX, gridY, rotationCounterClockwise, this);
+            ComponentView.SliderChanged += (ComponentView view, int sliderNumber, double newVal) => {
+                var componentModel = Grid.GetComponentAt(view.GridX,view.GridY);
+                foreach (var item in componentModel.LaserWaveLengthToSMatrixMap.Values)
+                {
+                    item.NonLinearConnections
+                }
+                RecalculateLightPropagation();
+
+            };
             RegisterComponentViewInGridView(ComponentView);
-            var parent = ComponentView.GetParent();
             GridView.DragDropProxy.AddChild(ComponentView); // it has to be the child of the DragDropArea to be displayed
-            var children = GridView.DragDropProxy.GetChildren();
             return ComponentView;
         }
 

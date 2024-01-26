@@ -4,6 +4,7 @@ using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.ExternalPorts;
 using CAP_Core.Helpers;
 using CAP_Core.Tiles;
+using CAP_DataAccess.Components.ComponentDraftMapper.DTOs;
 using ConnectAPic.LayoutWindow;
 using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
@@ -20,6 +21,8 @@ namespace ConnectAPIC.LayoutWindow.View
 {
     public partial class ComponentView : TextureRect
     {
+        public delegate void SliderChangedEventHandler(ComponentView view, int SliderNumber , double newVal);
+        public event SliderChangedEventHandler SliderChanged ;
         public int WidthInTiles { get; private set; }
         public int HeightInTiles { get; private set; }
         public ILogger Logger { get; private set; }
@@ -29,6 +32,7 @@ namespace ConnectAPIC.LayoutWindow.View
         public Sprite2D OverlayGreen { get; private set; }
         public Sprite2D OverlayBlue { get; private set; }
         private List<Sprite2D> OverlaySprites { get; set; } = new();
+        private List<SliderDraft> Sliders { get; set; } = new();
         public GridViewModel ViewModel { get; private set; }
         public int GridX { get; set; }
         public int GridY { get; set; }
@@ -68,12 +72,12 @@ namespace ConnectAPIC.LayoutWindow.View
             }
         }
 
-        public void InitializeComponent(int componentTypeNumber, List<AnimationSlotOverlayData> slotDataSets, int widthInTiles, int heightInTiles, ILogger logger)
+        public void InitializeComponent(int componentTypeNumber,List<SliderDraft> sliders, List<AnimationSlotOverlayData> slotDataSets, int widthInTiles, int heightInTiles, ILogger logger)
         {
             this.Logger = logger;
             if (widthInTiles == 0) Logger.PrintErr(nameof(widthInTiles) + " of this element is not set in the TypeNR: " + componentTypeNumber);
             if (heightInTiles == 0) Logger.PrintErr(nameof(heightInTiles) + " of this element is not set in the TypeNR: " + componentTypeNumber);
-
+            InitializeSliders(sliders);
             this.TypeNumber = componentTypeNumber;
             this.WidthInTiles = widthInTiles;
             this.HeightInTiles = heightInTiles;
@@ -92,6 +96,20 @@ namespace ConnectAPIC.LayoutWindow.View
             }
             RotationCC = _rotationCC;
         }
+        private void InitializeSliders(List<SliderDraft> newSliders)
+        {
+            this.Sliders = newSliders;
+            foreach( var slider in Sliders)
+            {
+                var label = FindChild(slider.GodotSliderLabelName, true, false) as RichTextLabel;
+                var godotSlider = FindChild(slider.GodotSliderLabelName, true, false) as Godot.Slider;
+                godotSlider.ValueChanged += (newVal)=> { 
+                    label.Text = $"[center]{newVal:F2}";
+                    SliderChanged?.Invoke(this, slider.SliderNumber, newVal);
+                };
+            }
+        }
+
         private void InitializeLightOverlays()
         {
             if (OverlayBluePrint == null) return;

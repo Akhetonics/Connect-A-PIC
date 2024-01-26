@@ -84,7 +84,7 @@ namespace ConnectAPIC.LayoutWindow.View
                 ComponentView componentView = new();
                 componentView._Ready();
                 componentView.AddChild((TextureRect)packedScene.Instantiate());
-                componentView.InitializeComponent(componentNR, slotDataSets, draft.WidthInTiles, draft.HeightInTiles , Logger);
+                componentView.InitializeComponent(componentNR, draft.Sliders, slotDataSets, draft.WidthInTiles, draft.HeightInTiles , Logger);
                 return componentView;
             }
             catch (Exception ex)
@@ -93,7 +93,7 @@ namespace ConnectAPIC.LayoutWindow.View
                 throw;
             }
         }
-    
+
         public Vector2I GetComponentDimensions(int componentTypeNumber)
         {
             if(PackedComponentCache.TryGetValue(componentTypeNumber, out var component))

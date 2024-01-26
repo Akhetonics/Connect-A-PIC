@@ -1,7 +1,7 @@
 using CAP_Core.Components.Creation;
+using CAP_Core.Components.FormulaReading;
 using CAP_Core.Grid.FormulaReading;
 using CAP_Core.Helpers;
-using CAP_Core.Tiles.Grid;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Text.Json.Serialization;
@@ -19,6 +19,7 @@ namespace CAP_Core.Components
         [JsonIgnore] public int GridYMainTile { get; protected set; }
         public Part[,] Parts { get; protected set; }
         public Dictionary<int, SMatrix> LaserWaveLengthToSMatrixMap { get; set; }
+        public Dictionary<int, double> Sliders; // int is the sliderNmber and double the currentValue
         public string NazcaFunctionName { get; set; }
         public string NazcaFunctionParameters { get; set; }
         private DiscreteRotation _discreteRotation;
@@ -34,13 +35,18 @@ namespace CAP_Core.Components
                 }
             }
         }
-        public Component(Dictionary<int,SMatrix> laserWaveLengthToSMatrixMap , string nazcaFunctionName, string nazcaFunctionParams, Part[,] parts, int typeNumber, string identifier, DiscreteRotation rotationCounterClock)
+        public Component(Dictionary<int, SMatrix> laserWaveLengthToSMatrixMap, string nazcaFunctionName, string nazcaFunctionParams, Part[,] parts, int typeNumber, string identifier, DiscreteRotation rotationCounterClock) 
+            : this(laserWaveLengthToSMatrixMap,new(),nazcaFunctionName,nazcaFunctionParams, parts,typeNumber,identifier,rotationCounterClock)
+        {
+        }
+        public Component(Dictionary<int,SMatrix> laserWaveLengthToSMatrixMap , Dictionary<int,double> sliders, string nazcaFunctionName, string nazcaFunctionParams, Part[,] parts, int typeNumber, string identifier, DiscreteRotation rotationCounterClock)
         {
             Parts = parts;
             TypeNumber = typeNumber;
             Identifier = identifier;
             _discreteRotation = rotationCounterClock;
             LaserWaveLengthToSMatrixMap = laserWaveLengthToSMatrixMap;
+            Sliders = sliders;
             NazcaFunctionName = nazcaFunctionName;
             NazcaFunctionParameters = nazcaFunctionParams;
         }

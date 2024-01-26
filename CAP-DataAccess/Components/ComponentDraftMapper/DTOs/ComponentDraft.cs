@@ -17,6 +17,8 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper.DTOs
         public string NazcaFunctionParameters { get; set; }
         [JsonPropertyName("nazcaFunctionName")]
         public string NazcaFunctionName { get; set; }
+        [JsonPropertyName("sceneResPath")]
+        public string SceneResPath { get; set; }
         [JsonPropertyName("deltaLength")]
         public int DeltaLength { get; set; }
         [JsonPropertyName("widthInTiles")]
@@ -29,8 +31,7 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper.DTOs
         public List<WaveLengthSpecificSMatrix> SMatrices { get; set; }
         [JsonPropertyName("overlays")]
         public List<Overlay> Overlays { get; set; }
-        [JsonPropertyName("sceneResPath")]
-        public string SceneResPath { get; set; }
-
+        [JsonPropertyName("sliders")]
+        public List<SliderDraft>? Sliders { get; set; }
     }
 }

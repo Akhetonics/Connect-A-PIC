@@ -1,4 +1,5 @@
-﻿using CAP_Core.ExternalPorts;
+﻿using CAP_Core.Components;
+using CAP_Core.ExternalPorts;
 
 namespace CAP_Core.Tiles.Grid
 {
