@@ -30,3 +30,4 @@ enabled=PackedStringArray()
 [rendering]
 
 renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.282353, 0.592157, 0.498039, 1)

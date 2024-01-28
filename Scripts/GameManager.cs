@@ -25,24 +25,24 @@ using System.Threading;
 
 namespace ConnectAPic.LayoutWindow
 {
-    [SuperNode (typeof(Provider))]
+	[SuperNode (typeof(Provider))]
 	public partial class GameManager : Node, 
 		IProvide<ToolBox> , IProvide<ILogger>, IProvide<GridView>, IProvide<GridManager>, IProvide<GridViewModel>, IProvide<GameManager>,
 		IProvide<GameConsole> , IProvide<System.Version> , IProvide<ComponentViewFactory> 
-    {
-        #region Dependency Injection
-        public override partial void _Notification(int what);
+	{
+		#region Dependency Injection
+		public override partial void _Notification(int what);
 		ToolBox IProvide<ToolBox>.Value() => MainToolBox;
-        ILogger IProvide<ILogger>.Value() => Logger;
+		ILogger IProvide<ILogger>.Value() => Logger;
 		GridView IProvide<GridView>.Value() => GridView;
 		GridManager IProvide<GridManager>.Value() => Grid;
 		GridViewModel IProvide<GridViewModel>.Value() => GridViewModel;
-        GameManager IProvide<GameManager>.Value() => Instance;
-        GameConsole IProvide<GameConsole>.Value() => InGameConsole;
-        ComponentViewFactory IProvide<ComponentViewFactory>.Value() => GridView.ComponentViewFactory;
-        System.Version IProvide<System.Version>.Value() => Version;
-        #endregion 
-        
+		GameManager IProvide<GameManager>.Value() => Instance;
+		GameConsole IProvide<GameConsole>.Value() => InGameConsole;
+		ComponentViewFactory IProvide<ComponentViewFactory>.Value() => GridView.ComponentViewFactory;
+		System.Version IProvide<System.Version>.Value() => Version;
+		#endregion 
+		
 		[Export] public NodePath GridViewPath { get; set; }
 		public ToolBox MainToolBox { get; set; }
 		[Export] private NodePath ToolBoxPath { get; set; }
@@ -65,61 +65,61 @@ namespace ConnectAPic.LayoutWindow
 		private LogSaver LogSaver { get; set; }
 		private List<(String log, bool isError)> InitializationLogs = new();
 		public GridViewModel GridViewModel { get; private set; }
-        public ComponentFactory ComponentModelFactory { get; set; }
-        public static GameManager Instance
+		public ComponentFactory ComponentModelFactory { get; set; }
+		public static GameManager Instance
 		{
 			get { return instance; }
 		}
 		public const string ComponentFolderPath = "res://Scenes/Components";
 
-        public override void _EnterTree()
-        {
-            base._EnterTree();
-            if (instance == null)
-            {
-                try
-                {
-                    instance = this;
-                    InitializeLoggingSystemAndConsole();
-                    InitializationLogs.Add(("Program Version: " + Version, false));
-                    ComponentModelFactory = new ComponentFactory();
-                    InitializeGridAndGridView(ComponentModelFactory);
-                    InitializeExternalPortViews(Grid.ExternalPorts);
-                    PCKLoader = new(ComponentFolderPath, Logger);
-                }
-                catch (Exception ex)
-                {
-                    GD.PrintErr(ex.Message);
-                    GD.PrintErr(ex);
+		public override void _EnterTree()
+		{
+			base._EnterTree();
+			if (instance == null)
+			{
+				try
+				{
+					instance = this;
+					InitializeLoggingSystemAndConsole();
+					InitializationLogs.Add(("Program Version: " + Version, false));
+					ComponentModelFactory = new ComponentFactory();
+					InitializeGridAndGridView(ComponentModelFactory);
+					InitializeExternalPortViews(Grid.ExternalPorts);
+					PCKLoader = new(ComponentFolderPath, Logger);
+				}
+				catch (Exception ex)
+				{
+					GD.PrintErr(ex.Message);
+					GD.PrintErr(ex);
 					InitializationLogs.Add((ex.Message,true));
-                }
-            }
-            else
-            {
-                QueueFree(); // delete this object as there is already another GameManager in the scene
-            }
-        }
+				}
+			}
+			else
+			{
+				QueueFree(); // delete this object as there is already another GameManager in the scene
+			}
+		}
 
-        public override void _Ready()
-        {
-            try
-            {
-                PCKLoader.LoadStandardPCKs();
-                List<ComponentDraft> componentDrafts = EquipViewComponentFactoryWithJSONDrafts();
-                this.CheckForNull(x => x.ToolBoxPath);
-                List<Component> modelComponents = new ComponentDraftConverter(Logger).ToComponentModels(componentDrafts);
-                ComponentModelFactory.InitializeComponentDrafts(modelComponents);
-                InitializationLogs.Add(("Initialized ComponentDrafts",false));
+		public override void _Ready()
+		{
+			try
+			{
+				PCKLoader.LoadStandardPCKs();
+				List<ComponentDraft> componentDrafts = EquipViewComponentFactoryWithJSONDrafts();
+				this.CheckForNull(x => x.ToolBoxPath);
+				List<Component> modelComponents = new ComponentDraftConverter(Logger).ToComponentModels(componentDrafts);
+				ComponentModelFactory.InitializeComponentDrafts(modelComponents);
+				InitializationLogs.Add(("Initialized ComponentDrafts",false));
 
-                MainToolBox = GetNode<ToolBox>(ToolBoxPath);
-                this.CheckForNull(x => x.MainToolBox);
-            }
-            catch (Exception ex)
-            {
-                InitializationLogs.Add((ex.Message,true));
-            }
+				MainToolBox = GetNode<ToolBox>(ToolBoxPath);
+				this.CheckForNull(x => x.MainToolBox);
+			}
+			catch (Exception ex)
+			{
+				InitializationLogs.Add((ex.Message,true));
+			}
 
-            ProvideDependenciesOrLogError();
+			ProvideDependenciesOrLogError();
 			InitializationLogs.ForEach(l =>
 			{
 				if (l.isError)
@@ -127,31 +127,31 @@ namespace ConnectAPic.LayoutWindow
 					Logger.PrintErr(l.log);
 				} else
 				{
-                    Logger.Print(l.log);
-                }
+					Logger.Print(l.log);
+				}
 			});
-        }
+		}
 
-        private void ProvideDependenciesOrLogError()
-        {
-            // Provide all DI Objects -> might throw if types don't match up
-            try
-            {
-                Provide();
-            }
-            catch (Exception ex)
-            {
-                GD.PrintErr(ex.Message); // we don't know if the Console is set up already properly
-                Logger.PrintErr(ex.Message);
-            }
-        }
-
-        private void InitializeLoggingSystemAndConsole()
+		private void ProvideDependenciesOrLogError()
 		{
-            Logger = new CAP_Core.Logger();
+			// Provide all DI Objects -> might throw if types don't match up
+			try
+			{
+				Provide();
+			}
+			catch (Exception ex)
+			{
+				GD.PrintErr(ex.Message); // we don't know if the Console is set up already properly
+				Logger.PrintErr(ex.Message);
+			}
+		}
+
+		private void InitializeLoggingSystemAndConsole()
+		{
+			Logger = new CAP_Core.Logger();
 			LogSaver = new LogSaver(Logger);
-            InGameConsole.Initialize(Logger);
-            InitializationLogs.Add(("Initialized LoggingSystem",false));
+			InGameConsole.Initialize(Logger);
+			InitializationLogs.Add(("Initialized LoggingSystem",false));
 		}
 
 		private void InitializeGridAndGridView(ComponentFactory componentFactory)
@@ -161,7 +161,7 @@ namespace ConnectAPic.LayoutWindow
 			Grid = new GridManager(FieldWidth, FieldHeight);
 			GridViewModel = new GridViewModel(GridView, Grid, Logger, componentFactory);
 			GridView.Initialize(GridViewModel, Logger);
-            InitializationLogs.Add(("Initialized GridView and Grid and GridViewModel", false));
+			InitializationLogs.Add(("Initialized GridView and Grid and GridViewModel", false));
 		}
 
 		private List<ComponentDraft> EquipViewComponentFactoryWithJSONDrafts()
@@ -181,7 +181,7 @@ namespace ConnectAPic.LayoutWindow
 		{
 			draftsAndErrors = draftsAndErrors.Where(d => String.IsNullOrEmpty(d.error) == false).ToList();
 			foreach (var d in draftsAndErrors)
-                InitializationLogs.Add(( d.error,true));
+				InitializationLogs.Add(( d.error,true));
 		}
 
 		private void InitializeExternalPortViews(List<ExternalPort> ExternalPorts)
@@ -218,5 +218,5 @@ namespace ConnectAPic.LayoutWindow
 			}
 		}
 
-    }
+	}
 }

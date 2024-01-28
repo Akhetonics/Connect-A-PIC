@@ -9,7 +9,7 @@ using System;
 
 namespace ConnectAPIC.Scenes.ToolBox
 {
-    [SuperNode(typeof(Dependent))]
+	[SuperNode(typeof(Dependent))]
 	public partial class ToolBox : Node
 	{
 		public override partial void _Notification(int what);
