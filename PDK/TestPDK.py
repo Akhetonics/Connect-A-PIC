@@ -79,9 +79,22 @@ class TestPDK(object):
             nd.Polygon(layer=self._BoxLayer, points=[(0,-self._CellSize * 0.5), (self._CellSize, -self._CellSize * 0.5), (self._CellSize, self._CellSize * 0.5), (0, self._CellSize * 0.5)]).put()
             nd.text(text='Crossing', height=15, layer=self._TextLayer, align='lb').put(self._CellSize * 0.05, self._CellSize * 0.4)
 
-            # TODO: Not a real crossing
-            nd.strt(length=self._CellSize, width=self._WGWidth, layer=self._SiNLayer).put(0, 0)
-            nd.strt(length=self._CellSize, width=self._WGWidth, layer=self._SiNLayer).put(self._CellSize * 0.5, -self._CellSize * 0.5, 90)
+            nd.strt(length=self._CellSize * 0.5 - 15, width=self._WGWidth, layer=self._SiNLayer).put(0, 0)
+            nd.strt(length=self._CellSize * 0.5 - 15, width=self._WGWidth, layer=self._SiNLayer).put(self._CellSize * 0.5, -self._CellSize * 0.5, 90)
+            nd.strt(length=self._CellSize * 0.5 - 15, width=self._WGWidth, layer=self._SiNLayer).put(self._CellSize, 0, 180)
+            nd.strt(length=self._CellSize * 0.5 - 15, width=self._WGWidth, layer=self._SiNLayer).put(self._CellSize * 0.5, self._CellSize * 0.5, 270)
+
+            nd.Polygon(layer=self._SiNLayer, points=[(0, self._WGWidth * 0.5), (0, -self._WGWidth * 0.5), 
+                                                     (7, - self._WGWidth * 1.4), (15 - self._WGWidth * 1.4, -self._WGWidth * 1.4),
+                                                     (15 - self._WGWidth * 1.4, -8), (15 - self._WGWidth * 0.5, -15),
+                                                     (15 + self._WGWidth * 0.5, -15), (15 + self._WGWidth * 1.4, -8),
+                                                     (15 + self._WGWidth * 1.4, -self._WGWidth * 1.4), (23, - self._WGWidth * 1.4),
+                                                     (30, -self._WGWidth * 0.5), (30, self._WGWidth * 0.5),
+                                                     (23, self._WGWidth * 1.4), (15 + self._WGWidth * 1.4, self._WGWidth * 1.4),
+                                                     (15 + self._WGWidth * 1.4, +8), (15 + self._WGWidth * 0.5, 15),
+                                                     (15 - self._WGWidth * 0.5, 15), (15 - self._WGWidth * 1.4, 8),
+                                                     (15 - self._WGWidth * 1.4, self._WGWidth * 1.4), (7, + self._WGWidth * 1.4)]).put(self._CellSize * 0.5 - 15, 0)
+
 
             nd.Pin('south', width=self._WGWidth).put(self._CellSize * 0.5, -self._CellSize * 0.5, 270)
             nd.Pin('east', width=self._WGWidth).put(self._CellSize, 0, 0)
@@ -95,7 +108,7 @@ class TestPDK(object):
             nd.Polygon(layer=self._BoxLayer, points=[(0,-self._CellSize * 1.5), (self._CellSize * 2, -self._CellSize * 1.5), (self._CellSize * 2, self._CellSize * 0.5), (0, self._CellSize * 0.5)]).put()
             nd.text(text='Directional Coupler', height=15, layer=self._TextLayer, align='lb').put(self._CellSize * 0.05, self._CellSize * 0.4)
 
-            # This is a really bad directional coupler.
+            # This is a fairly bad directional coupler - for demonstration purposes
             angle = 45
             radians = math.pi * angle / 180 
             offsetLength = (self._CellSize * 0.5 - (self._WGWidth + self._CouplerSpacing) * 0.5 - (self._BendRadius * (1 - math.cos(radians))) * 2) * (1 / math.cos(radians))
@@ -135,10 +148,10 @@ class TestPDK(object):
 
             # TODO: Not the correct length, has to be coordinated with straight * 4 and deltalength with phase shift
             nd.bend(angle=90, radius=self._CellSize * 0.5, width=self._WGWidth, layer=self._SiNLayer).put(0, 0)
-            nd.strt(length=deltaLength, width=self._WGWidth, layer=self._SiNLayer).put(0, 0)
-            nd.bend(angle=-180, radius=self._CellSize * 0.5, width=self._WGWidth, layer=self._SiNLayer).put(0, 0)
-            nd.strt(length=deltaLength, width=self._WGWidth, layer=self._SiNLayer).put(0, 0)
-            nd.bend(angle=90, radius=self._CellSize * 0.5, width=self._WGWidth, layer=self._SiNLayer).put(0, 0)
+            nd.strt(length=deltaLength, width=self._WGWidth, layer=self._SiNLayer).put()
+            nd.bend(angle=-180, radius=self._CellSize * 0.5, width=self._WGWidth, layer=self._SiNLayer).put()
+            nd.strt(length=deltaLength, width=self._WGWidth, layer=self._SiNLayer).put()
+            nd.bend(angle=90, radius=self._CellSize * 0.5, width=self._WGWidth, layer=self._SiNLayer).put()
 
             nd.Pin('west', width=self._WGWidth).put(0, 0, 180)
             nd.Pin('east', width=self._WGWidth).put(self._CellSize * 2, 0, 0)
