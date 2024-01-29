@@ -49,8 +49,8 @@ namespace UnitTests.Components.FormulaReading
                 { (pins[2] , pins[3]) , linearFactor}
             };
 
-            SMatrix sMatrix = new(pins);
-            sMatrix.SetNonLinearConnectionFunctions(nonLinearConnections);
+            SMatrix sMatrix = new(pins, new());
+            sMatrix.NonLinearConnections = nonLinearConnections;
             sMatrix.SetValues(linearConnections);
             var outputLight = sMatrix.GetLightPropagation(inputVector, 10);
 
@@ -74,8 +74,8 @@ namespace UnitTests.Components.FormulaReading
             };
             var usedPinInFlowGuids = usedPins.Select(p => p.IDInFlow).ToList();
             // Act
-            var connectionFunction = (ConnectionFunction)MathExpressionReader.ConvertToDelegate(expression, usedPins);
-            var wrongFunction = (ConnectionFunction)MathExpressionReader.ConvertToDelegate(wrongExpression, usedPins);
+            var connectionFunction = (ConnectionFunction)MathExpressionReader.ConvertToDelegate(expression, usedPins, new());
+            var wrongFunction = (ConnectionFunction)MathExpressionReader.ConvertToDelegate(wrongExpression, usedPins,new());
 
             // Assert
             connectionFunction.UsedParameterGuids.ShouldBe(usedPinInFlowGuids);

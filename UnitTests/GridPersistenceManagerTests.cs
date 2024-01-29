@@ -57,7 +57,7 @@ namespace UnitTests
 
             string tempSavePath = Path.GetTempFileName();
             await gridPersistenceManager.SaveAsync(tempSavePath);
-            var firstComponentConnections = grid.GetComponentAt(0, inputHeight).LaserWaveLengthToSMatrixMap.Values.First().GetNonNullValues();
+            var firstComponentConnections = grid.GetComponentAt(0, inputHeight).WaveLengthToSMatrixMap.Values.First().GetNonNullValues();
             await gridPersistenceManager.LoadAsync(tempSavePath, componentFactory);
             
             // Asserts

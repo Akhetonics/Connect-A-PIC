@@ -49,7 +49,7 @@ namespace CAP_Core.Tiles.Grid
             }
             var allUsedPinIDs = InterComponentConnections.SelectMany(c => new[] { c.Key.Item1, c.Key.Item2 }).Distinct().ToList();
             Grid.GetUsedExternalInputs().ForEach(input => allUsedPinIDs.Add(input.AttachedComponentPinId)); // Grating coupler has no internal connections and might be only connected to the Laser directly
-            var allConnectionsSMatrix = new SMatrix(allUsedPinIDs);
+            var allConnectionsSMatrix = new SMatrix(allUsedPinIDs, new() ); 
             allConnectionsSMatrix.SetValues(InterComponentConnections);
             return allConnectionsSMatrix;
         }
@@ -60,7 +60,7 @@ namespace CAP_Core.Tiles.Grid
             var allSMatrices = new List<SMatrix>();
             foreach(var component in allComponents)
             {
-                if(component.LaserWaveLengthToSMatrixMap.TryGetValue(waveLength, out var matrixFound))
+                if(component.WaveLengthToSMatrixMap.TryGetValue(waveLength, out var matrixFound))
                 {
                     allSMatrices.Add(matrixFound);
                 } else

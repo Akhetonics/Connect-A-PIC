@@ -52,9 +52,8 @@ namespace CAP_Core.Grid.FormulaReading
             return map;
         }
 
-        public static ConnectionFunction? ConvertToDelegate(string realOrFormula, List<Pin> allPinsInGrid, List<Slider>? allSlidersInGrid = null)
+        public static ConnectionFunction? ConvertToDelegate(string realOrFormula, List<Pin> allPinsInGrid, List<Slider> allSlidersInGrid )
         {
-            allSlidersInGrid ??= new();
             // check if it is a formula (nonLinear Connection) or just a double (linear connection)
             if (Double.TryParse(realOrFormula, out _) == false)
             {

@@ -64,12 +64,12 @@ namespace UnitTests.Components
             components.Count.ShouldBe(1);
             var component = components.First();
             component.Identifier.ShouldBe(componentDraft.Identifier);
-            var sMatrix = component.LaserWaveLengthToSMatrixMap[LaserType.Red.WaveLengthInNm];
+            var sMatrix = component.WaveLengthToSMatrixMap[LaserType.Red.WaveLengthInNm];
             sMatrix.NonLinearConnections.Count.ShouldBe(1);
             sMatrix.PinReference.Count.ShouldBe(4); //because we have 2 pins which each consist of an output and input Pin-ID.
             sMatrix.GetNonNullValues().Count.ShouldBe(2);
-            component.Sliders.ContainsKey(2).ShouldBe(true);
-            component.Sliders.ContainsKey(3).ShouldBe(true);
+            component.SliderMap.ContainsKey(2).ShouldBe(true);
+            component.SliderMap.ContainsKey(3).ShouldBe(true);
             componentDraft.Sliders.Single(s => s.SliderNumber == 2).GodotSliderName.ShouldBe("GodotSlider");
             var minorDefinedSlider = componentDraft.Sliders.Single(s => s.SliderNumber == 3);
             minorDefinedSlider.MaxVal.ShouldBe(1);

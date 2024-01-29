@@ -19,7 +19,7 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
         public bool CanExecute(object parameter)
         {
             return (parameter is MoveSliderCommandArgs moveParams
-                && grid.GetComponentAt(moveParams.gridX, moveParams.gridY)?.Sliders
+                && grid.GetComponentAt(moveParams.gridX, moveParams.gridY)?.SliderMap
                 .TryGetValue(moveParams.sliderNumber,out Slider _) != null);
         }
 
@@ -27,14 +27,27 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
         {
             if (!CanExecute(parameter)) return default;
             var moveParams = (MoveSliderCommandArgs)parameter;
-            if(grid.GetComponentAt(moveParams.gridX, moveParams.gridY).Sliders.ContainsKey(moveParams.sliderNumber))
+            var sliderComponent = grid.GetComponentAt(moveParams.gridX, moveParams.gridY);
+            // update the slider reference of the component
+            if (sliderComponent.SliderMap.ContainsKey(moveParams.sliderNumber))
             {
-                grid.GetComponentAt(moveParams.gridX, moveParams.gridY).Sliders[moveParams.sliderNumber].Value = moveParams.newValue;
+                sliderComponent.SliderMap[moveParams.sliderNumber].Value = moveParams.newValue;
             } else
             {
                 throw new ArgumentException("the specified SliderNumber does not exist in the Model.Grid");
             }
-            
+            // also update the Slidervalue in the SMatrix.. this should be cleaned up sooner or later
+            foreach(var sMatrix in sliderComponent.WaveLengthToSMatrixMap.Values)
+            {
+                var sliderID = sliderComponent.SliderMap[moveParams.sliderNumber].ID;
+                if (sMatrix.SliderReference.ContainsKey(sliderID))
+                {
+                    sMatrix.SliderReference[sliderID] = moveParams.newValue;
+                } else
+                {
+                    sMatrix.SliderReference.Add(sliderID, moveParams.newValue);
+                }
+            }
             return Task.CompletedTask;
         }
     }

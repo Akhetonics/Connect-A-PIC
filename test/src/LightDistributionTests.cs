@@ -97,7 +97,7 @@ namespace ConnectAPIC.test.src
             // act
             // first test if the connectionWeights are proper
             var compModel = MyGameManager.Grid.GetComponentAt(SecondStraightLine.GridX, SecondStraightLine.GridY);
-            var innerConnections = compModel.LaserWaveLengthToSMatrixMap[GreenLaser.WaveLengthInNm].GetNonNullValues();
+            var innerConnections = compModel.WaveLengthToSMatrixMap[GreenLaser.WaveLengthInNm].GetNonNullValues();
             // then test the light distribution
             SecondStraightLine.HideLightVector();
             SecondStraightLine.DisplayLightVector(lightAtPins);

@@ -43,7 +43,8 @@ namespace UnitTests
                         ""fromPinNr"": 0,
                         ""toPinNr"": 1,
                         ""real"": 1.0,
-                        ""imaginary"" : 2.0
+                        ""imaginary"" : 2.0,
+                        ""nonLinearFormula"" : ""ToComplexFromPolar( Sub(1.0 ,SLIDER0), 1.2161003820350373)""
                     },
                     {
                         ""fromPinNr"": 1,
@@ -102,7 +103,7 @@ namespace UnitTests
             var leftOut = parts[0, 0].GetPinAt(RectSide.Left).IDOutFlow;
 
             var allPins = Component.GetAllPins(parts).SelectMany(p => new[] { p.IDInFlow, p.IDOutFlow }).ToList();
-            var matrixRed = new SMatrix(allPins);
+            var matrixRed = new SMatrix(allPins , new());
             // set the connections
             matrixRed.SetValues(new(){
                 { (leftIn, rightOut), 1 },
@@ -142,7 +143,7 @@ namespace UnitTests
             var rightDownOut = parts[1, 1].GetPinAt(RectSide.Right).IDOutFlow;
             
             var allPins = Component.GetAllPins(parts).SelectMany(p => new[] { p.IDInFlow, p.IDOutFlow }).ToList();
-            var matrixRed = new SMatrix(allPins);
+            var matrixRed = new SMatrix(allPins, new());
             // set the connections
             matrixRed.SetValues(new(){
                 { (leftUpIn, rightUpOut), 0.5f },

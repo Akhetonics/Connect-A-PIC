@@ -15,12 +15,12 @@ namespace CAP_Core.Components
         public Matrix<Complex> SMat; // the SMat works like SMat[PinNROutflow, PinNRInflow] --> so opposite from what one might expect
         public readonly Dictionary<Guid, int> PinReference; // all PinIDs inside of the matrix. the int is the index of the row/column in the SMat.. and also of the inputVector.
         public Dictionary<Guid, double> SliderReference { get; internal set; }
-        private readonly Dictionary<int, Guid> reversePinReference; // sometimes we want to find the GUID and only have the ID
+        private readonly Dictionary<int, Guid> ReversePinReference; // sometimes we want to find the GUID and only have the ID
         private readonly int size;
         public const int MaxToStringPinGuidSize = 6;
         public Dictionary<(Guid PinIdStart, Guid PinIdEnd), ConnectionFunction> NonLinearConnections;
 
-        public SMatrix(List<Guid> allPinsInGrid)
+        public SMatrix(List<Guid> allPinsInGrid, List<Guid> AllSliders)
         {
             if (allPinsInGrid != null && allPinsInGrid.Count > 0)
             {
@@ -32,20 +32,24 @@ namespace CAP_Core.Components
             }
 
             SMat = Matrix<Complex>.Build.Dense(size, size);
+            // initialize PinReferences
             PinReference = new();
-            for (int i = 0; i < size; i++)
+            ReversePinReference = new();
+            int i = 0;
+            foreach( var pin in allPinsInGrid)
             {
-                PinReference.Add(allPinsInGrid[i], i);
+                PinReference.Add(pin , i);
+                ReversePinReference.Add(i, pin);
+                i++;
             }
-            reversePinReference = PinReference.ToDictionary(pair => pair.Value, pair => pair.Key);
             NonLinearConnections = new();
             SliderReference = new();
+            foreach( var slider in AllSliders)
+            {
+                SliderReference.Add(slider, 0);
+            }
         }
 
-        public void SetNonLinearConnectionFunctions(Dictionary<(Guid PinIdStart, Guid PinIdEnd), ConnectionFunction> transfers)
-        {
-            NonLinearConnections = transfers;
-        }
         public void SetValues(Dictionary<(Guid PinIdInflow, Guid PinIdOutflow), Complex> transfers, bool reset = false)
         {
             if (transfers == null || PinReference == null)
@@ -77,7 +81,7 @@ namespace CAP_Core.Components
                 for (int iIn = 0; iIn < size; iIn++)
                 {
                     if (SMat[iOut, iIn] == Complex.Zero) continue;
-                    transfers[(reversePinReference[iIn], reversePinReference[iOut])] = SMat[iOut, iIn];
+                    transfers[(ReversePinReference[iIn], ReversePinReference[iOut])] = SMat[iOut, iIn];
                 }
             }
             return transfers;
@@ -85,8 +89,9 @@ namespace CAP_Core.Components
 
         public static SMatrix CreateSystemSMatrix(List<SMatrix> matrices)
         {
-            var portsReference = matrices.SelectMany(x => x.PinReference).Distinct().ToList();
-            SMatrix sysMat = new(portsReference.Select(p => p.Key).Distinct().ToList());
+            var allPinIDs = matrices.SelectMany(x => x.PinReference.Keys).Distinct().ToList();
+            var allSliderIDs = matrices.SelectMany(x => x.SliderReference.Keys).Distinct().ToList();
+            SMatrix sysMat = new(allPinIDs , allSliderIDs);
 
             foreach (SMatrix matrix in matrices)
             {
@@ -131,7 +136,7 @@ namespace CAP_Core.Components
                     usedParameterValues.Add(inputVector[pinNumber]);
                 }
                 // check if parameterGuid is in the slider Dict
-                if (SliderReference.TryGetValue(paramGuid, out double sliderPosition))
+                else if (SliderReference.TryGetValue(paramGuid, out double sliderPosition))
                 {
                     usedParameterValues.Add(sliderPosition);
                 }
@@ -156,7 +161,7 @@ namespace CAP_Core.Components
             var GuidsAndLightValues = new Dictionary<Guid, Complex>();
             for (int i = 0; i < lightPropagationVector.Count; i++)
             {
-                GuidsAndLightValues.Add(reversePinReference[i], lightPropagationVector[i]);
+                GuidsAndLightValues.Add(ReversePinReference[i], lightPropagationVector[i]);
             }
             return GuidsAndLightValues;
         }
@@ -180,7 +185,7 @@ namespace CAP_Core.Components
             // Now, iterate over each row of the matrix
             for (int i = 0; i < size; i++)
             {
-                result.Append($"{reversePinReference[i].ToString()[..MaxToStringPinGuidSize]}\t");
+                result.Append($"{ReversePinReference[i].ToString()[..MaxToStringPinGuidSize]}\t");
                 for (int j = 0; j < size; j++)
                 {
                     var complexValue = SMat[i, j];
@@ -201,7 +206,9 @@ namespace CAP_Core.Components
 
         public object Clone()
         {
-            var clonedSMatrix = new SMatrix(PinReference.Select(p => p.Key).ToList());
+            var allPinIDs = PinReference.Select(p => p.Key).ToList();
+            var allSliderIDs = SliderReference.Select(s=>s.Key).ToList();
+            var clonedSMatrix = new SMatrix(allPinIDs, allSliderIDs);
             clonedSMatrix.SetValues(GetNonNullValues());
             return clonedSMatrix;
         }

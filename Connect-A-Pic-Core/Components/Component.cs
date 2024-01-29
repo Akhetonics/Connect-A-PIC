@@ -18,8 +18,8 @@ namespace CAP_Core.Components
         [JsonIgnore] public int GridXMainTile { get; protected set; }
         [JsonIgnore] public int GridYMainTile { get; protected set; }
         public Part[,] Parts { get; protected set; }
-        public Dictionary<int, SMatrix> LaserWaveLengthToSMatrixMap { get; set; }
-        public Dictionary<int, Slider> Sliders; // int is the sliderNmber and double the currentValue
+        public Dictionary<int, SMatrix> WaveLengthToSMatrixMap { get; set; }
+        public Dictionary<int, Slider> SliderMap { get; set; } // where int is the sliderNumber
         public string NazcaFunctionName { get; set; }
         public string NazcaFunctionParameters { get; set; }
         private DiscreteRotation _discreteRotation;
@@ -39,14 +39,15 @@ namespace CAP_Core.Components
             : this(laserWaveLengthToSMatrixMap,new(),nazcaFunctionName,nazcaFunctionParams, parts,typeNumber,identifier,rotationCounterClock)
         {
         }
-        public Component(Dictionary<int,SMatrix> laserWaveLengthToSMatrixMap , Dictionary<int,Slider> sliders, string nazcaFunctionName, string nazcaFunctionParams, Part[,] parts, int typeNumber, string identifier, DiscreteRotation rotationCounterClock)
+        public Component(Dictionary<int,SMatrix> laserWaveLengthToSMatrixMap , List<Slider> sliders, string nazcaFunctionName, string nazcaFunctionParams, Part[,] parts, int typeNumber, string identifier, DiscreteRotation rotationCounterClock)
         {
             Parts = parts;
             TypeNumber = typeNumber;
             Identifier = identifier;
             _discreteRotation = rotationCounterClock;
-            LaserWaveLengthToSMatrixMap = laserWaveLengthToSMatrixMap;
-            Sliders = sliders;
+            WaveLengthToSMatrixMap = laserWaveLengthToSMatrixMap;
+            SliderMap = new();
+            sliders.ForEach(s => SliderMap.Add(s.Number, s));
             NazcaFunctionName = nazcaFunctionName;
             NazcaFunctionParameters = nazcaFunctionParams;
         }
@@ -98,7 +99,7 @@ namespace CAP_Core.Components
                    $"Grid Y (Main Tile): {GridYMainTile} \n" +
                    $"Rotation: {Rotation90CounterClock} \n" +
                    $"Parts Length: {Parts?.Length} \n" +
-                   $"Defined SMatrices: {LaserWaveLengthToSMatrixMap.ToCustomString<int,SMatrix>()}";
+                   $"Defined SMatrices: {WaveLengthToSMatrixMap.ToCustomString<int,SMatrix>()}";
         }
         public List<Pin> GetAllPins()
         {
@@ -163,36 +164,52 @@ namespace CAP_Core.Components
         public object Clone()
         {
             var clonedParts = CloneParts();
+            var clonedSliderMap = CloneSliders();
             var clonedPins = GetAllPins(clonedParts);
+            var allClonedPinIDs = clonedPins.SelectMany(p => new[] { p.IDInFlow, p.IDOutFlow }).ToList();
+            var allClonedSliderIDs = clonedSliderMap.Select(s => s.Value.ID).ToList();
             // Create a mapping from old pin IDs to new pin IDs
-            Dictionary<Guid, Guid> oldToNewPinIds = MapPinIDsWithNewIDs(clonedParts);
+            var oldToNewPinIds = MapPinIDsWithNewIDs(clonedParts);
 
             // Clone the existing connections and update with new pin IDs
             Dictionary<int, SMatrix> clonedLaserSMatrixMap = new();
-            foreach (var laserAndMatrix in LaserWaveLengthToSMatrixMap)
+            foreach (var laserAndMatrix in WaveLengthToSMatrixMap)
             {
                 var oldMatrix = laserAndMatrix.Value;
-                var newMat = new SMatrix(clonedPins.SelectMany(p=>new[] {p.IDInFlow , p.IDOutFlow}).ToList());
+                
+                var newMat = new SMatrix(allClonedPinIDs , allClonedSliderIDs);
                 // assign the linear connections
                 var newConnections = CreateConnectionsWithUpdatedPins(oldToNewPinIds, oldMatrix);
                 newMat.SetValues(newConnections);
 
                 // now recreate the nonLinearConnections and assign them to the Matrix
-                var nonLinearTransfers = new Dictionary<(Guid PinIdStart, Guid PinIdEnd), ConnectionFunction>();
                 foreach (var nonLin in oldMatrix.NonLinearConnections)
                 {
                     // convert the old Key to the new one.
                     var newKey = (oldToNewPinIds[nonLin.Key.PinIdStart], oldToNewPinIds[nonLin.Key.PinIdEnd]);
                     // recreate the non linear function with the new Pins.
-                    var newFunction = MathExpressionReader.ConvertToDelegate(nonLin.Value.ConnectionsFunctionRaw, clonedPins);
+                    var newFunction = MathExpressionReader.ConvertToDelegate(nonLin.Value.ConnectionsFunctionRaw, clonedPins, clonedSliderMap.Values.ToList());
                     // assign the new Pin and new function to our dictionary
-                    nonLinearTransfers.Add(newKey, (ConnectionFunction)newFunction);
+                    newMat.NonLinearConnections.Add(newKey, (ConnectionFunction)newFunction);
                 }
-                newMat.SetNonLinearConnectionFunctions(nonLinearTransfers);
                 clonedLaserSMatrixMap.Add(laserAndMatrix.Key, newMat);
             }
 
             return new Component(clonedLaserSMatrixMap, NazcaFunctionName, NazcaFunctionParameters, clonedParts, TypeNumber, Identifier, Rotation90CounterClock);
+        }
+
+        private Dictionary<int, Slider> CloneSliders()
+        {
+            var clonedSliderMap = new Dictionary<int, Slider>();
+            foreach (var sliderID in SliderMap.Keys)
+            {
+                var slider = SliderMap[sliderID];
+                var clonedSlider = (Slider)slider.Clone();
+                clonedSlider.ID = Guid.NewGuid();
+                clonedSliderMap.Add(slider.Number, clonedSlider);
+            }
+
+            return clonedSliderMap;
         }
 
         private static Dictionary<(Guid,Guid),Complex> CreateConnectionsWithUpdatedPins(Dictionary<Guid, Guid> oldToNewPinIds, SMatrix oldMatrix)

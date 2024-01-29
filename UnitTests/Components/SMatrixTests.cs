@@ -83,7 +83,7 @@ namespace UnitTests.Components
             var pinID1 = Guid.NewGuid();
             var pinID2 = Guid.NewGuid();
             List<Guid> PinIDs = new() { pinID1, pinID2 };
-            SMatrix matrix = new(PinIDs);
+            SMatrix matrix = new(PinIDs, new());
             matrix.SetValues(new Dictionary<(Guid, Guid), Complex>() { { (pinID1, pinID2), new Complex(0.5f, 0) } });
             matrix.SetValues(new Dictionary<(Guid, Guid), Complex>() { { (pinID2, pinID1), new Complex(0.5f, 0) } });
 
@@ -91,13 +91,13 @@ namespace UnitTests.Components
             var m2_pinID1 = Guid.NewGuid();
             var m2_pinID2 = Guid.NewGuid();
             List<Guid> m2_PinIDs = new() { m2_pinID1, m2_pinID2 };
-            SMatrix m2_matrix = new(m2_PinIDs);
+            SMatrix m2_matrix = new(m2_PinIDs, new());
             m2_matrix.SetValues(new Dictionary<(Guid, Guid), Complex>() { { (m2_pinID1, m2_pinID2), new Complex(0.5f, 0) } });
             m2_matrix.SetValues(new Dictionary<(Guid, Guid), Complex>() { { (m2_pinID2, m2_pinID1), new Complex(0.5f, 0) } });
 
             // connection matrix
             List<Guid> con_PinIDs = new() { pinID2, m2_pinID1 };
-            SMatrix con_matrix = new(con_PinIDs);
+            SMatrix con_matrix = new(con_PinIDs, new());
             con_matrix.SetValues(new Dictionary<(Guid, Guid), Complex>() { { (pinID2, m2_pinID1), new Complex(0.5f, 0) } });
             con_matrix.SetValues(new Dictionary<(Guid, Guid), Complex>() { { (m2_pinID1, pinID2), new Complex(0.5f, 0) } });
 

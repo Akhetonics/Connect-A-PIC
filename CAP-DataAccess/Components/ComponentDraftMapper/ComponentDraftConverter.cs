@@ -35,8 +35,8 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
             {
                 var parts = CreatePartsFromDraft(draft);
                 var wavelengthToMatrixMap = CreateWaveLengthSpecificSMatricesFromDrafts(draft, parts);
-                var sliders = CreateSlidersFromDraft(draft);
-                return new Component(wavelengthToMatrixMap, sliders, draft.NazcaFunctionName, draft.NazcaFunctionParameters, parts, typeNumber, draft.Identifier, DiscreteRotation.R0);
+                var sliderMap = CreateSliderMap(draft);
+                return new Component(wavelengthToMatrixMap, sliderMap, draft.NazcaFunctionName, draft.NazcaFunctionParameters, parts, typeNumber, draft.Identifier, DiscreteRotation.R0);
             }
             catch (Exception ex)
             {
@@ -65,15 +65,17 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
         {
             var definedMatrices = new Dictionary<int, SMatrix>();
             var allPins = Component.GetAllPins(parts);
+            var allSliders = CreateSliderMap(draft);
+            var allSliderGuids = allSliders.Select(s=>s.ID).ToList();
             var allPinsGuids = allPins.SelectMany(p => new[] { p.IDInFlow, p.IDOutFlow }).ToList();
             var pinNumberToModelMap = CreatePinNumberToModelMap(draft, parts);
 
             foreach (var matrixDraft in draft.SMatrices)
             {
-                var matrixModel = new SMatrix(allPinsGuids);
-                (var nonLinearConnections , var linearConnections) = CreateConnecitons(allPins, pinNumberToModelMap, matrixDraft);
+                var matrixModel = new SMatrix(allPinsGuids, allSliderGuids);
+                (var nonLinearConnections , var linearConnections) = CreateConnecitons(allPins, allSliders, pinNumberToModelMap, matrixDraft);
                 matrixModel.SetValues(linearConnections);
-                matrixModel.SetNonLinearConnectionFunctions(nonLinearConnections);
+                matrixModel.NonLinearConnections = nonLinearConnections;
                 definedMatrices.Add(matrixDraft.WaveLength, matrixModel);
             }
 
@@ -81,7 +83,7 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
         }
 
         private ( Dictionary<(Guid, Guid), ConnectionFunction> NonLinearConnections , Dictionary<(Guid,Guid),Complex> LinearConnections) 
-            CreateConnecitons(List<Pin> allPins, Dictionary<int, Pin> pinNumberToModelMap, WaveLengthSpecificSMatrix matrixDraft)
+            CreateConnecitons(List<Pin> allPins, List<Slider> allSliders ,Dictionary<int, Pin> pinNumberToModelMap, WaveLengthSpecificSMatrix matrixDraft)
         {
             var connections = new Dictionary<(Guid, Guid), Complex>();
             var nonLinearConnectionFunctions = new Dictionary<(Guid, Guid), ConnectionFunction>();
@@ -99,7 +101,7 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
                     continue;
                 }
                 connections.Add((fromPinModel.IDInFlow, toPinModel.IDOutFlow), connectionDraft.ToComplexNumber());
-                if (TryGetNonLinearConnectionFunction(connectionDraft, allPins, out var connectionFunction))
+                if (TryGetNonLinearConnectionFunction(connectionDraft, allPins, allSliders, out var connectionFunction))
                 {
                     nonLinearConnectionFunctions.Add((fromPinModel.IDInFlow, toPinModel.IDOutFlow), connectionFunction);
                 }
@@ -121,13 +123,13 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
             }
             return map;
         }
-        private bool TryGetNonLinearConnectionFunction(DTOs.Connection connectionDraft, List<Pin> allPins, out ConnectionFunction function)
+        private bool TryGetNonLinearConnectionFunction(DTOs.Connection connectionDraft, List<Pin> allPins, List<Slider> allSliders, out ConnectionFunction function)
         {
             function = default;
             if (String.IsNullOrWhiteSpace(connectionDraft.Formula) || allPins?.Count == 0) 
                 return false;
             
-            var convertedFunction = MathExpressionReader.ConvertToDelegate(connectionDraft.Formula, allPins);
+            var convertedFunction = MathExpressionReader.ConvertToDelegate(connectionDraft.Formula, allPins, allSliders);
             if (convertedFunction != null)
             {
                 function = (ConnectionFunction)convertedFunction;
@@ -136,15 +138,14 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
             return false;
         }
 
-        private static Dictionary<int, Slider> CreateSlidersFromDraft(ComponentDraft draft)
+        private static List< Slider> CreateSliderMap(ComponentDraft draft)
         {
-            var sliderIdToValueMap = new Dictionary<int, Slider>();
+            var sliderIdToValueMap = new List<Slider>();
             if (draft?.Sliders != null)
             {
                 foreach (var slider in draft.Sliders)
                 {
-                    sliderIdToValueMap.Add(slider.SliderNumber,
-                                           new Slider(Guid.NewGuid(), slider.SliderNumber, (slider.MinVal + slider.MaxVal) / 2, slider.MaxVal, slider.MinVal));
+                    sliderIdToValueMap.Add(new Slider(Guid.NewGuid(), slider.SliderNumber, (slider.MinVal + slider.MaxVal) / 2, slider.MaxVal, slider.MinVal));
                 }
             }
             return sliderIdToValueMap;
