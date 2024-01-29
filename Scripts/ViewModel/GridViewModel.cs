@@ -12,6 +12,7 @@ using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scripts.Helpers;
 using ConnectAPIC.Scripts.View.ComponentFactory;
+using ConnectAPIC.Scripts.View.ComponentViews;
 using ConnectAPIC.Scripts.ViewModel.Commands;
 using System;
 using System.Collections.Generic;
@@ -30,6 +31,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         public ICommand ExportToNazcaCommand { get; set; }
         public ICommand SaveGridCommand { get; internal set; }
         public ICommand LoadGridCommand { get; internal set; }
+        public ICommand MoveSliderCommand { get; internal set; }
         public ComponentView[,] GridComponentViews { get; private set; }
         public int Width { get => GridComponentViews.GetLength(0); }
         public int Height { get => GridComponentViews.GetLength(1); }
@@ -54,6 +56,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             MoveComponentCommand = new MoveComponentCommand(grid);
             SaveGridCommand = new SaveGridCommand(grid, new FileDataAccessor());
             LoadGridCommand = new LoadGridCommand(grid, new FileDataAccessor(), componentModelFactory, this);
+            MoveSliderCommand = new MoveSliderCommand(grid);
             ExportToNazcaCommand = new ExportNazcaCommand(new NazcaExporter(), grid, new DataAccessorGodot());
             CreateEmptyField();
             this.Grid.OnComponentPlacedOnTile += Grid_OnComponentPlacedOnTile;
@@ -127,14 +130,9 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         {
             var ComponentView = GridView.ComponentViewFactory.CreateComponentView(componentTypeNumber);
             ComponentView.RegisterInGrid(gridX, gridY, rotationCounterClockwise, this);
-            ComponentView.SliderChanged += (ComponentView view, Guid sliderId, double newVal) => {
-                var componentModel = Grid.GetComponentAt(view.GridX,view.GridY);
-                foreach (var item in componentModel.LaserWaveLengthToSMatrixMap.Values)
-                {
-                    item.SliderReference[sliderId]
-                }
+            ComponentView.SliderChanged += (ComponentView view, Godot.Slider godotSlider, double newVal) => {
+                MoveSliderCommand.ExecuteAsync(new MoveSliderCommandArgs(view.GridX, view.GridX, (int)godotSlider.GetMeta(ComponentView.SliderNumberMetaID), newVal));
                 RecalculateLightPropagation();
-
             };
             RegisterComponentViewInGridView(ComponentView);
             GridView.DragDropProxy.AddChild(ComponentView); // it has to be the child of the DragDropArea to be displayed

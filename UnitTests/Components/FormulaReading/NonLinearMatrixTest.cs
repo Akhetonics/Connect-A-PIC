@@ -1,18 +1,10 @@
 ﻿using CAP_Core.Components;
 using CAP_Core.Components.FormulaReading;
 using CAP_Core.Grid.FormulaReading;
-using Chickensoft.GoDotTest;
-using MathNet.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using Shouldly;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Dynamic.Core;
-using System.Linq.Expressions;
 using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace UnitTests.Components.FormulaReading
 {
@@ -36,7 +28,7 @@ namespace UnitTests.Components.FormulaReading
             // defining our non-linear test function
             var nonLinearLightFunction = new ConnectionFunction(
                 inputVectorValuesAtPinIDs => // the input is the complex value of the input vector at the index of the GUID of the pins of the next parameter
-                inputVectorValuesAtPinIDs[0] * new Complex(0.9, 0.32),
+                (Complex)inputVectorValuesAtPinIDs[0] * new Complex(0.9, 0.32),
                 "", // as we don't parse the rawfunction, we can leave it empty
                 new List<Guid>() { pins[0] } // the Pin-GUIDs are used so that we know at which index of the inputVector we have to get the numbers from. Those Complex numbers will be fed into the connection-Function-Lambda in that given order as a list.
             );
@@ -62,19 +54,11 @@ namespace UnitTests.Components.FormulaReading
             sMatrix.SetValues(linearConnections);
             var outputLight = sMatrix.GetLightPropagation(inputVector, 10);
 
-            var expectedResult = linearFactor * nonLinearConnections[(pins[0], pins[1])].CalcConnectionWeight(new List<Complex>() { inputLightStrength });
+            var expectedResult = linearFactor * nonLinearConnections[(pins[0], pins[1])].CalcConnectionWeight(new List<object>() { inputLightStrength });
             var tolerance = 1e-12;
             expectedResult.Real.ShouldBe(0.81, tolerance);
             expectedResult.Imaginary.ShouldBe(0.288, tolerance);
             outputLight[pins[3]].ShouldBe(expectedResult);
-        }
-        [Fact]
-        public void FindParametersTest()
-        {
-            var paramName = MathExpressionReader.PinParameterIdentifier + "0";
-            var parameters = MathExpressionReader.FindParametersInExpression(paramName + " * 0.9");
-
-            parameters.Single().Name.ShouldBe(paramName);
         }
 
         [Fact]
@@ -83,24 +67,24 @@ namespace UnitTests.Components.FormulaReading
             // Arrange
             string expression = "Add(PIN1,PIN2)";
             string wrongExpression = "PIN1 + PIN2"; // the plus parameter does not work with complex values
-            var pinPlaceholdersToGuids = new Dictionary<string, Guid>
+            var usedPins = new List<Pin>()
             {
-                { "PIN1", Guid.NewGuid() },
-                { "PIN2", Guid.NewGuid() }
+               new Pin("",1,CAP_Core.Tiles.RectSide.Left),
+               new Pin("",2,CAP_Core.Tiles.RectSide.Right)
             };
-
+            var usedPinInFlowGuids = usedPins.Select(p => p.IDInFlow).ToList();
             // Act
-            var connectionFunction = MathExpressionReader.ConvertToDelegate(expression, pinPlaceholdersToGuids);
-            var wrongFunction = MathExpressionReader.ConvertToDelegate(wrongExpression, pinPlaceholdersToGuids);
+            var connectionFunction = (ConnectionFunction)MathExpressionReader.ConvertToDelegate(expression, usedPins);
+            var wrongFunction = (ConnectionFunction)MathExpressionReader.ConvertToDelegate(wrongExpression, usedPins);
 
             // Assert
-            connectionFunction.ParameterPinGuids.ShouldBe(pinPlaceholdersToGuids.Select(p => p.Value).ToList());
+            connectionFunction.UsedParameterGuids.ShouldBe(usedPinInFlowGuids);
 
             // Create sample complex parameters
-            var complexParameters = new List<Complex>
+            var complexParameters = new List<object>
             {
-                new (1.0, 2.0), // Complex number for Pin1
-                new (3.0, 4.0)  // Complex number for Pin2
+                new Complex (1.0, 2.0), // Complex number for Pin1
+                new Complex(3.0, 4.0)  // Complex number for Pin2
             };
 
             // Invoke the connection function

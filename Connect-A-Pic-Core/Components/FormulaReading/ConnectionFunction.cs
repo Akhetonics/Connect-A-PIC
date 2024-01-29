@@ -2,13 +2,6 @@
 
 namespace CAP_Core.Components.FormulaReading
 {
-    // there is one matter that searches in the PINS and if it finds a pin with the Guid, then it returns its value (of the position of the inputvector)
-    // the other mapper searches the sliders and returns the slidervalue directly if it has the given GUID.
-    public interface IDToParameterValueMapper
-    {
-        public object TryFindParameter(Guid ID);
-    }
-
     /// <summary>
     /// The Func CalcConnectionWeights gets a list of object parameters that it inserst into its delegate Func and then it returns a complex value for the given matrix-cell
     /// </summary>

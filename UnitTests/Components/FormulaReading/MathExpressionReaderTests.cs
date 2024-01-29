@@ -31,7 +31,7 @@ namespace UnitTests.Components.FormulaReading
                 new("",parameterNumbers[1],MatterType.Light,RectSide.Left),
             };
             var computedDelegate = MathExpressionReader.ConvertToDelegate(expression, pins);
-            var formulaResult = computedDelegate.Value.CalcConnectionWeight(new List<Complex>() { valueForPin1, valueForPin2 });
+            var formulaResult = computedDelegate.Value.CalcConnectionWeight(new List<object>() { valueForPin1, valueForPin2 });
 
             formulaResult.ShouldBe(new Complex(8, 10.2));
         }
@@ -40,7 +40,7 @@ namespace UnitTests.Components.FormulaReading
         {
             string expression = "Add(ToComplexFromPolar( 2-1.5 , 3.0774785178021489) , ToComplex(1,1.2))";
             var computedDelegate = MathExpressionReader.ConvertToDelegate(expression, new List<Pin>());
-            var formulaResult = computedDelegate.Value.CalcConnectionWeight(new List<Complex>());
+            var formulaResult = computedDelegate.Value.CalcConnectionWeight(new List<object>());
             formulaResult.ShouldBe(Complex.FromPolarCoordinates(0.5, 3.0774785178021489) + new Complex(1, 1.2));
         }
 
@@ -61,7 +61,7 @@ namespace UnitTests.Components.FormulaReading
         public void ExtractPinNumber_InvalidPinIdentifier_ThrowsInvalidParameterException()
         {
             // Arrange
-            string pinIdentifier = "Invalid123";
+            string pinIdentifier = "Invalid 123";
 
             // Act & Assert
             Assert.Throws<InvalidParameterException>(() => MathExpressionReader.ExtractIdentifierNumber(pinIdentifier));

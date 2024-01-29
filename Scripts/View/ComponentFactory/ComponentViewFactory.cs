@@ -2,6 +2,7 @@ using CAP_Contracts.Logger;
 using CAP_DataAccess.Components.ComponentDraftMapper.DTOs;
 using ConnectAPic.LayoutWindow;
 using ConnectAPIC.Scripts.View.ComponentFactory;
+using ConnectAPIC.Scripts.View.ComponentViews;
 using Godot;
 using MathNet.Numerics;
 using System;
@@ -65,10 +66,11 @@ namespace ConnectAPIC.LayoutWindow.View
 
             try
             {
+                // Map overlays to OverlayViews
                 foreach (Overlay overlay in draft.Overlays)
                 {
                     var overlayBluePrint = ResourceLoader.Load<Texture2D>(overlay.overlayAnimTexturePath);
-                    if(overlayBluePrint == null)
+                    if (overlayBluePrint == null)
                     {
                         Logger.PrintErr("BluePrint could not be loaded in Type: " + draft.Identifier + " ComponentTypeNR: " + componentNR + " path: " + overlay.overlayAnimTexturePath);
                         continue;
@@ -84,7 +86,7 @@ namespace ConnectAPIC.LayoutWindow.View
                 ComponentView componentView = new();
                 componentView._Ready();
                 componentView.AddChild((TextureRect)packedScene.Instantiate());
-                componentView.InitializeComponent(componentNR, draft.Sliders, slotDataSets, draft.WidthInTiles, draft.HeightInTiles , Logger);
+                componentView.InitializeComponent(componentNR, MapDataAccessSlidersToViewSliders(draft), slotDataSets, draft.WidthInTiles, draft.HeightInTiles, Logger);
                 return componentView;
             }
             catch (Exception ex)
@@ -92,6 +94,20 @@ namespace ConnectAPIC.LayoutWindow.View
                 Logger.PrintErr($"ComponentTemplate is not or not well defined: {draft?.Identifier} - Exception: {ex.Message}");
                 throw;
             }
+        }
+
+        private static List<SliderViewData> MapDataAccessSlidersToViewSliders(ComponentDraft draft)
+        {
+            if (draft.Sliders == null) return new();
+            return draft.Sliders.Select(s => new SliderViewData()
+            {
+                GodotSliderLabelName = s.GodotSliderLabelName,
+                GodotSliderName = s.GodotSliderName,
+                MaxVal = s.MaxVal,
+                MinVal = s.MinVal,
+                SliderNumber = s.SliderNumber,
+                Steps = s.Steps
+            }).ToList();
         }
 
         public Vector2I GetComponentDimensions(int componentTypeNumber)

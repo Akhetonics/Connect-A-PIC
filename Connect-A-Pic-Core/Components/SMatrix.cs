@@ -14,7 +14,7 @@ namespace CAP_Core.Components
     {
         public Matrix<Complex> SMat; // the SMat works like SMat[PinNROutflow, PinNRInflow] --> so opposite from what one might expect
         public readonly Dictionary<Guid, int> PinReference; // all PinIDs inside of the matrix. the int is the index of the row/column in the SMat.. and also of the inputVector.
-        public readonly Dictionary<Guid, double> SliderReference;
+        public Dictionary<Guid, double> SliderReference { get; internal set; }
         private readonly Dictionary<int, Guid> reversePinReference; // sometimes we want to find the GUID and only have the ID
         private readonly int size;
         public const int MaxToStringPinGuidSize = 6;
@@ -39,6 +39,7 @@ namespace CAP_Core.Components
             }
             reversePinReference = PinReference.ToDictionary(pair => pair.Value, pair => pair.Key);
             NonLinearConnections = new();
+            SliderReference = new();
         }
 
         public void SetNonLinearConnectionFunctions(Dictionary<(Guid PinIdStart, Guid PinIdEnd), ConnectionFunction> transfers)

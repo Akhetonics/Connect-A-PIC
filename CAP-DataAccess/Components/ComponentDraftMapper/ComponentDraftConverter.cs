@@ -41,7 +41,7 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
             catch (Exception ex)
             {
                 Logger.PrintErr($"Exception at converting draft to Component: '{draft.Identifier}' path: '{draft.SceneResPath}' msg: '{ex.Message}' ");
-                return null; // Or handle the exception as required
+                throw ex;
             }
         }
         private Part[,] CreatePartsFromDraft(ComponentDraft draft)
@@ -136,14 +136,15 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
             return false;
         }
 
-        private Dictionary<int,double> CreateSlidersFromDraft(ComponentDraft draft)
+        private static Dictionary<int, Slider> CreateSlidersFromDraft(ComponentDraft draft)
         {
-            var sliderIdToValueMap = new Dictionary<int, double>();
+            var sliderIdToValueMap = new Dictionary<int, Slider>();
             if (draft?.Sliders != null)
             {
                 foreach (var slider in draft.Sliders)
                 {
-                    sliderIdToValueMap.Add(slider.SliderNumber, slider.MinVal);
+                    sliderIdToValueMap.Add(slider.SliderNumber,
+                                           new Slider(Guid.NewGuid(), slider.SliderNumber, (slider.MinVal + slider.MaxVal) / 2, slider.MaxVal, slider.MinVal));
                 }
             }
             return sliderIdToValueMap;

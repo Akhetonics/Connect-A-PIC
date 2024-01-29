@@ -22,8 +22,9 @@ namespace ConnectAPIC.LayoutWindow.View
 {
     public partial class ComponentView : TextureRect
     {
-        public delegate void SliderChangedEventHandler(ComponentView view, SliderViewData slider , double newVal);
-        public event SliderChangedEventHandler SliderChanged ;
+        public delegate void SliderChangedEventHandler(ComponentView view, Godot.Slider slider, double newVal);
+        public event SliderChangedEventHandler SliderChanged;
+        public const string SliderNumberMetaID = "SliderNumber";
         public int WidthInTiles { get; private set; }
         public int HeightInTiles { get; private set; }
         public ILogger Logger { get; private set; }
@@ -33,7 +34,7 @@ namespace ConnectAPIC.LayoutWindow.View
         public Sprite2D OverlayGreen { get; private set; }
         public Sprite2D OverlayBlue { get; private set; }
         private List<Sprite2D> OverlaySprites { get; set; } = new();
-        private List<SliderDraft> Sliders { get; set; } = new();
+        private List<Godot.Slider> Sliders { get; set; } = new();
         public GridViewModel ViewModel { get; private set; }
         public int GridX { get; set; }
         public int GridY { get; set; }
@@ -73,7 +74,25 @@ namespace ConnectAPIC.LayoutWindow.View
             }
         }
 
-        public void InitializeComponent(int componentTypeNumber,List<SliderViewData> sliderDataSets, List<AnimationSlotOverlayData> slotDataSets, int widthInTiles, int heightInTiles, ILogger logger)
+        // initialize one of the existing sliders
+        public void InitializeSlider(int sliderNumber, string sliderName, string sliderLabelName, double minVal, double maxVal, double steps)
+        {
+            var label = FindChild(sliderLabelName, true, false) as RichTextLabel;
+            var godotSlider = FindChild(sliderName, true, false) as Godot.Slider;
+            godotSlider.MinValue = minVal;
+            godotSlider.MaxValue = maxVal;
+            godotSlider.SetMeta(SliderNumberMetaID, sliderNumber);
+            godotSlider.Value = (minVal + maxVal) / 2;
+            godotSlider.Step = (maxVal - minVal) / steps; // step is the distance between two steps in value
+            godotSlider.ValueChanged += (newVal) =>
+            {
+                label.Text = $"[center]{newVal:F2}";
+                SliderChanged?.Invoke(this, godotSlider, newVal);
+            };
+            this.Sliders.Add(godotSlider);
+        }
+
+        public void InitializeComponent(int componentTypeNumber, List<SliderViewData> sliderDataSets, List<AnimationSlotOverlayData> slotDataSets, int widthInTiles, int heightInTiles, ILogger logger)
         {
             this.Logger = logger;
             if (widthInTiles == 0) Logger.PrintErr(nameof(widthInTiles) + " of this element is not set in the TypeNR: " + componentTypeNumber);
@@ -99,19 +118,10 @@ namespace ConnectAPIC.LayoutWindow.View
         }
         private void InitializeSliders(List<SliderViewData> newSliders)
         {
-          
-            foreach( var slider in newSliders)
+
+            foreach (var slider in newSliders)
             {
-                var label = FindChild(slider.GodotSliderLabelName, true, false) as RichTextLabel;
-                var godotSlider = FindChild(slider.GodotSliderLabelName, true, false) as Godot.Slider;
-                godotSlider.MinValue = slider.MinVal;
-                godotSlider.MaxValue = slider.MaxVal;
-                godotSlider.Value = (slider.MinVal+slider.MaxVal)/2;
-                godotSlider.Step = (slider.MaxVal - slider.MinVal) / slider.Steps; // step is the distance between two steps in value
-                godotSlider.ValueChanged += (newVal)=> { 
-                    label.Text = $"[center]{newVal:F2}";
-                    SliderChanged?.Invoke(this, slider, newVal);
-                };
+                
             }
         }
 
@@ -191,13 +201,13 @@ namespace ConnectAPIC.LayoutWindow.View
             {
                 if (slot?.BaseOverlaySprite?.Material is ShaderMaterial shaderMat)
                 {
-                    for(int i = 0; i < AnimationSlot.MaxShaderAnimationSlots; i++) // all parameters in the whole shader should be set to zero
+                    for (int i = 0; i < AnimationSlot.MaxShaderAnimationSlots; i++) // all parameters in the whole shader should be set to zero
                     {
                         shaderMat.SetShaderParameter(ShaderParameterNames.LightInFlow + i, Vector4.Zero);
                         shaderMat.SetShaderParameter(ShaderParameterNames.LightOutFlow + i, Vector4.Zero);
                         shaderMat.SetShaderParameter(ShaderParameterNames.Animation + i, emptyTexture);
                         shaderMat.SetShaderParameter(ShaderParameterNames.LightColor, new Godot.Color(0, 0, 0));
-                    }   
+                    }
                 }
             }
         }
@@ -211,7 +221,7 @@ namespace ConnectAPIC.LayoutWindow.View
                 matchingSlots.ForEach(slot =>
                 {
                     AssignInAndOutFlowShaderData(slot, light, shaderAnimNumber);
-                    shaderAnimNumber ++;
+                    shaderAnimNumber++;
                 });
             }
             OverlayRed?.Show();

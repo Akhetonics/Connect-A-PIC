@@ -39,7 +39,7 @@ namespace CAP_Core.Components
             : this(laserWaveLengthToSMatrixMap,new(),nazcaFunctionName,nazcaFunctionParams, parts,typeNumber,identifier,rotationCounterClock)
         {
         }
-        public Component(Dictionary<int,SMatrix> laserWaveLengthToSMatrixMap , Dictionary<int,double> sliders, string nazcaFunctionName, string nazcaFunctionParams, Part[,] parts, int typeNumber, string identifier, DiscreteRotation rotationCounterClock)
+        public Component(Dictionary<int,SMatrix> laserWaveLengthToSMatrixMap , Dictionary<int,Slider> sliders, string nazcaFunctionName, string nazcaFunctionParams, Part[,] parts, int typeNumber, string identifier, DiscreteRotation rotationCounterClock)
         {
             Parts = parts;
             TypeNumber = typeNumber;
