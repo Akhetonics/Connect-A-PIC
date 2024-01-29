@@ -127,11 +127,11 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         {
             var ComponentView = GridView.ComponentViewFactory.CreateComponentView(componentTypeNumber);
             ComponentView.RegisterInGrid(gridX, gridY, rotationCounterClockwise, this);
-            ComponentView.SliderChanged += (ComponentView view, int sliderNumber, double newVal) => {
+            ComponentView.SliderChanged += (ComponentView view, Guid sliderId, double newVal) => {
                 var componentModel = Grid.GetComponentAt(view.GridX,view.GridY);
                 foreach (var item in componentModel.LaserWaveLengthToSMatrixMap.Values)
                 {
-                    item.NonLinearConnections
+                    item.SliderReference[sliderId]
                 }
                 RecalculateLightPropagation();
 

@@ -13,14 +13,13 @@ namespace CAP_Core.Grid.FormulaReading
     public static partial class MathExpressionReader
     {
         public const string PinParameterIdentifier = "PIN";
-
-        public static int ExtractPinNumber(string PinIdentifier)
+        public const string SliderParameterIdentifier = "SLIDER";
+        public static int ExtractIdentifierNumber(string Identifier)
         {
             // Regular expression pattern: 
-            // - (?i) for case-insensitivity
-            // - pin for matching the word "pin" or what is in PinParameterIdentifier
+            // - \D* for any non-digit text (any characters except digits)
             // - (\d+) for capturing one or more digits
-            var match = Regex.Match(PinIdentifier, @$"(?i){PinParameterIdentifier}(\d+)");
+            var match = Regex.Match(Identifier, @"\D*(\d+)");
 
             if (match.Success)
             {
@@ -31,72 +30,90 @@ namespace CAP_Core.Grid.FormulaReading
                 throw new InvalidParameterException();
             }
         }
-
-        public static ConnectionFunction? ConvertToDelegate(string realOrFormula, List<Pin> allPins)
+        public static Dictionary<string, Guid> CreateMapFromPins(List<Pin> pins)
         {
-            // create the non-linear function out of the string Formula
-            if (Double.TryParse(realOrFormula, out double realValue) == false)
+            var map = new Dictionary<string, Guid>();
+            foreach (var pin in pins)
             {
-                // first get all parameters that are in the formula as string
-                var PinNumbersAsString = MathExpressionReader.FindPinParametersInExpression(realOrFormula)
-                    .Select(p => p.Name)
-                    .ToList();
+                string key = $"{PinParameterIdentifier}{pin.PinNumber}".ToUpper(); // e.g. "PIN1"
+                map[key] = pin.IDInFlow;
+            }
+            return map;
+        }
 
-                // then map those strings to the Guids of the actual pins and create the delegate function
-                var stringToGuidMapper = new Dictionary<string, Guid>();
-                foreach (var param in PinNumbersAsString)
-                {
-                    if (param == null) continue;
-                    stringToGuidMapper.Add(param, allPins.Single(p => p.PinNumber == MathExpressionReader.ExtractPinNumber(param)).IDInFlow);
-                }
-                return MathExpressionReader.ConvertToDelegate(realOrFormula, stringToGuidMapper);
+        public static Dictionary<string, Guid> CreateMapFromSliders(List<Slider> sliders)
+        {
+            var map = new Dictionary<string, Guid>();
+            foreach (var slider in sliders)
+            {
+                string key = $"{SliderParameterIdentifier}{slider.Number}".ToUpper(); // e.g. "SLIDER1"
+                map[key] = slider.ID;
+            }
+            return map;
+        }
+
+        public static ConnectionFunction? ConvertToDelegate(string realOrFormula, List<Pin> allPinsInGrid, List<Slider>? allSlidersInGrid = null)
+        {
+            allSlidersInGrid ??= new();
+            // check if it is a formula (nonLinear Connection) or just a double (linear connection)
+            if (Double.TryParse(realOrFormula, out _ ) == false)
+            {
+                return MathExpressionReader.ConvertToDelegate(realOrFormula, CreateMapFromPins(allPinsInGrid), CreateMapFromSliders(allSlidersInGrid));
             }
             return null;
         }
 
-        public static ConnectionFunction ConvertToDelegate(string expressionDraft, Dictionary<string, Guid> PinPlaceHolderToGuids)
+        public static ConnectionFunction ConvertToDelegate(string expressionDraft,
+            Dictionary<string, Guid> pinParameterNameToGuidMap, Dictionary<string, Guid> sliderParameterNameToGuidMap)
         {
-            expressionDraft = MakePlaceHoldersUpperCase(expressionDraft); // make small letter pins also be capital letters..
-            PinPlaceHolderToGuids = MakePlaceHoldersUpperCase(PinPlaceHolderToGuids); // make everything capital letter
-            var parameters = FindPinParametersInExpression(expressionDraft);
-            // set the culture to en-US so that points get parsed properly
-            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US"); 
+            expressionDraft = MakePlaceHoldersUpperCase(expressionDraft);
             var expression = new Expression(expressionDraft);
             ComplexMath.RegisterComplexFunctions(expression);
-            
+            expression.Evaluate(); // this is needed to extract the parameters
+            // create a list of Guids for all used parameters in the correct order so that the caller can later provide the correct values from his dictionaries
+            List<Guid> usedParameterGuids = new();
+            foreach (string parameterName in expression.Parameters.Keys)
+            {
+                if (pinParameterNameToGuidMap.TryGetValue(parameterName, out Guid parameterGuid) == true)
+                    usedParameterGuids.Add(parameterGuid);
+                if (sliderParameterNameToGuidMap.TryGetValue(parameterName, out parameterGuid) == false)
+                    usedParameterGuids.Add(parameterGuid);
+                throw new InvalidOperationException("ParameterName could not be found in any parameterName to Guid map provided");
+            }
+
             var connectionFunction = new ConnectionFunction(
-                    (complexParameters) =>
+                (freshlyInsertedParameters) =>
+                {
+                    // check if number of parameters is correct
+                    if (expression.Parameters.Count != freshlyInsertedParameters.Count)
+                        throw new InvalidOperationException($"Parameter count mismatch. Expected {expression.Parameters.Count}, but got {freshlyInsertedParameters.Count} in function {expressionDraft}");
+
+                    // assign parameter values
+                    int index = 0;
+                    foreach (string parameterName in expression.Parameters.Keys.ToList())
                     {
-                        // Ensure we have the correct number of parameters
-                        if (parameters.Count != complexParameters.Count)
-                            throw new InvalidOperationException($"Parameter count mismatch. Should be {expression.Parameters.Count}, but is {complexParameters.Count} in function {expressionDraft}");
+                        expression.Parameters[parameterName] = freshlyInsertedParameters[index];
+                        index++;
+                    }
 
-                        // transfer the parameters into the expression
-                        int index = 0;
-                        foreach(var parameterName in PinPlaceHolderToGuids.Keys)
-                        {
-                            expression.Parameters[parameterName] = complexParameters[index];
-                            index++;
-                        }
+                    // run the expression
+                    var result = expression.Evaluate();
+                    if (result == null)
+                        throw new InvalidOperationException("Formula cannot be computed: " + expressionDraft);
 
-                        // return the result
-                        var result = expression.Evaluate();
-                        if(result == null)
-                        {
-                            throw new InvalidOperationException("the formula cannot be computed. maybe you use operators that only support double but not complex numbers? " + expressionDraft);
-                        }
-                        return (Complex) result;
-                    },
-                    expressionDraft,
-                    parameters.Select(p => PinPlaceHolderToGuids[p.Name]).ToList()
-                );
+                    return (Complex)result;
+                },
+                expressionDraft,
+                usedParameterGuids
+            );
+
             return connectionFunction;
         }
 
-        public static List<System.Linq.Expressions.ParameterExpression> FindPinParametersInExpression(string expression)
+        public static List<System.Linq.Expressions.ParameterExpression> FindParametersInExpression(string expression, string Identifier = PinParameterIdentifier)
         {
             // Regular expression to find placeholders like {P1}, {P2}, etc.
-            var placeholderRegex = new Regex(@$"{PinParameterIdentifier}\d+");
+            var placeholderRegex = new Regex(@$"{Identifier}\d+");
             var matches = placeholderRegex.Matches(expression);
 
             var parameters = new List<System.Linq.Expressions.ParameterExpression>();
@@ -114,23 +131,11 @@ namespace CAP_Core.Grid.FormulaReading
             return parameters;
         }
 
-        public static Dictionary<string, Guid> MakePlaceHoldersUpperCase(Dictionary<string, Guid> originalDict)
-        {
-            // Create a new dictionary with the same capacity as the original for efficiency
-            var fixedDict = new Dictionary<string, Guid>(originalDict.Count);
-
-            foreach (var kvp in originalDict)
-            {
-                // Capitalize the key and add the key-value pair to the new dictionary
-                fixedDict[kvp.Key.ToUpper()] = kvp.Value;
-            }
-
-            return fixedDict;
-        }
-
         public static string MakePlaceHoldersUpperCase(string expression)
         {
-            return Regex.Replace(expression, PinParameterIdentifier.ToLower(), PinParameterIdentifier, RegexOptions.IgnoreCase);
+            expression = Regex.Replace(expression, PinParameterIdentifier.ToLower(), PinParameterIdentifier, RegexOptions.IgnoreCase);
+            expression = Regex.Replace(expression, SliderParameterIdentifier.ToLower(), SliderParameterIdentifier, RegexOptions.IgnoreCase);
+            return expression;
         }
     }
 }

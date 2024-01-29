@@ -9,6 +9,7 @@ using ConnectAPic.LayoutWindow;
 using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scripts.Helpers;
+using ConnectAPIC.Scripts.View.ComponentViews;
 using Godot;
 using MathNet.Numerics;
 using System;
@@ -21,7 +22,7 @@ namespace ConnectAPIC.LayoutWindow.View
 {
     public partial class ComponentView : TextureRect
     {
-        public delegate void SliderChangedEventHandler(ComponentView view, int SliderNumber , double newVal);
+        public delegate void SliderChangedEventHandler(ComponentView view, SliderViewData slider , double newVal);
         public event SliderChangedEventHandler SliderChanged ;
         public int WidthInTiles { get; private set; }
         public int HeightInTiles { get; private set; }
@@ -72,12 +73,12 @@ namespace ConnectAPIC.LayoutWindow.View
             }
         }
 
-        public void InitializeComponent(int componentTypeNumber,List<SliderDraft> sliders, List<AnimationSlotOverlayData> slotDataSets, int widthInTiles, int heightInTiles, ILogger logger)
+        public void InitializeComponent(int componentTypeNumber,List<SliderViewData> sliderDataSets, List<AnimationSlotOverlayData> slotDataSets, int widthInTiles, int heightInTiles, ILogger logger)
         {
             this.Logger = logger;
             if (widthInTiles == 0) Logger.PrintErr(nameof(widthInTiles) + " of this element is not set in the TypeNR: " + componentTypeNumber);
             if (heightInTiles == 0) Logger.PrintErr(nameof(heightInTiles) + " of this element is not set in the TypeNR: " + componentTypeNumber);
-            InitializeSliders(sliders);
+            InitializeSliders(sliderDataSets);
             this.TypeNumber = componentTypeNumber;
             this.WidthInTiles = widthInTiles;
             this.HeightInTiles = heightInTiles;
@@ -96,16 +97,20 @@ namespace ConnectAPIC.LayoutWindow.View
             }
             RotationCC = _rotationCC;
         }
-        private void InitializeSliders(List<SliderDraft> newSliders)
+        private void InitializeSliders(List<SliderViewData> newSliders)
         {
-            this.Sliders = newSliders;
-            foreach( var slider in Sliders)
+          
+            foreach( var slider in newSliders)
             {
                 var label = FindChild(slider.GodotSliderLabelName, true, false) as RichTextLabel;
                 var godotSlider = FindChild(slider.GodotSliderLabelName, true, false) as Godot.Slider;
+                godotSlider.MinValue = slider.MinVal;
+                godotSlider.MaxValue = slider.MaxVal;
+                godotSlider.Value = (slider.MinVal+slider.MaxVal)/2;
+                godotSlider.Step = (slider.MaxVal - slider.MinVal) / slider.Steps; // step is the distance between two steps in value
                 godotSlider.ValueChanged += (newVal)=> { 
                     label.Text = $"[center]{newVal:F2}";
-                    SliderChanged?.Invoke(this, slider.SliderNumber, newVal);
+                    SliderChanged?.Invoke(this, slider, newVal);
                 };
             }
         }

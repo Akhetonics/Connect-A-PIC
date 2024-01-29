@@ -24,8 +24,8 @@ namespace UnitTests.Components.FormulaReading
             string expression = "Add(Add(PIN1,PIN1),PIN2)";
             var valueForPin1 = new Complex(2, 4);
             var valueForPin2 = new Complex(4, 2.2);
-            var parametersFound = MathExpressionReader.FindPinParametersInExpression(expression);
-            var parameterNumbers = parametersFound.Select(p => MathExpressionReader.ExtractPinNumber(p.Name)).ToList();
+            var parametersFound = new List<string> {"PIN1", "PIN2" };
+            var parameterNumbers = parametersFound.Select(p => MathExpressionReader.ExtractIdentifierNumber(p)).ToList();
             List<Pin> pins = new List<Pin>() {
                 new("",parameterNumbers[0],MatterType.Light,RectSide.Right),
                 new("",parameterNumbers[1],MatterType.Light,RectSide.Left),
@@ -51,7 +51,7 @@ namespace UnitTests.Components.FormulaReading
             string pinIdentifier = "PIN123";
 
             // Act
-            int result = MathExpressionReader.ExtractPinNumber(pinIdentifier);
+            int result = MathExpressionReader.ExtractIdentifierNumber(pinIdentifier);
 
             // Assert
             Assert.Equal(123, result);
@@ -64,7 +64,7 @@ namespace UnitTests.Components.FormulaReading
             string pinIdentifier = "Invalid123";
 
             // Act & Assert
-            Assert.Throws<InvalidParameterException>(() => MathExpressionReader.ExtractPinNumber(pinIdentifier));
+            Assert.Throws<InvalidParameterException>(() => MathExpressionReader.ExtractIdentifierNumber(pinIdentifier));
         }
 
         [Fact]

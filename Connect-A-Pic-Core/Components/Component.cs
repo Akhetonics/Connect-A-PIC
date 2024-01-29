@@ -19,7 +19,7 @@ namespace CAP_Core.Components
         [JsonIgnore] public int GridYMainTile { get; protected set; }
         public Part[,] Parts { get; protected set; }
         public Dictionary<int, SMatrix> LaserWaveLengthToSMatrixMap { get; set; }
-        public Dictionary<int, double> Sliders; // int is the sliderNmber and double the currentValue
+        public Dictionary<int, Slider> Sliders; // int is the sliderNmber and double the currentValue
         public string NazcaFunctionName { get; set; }
         public string NazcaFunctionParameters { get; set; }
         private DiscreteRotation _discreteRotation;

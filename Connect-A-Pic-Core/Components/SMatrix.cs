@@ -14,7 +14,7 @@ namespace CAP_Core.Components
     {
         public Matrix<Complex> SMat; // the SMat works like SMat[PinNROutflow, PinNRInflow] --> so opposite from what one might expect
         public readonly Dictionary<Guid, int> PinReference; // all PinIDs inside of the matrix. the int is the index of the row/column in the SMat.. and also of the inputVector.
-        public readonly Dictionary<int, double> SliderReference;
+        public readonly Dictionary<Guid, double> SliderReference;
         private readonly Dictionary<int, Guid> reversePinReference; // sometimes we want to find the GUID and only have the ID
         private readonly int size;
         public const int MaxToStringPinGuidSize = 6;
@@ -119,33 +119,24 @@ namespace CAP_Core.Components
             return ConvertToDictWithGuids(inputAfterSteps);
         }
 
-        public class PinGuidOrSlider
+        private List<object> GetWeightParameters(IEnumerable<Guid> parameterGuids, MathNet.Numerics.LinearAlgebra.Vector<Complex> inputVector)
         {
-            public PinGuidOrSlider(int sliderNummer)
+            List<object> usedParameterValues = new();
+            foreach( var paramGuid in parameterGuids)
             {
-                this.SliderNummer = sliderNummer;
-            }
-            public PinGuidOrSlider(Guid pinGuid)
-            {
-                this.PinID = pinGuid;
-            }
-            public int? SliderNummer { get; set; }
-            public Guid? PinID { get; set; }
-
-            public Complex GetWeighParameter()
-            {
-                
-            }
-        }
-        private Complex GetWeighParameterFromPins (IEnumerable<Guid>)
-        private List<Complex> GetWeightParameters(IEnumerable<PinGuidOrSlider> parameterPinOrSliderIDs, MathNet.Numerics.LinearAlgebra.Vector<Complex> inputVector)
-        {
-            return parameterPinOrSliderIDs.Select(p => {
-                    PinReference[p.PinID]
+                // first check if the parameterGuid is in the pin-Dict
+                if (PinReference.TryGetValue(paramGuid, out int pinNumber))
+                {
+                    usedParameterValues.Add(inputVector[pinNumber]);
                 }
-            )
-                                    .Select(id => inputVector[id])
-                                    .ToList();
+                // check if parameterGuid is in the slider Dict
+                if (SliderReference.TryGetValue(paramGuid, out double sliderPosition))
+                {
+                    usedParameterValues.Add(sliderPosition);
+                }
+            }
+
+            return usedParameterValues;
         }
         private void RecomputeSMatNonLinearParts(MathNet.Numerics.LinearAlgebra.Vector<Complex> inputVector)
         {
@@ -153,7 +144,7 @@ namespace CAP_Core.Components
             {
                 var indexStart = PinReference[connection.Key.PinIdStart];
                 var indexEnd = PinReference[connection.Key.PinIdEnd];
-                var weightParameters = GetWeightParameters(connection.Value.ParameterPinGuids, inputVector);
+                var weightParameters = GetWeightParameters(connection.Value.UsedParameterGuids, inputVector);
                 var calculatedWeight = connection.Value.CalcConnectionWeight(weightParameters);
                 SMat[indexEnd, indexStart] = calculatedWeight;
             }

@@ -1,4 +1,5 @@
-﻿using CAP_Core.Grid;
+﻿using CAP_Core.Components;
+using CAP_Core.Grid;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,14 +20,21 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
         {
             return (parameter is MoveSliderCommandArgs moveParams
                 && grid.GetComponentAt(moveParams.gridX, moveParams.gridY)?.Sliders
-                .TryGetValue(moveParams.sliderNumber,out double value) != null);
+                .TryGetValue(moveParams.sliderNumber,out Slider _) != null);
         }
 
         public Task ExecuteAsync(object parameter)
         {
             if (!CanExecute(parameter)) return default;
             var moveParams = (MoveSliderCommandArgs)parameter;
-            grid.GetComponentAt(moveParams.gridX, moveParams.gridY).Sliders[moveParams.sliderNumber] = moveParams.newValue;
+            if(grid.GetComponentAt(moveParams.gridX, moveParams.gridY).Sliders.ContainsKey(moveParams.sliderNumber))
+            {
+                grid.GetComponentAt(moveParams.gridX, moveParams.gridY).Sliders[moveParams.sliderNumber].Value = moveParams.newValue;
+            } else
+            {
+                throw new ArgumentException("the specified SliderNumber does not exist in the Model.Grid");
+            }
+            
             return Task.CompletedTask;
         }
     }

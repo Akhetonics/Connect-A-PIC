@@ -72,7 +72,7 @@ namespace UnitTests.Components.FormulaReading
         public void FindParametersTest()
         {
             var paramName = MathExpressionReader.PinParameterIdentifier + "0";
-            var parameters = MathExpressionReader.FindPinParametersInExpression(paramName + " * 0.9");
+            var parameters = MathExpressionReader.FindParametersInExpression(paramName + " * 0.9");
 
             parameters.Single().Name.ShouldBe(paramName);
         }
