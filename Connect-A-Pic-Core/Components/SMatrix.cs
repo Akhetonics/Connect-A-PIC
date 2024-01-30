@@ -18,7 +18,7 @@ namespace CAP_Core.Components
         private readonly Dictionary<int, Guid> ReversePinReference; // sometimes we want to find the GUID and only have the ID
         private readonly int size;
         public const int MaxToStringPinGuidSize = 6;
-        public Dictionary<(Guid PinIdStart, Guid PinIdEnd), ConnectionFunction> NonLinearConnections;
+        public Dictionary<(Guid PinIdStart, Guid PinIdEnd), ConnectionFunction> NonLinearConnections { get; set; }
 
         public SMatrix(List<Guid> allPinsInGrid, List<Guid> AllSliders)
         {
@@ -113,14 +113,14 @@ namespace CAP_Core.Components
             if (maxSteps < 1) return new Dictionary<Guid, Complex>();
 
             // update the SMat using the non linear connections
-            RecomputeSMatNonLinearParts(inputVector);
+            RecomputeSMatNonLinearParts(inputVector, SkipOuterloopFunctions:false);
 
             var inputAfterSteps = SMat * inputVector;
             for (int i = 1; i < maxSteps; i++)
             {
                 var oldInputAfterSteps = inputAfterSteps;
                 // recalculating non linear values because the inputvector has changed and could now change the connections like activate a logic gate for example.
-                RecomputeSMatNonLinearParts(inputAfterSteps);
+                RecomputeSMatNonLinearParts(inputAfterSteps, SkipOuterloopFunctions: true);
                 // multiplying the adjusted matrix and also adding the initial inputVector again because there is more light incoming
                 inputAfterSteps = SMat * inputAfterSteps + inputVector;
                 if (oldInputAfterSteps.Equals(inputAfterSteps)) break;
@@ -148,10 +148,12 @@ namespace CAP_Core.Components
 
             return usedParameterValues;
         }
-        private void RecomputeSMatNonLinearParts(MathNet.Numerics.LinearAlgebra.Vector<Complex> inputVector)
+        private void RecomputeSMatNonLinearParts(MathNet.Numerics.LinearAlgebra.Vector<Complex> inputVector , bool SkipOuterloopFunctions = true)
         {
             foreach (var connection in NonLinearConnections)
             {
+                if (connection.Value.IsInnerLoopFunction == false && SkipOuterloopFunctions == true)// some functions 
+                    continue;
                 var indexStart = PinReference[connection.Key.PinIdStart];
                 var indexEnd = PinReference[connection.Key.PinIdEnd];
                 var weightParameters = GetWeightParameters(connection.Value.UsedParameterGuids, inputVector);
