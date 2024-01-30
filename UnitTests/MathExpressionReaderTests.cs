@@ -31,9 +31,9 @@ namespace UnitTests
                 new("",parameterNumbers[1],MatterType.Light,RectSide.Left),
             };
             var computedDelegate = MathExpressionReader.ConvertToDelegate(expression, pins);
-            var formularesult = computedDelegate.Value.CalcConnectionWeight(new List<Complex>() { valueForPin1, valueForPin2 });
+            var formulaResult = computedDelegate.Value.CalcConnectionWeight(new List<Complex>() { valueForPin1, valueForPin2 });
 
-            formularesult.ShouldBe(new Complex(8,10.2));
+            formulaResult.ShouldBe(new Complex(8,10.2));
         }
 
         [Fact]
