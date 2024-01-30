@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 
 namespace ConnectAPIC.LayoutWindow.View
@@ -25,6 +26,7 @@ namespace ConnectAPIC.LayoutWindow.View
         public delegate void SliderChangedEventHandler(ComponentView view, Godot.Slider slider, double newVal);
         public event SliderChangedEventHandler SliderChanged;
         public const string SliderNumberMetaID = "SliderNumber";
+        public const string SliderLabelMetaID= "SliderLabel";
         public int WidthInTiles { get; private set; }
         public int HeightInTiles { get; private set; }
         public ILogger Logger { get; private set; }
@@ -74,26 +76,35 @@ namespace ConnectAPIC.LayoutWindow.View
             }
         }
 
+        public void SetSliderValue( int sliderNumber, double value)
+        {
+            var slider = Sliders.Single(s => (int)s.GetMeta(SliderNumberMetaID) == sliderNumber);
+            var label = (RichTextLabel)slider.GetMeta(SliderLabelMetaID);
+            slider.Value = value;
+            setSliderLabelText(label, value);
+        }
         // initialize one of the existing sliders
-        public void InitializeSlider(SliderViewData sliderData )
+        private void InitializeSlider(SliderViewData sliderData )
         {
             var label = FindChild(sliderData.GodotSliderLabelName, true, false) as RichTextLabel;
             var godotSlider = FindChild(sliderData.GodotSliderName, true, false) as Godot.Slider;
             godotSlider.MinValue = sliderData.MinVal;
             godotSlider.MaxValue = sliderData.MaxVal;
             godotSlider.SetMeta(SliderNumberMetaID, sliderData.SliderNumber);
+            godotSlider.SetMeta(SliderLabelMetaID, label);
             
             godotSlider.ValueChanged += (newVal) =>
             {
-                label.Text = $"[center]{newVal:F2}";
+                setSliderLabelText(label, newVal);
                 SliderChanged?.Invoke(this, godotSlider, newVal);
             };
-            godotSlider.Value = (sliderData.MinVal + sliderData.MaxVal) / 2;
-            label.Text = $"[center]{godotSlider.Value:F2}";
+            godotSlider.Value = sliderData.InitialValue;
+            setSliderLabelText(label, sliderData.InitialValue);
             godotSlider.Step = (sliderData.MaxVal - sliderData.MinVal) / sliderData.Steps; // step is the distance between two steps in value
             this.Sliders.Add(godotSlider);
         }
 
+        private void setSliderLabelText(RichTextLabel label, double newVal) => label.Text = $"[center]{newVal:F2}";
         public void InitializeComponent(int componentTypeNumber, List<SliderViewData> sliderDataSets, List<AnimationSlotOverlayData> slotDataSets, int widthInTiles, int heightInTiles, ILogger logger)
         {
             this.Logger = logger;

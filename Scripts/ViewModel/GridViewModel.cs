@@ -81,7 +81,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
 
         private void Grid_OnComponentPlacedOnTile(Component component, int gridX, int gridY)
         {
-            CreateComponentView(gridX, gridY, component.Rotation90CounterClock, component.TypeNumber);
+            CreateComponentView(gridX, gridY, component.Rotation90CounterClock, component.TypeNumber, component.GetAllSliders());
             RecalculateLightPropagation();
         }
         public bool IsInGrid(int x, int y, int width, int height)
@@ -126,7 +126,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
                 }
             }
         }
-        public ComponentView CreateComponentView(int gridX, int gridY, DiscreteRotation rotationCounterClockwise, int componentTypeNumber)
+        public ComponentView CreateComponentView(int gridX, int gridY, DiscreteRotation rotationCounterClockwise, int componentTypeNumber , List<Slider> slidersInUse)
         {
             var ComponentView = GridView.ComponentViewFactory.CreateComponentView(componentTypeNumber);
             ComponentView.RegisterInGrid(gridX, gridY, rotationCounterClockwise, this);
@@ -136,6 +136,11 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             };
             RegisterComponentViewInGridView(ComponentView);
             GridView.DragDropProxy.AddChild(ComponentView); // it has to be the child of the DragDropArea to be displayed
+            // set sliders initial values
+            foreach( var slider in slidersInUse)
+            {
+                ComponentView.SetSliderValue(slider.Number, slider.Value);
+            }
             return ComponentView;
         }
 

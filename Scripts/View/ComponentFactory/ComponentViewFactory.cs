@@ -105,6 +105,7 @@ namespace ConnectAPIC.LayoutWindow.View
                 GodotSliderName = s.GodotSliderName,
                 MaxVal = s.MaxVal,
                 MinVal = s.MinVal,
+                InitialValue = (s.MaxVal - s.MinVal) / 2,
                 SliderNumber = s.SliderNumber,
                 Steps = s.Steps
             }).ToList();

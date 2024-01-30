@@ -35,10 +35,6 @@ namespace CAP_Core.Components
                 }
             }
         }
-        public Component(Dictionary<int, SMatrix> laserWaveLengthToSMatrixMap, string nazcaFunctionName, string nazcaFunctionParams, Part[,] parts, int typeNumber, string identifier, DiscreteRotation rotationCounterClock) 
-            : this(laserWaveLengthToSMatrixMap,new(),nazcaFunctionName,nazcaFunctionParams, parts,typeNumber,identifier,rotationCounterClock)
-        {
-        }
         public Component(Dictionary<int,SMatrix> laserWaveLengthToSMatrixMap , List<Slider> sliders, string nazcaFunctionName, string nazcaFunctionParams, Part[,] parts, int typeNumber, string identifier, DiscreteRotation rotationCounterClock)
         {
             Parts = parts;
@@ -231,7 +227,7 @@ namespace CAP_Core.Components
                 clonedLaserSMatrixMap.Add(laserAndMatrix.Key, newMat);
             }
 
-            return new Component(clonedLaserSMatrixMap, NazcaFunctionName, NazcaFunctionParameters, clonedParts, TypeNumber, Identifier, Rotation90CounterClock);
+            return new Component(clonedLaserSMatrixMap, clonedSliderMap.Values.ToList(), NazcaFunctionName, NazcaFunctionParameters, clonedParts, TypeNumber, Identifier, Rotation90CounterClock);
         }
 
         private Dictionary<int, Slider> CloneSliders()
@@ -242,6 +238,7 @@ namespace CAP_Core.Components
                 var slider = SliderMap[sliderID];
                 var clonedSlider = (Slider)slider.Clone();
                 clonedSlider.ID = Guid.NewGuid();
+                clonedSlider.Value = slider.Value;
                 clonedSliderMap.Add(slider.Number, clonedSlider);
             }
 

@@ -116,7 +116,7 @@ namespace UnitTests
                 { StandardWaveLengths.BlueNM, matrixRed},
             };
 
-            return new Component(connections, "placeCell_StraightWG", "", parts, 0, "Straight", DiscreteRotation.R0);
+            return new Component(connections,new(), "placeCell_StraightWG", "", parts, 0, "Straight", DiscreteRotation.R0);
         }
 
         public static Component CreateDirectionalCoupler()
@@ -162,7 +162,7 @@ namespace UnitTests
                 {StandardWaveLengths.GreenNM, matrixRed},
                 {StandardWaveLengths.BlueNM, matrixRed},
             };
-            return new Component(connections, "placeCell_DirectionalCoupler", "", parts, 0,"DirectionalCoupler", DiscreteRotation.R0);
+            return new Component(connections,new(), "placeCell_DirectionalCoupler", "", parts, 0,"DirectionalCoupler", DiscreteRotation.R0);
         }
 
     }
