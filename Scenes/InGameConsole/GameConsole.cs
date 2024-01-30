@@ -59,7 +59,7 @@ namespace ConnectAPIC.Scenes.InGameConsole
 				labelTemplate = ErrorTextTemplate;
 			}
 
-			var newLine = labelTemplate.Duplicate() as RichTextLabel;
+			var newLine = (RichTextLabel)labelTemplate.Duplicate();
 			newLine.Text = text;
 			newLine.Visible = true;
 			LoggingParent.AddChild(newLine);

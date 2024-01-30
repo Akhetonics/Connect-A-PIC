@@ -21,16 +21,14 @@ namespace CAP_Core.Tiles.Grid
         }
 
         // calculates the light intensity and phase at a given PIN-ID for both light-flow-directions "in" and "out" for a given period of steps
-        public async Task<Dictionary<Guid, Complex>> CalculateLightPropagation()
+        public Dictionary<Guid, Complex> CalculateLightPropagation()
         {
-            return await Task.Run(() => {
-                UpdateSystemSMatrix();
-                var stepCount = SystemSMatrix.PinReference.Count() * 2;
-                var usedInputs = Grid.GetUsedExternalInputs().Where(i => i.Input.LaserType.WaveLengthInNm == LaserWaveLengthInNm).ToList();
+            UpdateSystemSMatrix();
+            var stepCount = SystemSMatrix.PinReference.Count() * 2;
+            var usedInputs = Grid.GetUsedExternalInputs().Where(i => i.Input.LaserType.WaveLengthInNm == LaserWaveLengthInNm).ToList();
+            var inputVector = UsedInputConverter.ToVector(usedInputs, SystemSMatrix);
+            return SystemSMatrix.GetLightPropagation(inputVector, stepCount) ?? new Dictionary<Guid, Complex>();
 
-                var inputVector = UsedInputConverter.ToVector(usedInputs, SystemSMatrix);
-                return SystemSMatrix.GetLightPropagation(inputVector, stepCount) ?? new Dictionary<Guid, Complex>();
-            });
         }
 
         private void UpdateSystemSMatrix()
@@ -49,7 +47,7 @@ namespace CAP_Core.Tiles.Grid
             }
             var allUsedPinIDs = InterComponentConnections.SelectMany(c => new[] { c.Key.Item1, c.Key.Item2 }).Distinct().ToList();
             Grid.GetUsedExternalInputs().ForEach(input => allUsedPinIDs.Add(input.AttachedComponentPinId)); // Grating coupler has no internal connections and might be only connected to the Laser directly
-            var allConnectionsSMatrix = new SMatrix(allUsedPinIDs, new() ); 
+            var allConnectionsSMatrix = new SMatrix(allUsedPinIDs, new());
             allConnectionsSMatrix.SetValues(InterComponentConnections);
             return allConnectionsSMatrix;
         }
@@ -58,12 +56,13 @@ namespace CAP_Core.Tiles.Grid
         {
             var allComponents = Grid.GetAllComponents();
             var allSMatrices = new List<SMatrix>();
-            foreach(var component in allComponents)
+            foreach (var component in allComponents)
             {
-                if(component.WaveLengthToSMatrixMap.TryGetValue(waveLength, out var matrixFound))
+                if (component.WaveLengthToSMatrixMap.TryGetValue(waveLength, out var matrixFound))
                 {
                     allSMatrices.Add(matrixFound);
-                } else
+                }
+                else
                 {
                     throw new InvalidDataException($"The Matrix was not defined for the specific waveLength: {waveLength} at component {component.Identifier}");
                 }

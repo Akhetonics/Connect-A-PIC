@@ -130,8 +130,8 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         {
             var ComponentView = GridView.ComponentViewFactory.CreateComponentView(componentTypeNumber);
             ComponentView.RegisterInGrid(gridX, gridY, rotationCounterClockwise, this);
-            ComponentView.SliderChanged += (ComponentView view, Godot.Slider godotSlider, double newVal) => {
-                MoveSliderCommand.ExecuteAsync(new MoveSliderCommandArgs(view.GridX, view.GridX, (int)godotSlider.GetMeta(ComponentView.SliderNumberMetaID), newVal));
+            ComponentView.SliderChanged += async (ComponentView view, Godot.Slider godotSlider, double newVal) => {
+                await MoveSliderCommand.ExecuteAsync(new MoveSliderCommandArgs(view.GridX, view.GridY, (int)godotSlider.GetMeta(ComponentView.SliderNumberMetaID), newVal));
                 RecalculateLightPropagation();
             };
             RegisterComponentViewInGridView(ComponentView);
@@ -144,13 +144,13 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             return ComponentView;
         }
 
-        public async Task ShowLightPropagation()
+        public void ShowLightPropagation()
         {
             var inputPorts = Grid.GetUsedExternalInputs();
             foreach (var port in inputPorts)
             {
                 MatrixAnalyzer = new GridSMatrixAnalyzer(this.Grid, port.Input.LaserType.WaveLengthInNm);
-                var resultLightVector = await MatrixAnalyzer.CalculateLightPropagation();
+                var resultLightVector = MatrixAnalyzer.CalculateLightPropagation();
                 Logger.Print(resultLightVector.ToCustomString());
                 AssignLightToComponentViews(resultLightVector, port.Input.LaserType);
             }

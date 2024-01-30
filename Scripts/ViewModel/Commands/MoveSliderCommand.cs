@@ -24,7 +24,8 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
 
         public Task ExecuteAsync(object parameter)
         {
-            if (!CanExecute(parameter)) return default;
+            if (!CanExecute(parameter)) 
+                return Task.CompletedTask;
             var moveParams = (MoveSliderCommandArgs)parameter;
             var sliderComponent = grid.GetComponentAt(moveParams.gridX, moveParams.gridY);
             sliderComponent.GetSlider(moveParams.sliderNumber).Value = moveParams.newValue;

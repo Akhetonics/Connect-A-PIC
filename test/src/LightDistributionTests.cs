@@ -22,12 +22,13 @@ namespace ConnectAPIC.test.src
         private readonly ILog _log = new GDLog(nameof(ExampleTest));
         public Fixture MyFixture { get; set; }
         public GameManager MyGameManager { get; set; }
-        public LightDistributionTests(Node testScene) : base(testScene) { }
         public ComponentView RotatedCurve { get; set; }
         public ComponentView StraightLine { get; set; }
         public ComponentView SecondStraightLine { get; set; }
         public LaserType RedLaser { get; set; }
         public LaserType GreenLaser { get; set; }
+        public LightDistributionTests(Node testScene) : base(testScene) 
+        { }
         public void OnResolved()
         {
 
@@ -104,7 +105,7 @@ namespace ConnectAPIC.test.src
             var lightLocallyOn = GetInOutLightValueLeft();
             MyGameManager.GridViewModel.HideLightPropagation();
             var lightGloballyOff = GetInOutLightValueLeft();
-            await MyGameManager.GridViewModel.ShowLightPropagation();
+            MyGameManager.GridViewModel.ShowLightPropagation();
             var lightGloballyOn= GetInOutLightValueLeft();
             SecondStraightLine.HideLightVector();
             var lightLocallyOff= GetInOutLightValueLeft();

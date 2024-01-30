@@ -10,14 +10,15 @@ using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scripts.Helpers;
 using ConnectAPIC.Scripts.View.ComponentViews;
+using ConnectAPIC.Scripts.ViewModel.Commands;
 using Godot;
 using MathNet.Numerics;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Reflection;
 using System.Reflection.Emit;
-using System.Runtime.CompilerServices;
 
 namespace ConnectAPIC.LayoutWindow.View
 {
@@ -27,6 +28,7 @@ namespace ConnectAPIC.LayoutWindow.View
         public event SliderChangedEventHandler SliderChanged;
         public const string SliderNumberMetaID = "SliderNumber";
         public const string SliderLabelMetaID= "SliderLabel";
+        private System.Timers.Timer debounceTimer = new System.Timers.Timer(500);
         public int WidthInTiles { get; private set; }
         public int HeightInTiles { get; private set; }
         public ILogger Logger { get; private set; }
@@ -96,12 +98,24 @@ namespace ConnectAPIC.LayoutWindow.View
             godotSlider.ValueChanged += (newVal) =>
             {
                 setSliderLabelText(label, newVal);
-                SliderChanged?.Invoke(this, godotSlider, newVal);
+                debounceTimer.AutoReset = false;
+                debounceTimer.Stop();
+                debounceTimer.Start();
+                debounceTimer.Elapsed += (object sender, System.Timers.ElapsedEventArgs e) =>
+                {
+                    // we have to run the sliderchanged in the correct thread
+                    CallDeferred(nameof(HandleSliderChangeDeferred), godotSlider, godotSlider.Value);
+                };
             };
             godotSlider.Value = sliderData.InitialValue;
             setSliderLabelText(label, sliderData.InitialValue);
             godotSlider.Step = (sliderData.MaxVal - sliderData.MinVal) / sliderData.Steps; // step is the distance between two steps in value
             this.Sliders.Add(godotSlider);
+        }
+
+        private void HandleSliderChangeDeferred(HSlider godotSlider , double sliderValue)
+        {
+            SliderChanged?.Invoke(this, godotSlider, sliderValue);
         }
 
         private void setSliderLabelText(RichTextLabel label, double newVal) => label.Text = $"[center]{newVal:F2}";
@@ -130,6 +144,7 @@ namespace ConnectAPIC.LayoutWindow.View
             }
             RotationCC = _rotationCC;
         }
+
         private void InitializeSliders(List<SliderViewData> newSliders)
         {
             foreach (var slider in newSliders)
