@@ -75,20 +75,22 @@ namespace ConnectAPIC.LayoutWindow.View
         }
 
         // initialize one of the existing sliders
-        public void InitializeSlider(int sliderNumber, string sliderName, string sliderLabelName, double minVal, double maxVal, double steps)
+        public void InitializeSlider(SliderViewData sliderData )
         {
-            var label = FindChild(sliderLabelName, true, false) as RichTextLabel;
-            var godotSlider = FindChild(sliderName, true, false) as Godot.Slider;
-            godotSlider.MinValue = minVal;
-            godotSlider.MaxValue = maxVal;
-            godotSlider.SetMeta(SliderNumberMetaID, sliderNumber);
-            godotSlider.Value = (minVal + maxVal) / 2;
-            godotSlider.Step = (maxVal - minVal) / steps; // step is the distance between two steps in value
+            var label = FindChild(sliderData.GodotSliderLabelName, true, false) as RichTextLabel;
+            var godotSlider = FindChild(sliderData.GodotSliderName, true, false) as Godot.Slider;
+            godotSlider.MinValue = sliderData.MinVal;
+            godotSlider.MaxValue = sliderData.MaxVal;
+            godotSlider.SetMeta(SliderNumberMetaID, sliderData.SliderNumber);
+            
             godotSlider.ValueChanged += (newVal) =>
             {
                 label.Text = $"[center]{newVal:F2}";
                 SliderChanged?.Invoke(this, godotSlider, newVal);
             };
+            godotSlider.Value = (sliderData.MinVal + sliderData.MaxVal) / 2;
+            label.Text = $"[center]{godotSlider.Value:F2}";
+            godotSlider.Step = (sliderData.MaxVal - sliderData.MinVal) / sliderData.Steps; // step is the distance between two steps in value
             this.Sliders.Add(godotSlider);
         }
 
@@ -106,6 +108,7 @@ namespace ConnectAPIC.LayoutWindow.View
             FindAndAssignOverlayBlueprint();
             this.CheckForNull(x => x.OverlayBluePrint);
             InitializeLightOverlays();
+            
             foreach (var slotData in slotDataSets)
             {
                 if (slotData.LightFlowOverlay == null)
@@ -118,10 +121,9 @@ namespace ConnectAPIC.LayoutWindow.View
         }
         private void InitializeSliders(List<SliderViewData> newSliders)
         {
-
             foreach (var slider in newSliders)
             {
-                
+                InitializeSlider(slider);
             }
         }
 

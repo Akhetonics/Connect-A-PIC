@@ -54,22 +54,23 @@ namespace UnitTests.Components
                     new SliderDraft { GodotSliderLabelName = "Label1", GodotSliderName  = "GodotSlider2" , SliderNumber = 3}
                 }
             };
-
             // Act
             var components = converter.ToComponentModels(new List<ComponentDraft> { componentDraft });
-
+            var component = components.First();
+            var SMatSliderReference = component.WaveLengthToSMatrixMap[LaserType.Red.WaveLengthInNm].SliderReference;
 
             // Assert
             components.ShouldNotBeEmpty();
             components.Count.ShouldBe(1);
-            var component = components.First();
             component.Identifier.ShouldBe(componentDraft.Identifier);
             var sMatrix = component.WaveLengthToSMatrixMap[LaserType.Red.WaveLengthInNm];
             sMatrix.NonLinearConnections.Count.ShouldBe(1);
             sMatrix.PinReference.Count.ShouldBe(4); //because we have 2 pins which each consist of an output and input Pin-ID.
             sMatrix.GetNonNullValues().Count.ShouldBe(2);
-            component.SliderMap.ContainsKey(2).ShouldBe(true);
-            component.SliderMap.ContainsKey(3).ShouldBe(true);
+            component.GetSlider(2).ShouldNotBeNull();
+            component.GetSlider(3).ShouldNotBeNull();
+            SMatSliderReference[component.GetSlider(2).ID].ShouldBe(component.GetSlider(2).Value);
+            SMatSliderReference[component.GetSlider(3).ID].ShouldBe(component.GetSlider(3).Value);
             componentDraft.Sliders.Single(s => s.SliderNumber == 2).GodotSliderName.ShouldBe("GodotSlider");
             var minorDefinedSlider = componentDraft.Sliders.Single(s => s.SliderNumber == 3);
             minorDefinedSlider.MaxVal.ShouldBe(1);

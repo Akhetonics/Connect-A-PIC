@@ -19,7 +19,7 @@ namespace CAP_Core.Components
         [JsonIgnore] public int GridYMainTile { get; protected set; }
         public Part[,] Parts { get; protected set; }
         public Dictionary<int, SMatrix> WaveLengthToSMatrixMap { get; set; }
-        public Dictionary<int, Slider> SliderMap { get; set; } // where int is the sliderNumber
+        private Dictionary<int, Slider> SliderMap { get; set; } // where int is the sliderNumber
         public string NazcaFunctionName { get; set; }
         public string NazcaFunctionParameters { get; set; }
         private DiscreteRotation _discreteRotation;
@@ -47,11 +47,47 @@ namespace CAP_Core.Components
             _discreteRotation = rotationCounterClock;
             WaveLengthToSMatrixMap = laserWaveLengthToSMatrixMap;
             SliderMap = new();
-            sliders.ForEach(s => SliderMap.Add(s.Number, s));
+            sliders.ForEach(s => {
+                AddSlider(s.Number, s);
+                // initialize the SliderValues with two different values to ensure the Observers (Matrix Updater) are being called
+                s.Value = 0; 
+                s.Value = (s.MinValue + s.MaxValue) / 2;
+            });
             NazcaFunctionName = nazcaFunctionName;
             NazcaFunctionParameters = nazcaFunctionParams;
         }
+        public void AddSlider(int sliderNr , Slider slider)
+        {
+            SliderMap.TryAdd(sliderNr, slider);
+            slider.PropertyChanged += Slider_PropertyChanged;
+        }
 
+        private void Slider_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if(e.PropertyName == nameof(Slider.Value) && sender is Slider slider)
+            {
+                foreach (var sMatrix in WaveLengthToSMatrixMap.Values)
+                {
+                    if (sMatrix.SliderReference.ContainsKey(slider.ID))
+                    {
+                        sMatrix.SliderReference[slider.ID] = slider.Value;
+                    }
+                    else
+                    {
+                        sMatrix.SliderReference.Add(slider.ID, slider.Value);
+                    }
+                }
+            }
+        }
+
+        public Slider GetSlider (int sliderNr)
+        {
+            return SliderMap[sliderNr];
+        }
+        public List<Slider> GetAllSliders()
+        {
+            return SliderMap.Values.ToList();
+        }
         public void RegisterPositionInGrid(int gridX, int gridY)
         {
             IsPlacedInGrid = true;

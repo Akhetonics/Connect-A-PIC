@@ -96,10 +96,14 @@ namespace CAP_Core.Components
             foreach (SMatrix matrix in matrices)
             {
                 var transfers = matrix.GetNonNullValues();
+                var nonLinearTransfers = matrix.NonLinearConnections;
                 sysMat.SetValues(transfers);
+                // also copy the nonlinear functions
+                foreach(var key in nonLinearTransfers.Keys)
+                {
+                    sysMat.NonLinearConnections.Add(key, nonLinearTransfers[key]);
+                }
             }
-
-            //todo this also has to update the nonlinearConnections
             return sysMat;
         }
 

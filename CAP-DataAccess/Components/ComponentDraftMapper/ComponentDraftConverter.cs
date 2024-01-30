@@ -34,9 +34,9 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
             try
             {
                 var parts = CreatePartsFromDraft(draft);
-                var wavelengthToMatrixMap = CreateWaveLengthSpecificSMatricesFromDrafts(draft, parts);
-                var sliderMap = CreateSliderMap(draft);
-                return new Component(wavelengthToMatrixMap, sliderMap, draft.NazcaFunctionName, draft.NazcaFunctionParameters, parts, typeNumber, draft.Identifier, DiscreteRotation.R0);
+                var allSliders = CreateSliderMap(draft);
+                var wavelengthToMatrixMap = CreateWaveLengthSpecificSMatricesFromDrafts(allSliders, draft, parts);
+                return new Component(wavelengthToMatrixMap, allSliders, draft.NazcaFunctionName, draft.NazcaFunctionParameters, parts, typeNumber, draft.Identifier, DiscreteRotation.R0);
             }
             catch (Exception ex)
             {
@@ -61,11 +61,10 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
             return parts;
         }
 
-        private Dictionary<int, SMatrix> CreateWaveLengthSpecificSMatricesFromDrafts(ComponentDraft draft, Part[,] parts)
+        private Dictionary<int, SMatrix> CreateWaveLengthSpecificSMatricesFromDrafts(List<Slider> allSliders , ComponentDraft draft, Part[,] parts)
         {
             var definedMatrices = new Dictionary<int, SMatrix>();
             var allPins = Component.GetAllPins(parts);
-            var allSliders = CreateSliderMap(draft);
             var allSliderGuids = allSliders.Select(s=>s.ID).ToList();
             var allPinsGuids = allPins.SelectMany(p => new[] { p.IDInFlow, p.IDOutFlow }).ToList();
             var pinNumberToModelMap = CreatePinNumberToModelMap(draft, parts);
