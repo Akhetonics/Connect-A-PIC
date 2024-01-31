@@ -13,8 +13,9 @@ namespace CAP_Core.Grid.FormulaReading
             public static Complex Mul(Complex a, Complex b) => a * b;
             public static Complex ToComplex(double a, double b) => new Complex(a,b);
             public static Complex ToComplexFromPolar(double a, double b) => Complex.FromPolarCoordinates(a, b);
-            public static void RegisterComplexFunctions(Expression e)
+            public static Expression CreateExpressionWithCustomFunctions(string expressionString)
             {
+                var e = new Expression(expressionString);
                 e.EvaluateFunction += delegate (string name, FunctionArgs args)
                 {
                     if (name.ToLower() == nameof(ComplexMath.Add).ToLower())
@@ -54,6 +55,7 @@ namespace CAP_Core.Grid.FormulaReading
                         args.Result = ComplexMath.ToComplexFromPolar(magnitude.Real, phase.Real);
                     }
                 };
+                return e;
             }
 
             public static Complex ConvertToComplex(object obj)

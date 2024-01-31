@@ -54,8 +54,10 @@ namespace CAP_Core.Components
         }
         public void AddSlider(int sliderNr , Slider slider)
         {
-            SliderMap.TryAdd(sliderNr, slider);
-            slider.PropertyChanged += Slider_PropertyChanged;
+            if(SliderMap.TryAdd(sliderNr, slider))
+            {
+                slider.PropertyChanged += Slider_PropertyChanged;
+            }
             SliderMap[slider.Number].Value = slider.Value;
         }
 

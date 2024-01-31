@@ -92,8 +92,8 @@ namespace CAP_Core.Grid.FormulaReading
                 Dictionary<string, Guid> pinParameterNameToGuidMap, Dictionary<string, Guid> sliderParameterNameToGuidMap)
         {
             expressionDraft = MakePlaceHoldersUpperCase(expressionDraft);
-            var expression = new Expression(expressionDraft);
-            ComplexMath.RegisterComplexFunctions(expression);
+            var expression = ComplexMath.CreateExpressionWithCustomFunctions(expressionDraft);
+
 
             // create a list of Guids for all used parameters in the correct order so that the caller can later provide the correct values from his dictionaries
             var usedParameterGuidMap = ExtractParameterGuids(expressionDraft, pinParameterNameToGuidMap, sliderParameterNameToGuidMap, out bool IsPinsInvolved);
@@ -106,7 +106,7 @@ namespace CAP_Core.Grid.FormulaReading
             var connectionFunction = new ConnectionFunction(
                 (freshlyInsertedParameters) =>
                 {
-                    return ExecuteExpressionFromDraft(expressionDraft, freshlyInsertedParameters, expression);
+                    return ExecuteExpressionFromDraft(expressionDraft, freshlyInsertedParameters, expression.Parameters.Keys.ToList());
                 },
                 expressionDraft,
                 usedParameterGuidMap.Select(p=>p.Value).ToList(),
@@ -116,15 +116,16 @@ namespace CAP_Core.Grid.FormulaReading
             return connectionFunction;
         }
 
-        private static Complex ExecuteExpressionFromDraft(string expressionDraft, List<object> freshlyInsertedParameters, Expression expression)
+        private static Complex ExecuteExpressionFromDraft(string expressionDraft, List<object> freshlyInsertedParameters, List<string> expressionVariableKeys)
         {
+            var expression = ComplexMath.CreateExpressionWithCustomFunctions(expressionDraft); 
             // check if number of parameters is correct
-            if (expression.Parameters.Count != freshlyInsertedParameters.Count)
-                throw new InvalidOperationException($"Parameter count mismatch. Expected {expression.Parameters.Count}, but got {freshlyInsertedParameters.Count} in function {expressionDraft}");
+            if (expressionVariableKeys.Count != freshlyInsertedParameters.Count)
+                throw new InvalidOperationException($"Parameter count mismatch. Expected {expressionVariableKeys.Count}, but got {freshlyInsertedParameters.Count} in function {expressionDraft}");
 
             // assign parameter values
             int index = 0;
-            foreach (string parameterName in expression.Parameters.Keys.ToList())
+            foreach (string parameterName in expressionVariableKeys)
             {
                 expression.Parameters[parameterName] = freshlyInsertedParameters[index];
                 index++;
