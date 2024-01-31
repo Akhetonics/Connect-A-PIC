@@ -7,6 +7,7 @@ using System.Text.RegularExpressions;
 using System.ComponentModel;
 using System.Linq;
 using CAP_Core.Components.FormulaReading;
+using CAP_Core.Tiles.Grid;
 
 namespace CAP_Core.Components
 {
@@ -20,7 +21,7 @@ namespace CAP_Core.Components
         public const int MaxToStringPinGuidSize = 6;
         public Dictionary<(Guid PinIdStart, Guid PinIdEnd), ConnectionFunction> NonLinearConnections { get; set; }
 
-        public SMatrix(List<Guid> allPinsInGrid, List<Guid> AllSliders)
+        public SMatrix(List<Guid> allPinsInGrid, List<(Guid sliderID ,double value)> AllSliders)
         {
             if (allPinsInGrid != null && allPinsInGrid.Count > 0)
             {
@@ -46,7 +47,7 @@ namespace CAP_Core.Components
             SliderReference = new();
             foreach( var slider in AllSliders)
             {
-                SliderReference.Add(slider, 0);
+                SliderReference.Add(slider.sliderID,slider.value );
             }
         }
 
@@ -90,7 +91,7 @@ namespace CAP_Core.Components
         public static SMatrix CreateSystemSMatrix(List<SMatrix> matrices)
         {
             var allPinIDs = matrices.SelectMany(x => x.PinReference.Keys).Distinct().ToList();
-            var allSliderIDs = matrices.SelectMany(x => x.SliderReference.Keys).Distinct().ToList();
+            var allSliderIDs = matrices.SelectMany(x => x.SliderReference.Select(k => (k.Key, k.Value))).ToList(); // convert SliderReference to the required tuple
             SMatrix sysMat = new(allPinIDs , allSliderIDs);
 
             foreach (SMatrix matrix in matrices)
@@ -112,10 +113,11 @@ namespace CAP_Core.Components
         {
             if (maxSteps < 1) return new Dictionary<Guid, Complex>();
 
-            // update the SMat using the non linear connections
+            // update the SMat using the non linear connections - including those who are not depending on the input vector (the PIN1 etc)
             RecomputeSMatNonLinearParts(inputVector, SkipOuterloopFunctions:false);
 
             var inputAfterSteps = SMat * inputVector;
+            
             for (int i = 1; i < maxSteps; i++)
             {
                 var oldInputAfterSteps = inputAfterSteps;
@@ -213,7 +215,7 @@ namespace CAP_Core.Components
         public object Clone()
         {
             var allPinIDs = PinReference.Select(p => p.Key).ToList();
-            var allSliderIDs = SliderReference.Select(s=>s.Key).ToList();
+            var allSliderIDs = SliderReference.Select(s=> (s.Key,s.Value)).ToList();
             var clonedSMatrix = new SMatrix(allPinIDs, allSliderIDs);
             clonedSMatrix.SetValues(GetNonNullValues());
             return clonedSMatrix;

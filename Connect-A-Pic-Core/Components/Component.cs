@@ -56,6 +56,7 @@ namespace CAP_Core.Components
         {
             SliderMap.TryAdd(sliderNr, slider);
             slider.PropertyChanged += Slider_PropertyChanged;
+            SliderMap[slider.Number].Value = slider.Value;
         }
 
         private void Slider_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -199,7 +200,7 @@ namespace CAP_Core.Components
             var clonedSliderMap = CloneSliders();
             var clonedPins = GetAllPins(clonedParts);
             var allClonedPinIDs = clonedPins.SelectMany(p => new[] { p.IDInFlow, p.IDOutFlow }).ToList();
-            var allClonedSliderIDs = clonedSliderMap.Select(s => s.Value.ID).ToList();
+            var allClonedSliderIDs = clonedSliderMap.Select(s => (s.Value.ID , s.Value.Value)).ToList();
             // Create a mapping from old pin IDs to new pin IDs
             var oldToNewPinIds = MapPinIDsWithNewIDs(clonedParts);
 

@@ -34,12 +34,12 @@ namespace CAP_Core.Tiles.Grid
         private void UpdateSystemSMatrix()
         {
             var allComponentsSMatrices = GetAllComponentsSMatrices((int)LaserWaveLengthInNm);
-            SMatrix allConnectionsSMatrix = CreateAllConnectionsMatrix();
+            SMatrix allConnectionsSMatrix = CreateInterComponentsConnectionsMatrix();
             allComponentsSMatrices.Add(allConnectionsSMatrix);
             SystemSMatrix = SMatrix.CreateSystemSMatrix(allComponentsSMatrices);
         }
 
-        public SMatrix CreateAllConnectionsMatrix()
+        public SMatrix CreateInterComponentsConnectionsMatrix()
         {
             if (InterComponentConnections == null || InterComponentConnections.Count <= 0)
             {

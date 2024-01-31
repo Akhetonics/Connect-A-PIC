@@ -18,7 +18,7 @@ namespace UnitTests.Components.FormulaReading
         {
             // Arrange
             var converter = new ComponentDraftConverter(new Logger());
-            var reader = new ComponentDraftFileReader(new DummyDataAccessor(TestComponentFactory.StraightWGJsonString));
+            var reader = new ComponentDraftFileReader(new DummyDataAccessor(TestComponentFactory.StraightWGJson));
             var draftOrError = reader.TryReadJson("");
             
             Assert.True(string.IsNullOrEmpty(draftOrError.error), $"Error reading Json: {draftOrError.error}");

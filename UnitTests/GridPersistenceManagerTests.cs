@@ -1,5 +1,6 @@
 ﻿using CAP_Contracts;
 using CAP_Core;
+using CAP_Core.Components;
 using CAP_Core.Components.Creation;
 using CAP_Core.Grid;
 using CAP_Core.Helpers;
@@ -41,16 +42,16 @@ namespace UnitTests
         {
             // prepare
             GridManager grid = new(24, 12);
-            ComponentFactory componentFactory = InitializeComponentFactory(grid);
+            ComponentFactory componentFactory = InitializeComponentFactory();
             GridPersistenceManager gridPersistenceManager = new(grid, new FileDataAccessor());
             var inputs = grid.GetAllExternalInputs();
             int inputHeight = inputs.FirstOrDefault()?.TilePositionY ?? throw new Exception("there is no StandardInput defined");
-            var firstComponent = TestComponentFactory.CreateStraightWaveGuide();
+            var firstComponent = TestComponentFactory.CreateComponent(TestComponentFactory.StraightWGJson);
             grid.PlaceComponent(0, inputHeight, firstComponent);
             var secondComponent = ExportNazcaTests.PlaceAndConcatenateComponent(grid, firstComponent);
             var thirdComponent = ExportNazcaTests.PlaceAndConcatenateComponent(grid, secondComponent);
             var fourthComponent = ExportNazcaTests.PlaceAndConcatenateComponent(grid, thirdComponent);
-            var orphan = TestComponentFactory.CreateStraightWaveGuide();
+            var orphan = TestComponentFactory.CreateComponent(TestComponentFactory.StraightWGJson);
             var orphanPos = new IntVector(10, 5);
             grid.PlaceComponent(orphanPos.X, orphanPos.Y, orphan);
             
@@ -68,26 +69,9 @@ namespace UnitTests
             grid.GetComponentAt(orphanPos.X, orphanPos.Y).Identifier.ShouldBe(orphan.Identifier);
         }
 
-        private static ComponentFactory InitializeComponentFactory(GridManager grid)
+        private static ComponentFactory InitializeComponentFactory()
         {
-            var dummyJsonDataAccessor = new DummyDataAccessor(TestComponentFactory.StraightWGJsonString);
-            var straightComponentDraft = new ComponentDraftFileReader(dummyJsonDataAccessor).TryReadJson("").draft;
-            if(straightComponentDraft == null)
-            {
-                throw new Exception("JSON could not be parsed");
-            }
-            var drafts = new List<ComponentDraft>() { straightComponentDraft };
-            var validator = new ComponentDraftValidator(dummyJsonDataAccessor);
-            string draftErrors = "";
-            foreach (var item in drafts.Select(d => validator.Validate(d)).ToList())
-            {
-                draftErrors += item.errorMsg;
-            };
-            if(String.IsNullOrEmpty(draftErrors)==false)
-                throw new Exception(draftErrors);
-
-            var draftConverter = new ComponentDraftConverter(new Logger());
-            var componentDrafts = draftConverter.ToComponentModels(drafts);
+            var componentDrafts = new List<Component>() { TestComponentFactory.CreateComponent(TestComponentFactory.StraightWGJson) };
             var componentFactory = new ComponentFactory();
             componentFactory.InitializeComponentDrafts(componentDrafts);
             return componentFactory;

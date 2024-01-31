@@ -50,7 +50,7 @@ namespace CAP_Core.Tiles.Grid
 
         public override string ToString()
         {
-            string Debug_allConnections = GetSMatrixWithPinNames(Analyzer.CreateAllConnectionsMatrix());
+            string Debug_allConnections = GetSMatrixWithPinNames(Analyzer.CreateInterComponentsConnectionsMatrix());
             var allComponentsSMatrices = Analyzer.GetAllComponentsSMatrices((int)Analyzer.LaserWaveLengthInNm);
             string SystemSMatrixWithNamedPins = GetSMatrixWithPinNames(Analyzer.SystemSMatrix);
 

@@ -12,8 +12,6 @@ namespace CAP_Core.Grid.FormulaReading
 {
     public static partial class MathExpressionReader
     {
-        public const string PinParameterIdentifier = "PIN";
-        public const string SliderParameterIdentifier = "SLIDER";
         public static int ExtractIdentifierNumber(string Identifier)
         {
             // Regular expression pattern: 
@@ -35,7 +33,7 @@ namespace CAP_Core.Grid.FormulaReading
             var map = new Dictionary<string, Guid>();
             foreach (var pin in pins)
             {
-                string key = $"{PinParameterIdentifier}{pin.PinNumber}".ToUpper(); // e.g. "PIN1"
+                string key = $"{ParameterIdentifiers.PinParameterIdentifier}{pin.PinNumber}".ToUpper(); // e.g. "PIN1"
                 map[key] = pin.IDInFlow; // we are about to calculate the outflow in that equation, therefore we need to map the IDInFlow here.
             }
             return map;
@@ -46,7 +44,7 @@ namespace CAP_Core.Grid.FormulaReading
             var map = new Dictionary<string, Guid>();
             foreach (var slider in sliders)
             {
-                string key = $"{SliderParameterIdentifier}{slider.Number}".ToUpper(); // e.g. "SLIDER1"
+                string key = $"{ParameterIdentifiers.SliderParameterIdentifier}{slider.Number}".ToUpper(); // e.g. "SLIDER1"
                 map[key] = slider.ID;
             }
             return map;
@@ -77,7 +75,7 @@ namespace CAP_Core.Grid.FormulaReading
                     usedParameterGuids.TryAdd(parameterName, parameterGuid);
                     IsPinsInvolved = true;
                 }
-                if (sliderParameterNameToGuidMap.TryGetValue(parameterName, out parameterGuid))
+                else if (sliderParameterNameToGuidMap.TryGetValue(parameterName, out parameterGuid))
                 {
                     usedParameterGuids.TryAdd(parameterName , parameterGuid);
                     IsPinsInvolved = false;
@@ -142,8 +140,10 @@ namespace CAP_Core.Grid.FormulaReading
 
         public static string MakePlaceHoldersUpperCase(string expression)
         {
-            expression = Regex.Replace(expression, PinParameterIdentifier.ToLower(), PinParameterIdentifier, RegexOptions.IgnoreCase);
-            expression = Regex.Replace(expression, SliderParameterIdentifier.ToLower(), SliderParameterIdentifier, RegexOptions.IgnoreCase);
+            foreach (var identifier in ParameterIdentifiers.All)
+            {
+                expression = Regex.Replace(expression, identifier.ToLower(), identifier, RegexOptions.IgnoreCase);
+            }
             return expression;
         }
     }

@@ -65,7 +65,7 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
         {
             var definedMatrices = new Dictionary<int, SMatrix>();
             var allPins = Component.GetAllPins(parts);
-            var allSliderGuids = allSliders.Select(s=>s.ID).ToList();
+            var allSliderGuids = allSliders.Select(s=> (s.ID , s.Value) ).ToList();
             var allPinsGuids = allPins.SelectMany(p => new[] { p.IDInFlow, p.IDOutFlow }).ToList();
             var pinNumberToModelMap = CreatePinNumberToModelMap(draft, parts);
 
