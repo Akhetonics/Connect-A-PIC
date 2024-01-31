@@ -28,7 +28,7 @@ namespace ConnectAPIC.LayoutWindow.View
         public event SliderChangedEventHandler SliderChanged;
         public const string SliderNumberMetaID = "SliderNumber";
         public const string SliderLabelMetaID= "SliderLabel";
-        private System.Timers.Timer debounceTimer = new System.Timers.Timer(500);
+        private System.Timers.Timer debounceTimer = new System.Timers.Timer(100);
         public int WidthInTiles { get; private set; }
         public int HeightInTiles { get; private set; }
         public ILogger Logger { get; private set; }
@@ -94,18 +94,18 @@ namespace ConnectAPIC.LayoutWindow.View
             godotSlider.MaxValue = sliderData.MaxVal;
             godotSlider.SetMeta(SliderNumberMetaID, sliderData.SliderNumber);
             godotSlider.SetMeta(SliderLabelMetaID, label);
-            
             godotSlider.ValueChanged += (newVal) =>
             {
                 setSliderLabelText(label, newVal);
                 debounceTimer.AutoReset = false;
                 debounceTimer.Stop();
                 debounceTimer.Start();
-                debounceTimer.Elapsed += (object sender, System.Timers.ElapsedEventArgs e) =>
-                {
-                    // we have to run the sliderchanged in the correct thread
-                    CallDeferred(nameof(HandleSliderChangeDeferred), godotSlider, godotSlider.Value);
-                };
+            };
+            debounceTimer.Elapsed += (object sender, System.Timers.ElapsedEventArgs e) =>
+            {
+                // we have to run the sliderchanged in the correct thread
+                CallDeferred(nameof(HandleSliderChangeDeferred), godotSlider, godotSlider.Value);
+                debounceTimer.Stop();
             };
             godotSlider.Value = sliderData.InitialValue;
             setSliderLabelText(label, sliderData.InitialValue);
