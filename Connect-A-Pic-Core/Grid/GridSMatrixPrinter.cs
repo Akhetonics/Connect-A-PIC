@@ -71,7 +71,7 @@ namespace CAP_Core.Tiles.Grid
             foreach (var externalPort in Analyzer.Grid.GetUsedExternalInputs().DistinctBy(d => d.Input.LaserType.WaveLengthInNm))
             {
                 var usedLaserType = externalPort.Input.LaserType;
-                var lightPropagation = Analyzer.CalculateLightPropagation();
+                var lightPropagation = Analyzer.CalculateLightPropagationAsync().Result;
                 foreach (var lightIntensity in lightPropagation)
                 {
                     string lightColorName = usedLaserType.Color.ToReadableString();

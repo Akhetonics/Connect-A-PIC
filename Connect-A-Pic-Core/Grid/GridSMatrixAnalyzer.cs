@@ -21,14 +21,19 @@ namespace CAP_Core.Tiles.Grid
         }
 
         // calculates the light intensity and phase at a given PIN-ID for both light-flow-directions "in" and "out" for a given period of steps
-        public Dictionary<Guid, Complex> CalculateLightPropagation()
+        public async Task<Dictionary<Guid, Complex>> CalculateLightPropagationAsync()
         {
-            UpdateSystemSMatrix();
-            var stepCount = SystemSMatrix.PinReference.Count() * 2;
-            var usedInputs = Grid.GetUsedExternalInputs().Where(i => i.Input.LaserType.WaveLengthInNm == LaserWaveLengthInNm).ToList();
-            var inputVector = UsedInputConverter.ToVector(usedInputs, SystemSMatrix);
-            return SystemSMatrix.GetLightPropagation(inputVector, stepCount) ?? new Dictionary<Guid, Complex>();
+            return await Task.Run(() =>
+            {
+                UpdateSystemSMatrix();
+                var stepCount = SystemSMatrix.PinReference.Count() * 2;
+                var usedInputs = Grid.GetUsedExternalInputs()
+                                     .Where(i => i.Input.LaserType.WaveLengthInNm == LaserWaveLengthInNm)
+                                     .ToList();
+                var inputVector = UsedInputConverter.ToVector(usedInputs, SystemSMatrix);
 
+                return SystemSMatrix.GetLightPropagation(inputVector, stepCount) ?? new Dictionary<Guid, Complex>();
+            });
         }
 
         private void UpdateSystemSMatrix()

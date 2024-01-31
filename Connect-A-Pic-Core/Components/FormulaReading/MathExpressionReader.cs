@@ -118,7 +118,7 @@ namespace CAP_Core.Grid.FormulaReading
 
         private static Complex ExecuteExpressionFromDraft(string expressionDraft, List<object> freshlyInsertedParameters, List<string> expressionVariableKeys)
         {
-            var expression = ComplexMath.CreateExpressionWithCustomFunctions(expressionDraft); 
+            var expression = ComplexMath.CreateExpressionWithCustomFunctions(expressionDraft);
             // check if number of parameters is correct
             if (expressionVariableKeys.Count != freshlyInsertedParameters.Count)
                 throw new InvalidOperationException($"Parameter count mismatch. Expected {expressionVariableKeys.Count}, but got {freshlyInsertedParameters.Count} in function {expressionDraft}");

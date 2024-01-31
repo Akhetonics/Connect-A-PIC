@@ -70,7 +70,7 @@ namespace ConnectAPIC.LayoutWindow.View
             });
         }
 
-        private void _on_btn_show_light_propagation_toggled(bool button_pressed)
+        private async void _on_btn_show_light_propagation_toggled(bool button_pressed)
         {
             lightPropagationIsPressed = button_pressed;
 
@@ -79,7 +79,7 @@ namespace ConnectAPIC.LayoutWindow.View
                 if (button_pressed)
                 {
                     ViewModel.HideLightPropagation();
-                    ViewModel.ShowLightPropagation();
+                    await ViewModel.ShowLightPropagationAsync();
                     LightOnButton.Icon = LightOnTexture;
 
                 }
@@ -96,11 +96,11 @@ namespace ConnectAPIC.LayoutWindow.View
         }
         private void _on_btn_save_pressed()
         {
-            SaveFileDialog.Save(this, path =>
+            SaveFileDialog.Save(this, async path =>
             {
                 try
                 {
-                    ViewModel.SaveGridCommand.ExecuteAsync(new SaveGridParameters(path));
+                    await ViewModel.SaveGridCommand.ExecuteAsync(new SaveGridParameters(path));
                     NotificationManager.Instance.Notify("Successfully saved file");
                 }
                 catch (Exception ex)
@@ -113,11 +113,11 @@ namespace ConnectAPIC.LayoutWindow.View
         }
         private void _on_btn_load_pressed()
         {
-            SaveFileDialog.Open(this, path =>
+            SaveFileDialog.Open(this, async path =>
             {
                 try
                 {
-                    ViewModel.LoadGridCommand.ExecuteAsync(new LoadGridParameters(path));
+                    await ViewModel.LoadGridCommand.ExecuteAsync(new LoadGridParameters(path));
                     NotificationManager.Instance.Notify("Successfully loaded file");
                 }
                 catch (Exception ex)

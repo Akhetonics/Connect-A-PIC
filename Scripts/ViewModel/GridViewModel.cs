@@ -75,7 +75,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             if (GridView.lightPropagationIsPressed)
             {
                 HideLightPropagation();
-                ShowLightPropagation();
+                ShowLightPropagationAsync();
             }
         }
 
@@ -144,13 +144,13 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             return ComponentView;
         }
 
-        public void ShowLightPropagation()
+        public async Task ShowLightPropagationAsync()
         {
             var inputPorts = Grid.GetUsedExternalInputs();
             foreach (var port in inputPorts)
             {
                 MatrixAnalyzer = new GridSMatrixAnalyzer(this.Grid, port.Input.LaserType.WaveLengthInNm);
-                var resultLightVector = MatrixAnalyzer.CalculateLightPropagation();
+                var resultLightVector = await MatrixAnalyzer.CalculateLightPropagationAsync();
                 Logger.Print(resultLightVector.ToCustomString());
                 AssignLightToComponentViews(resultLightVector, port.Input.LaserType);
             }

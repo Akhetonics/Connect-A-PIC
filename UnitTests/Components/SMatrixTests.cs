@@ -17,7 +17,7 @@ namespace UnitTests.Components
             grid.PlaceComponent(0, grid.ExternalPorts[0].TilePositionY, directionalCoupler);
             var laserType = grid.GetUsedExternalInputs().First().Input.LaserType;
             var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid, laserType.WaveLengthInNm);
-            var lightPropagation = gridSMatrixAnalyzer.CalculateLightPropagation();
+            var lightPropagation = await gridSMatrixAnalyzer.CalculateLightPropagationAsync();
 
             // test directionalCoupler
             var allComponentsSMatrices = gridSMatrixAnalyzer.GetAllComponentsSMatrices(gridSMatrixAnalyzer.LaserWaveLengthInNm);
@@ -53,7 +53,7 @@ namespace UnitTests.Components
             slider.Value = 0.5;
             var laserType = grid.GetUsedExternalInputs().First().Input.LaserType;
             var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid, laserType.WaveLengthInNm);
-            var lightPropagation = gridSMatrixAnalyzer.CalculateLightPropagation();
+            var lightPropagation = await gridSMatrixAnalyzer.CalculateLightPropagationAsync();
 
             // test directionalCoupler
             var allComponentsSMatrices = gridSMatrixAnalyzer.GetAllComponentsSMatrices(gridSMatrixAnalyzer.LaserWaveLengthInNm);
@@ -99,7 +99,7 @@ namespace UnitTests.Components
 
             var laserType = grid.GetUsedExternalInputs().First().Input.LaserType;
             var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid, laserType.WaveLengthInNm);
-            var lightValues = gridSMatrixAnalyzer.CalculateLightPropagation();
+            var lightValues = await gridSMatrixAnalyzer.CalculateLightPropagationAsync();
             var allComponentsSMatrices = gridSMatrixAnalyzer.GetAllComponentsSMatrices(laserType.WaveLengthInNm);
             var Straight_LiRoConnection = allComponentsSMatrices[0].GetNonNullValues().Single(b => b.Key == (straight.PinIdLeftIn(), straight.PinIdRightOut())).Value;
             var Straight_RiLoConnection = allComponentsSMatrices[0].GetNonNullValues().Single(b => b.Key == (straight.PinIdRightIn(), straight.PinIdLeftOut())).Value;
