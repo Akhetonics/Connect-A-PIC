@@ -27,33 +27,42 @@ namespace ConnectAPIC.LayoutWindow.View
         public delegate void SliderChangedEventHandler(ComponentView view, Godot.Slider slider, double newVal);
         public event SliderChangedEventHandler SliderChanged;
         public const string SliderNumberMetaID = "SliderNumber";
-        public const string SliderLabelMetaID= "SliderLabel";
-        private System.Timers.Timer debounceTimer = new System.Timers.Timer(100);
+        public const string SliderLabelMetaID = "SliderLabel";
+        private System.Timers.Timer SliderDebounceTimer = new(100); 
+        private List<Godot.Slider> Sliders { get; set; } = new();
         public int WidthInTiles { get; private set; }
         public int HeightInTiles { get; private set; }
         public ILogger Logger { get; private set; }
         public int TypeNumber { get; set; }
+        private Node2D RotationArea { get; set; } // the part of the component that rotates
         private Sprite2D OverlayBluePrint { get; set; }
         public Sprite2D OverlayRed { get; private set; } // each laser(color) is independent of the others, so they need their own overlay and shader
         public Sprite2D OverlayGreen { get; private set; }
         public Sprite2D OverlayBlue { get; private set; }
         private List<Sprite2D> OverlaySprites { get; set; } = new();
-        private List<Godot.Slider> Sliders { get; set; } = new();
+        public ShaderMaterial LightOverlayShader { get; set; }
         public GridViewModel ViewModel { get; private set; }
         public int GridX { get; set; }
         public int GridY { get; set; }
         public List<AnimationSlot> AnimationSlots { get; private set; } = new();
-        private new float RotationDegrees { get => base.RotationDegrees; set => base.RotationDegrees = value; }
-        private new float Rotation { get => base.Rotation; set => base.Rotation = value; }
+        private new float RotationDegrees
+        {
+            get => RotationArea?.RotationDegrees ?? 0;
+            set
+            {
+                if (RotationArea?.RotationDegrees != null)
+                    RotationArea.RotationDegrees = value;
+            }
+        }
+        private new float Rotation { get => RotationArea.Rotation; set => RotationArea.Rotation = value; }
         private DiscreteRotation _rotationCC;
-        public ShaderMaterial LightOverlayShader { get; set; }
         public DiscreteRotation RotationCC
         {
             get => _rotationCC;
             set
             {
                 _rotationCC = value;
-                AnimationSlots?.ForEach(a => a.RotateAttachedComponentCC(value));
+                AnimationSlots?.ForEach(a => a.RotateAttachedComponentCC(value)); // the slots need to know the rotation for proper animation matching
                 RotationDegrees = value.ToDegreesClockwise();
             }
         }
@@ -61,32 +70,26 @@ namespace ConnectAPIC.LayoutWindow.View
         public override void _Ready()
         {
             base._Ready();
+            RotationArea = (FindChild("?otation*", true, false) ?? FindChild("ROTATION*", true, false) ) as Node2D;
             RotationCC = _rotationCC;
         }
 
         private void FindAndAssignOverlayBlueprint()
         {
             OverlayBluePrint = FindChild("Overlay", true, false) as Sprite2D;
-
-            if (OverlayBluePrint == null)
-            {
-                OverlayBluePrint = FindChild("?verlay", true, false) as Sprite2D;
-            }
-            if (OverlayBluePrint == null)
-            {
-                OverlayBluePrint = FindChild("?verlay*", true, false) as Sprite2D;
-            }
+            OverlayBluePrint ??= FindChild("?verlay", true, false) as Sprite2D;
+            OverlayBluePrint ??= FindChild("*?verlay*", true, false) as Sprite2D;
         }
 
-        public void SetSliderValue( int sliderNumber, double value)
+        public void SetSliderValue(int sliderNumber, double value)
         {
             var slider = Sliders.Single(s => (int)s.GetMeta(SliderNumberMetaID) == sliderNumber);
             var label = (RichTextLabel)slider.GetMeta(SliderLabelMetaID);
             slider.Value = value;
-            setSliderLabelText(label, value);
+            SetSliderLabelText(label, value);
         }
         // initialize one of the existing sliders
-        private void InitializeSlider(SliderViewData sliderData )
+        private void FindAndInitializeSlider(SliderViewData sliderData)
         {
             var label = FindChild(sliderData.GodotSliderLabelName, true, false) as RichTextLabel;
             var godotSlider = FindChild(sliderData.GodotSliderName, true, false) as Godot.Slider;
@@ -96,29 +99,29 @@ namespace ConnectAPIC.LayoutWindow.View
             godotSlider.SetMeta(SliderLabelMetaID, label);
             godotSlider.ValueChanged += (newVal) =>
             {
-                setSliderLabelText(label, newVal);
-                debounceTimer.AutoReset = false;
-                debounceTimer.Stop();
-                debounceTimer.Start();
+                SetSliderLabelText(label, newVal);
+                SliderDebounceTimer.AutoReset = false;
+                SliderDebounceTimer.Stop();
+                SliderDebounceTimer.Start();
             };
-            debounceTimer.Elapsed += (object sender, System.Timers.ElapsedEventArgs e) =>
+            SliderDebounceTimer.Elapsed += (object sender, System.Timers.ElapsedEventArgs e) =>
             {
                 // we have to run the sliderchanged in the correct thread
                 CallDeferred(nameof(HandleSliderChangeDeferred), godotSlider, godotSlider.Value);
-                debounceTimer.Stop();
+                SliderDebounceTimer.Stop();
             };
             godotSlider.Value = sliderData.InitialValue;
-            setSliderLabelText(label, sliderData.InitialValue);
+            SetSliderLabelText(label, sliderData.InitialValue);
             godotSlider.Step = (sliderData.MaxVal - sliderData.MinVal) / sliderData.Steps; // step is the distance between two steps in value
             this.Sliders.Add(godotSlider);
         }
 
-        private void HandleSliderChangeDeferred(HSlider godotSlider , double sliderValue)
+        private void HandleSliderChangeDeferred(HSlider godotSlider, double sliderValue)
         {
             SliderChanged?.Invoke(this, godotSlider, sliderValue);
         }
 
-        private void setSliderLabelText(RichTextLabel label, double newVal) => label.Text = $"[center]{newVal:F2}";
+        private void SetSliderLabelText(RichTextLabel label, double newVal) => label.Text = $"[center]{newVal:F2}";
         public void InitializeComponent(int componentTypeNumber, List<SliderViewData> sliderDataSets, List<AnimationSlotOverlayData> slotDataSets, int widthInTiles, int heightInTiles, ILogger logger)
         {
             this.Logger = logger;
@@ -133,7 +136,7 @@ namespace ConnectAPIC.LayoutWindow.View
             FindAndAssignOverlayBlueprint();
             this.CheckForNull(x => x.OverlayBluePrint);
             InitializeLightOverlays();
-            
+
             foreach (var slotData in slotDataSets)
             {
                 if (slotData.LightFlowOverlay == null)
@@ -149,7 +152,7 @@ namespace ConnectAPIC.LayoutWindow.View
         {
             foreach (var slider in newSliders)
             {
-                InitializeSlider(slider);
+                FindAndInitializeSlider(slider);
             }
         }
 
@@ -173,7 +176,8 @@ namespace ConnectAPIC.LayoutWindow.View
             this.ViewModel = viewModel;
             this.RotationCC = rotationCounterClockwise;
             var rawPosition = new Vector2(this.GridX * GameManager.TilePixelSize, this.GridY * GameManager.TilePixelSize);
-            Position = rawPosition + GetPositionDisplacementAfterRotation();
+            //Position = rawPosition + GetPositionDisplacementAfterRotation();
+            Position = rawPosition;
             Visible = true;
             HideLightVector();
         }
@@ -185,26 +189,7 @@ namespace ConnectAPIC.LayoutWindow.View
             if (ViewModel.GridComponentViews[this.GridX, this.GridY] != this) return false;
             return true;
         }
-        public Vector2 GetPositionDisplacementAfterRotation()
-        {
-            var tilePixelSize = GameManager.TilePixelSize;
-            var borderLeftDown = GameManager.TileBorderLeftDown;
-            var displacement = new Vector2();
-            int roundedRotation = (int)Math.Round(RotationDegrees / 90) * 90;
-            switch (roundedRotation)
-            {
-                case 270:
-                    displacement = new Vector2(0, HeightInTiles * tilePixelSize - borderLeftDown);
-                    break;
-                case 90: // Assuming you have a corresponding enumeration value
-                    displacement = new Vector2(WidthInTiles * tilePixelSize - borderLeftDown, 0);
-                    break;
-                case 180:
-                    displacement = new Vector2(WidthInTiles * tilePixelSize - borderLeftDown, HeightInTiles * tilePixelSize - borderLeftDown);
-                    break;
-            }
-            return displacement;
-        }
+
         protected Sprite2D DuplicateAndConfigureOverlay(Sprite2D overlayDraft, Godot.Color laserColor)
         {
             var newOverlay = overlayDraft.Duplicate() as Sprite2D;
