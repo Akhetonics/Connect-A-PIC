@@ -11,7 +11,7 @@ namespace UnitTests.Components.FormulaReading
     public class NonLinearMatrixTest
     {
         [Fact]
-        public void NonLinearMatrixCalculationTest()
+        public async Task NonLinearMatrixCalculationTest()
         {
             // initialize Pins
             List<Guid> pins = new() { Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid(), Guid.NewGuid() };
@@ -28,7 +28,7 @@ namespace UnitTests.Components.FormulaReading
             // defining our non-linear test function
             var nonLinearLightFunction = new ConnectionFunction(
                 inputVectorValuesAtPinIDs => // the input is the complex value of the input vector at the index of the GUID of the pins of the next parameter
-                (Complex)inputVectorValuesAtPinIDs[0] * new Complex(0.9, 0.32),
+                (Complex) inputVectorValuesAtPinIDs[0] * new Complex(0.9, 0.32),
                 "", // as we don't parse the rawfunction, we can leave it empty
                 new List<Guid>() { pins[0] }, // the Pin-GUIDs are used so that we know at which index of the inputVector we have to get the numbers from. Those Complex numbers will be fed into the connection-Function-Lambda in that given order as a list.
                 true
@@ -53,9 +53,9 @@ namespace UnitTests.Components.FormulaReading
             SMatrix sMatrix = new(pins, new());
             sMatrix.NonLinearConnections = nonLinearConnections;
             sMatrix.SetValues(linearConnections);
-            var outputLight = sMatrix.GetLightPropagation(inputVector, 10);
+            var outputLight = await sMatrix.GetLightPropagationAsync(inputVector, 10 , new CancellationTokenSource());
 
-            var expectedResult = linearFactor * nonLinearConnections[(pins[0], pins[1])].CalcConnectionWeight(new List<object>() { inputLightStrength });
+            var expectedResult = linearFactor * nonLinearConnections[(pins[0], pins[1])].CalcConnectionWeightAsync(new List<object>() { inputLightStrength });
             var tolerance = 1e-12;
             expectedResult.Real.ShouldBe(0.81, tolerance);
             expectedResult.Imaginary.ShouldBe(0.288, tolerance);
@@ -63,7 +63,7 @@ namespace UnitTests.Components.FormulaReading
         }
 
         [Fact]
-        public void ConvertToDelegate_ShouldCreateValidConnectionFunction()
+        public async void ConvertToDelegate_ShouldCreateValidConnectionFunction()
         {
             // Arrange
             string expression = "Add(PIN1,PIN2)";
@@ -89,10 +89,10 @@ namespace UnitTests.Components.FormulaReading
             };
 
             // Invoke the connection function
-            var result = connectionFunction.CalcConnectionWeight(complexParameters);
+            var result = connectionFunction.CalcConnectionWeightAsync(complexParameters);
             try
             {
-                var wrongResult = wrongFunction.CalcConnectionWeight(complexParameters);
+                var wrongResult = wrongFunction.CalcConnectionWeightAsync(complexParameters);
             }
             catch (InvalidOperationException ex)
             {

@@ -19,7 +19,7 @@ namespace UnitTests.Components.FormulaReading
     {
 
         [Fact]
-        public void TestMathExpression()
+        public async void TestMathExpression()
         {
             string expression = "Add(Add(PIN1,PIN1),PIN2)";
             var valueForPin1 = new Complex(2, 4);
@@ -31,16 +31,16 @@ namespace UnitTests.Components.FormulaReading
                 new("",parameterNumbers[1],MatterType.Light,RectSide.Left),
             };
             var computedDelegate = MathExpressionReader.ConvertToDelegate(expression, pins, new());
-            var formulaResult = computedDelegate.Value.CalcConnectionWeight(new List<object>() { valueForPin1, valueForPin2 });
+            var formulaResult = computedDelegate.Value.CalcConnectionWeightAsync(new List<object>() { valueForPin1, valueForPin2 });
 
             formulaResult.ShouldBe(new Complex(8, 10.2));
         }
         [Fact]
-        public void TestMixedMathExpressions()
+        public async void TestMixedMathExpressions()
         {
             string expression = "Add(ToComplexFromPolar( 2-1.5 , 3.0774785178021489) , ToComplex(1,1.2))";
             var computedDelegate = MathExpressionReader.ConvertToDelegate(expression, new List<Pin>(), new());
-            var formulaResult = computedDelegate.Value.CalcConnectionWeight(new List<object>());
+            var formulaResult = computedDelegate.Value.CalcConnectionWeightAsync(new List<object>());
             formulaResult.ShouldBe(Complex.FromPolarCoordinates(0.5, 3.0774785178021489) + new Complex(1, 1.2));
         }
 

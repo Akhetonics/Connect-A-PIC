@@ -31,7 +31,7 @@ namespace UnitTests.Components.FormulaReading
             component.GetSlider(0).Value = 0.5;
 
             // Act
-            var outputVector = component.WaveLengthToSMatrixMap[LaserType.Red.WaveLengthInNm].GetLightPropagation(inputVector, 1000);
+            var outputVector = component.WaveLengthToSMatrixMap[LaserType.Red.WaveLengthInNm].GetLightPropagationAsync(inputVector, 1000);
             var outputPinLightVal = outputVector[outFlowID];
 
             // Assert

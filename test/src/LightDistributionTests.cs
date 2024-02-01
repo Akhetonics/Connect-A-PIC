@@ -103,9 +103,9 @@ namespace ConnectAPIC.test.src
             SecondStraightLine.HideLightVector();
             SecondStraightLine.DisplayLightVector(lightAtPins);
             var lightLocallyOn = GetInOutLightValueLeft();
-            MyGameManager.GridViewModel.HideLightPropagation();
+            await MyGameManager.GridViewModel.HideLightPropagation();
             var lightGloballyOff = GetInOutLightValueLeft();
-            MyGameManager.GridViewModel.ShowLightPropagationAsync();
+            await MyGameManager.GridViewModel.ShowLightPropagationAsync();
             var lightGloballyOn= GetInOutLightValueLeft();
             SecondStraightLine.HideLightVector();
             var lightLocallyOff= GetInOutLightValueLeft();

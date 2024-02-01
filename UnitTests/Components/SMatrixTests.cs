@@ -17,7 +17,7 @@ namespace UnitTests.Components
             grid.PlaceComponent(0, grid.ExternalPorts[0].TilePositionY, directionalCoupler);
             var laserType = grid.GetUsedExternalInputs().First().Input.LaserType;
             var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid, laserType.WaveLengthInNm);
-            var lightPropagation = await gridSMatrixAnalyzer.CalculateLightPropagationAsync();
+            var lightPropagation = await gridSMatrixAnalyzer.CalculateLightPropagationAsync(new CancellationTokenSource());
 
             // test directionalCoupler
             var allComponentsSMatrices = gridSMatrixAnalyzer.GetAllComponentsSMatrices(gridSMatrixAnalyzer.LaserWaveLengthInNm);
@@ -53,7 +53,7 @@ namespace UnitTests.Components
             slider.Value = 0.5;
             var laserType = grid.GetUsedExternalInputs().First().Input.LaserType;
             var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid, laserType.WaveLengthInNm);
-            var lightPropagation = await gridSMatrixAnalyzer.CalculateLightPropagationAsync();
+            var lightPropagation = await gridSMatrixAnalyzer.CalculateLightPropagationAsync(new CancellationTokenSource());
 
             // test directionalCoupler
             var allComponentsSMatrices = gridSMatrixAnalyzer.GetAllComponentsSMatrices(gridSMatrixAnalyzer.LaserWaveLengthInNm);
@@ -71,7 +71,7 @@ namespace UnitTests.Components
             foreach (var item in nonLinearConnections)
             {
                 Assert.False(item.Value.IsInnerLoopFunction); // they should all not be in the inner loop as they don't make use of any PIN variable
-                var weight = UpperToRightConnection.CalcConnectionWeight(allComponentsSMatrices[0].SliderReference.Values.Cast<object>().ToList()).Magnitude;
+                var weight =  UpperToRightConnection.CalcConnectionWeightAsync(allComponentsSMatrices[0].SliderReference.Values.Cast<object>().ToList()).Magnitude;
                 Assert.Equal(0.5,weight);
             }
             Assert.Equal(1, allComponentsSMatrices[0]?.SliderReference.Count);
@@ -99,7 +99,7 @@ namespace UnitTests.Components
 
             var laserType = grid.GetUsedExternalInputs().First().Input.LaserType;
             var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid, laserType.WaveLengthInNm);
-            var lightValues = await gridSMatrixAnalyzer.CalculateLightPropagationAsync();
+            var lightValues = await gridSMatrixAnalyzer.CalculateLightPropagationAsync(new CancellationTokenSource());
             var allComponentsSMatrices = gridSMatrixAnalyzer.GetAllComponentsSMatrices(laserType.WaveLengthInNm);
             var Straight_LiRoConnection = allComponentsSMatrices[0].GetNonNullValues().Single(b => b.Key == (straight.PinIdLeftIn(), straight.PinIdRightOut())).Value;
             var Straight_RiLoConnection = allComponentsSMatrices[0].GetNonNullValues().Single(b => b.Key == (straight.PinIdRightIn(), straight.PinIdLeftOut())).Value;

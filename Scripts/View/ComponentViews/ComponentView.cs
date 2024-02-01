@@ -28,7 +28,7 @@ namespace ConnectAPIC.LayoutWindow.View
         public event SliderChangedEventHandler SliderChanged;
         public const string SliderNumberMetaID = "SliderNumber";
         public const string SliderLabelMetaID = "SliderLabel";
-        private System.Timers.Timer SliderDebounceTimer = new(100); 
+        private System.Timers.Timer SliderDebounceTimer = new(100);
         private List<Godot.Slider> Sliders { get; set; } = new();
         public int WidthInTiles { get; private set; }
         public int HeightInTiles { get; private set; }
@@ -70,7 +70,7 @@ namespace ConnectAPIC.LayoutWindow.View
         public override void _Ready()
         {
             base._Ready();
-            RotationArea = (FindChild("?otation*", true, false) ?? FindChild("ROTATION*", true, false) ) as Node2D;
+            RotationArea = (FindChild("?otation*", true, false) ?? FindChild("ROTATION*", true, false)) as Node2D;
             RotationCC = _rotationCC;
         }
 
@@ -225,7 +225,7 @@ namespace ConnectAPIC.LayoutWindow.View
             }
         }
 
-        public virtual void DisplayLightVector(List<LightAtPin> lightsAtPins)
+        public void DisplayLightVector(List<LightAtPin> lightsAtPins)
         {
             int shaderAnimNumber = 1;
             foreach (LightAtPin light in lightsAtPins)
@@ -237,22 +237,35 @@ namespace ConnectAPIC.LayoutWindow.View
                     shaderAnimNumber++;
                 });
             }
+            // changing Godot objects must happen in the UI thread
+            CallDeferred(nameof(ShowOverlaysDeferred));
+        }
+
+        private void ShowOverlaysDeferred()
+        {
             OverlayRed?.Show();
             OverlayGreen?.Show();
             OverlayBlue?.Show();
         }
+
         protected void AssignInAndOutFlowShaderData(AnimationSlot slot, LightAtPin lightAtPin, int shaderSlotNumber)
         {
-            if (slot?.BaseOverlaySprite?.Material is ShaderMaterial shaderMat)
+            var InFlowDataAndPosition = new Godot.Vector4((float)lightAtPin.lightInFlow.Magnitude, (float)lightAtPin.lightInFlow.Phase, 0, 0);
+            var outFlowDataAndPosition = new Vector4((float)lightAtPin.lightOutFlow.Magnitude, (float)lightAtPin.lightOutFlow.Phase, 0, 0);
+            // assigning the shaders must run in the UI thread
+            CallDeferred(nameof(SetShaderParameterDeferred), slot?.BaseOverlaySprite, ShaderParameterNames.LightInFlow + shaderSlotNumber, InFlowDataAndPosition);
+            CallDeferred(nameof(SetShaderParameterDeferred), slot?.BaseOverlaySprite, ShaderParameterNames.LightOutFlow + shaderSlotNumber, outFlowDataAndPosition);
+            CallDeferred(nameof(SetShaderParameterDeferred), slot?.BaseOverlaySprite, ShaderParameterNames.Animation + shaderSlotNumber, slot.Texture);
+            CallDeferred(nameof(SetShaderParameterDeferred), slot?.BaseOverlaySprite, ShaderParameterNames.LightColor, slot.MatchingLaser.Color.ToGodotColor());
+        }
+        private void SetShaderParameterDeferred(Sprite2D overlay, string name, Variant value)
+        {
+            if (overlay?.Material is ShaderMaterial shaderMat)
             {
-                var InFlowDataAndPosition = new Godot.Vector4((float)lightAtPin.lightInFlow.Magnitude, (float)lightAtPin.lightInFlow.Phase, 0, 0);
-                var outFlowDataAndPosition = new Vector4((float)lightAtPin.lightOutFlow.Magnitude, (float)lightAtPin.lightOutFlow.Phase, 0, 0);
-                shaderMat.SetShaderParameter(ShaderParameterNames.LightInFlow + shaderSlotNumber, InFlowDataAndPosition);
-                shaderMat.SetShaderParameter(ShaderParameterNames.LightOutFlow + shaderSlotNumber, outFlowDataAndPosition);
-                shaderMat.SetShaderParameter(ShaderParameterNames.Animation + shaderSlotNumber, slot.Texture);
-                shaderMat.SetShaderParameter(ShaderParameterNames.LightColor, slot.MatchingLaser.Color.ToGodotColor());
+                shaderMat.SetShaderParameter(name, value);
             }
         }
+
         public override void _GuiInput(InputEvent inputEvent)
         {
             base._GuiInput(inputEvent);

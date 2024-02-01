@@ -104,10 +104,7 @@ namespace CAP_Core.Grid.FormulaReading
             }
             
             var connectionFunction = new ConnectionFunction(
-                (freshlyInsertedParameters) =>
-                {
-                    return ExecuteExpressionFromDraft(expressionDraft, freshlyInsertedParameters, expression.Parameters.Keys.ToList());
-                },
+                (freshlyInsertedParameters) =>ExecuteExpressionFromDraft(expressionDraft, freshlyInsertedParameters, expression.Parameters.Keys.ToList()),
                 expressionDraft,
                 usedParameterGuidMap.Select(p=>p.Value).ToList(),
                 IsPinsInvolved
@@ -132,7 +129,7 @@ namespace CAP_Core.Grid.FormulaReading
             }
 
             // run the expression
-            var result = expression.Evaluate();
+            var result =  expression.Evaluate();
             if (result == null)
                 throw new InvalidOperationException("Formula cannot be computed: " + expressionDraft);
 

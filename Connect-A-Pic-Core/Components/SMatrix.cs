@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Linq;
 using CAP_Core.Components.FormulaReading;
 using CAP_Core.Tiles.Grid;
+using MathNet.Numerics;
 
 namespace CAP_Core.Components
 {
@@ -109,26 +110,36 @@ namespace CAP_Core.Components
         }
 
         // n is the number of time steps to move forward "steps=3" would return the light propagation after 3 steps.
-        public Dictionary<Guid, Complex> GetLightPropagation(MathNet.Numerics.LinearAlgebra.Vector<Complex> inputVector, int maxSteps)
+        public async Task<Dictionary<Guid, Complex>> GetLightPropagationAsync(MathNet.Numerics.LinearAlgebra.Vector<Complex> inputVector, int maxSteps , CancellationTokenSource cancellation)
         {
             if (maxSteps < 1) return new Dictionary<Guid, Complex>();
 
             // update the SMat using the non linear connections - including those who are not depending on the input vector (the PIN1 etc)
-            RecomputeSMatNonLinearParts(inputVector, SkipOuterloopFunctions:false);
-
-            var inputAfterSteps = SMat * inputVector;
-            
-            for (int i = 1; i < maxSteps; i++)
+            await RecomputeSMatNonLinearPartsAsync(inputVector, SkipOuterloopFunctions:false);
+            try
             {
-                var oldInputAfterSteps = inputAfterSteps;
-                // recalculating non linear values because the inputvector has changed and could now change the connections like activate a logic gate for example.
-                RecomputeSMatNonLinearParts(inputAfterSteps, SkipOuterloopFunctions: true);
-                // multiplying the adjusted matrix and also adding the initial inputVector again because there is more light incoming
-                inputAfterSteps = SMat * inputAfterSteps + inputVector;
-                if (oldInputAfterSteps.Equals(inputAfterSteps)) break;
-            }
 
-            return ConvertToDictWithGuids(inputAfterSteps);
+                var inputAfterSteps = SMat * inputVector;
+                for (int i = 1; i < maxSteps; i++)
+                {
+                    cancellation.Token.ThrowIfCancellationRequested();
+                    await Task.Run(async () =>
+                    {
+                        var oldInputAfterSteps = inputAfterSteps;
+                        // recalculating non linear values because the inputvector has changed and could now change the connections like activate a logic gate for example.
+                        await RecomputeSMatNonLinearPartsAsync(inputAfterSteps, SkipOuterloopFunctions: true);
+                        // multiplying the adjusted matrix and also adding the initial inputVector again because there is more light incoming
+                        inputAfterSteps = SMat * inputAfterSteps + inputVector;
+                        if (oldInputAfterSteps.Equals(inputAfterSteps))
+                            maxSteps = 0;
+                    }, cancellation.Token);
+                }
+
+                return ConvertToDictWithGuids(inputAfterSteps);
+            } catch 
+            {
+                return new Dictionary<Guid, Complex>();
+            }
         }
 
         private List<object> GetWeightParameters(IEnumerable<Guid> parameterGuids, MathNet.Numerics.LinearAlgebra.Vector<Complex> inputVector)
@@ -150,7 +161,7 @@ namespace CAP_Core.Components
 
             return usedParameterValues;
         }
-        private void RecomputeSMatNonLinearParts(MathNet.Numerics.LinearAlgebra.Vector<Complex> inputVector , bool SkipOuterloopFunctions = true)
+        private async Task RecomputeSMatNonLinearPartsAsync(MathNet.Numerics.LinearAlgebra.Vector<Complex> inputVector , bool SkipOuterloopFunctions = true)
         {
             foreach (var connection in NonLinearConnections)
             {
@@ -159,7 +170,7 @@ namespace CAP_Core.Components
                 var indexStart = PinReference[connection.Key.PinIdStart];
                 var indexEnd = PinReference[connection.Key.PinIdEnd];
                 var weightParameters = GetWeightParameters(connection.Value.UsedParameterGuids, inputVector);
-                var calculatedWeight = connection.Value.CalcConnectionWeight(weightParameters);
+                var calculatedWeight = connection.Value.CalcConnectionWeightAsync(weightParameters);
                 SMat[indexEnd, indexStart] = calculatedWeight;
             }
         }

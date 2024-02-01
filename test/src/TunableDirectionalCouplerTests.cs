@@ -14,6 +14,7 @@ using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using CAP_Core.Components;
 using CAP_Core.Tiles;
 using Shouldly;
+using System.Threading;
 
 namespace ConnectAPIC.test.src
 {
@@ -61,7 +62,7 @@ namespace ConnectAPIC.test.src
             var mainSlider = component.GetAllSliders().First();
             var nonLinearConnections = component.WaveLengthToSMatrixMap[RedLaser.WaveLengthInNm].NonLinearConnections;
             var lightIntensity = 1.0;
-            MyGameManager.GridViewModel.ShowLightPropagationAsync();
+            await MyGameManager.GridViewModel.ShowLightPropagationAsync();
             var lightGloballyOn = CheckShaderValuesOnRightPins();
             var connectionsAfterNonLinearAreAssigned = component.WaveLengthToSMatrixMap[RedLaser.WaveLengthInNm].GetNonNullValues();
             // let the nonLinearFunctions calculate the weights once and check if the connections have the proper values

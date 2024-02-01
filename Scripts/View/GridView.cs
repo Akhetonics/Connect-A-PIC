@@ -22,11 +22,11 @@ namespace ConnectAPIC.LayoutWindow.View
         [Export] public DragDropProxy DragDropProxy;
         [Export] public ComponentViewFactory ComponentViewFactory;
         [Export] public Texture2D LightOnTexture;
-        [Export] public Texture2D LightOffTexture;
-        [Export] public Button LightOnButton;
+        [Export] private Texture2D LightOffTexture;
+        [Export] private Button LightOnButton;
 
         private GridViewModel ViewModel;
-        public bool lightPropagationIsPressed; // is true if the lightPropagation (the bulb) is turned on
+        public event EventHandler<bool> LightSwitched;
         public const string GridSaveFileExtensionPatterns = "*.pic|*.PIC|*.txt|*.TXT";
 
         public ILogger Logger { get; private set; }
@@ -49,6 +49,10 @@ namespace ConnectAPIC.LayoutWindow.View
             DragDropProxy.OnDropData += _DropData;
             DragDropProxy.Initialize(viewModel.Width, viewModel.Height);
         }
+        public void SetLightButtonOn(bool isLightButtonOn)
+        {
+            LightOnButton.ButtonPressed = isLightButtonOn;
+        }
 
         private void _on_btn_export_nazca_pressed()
         {
@@ -70,28 +74,16 @@ namespace ConnectAPIC.LayoutWindow.View
             });
         }
 
-        private async void _on_btn_show_light_propagation_toggled(bool button_pressed)
+        private void _on_btn_show_light_propagation_toggled(bool button_pressed)
         {
-            lightPropagationIsPressed = button_pressed;
-
-            try
+            LightSwitched.Invoke(this,button_pressed);
+            if (button_pressed)
             {
-                if (button_pressed)
-                {
-                    ViewModel.HideLightPropagation();
-                    await ViewModel.ShowLightPropagationAsync();
-                    LightOnButton.Icon = LightOnTexture;
-
-                }
-                else
-                {
-                    ViewModel.HideLightPropagation();
-                    LightOnButton.Icon = LightOffTexture;
-                }
+                LightOnButton.Icon = LightOnTexture;
             }
-            catch (Exception ex)
+            else
             {
-                Logger.PrintErr(ex.Message);
+                LightOnButton.Icon = LightOffTexture;
             }
         }
         private void _on_btn_save_pressed()
