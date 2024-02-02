@@ -72,7 +72,7 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
             foreach (var matrixDraft in draft.SMatrices)
             {
                 var matrixModel = new SMatrix(allPinsGuids, allSliderGuids);
-                (var nonLinearConnections , var linearConnections) = CreateConnecitons(allPins, allSliders, pinNumberToModelMap, matrixDraft);
+                (var nonLinearConnections , var linearConnections) = CreateConnections(allPins, allSliders, pinNumberToModelMap, matrixDraft);
                 matrixModel.SetValues(linearConnections);
                 matrixModel.NonLinearConnections = nonLinearConnections;
                 definedMatrices.Add(matrixDraft.WaveLength, matrixModel);
@@ -82,7 +82,7 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
         }
 
         private ( Dictionary<(Guid, Guid), ConnectionFunction> NonLinearConnections , Dictionary<(Guid,Guid),Complex> LinearConnections) 
-            CreateConnecitons(List<Pin> allPins, List<Slider> allSliders ,Dictionary<int, Pin> pinNumberToModelMap, WaveLengthSpecificSMatrix matrixDraft)
+            CreateConnections(List<Pin> allPins, List<Slider> allSliders ,Dictionary<int, Pin> pinNumberToModelMap, WaveLengthSpecificSMatrix matrixDraft)
         {
             var connections = new Dictionary<(Guid, Guid), Complex>();
             var nonLinearConnectionFunctions = new Dictionary<(Guid, Guid), ConnectionFunction>();

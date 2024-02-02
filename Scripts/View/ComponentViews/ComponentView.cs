@@ -105,8 +105,8 @@ namespace ConnectAPIC.LayoutWindow.View
                 SliderDebounceTimer.Start();
             };
             SliderDebounceTimer.Elapsed += (object sender, System.Timers.ElapsedEventArgs e) =>
-            { 
-                // we have to run the sliderchanged in the correct thread
+            {
+                // we have to run the HandleSliderChangeDeferred in the correct thread
                 CallDeferred(nameof(HandleSliderChangeDeferred), godotSlider, godotSlider.Value);
                 SliderDebounceTimer.Stop();
             };

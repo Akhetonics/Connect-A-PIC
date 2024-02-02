@@ -115,7 +115,7 @@ namespace CAP_Core.Components
             if (maxSteps < 1) return new Dictionary<Guid, Complex>();
 
             // update the SMat using the non linear connections - including those who are not depending on the input vector (the PIN1 etc)
-            await RecomputeSMatNonLinearPartsAsync(inputVector, SkipOuterloopFunctions:false);
+            await RecomputeSMatNonLinearPartsAsync(inputVector, SkipOuterLoopFunctions:false);
             try
             {
 
@@ -126,8 +126,8 @@ namespace CAP_Core.Components
                     await Task.Run(async () =>
                     {
                         var oldInputAfterSteps = inputAfterSteps;
-                        // recalculating non linear values because the inputvector has changed and could now change the connections like activate a logic gate for example.
-                        await RecomputeSMatNonLinearPartsAsync(inputAfterSteps, SkipOuterloopFunctions: true);
+                        // recalculating non linear values because the inputVector has changed and could now change the connections like activate a logic gate for example.
+                        await RecomputeSMatNonLinearPartsAsync(inputAfterSteps, SkipOuterLoopFunctions: true);
                         // multiplying the adjusted matrix and also adding the initial inputVector again because there is more light incoming
                         inputAfterSteps = SMat * inputAfterSteps + inputVector;
                         if (oldInputAfterSteps.Equals(inputAfterSteps))
@@ -161,11 +161,11 @@ namespace CAP_Core.Components
 
             return usedParameterValues;
         }
-        private async Task RecomputeSMatNonLinearPartsAsync(MathNet.Numerics.LinearAlgebra.Vector<Complex> inputVector , bool SkipOuterloopFunctions = true)
+        private async Task RecomputeSMatNonLinearPartsAsync(MathNet.Numerics.LinearAlgebra.Vector<Complex> inputVector , bool SkipOuterLoopFunctions = true)
         {
             foreach (var connection in NonLinearConnections)
             {
-                if (connection.Value.IsInnerLoopFunction == false && SkipOuterloopFunctions == true)// some functions 
+                if (connection.Value.IsInnerLoopFunction == false && SkipOuterLoopFunctions == true)// some functions 
                     continue;
                 var indexStart = PinReference[connection.Key.PinIdStart];
                 var indexEnd = PinReference[connection.Key.PinIdEnd];

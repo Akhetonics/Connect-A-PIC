@@ -26,6 +26,6 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper.DTOs
         [JsonPropertyName("steps")]
         public int Steps { get; set; } = 100;
         [JsonPropertyName("type")]
-        public SliderTypes Type { get; set; } = SliderTypes.LinearSlider; // the slidertype -> currently
+        public SliderTypes Type { get; set; } = SliderTypes.LinearSlider; // there is only one kind of slider at the moment.
     }
 }

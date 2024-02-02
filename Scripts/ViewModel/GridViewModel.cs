@@ -209,7 +209,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             }
             catch (OperationCanceledException)
             {
-                // Alle Tasks wurden abgebrochen
+                // all Tasks are cancelled
             }
             // Dispose the old CancellationTokenSource and create a new one for the next calculations
             CancelTokenLightCalc.Dispose();

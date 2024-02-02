@@ -3,7 +3,7 @@
 namespace CAP_Core.Components.FormulaReading
 {
     /// <summary>
-    /// The Func CalcConnectionWeights gets a list of object parameters that it inserst into its delegate Func and then it returns a complex value for the given matrix-cell
+    /// The Func CalcConnectionWeights gets a list of object parameters that it inserts into its delegate Func and then it returns a complex value for the given matrix-cell
     /// </summary>
     /// <param name="CalcConnectionWeight"></param>
     /// <param name="ConnectionsFunctionRaw"></param>

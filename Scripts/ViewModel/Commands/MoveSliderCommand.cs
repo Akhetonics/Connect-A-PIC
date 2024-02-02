@@ -29,7 +29,7 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
             var moveParams = (MoveSliderCommandArgs)parameter;
             var sliderComponent = grid.GetComponentAt(moveParams.gridX, moveParams.gridY);
             sliderComponent.GetSlider(moveParams.sliderNumber).Value = moveParams.newValue;
-            // also update the Slidervalue in the SMatrix.. this should be cleaned up sooner or later
+            // also update the SliderValue in the SMatrix.. this should be cleaned up sooner or later
            
             return Task.CompletedTask;
         }
