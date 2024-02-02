@@ -11,7 +11,6 @@ using System.Threading.Tasks;
 using System.Linq;
 using ConnectAPIC.LayoutWindow.View;
 using System.Collections.Generic;
-using ConnectAPIC.Scripts.Helpers;
 using CAP_Core.ExternalPorts;
 using CAP_Core.Tiles;
 
@@ -109,7 +108,11 @@ namespace ConnectAPIC.test.src
             var lightGloballyOn= GetInOutLightValueLeft();
             SecondStraightLine.HideLightVector();
             var lightLocallyOff= GetInOutLightValueLeft();
-
+            //await GetTree().DuringSeconds(5, () => {
+            //    // this assertion will be repeatedly run every frame
+            //    // until it either fails or the 5 seconds have elapsed
+            //    Assert.Equal(arenaDriver.Player.MaxHealth, arenaDriver.Player.Health);
+            //});
             // Assert
             innerConnections.First().Value.Magnitude.ShouldBe(1, 0.01);
             lightLocallyOn.In.X.ShouldBe(lightOnIntensity, 0.01);
@@ -125,6 +128,7 @@ namespace ConnectAPIC.test.src
 
         private (Vector4 In, Vector4 Out) GetInOutLightValueLeft()
         {
+            
             // get the shader-light intensity value on the left side
             // because only left is defined in the Straight Component (it only has one set of RGB-Overlays and only uses the left in/out values)
             var rightSlotShader = ((ShaderMaterial) SecondStraightLine.AnimationSlots.Single(slot =>

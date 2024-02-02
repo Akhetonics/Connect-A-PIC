@@ -43,7 +43,7 @@ namespace ConnectAPIC.Scenes.InGameConsole
 		public void PrintInfo(string text)
 		{
 			GD.Print(text);
-			CallDeferred(nameof(Print),text); // make sure it runs on the UI thread
+			CallDeferred(nameof(Print),text, false); // make sure it runs on the UI thread
 		}
 		public void PrintErr(string text)
 		{

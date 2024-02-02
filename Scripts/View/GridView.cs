@@ -58,19 +58,17 @@ namespace ConnectAPIC.LayoutWindow.View
         {
             SaveFileDialog.Save(this, path =>
             {
-                Task.Run(async () =>
+                try
                 {
-                    try
-                    {
-                    ViewModel.ExportToNazcaCommand.ExecuteAsync(new ExportNazcaParameters(path)).RunSynchronously();
-                        NotificationManager.Instance.Notify("Successfully saved file");
-                    }
-                    catch (Exception ex)
-                    {
-                        NotificationManager.Instance.Notify($"{ex.Message}", true);
-                        Logger.PrintErr(ex.Message);
-                    }
-                });
+                    ViewModel.ExportToNazcaCommand.ExecuteAsync(new ExportNazcaParameters(path));
+                    NotificationManager.Instance.Notify("Successfully saved file");
+                }
+                catch (Exception ex)
+                {
+                    NotificationManager.Instance.Notify($"{ex.Message}", true);
+                    Logger.PrintErr(ex.Message);
+                }
+                
             });
         }
 
