@@ -169,16 +169,15 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             await CancelLightCalculation();
             try
             {
-                var inputPorts = Grid.GetUsedExternalInputs();
+                var inputPorts = Grid.GetAllExternalInputs(); // go through all Inputs, so that the light can be turned off properly if e.g. red is turned off but some components have red light.
                 foreach (var port in inputPorts)
                 {
                     CancelTokenLightCalc.Token.ThrowIfCancellationRequested();
                     LightCalculationTask = Task.Run(async () =>
                     {
-                        MatrixAnalyzer = new GridSMatrixAnalyzer(this.Grid, port.Input.LaserType.WaveLengthInNm);
+                        MatrixAnalyzer = new GridSMatrixAnalyzer(this.Grid, port.LaserType.WaveLengthInNm);
                         var resultLightVector = await MatrixAnalyzer.CalculateLightPropagationAsync(CancelTokenLightCalc);
-                        Logger.Print(resultLightVector.ToCustomString());
-                        AssignLightToComponentViews(resultLightVector, port.Input.LaserType);
+                        AssignLightToComponentViews(resultLightVector, port.LaserType);
                     }, CancelTokenLightCalc.Token);
                     await LightCalculationTask.ConfigureAwait(false);
                 }

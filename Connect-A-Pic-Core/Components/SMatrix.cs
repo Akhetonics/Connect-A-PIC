@@ -187,7 +187,7 @@ namespace CAP_Core.Components
 
         public override string ToString()
         {
-            return ToString(false);
+            return "SliderNum: " + SliderReference.Count + " SMat: " + SMat.ToString();
         }
         public string ToString(bool leaveOutImaginary)
         {

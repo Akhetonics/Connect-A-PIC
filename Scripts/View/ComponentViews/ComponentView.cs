@@ -105,10 +105,15 @@ namespace ConnectAPIC.LayoutWindow.View
                 SliderDebounceTimer.Start();
             };
             SliderDebounceTimer.Elapsed += (object sender, System.Timers.ElapsedEventArgs e) =>
-            {
-                // we have to run the sliderchanged in the correct thread
-                CallDeferred(nameof(HandleSliderChangeDeferred), godotSlider, godotSlider.Value);
-                SliderDebounceTimer.Stop();
+            { 
+                // we have to run the sliderchanged in the correct thread - it might happen that the object already got disposed of.
+                try
+                {
+                    CallDeferred(nameof(HandleSliderChangeDeferred), godotSlider, godotSlider.Value);
+                    SliderDebounceTimer.Stop();
+                } catch (ObjectDisposedException)
+                {
+                }
             };
             godotSlider.Value = sliderData.InitialValue;
             SetSliderLabelText(label, sliderData.InitialValue);
@@ -118,7 +123,13 @@ namespace ConnectAPIC.LayoutWindow.View
 
         private void HandleSliderChangeDeferred(HSlider godotSlider, double sliderValue)
         {
-            SliderChanged?.Invoke(this, godotSlider, sliderValue);
+            try
+            {
+                SliderChanged?.Invoke(this, godotSlider, sliderValue);
+            } catch (Exception ex)
+            {
+                Logger.PrintErr(ex.Message);
+            }
         }
 
         private void SetSliderLabelText(RichTextLabel label, double newVal) => label.Text = $"[center]{newVal:F2}";
