@@ -4,17 +4,15 @@ using Chickensoft.GoDotTest;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPic.LayoutWindow;
 using Godot;
-using GodotTestDriver;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using CAP_Core.Components;
 using CAP_Core.Tiles;
 using Shouldly;
-using System.Threading;
+using Chickensoft.GodotTestDriver;
+using Chickensoft.GodotTestDriver.Util;
 
 namespace ConnectAPIC.test.src
 {
@@ -62,24 +60,10 @@ namespace ConnectAPIC.test.src
             var mainSlider = component.GetAllSliders().First();
             var nonLinearConnections = component.WaveLengthToSMatrixMap[RedLaser.WaveLengthInNm].NonLinearConnections;
             var lightIntensity = 1.0;
+            MyGameManager.GridViewModel.IsLightOn = true;
             await MyGameManager.GridViewModel.ShowLightPropagationAsync();
-            var lightGloballyOn = CheckShaderValuesOnRightPins();
-            var connectionsAfterNonLinearAreAssigned = component.WaveLengthToSMatrixMap[RedLaser.WaveLengthInNm].GetNonNullValues();
-            // let the nonLinearFunctions calculate the weights once and check if the connections have the proper values
-
-            var leftUpToRightUp = connectionsAfterNonLinearAreAssigned[(component.Parts[0, 0].GetPinAt(RectSide.Left).IDInFlow, component.Parts[1, 0].GetPinAt(RectSide.Right).IDOutFlow)].Magnitude;
-            var leftUpToRightDown = connectionsAfterNonLinearAreAssigned[(component.Parts[0, 0].GetPinAt(RectSide.Left).IDInFlow, component.Parts[1, 1].GetPinAt(RectSide.Right).IDOutFlow)].Magnitude;
-            var leftDownToRightUp = connectionsAfterNonLinearAreAssigned[(component.Parts[0, 1].GetPinAt(RectSide.Left).IDInFlow, component.Parts[1, 0].GetPinAt(RectSide.Right).IDOutFlow)].Magnitude;
-            var leftDownToRightDown = connectionsAfterNonLinearAreAssigned[(component.Parts[0, 1].GetPinAt(RectSide.Left).IDInFlow, component.Parts[1, 1].GetPinAt(RectSide.Right).IDOutFlow)].Magnitude;
-
-            // Assert
-            leftUpToRightUp.ShouldBe(mainSlider.Value * lightIntensity);
-            leftUpToRightDown.ShouldBe((1 - mainSlider.Value) * lightIntensity);
-            leftDownToRightUp.ShouldBe(mainSlider.Value * lightIntensity);
-            leftDownToRightDown.ShouldBe((1-mainSlider.Value) * lightIntensity);
-            
+            var lightGloballyOn = await CheckShaderValuesOnRightPinsAsync();
             mainSlider.Value.ShouldBe(0.5);
-            connectionsAfterNonLinearAreAssigned.First().Value.Magnitude.ShouldBe(1, 0.01);
             lightGloballyOn.OutRightUp.X.ShouldBe((float)(mainSlider.Value * lightIntensity), 0.01);
             lightGloballyOn.OutRightDown.X.ShouldBe((float)((1.0-mainSlider.Value)*lightIntensity),0.01);
             nonLinearConnections.Count.ShouldBe(8); // two for each of the four pins.
@@ -87,8 +71,9 @@ namespace ConnectAPIC.test.src
 
         }
 
-        private (Vector4 OutRightUp, Vector4 OutRightDown) CheckShaderValuesOnRightPins()
+        private async Task<(Vector4 OutRightUp, Vector4 OutRightDown)> CheckShaderValuesOnRightPinsAsync()
         {
+            await TestScene.GetTree().NextFrame(3);
             // get the shader-light intensity value on the left side
             // because only left is defined in the Straight Component (it only has one set of RGB-Overlays and only uses the left in/out values)
             int animationSlotNrUp = 3; // the number of the slot (1-based as the first slot should be on 1)

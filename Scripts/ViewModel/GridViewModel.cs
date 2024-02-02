@@ -42,7 +42,6 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         public ILogger Logger { get; }
         public ComponentFactory ComponentModelFactory { get; }
         public GridView GridView { get; set; }
-        public GridSMatrixAnalyzer MatrixAnalyzer { get; private set; }
         public int MaxTileCount { get => Width * Height; }
         public bool IsLightOn { get; set; } = false;
 
@@ -84,7 +83,6 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             CreateEmptyField();
             this.Grid.OnComponentPlacedOnTile += Grid_OnComponentPlacedOnTile;
             this.Grid.OnComponentRemoved += Grid_OnComponentRemoved;
-            MatrixAnalyzer = new GridSMatrixAnalyzer(this.Grid, StandardWaveLengths.RedNM);
         }
 
         private async void Grid_OnComponentRemoved(Component component, int x, int y)
@@ -95,7 +93,10 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
 
         private async Task RecalculateLightPropagation()
         {
-            await ShowLightPropagationAsync();
+            if (IsLightOn)
+            {
+                await ShowLightPropagationAsync();
+            }
         }
         private async void Grid_OnComponentPlacedOnTile(Component component, int gridX, int gridY)
         {
@@ -165,7 +166,6 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         private Task LightCalculationTask;
         public async Task ShowLightPropagationAsync()
         {
-            if (IsLightOn == false) return;
             await CancelLightCalculation();
             try
             {
@@ -175,7 +175,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
                     CancelTokenLightCalc.Token.ThrowIfCancellationRequested();
                     LightCalculationTask = Task.Run(async () =>
                     {
-                        MatrixAnalyzer = new GridSMatrixAnalyzer(this.Grid, port.LaserType.WaveLengthInNm);
+                        var MatrixAnalyzer = new GridSMatrixAnalyzer(this.Grid, port.LaserType.WaveLengthInNm);
                         var resultLightVector = await MatrixAnalyzer.CalculateLightPropagationAsync(CancelTokenLightCalc);
                         AssignLightToComponentViews(resultLightVector, port.LaserType);
                     }, CancelTokenLightCalc.Token);

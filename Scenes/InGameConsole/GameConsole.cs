@@ -5,6 +5,7 @@ using Chickensoft.AutoInject;
 using SuperNodes.Types;
 using ConnectAPIC.LayoutWindow.ViewModel;
 using CAP_Core.Tiles.Grid;
+using ConnectAPic.LayoutWindow;
 
 namespace ConnectAPIC.Scenes.InGameConsole
 {
@@ -85,8 +86,7 @@ namespace ConnectAPIC.Scenes.InGameConsole
 
 				if (eventKey.IsReleased() && eventKey.Keycode == Key.F2)
 				{
-					var matrixPrinter = new GridSMatrixPrinter(ViewModel.MatrixAnalyzer);
-					Print(matrixPrinter.ToString().Replace('\t', ' '));
+					Print("Version: " + GameManager.instance.Version);
 				}
 			}
 		}

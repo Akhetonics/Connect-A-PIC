@@ -4,13 +4,14 @@ using Chickensoft.GoDotTest;
 using ConnectAPic.LayoutWindow;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using Godot;
-using GodotTestDriver;
 using Shouldly;
 using System.Threading.Tasks;
 using System.Linq;
 using ConnectAPIC.LayoutWindow.View;
 using System.Collections.Generic;
 using CAP_Core.ExternalPorts;
+using Chickensoft.GodotTestDriver;
+using Chickensoft.GodotTestDriver.Util;
 
 namespace ConnectAPIC.test.src
 {
@@ -37,7 +38,7 @@ namespace ConnectAPIC.test.src
 
         }
         [Test]
-        public void TestLightVectorAssignment()
+        public async Task TestLightVectorAssignment()
         {
             var outflowSide = CAP_Core.Tiles.RectSide.Up;
             var inflowSide = CAP_Core.Tiles.RectSide.Left;
@@ -49,7 +50,8 @@ namespace ConnectAPIC.test.src
         };
             GratingCoupler.ShouldNotBeNull("the grating coupler should have been loaded successfully but it didn't");
             GratingCoupler.DisplayLightVector(lightAtPins);
-            MyGameManager.GridViewModel.ShowLightPropagationAsync();
+            await MyGameManager.GridViewModel.ShowLightPropagationAsync();
+            await TestScene.GetTree().NextFrame(10);
             var inflowShaderParam = (Vector4)(GratingCoupler.AnimationSlots[0].BaseOverlaySprite.Material as ShaderMaterial).GetShaderParameter(ShaderParameterNames.LightInFlow + 1);
             inflowShaderParam.X.ShouldBe(1, "because we have set the light input to be 1 for red laser ");
         }

@@ -4,7 +4,6 @@ using Chickensoft.GoDotTest;
 using ConnectAPic.LayoutWindow;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using Godot;
-using GodotTestDriver;
 using Shouldly;
 using System;
 using System.Threading.Tasks;
@@ -13,6 +12,8 @@ using ConnectAPIC.LayoutWindow.View;
 using System.Collections.Generic;
 using CAP_Core.ExternalPorts;
 using CAP_Core.Tiles;
+using Chickensoft.GodotTestDriver;
+using Chickensoft.GodotTestDriver.Util;
 
 namespace ConnectAPIC.test.src
 {
@@ -44,7 +45,7 @@ namespace ConnectAPIC.test.src
             {
                 _log.Print(ex.Message);
             }
-
+            
             // first import all components so that we have curves. 
             // find proper tool from component factory
             int curveComponentNr = MyGameManager.GridView.ComponentViewFactory.PackedComponentCache.Single(c => c.Value.Draft.Identifier == "Bend").Key;
@@ -70,7 +71,7 @@ namespace ConnectAPIC.test.src
             usedPorts.Count.ShouldBe(2);
         }
         [Test]
-        public void ComponentRotationTests()
+        public async Task ComponentRotationTests()
         {
             var outflowSide = CAP_Core.Tiles.RectSide.Up;
             var inflowSide = CAP_Core.Tiles.RectSide.Left;
@@ -80,7 +81,8 @@ namespace ConnectAPIC.test.src
                 new (0, 0, outflowSide, RedLaser, 0, 1),
             };
             RotatedCurve.DisplayLightVector(lightAtPins);
-            MyGameManager.GridViewModel.ShowLightPropagationAsync();
+            await MyGameManager.GridViewModel.ShowLightPropagationAsync();
+            await TestScene.GetTree().NextFrame(10);
             RotatedCurve.AnimationSlots[0].Rotation.ShouldBe(RotatedCurve.RotationCC, "AnimationSlot should rotate according to the rotation of the component");
             RotatedCurve.AnimationSlots[1].Rotation.ShouldBe(RotatedCurve.RotationCC, "AnimationSlot should rotate according to the rotation of the component");
             RotatedCurve.AnimationSlots[2].Rotation.ShouldBe(RotatedCurve.RotationCC, "AnimationSlot should rotate according to the rotation of the component");
@@ -101,19 +103,14 @@ namespace ConnectAPIC.test.src
             // then test the light distribution
             SecondStraightLine.HideLightVector();
             SecondStraightLine.DisplayLightVector(lightAtPins);
-            var lightLocallyOn = GetInOutLightValueLeft();
+            var lightLocallyOn = await GetInOutLightValueLeft();
             await MyGameManager.GridViewModel.HideLightPropagation();
-            var lightGloballyOff = GetInOutLightValueLeft();
+            var lightGloballyOff = await GetInOutLightValueLeft();
             await MyGameManager.GridViewModel.ShowLightPropagationAsync();
-            var lightGloballyOn= GetInOutLightValueLeft();
+            var lightGloballyOn= await GetInOutLightValueLeft();
             SecondStraightLine.HideLightVector();
-            var lightLocallyOff= GetInOutLightValueLeft();
-            //await GetTree().DuringSeconds(5, () => {
-            //    // this assertion will be repeatedly run every frame
-            //    // until it either fails or the 5 seconds have elapsed
-            //    Assert.Equal(arenaDriver.Player.MaxHealth, arenaDriver.Player.Health);
-            //});
-            // Assert
+            var lightLocallyOff= await GetInOutLightValueLeft();
+            
             innerConnections.First().Value.Magnitude.ShouldBe(1, 0.01);
             lightLocallyOn.In.X.ShouldBe(lightOnIntensity, 0.01);
             lightLocallyOn.Out.X.ShouldBe(0,0.0001, "because not light comes from a right positioned component");
@@ -126,9 +123,9 @@ namespace ConnectAPIC.test.src
             
         }
 
-        private (Vector4 In, Vector4 Out) GetInOutLightValueLeft()
+        private async Task<(Vector4 In, Vector4 Out)> GetInOutLightValueLeft()
         {
-            
+            await TestScene.GetTree().NextFrame(2);
             // get the shader-light intensity value on the left side
             // because only left is defined in the Straight Component (it only has one set of RGB-Overlays and only uses the left in/out values)
             var rightSlotShader = ((ShaderMaterial) SecondStraightLine.AnimationSlots.Single(slot =>
