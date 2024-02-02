@@ -4,16 +4,16 @@ using Chickensoft.GoDotTest;
 using ConnectAPic.LayoutWindow;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using Godot;
-using GodotTestDriver;
 using Shouldly;
 using System;
 using System.Threading.Tasks;
 using System.Linq;
 using ConnectAPIC.LayoutWindow.View;
 using System.Collections.Generic;
-using ConnectAPIC.Scripts.Helpers;
 using CAP_Core.ExternalPorts;
 using CAP_Core.Tiles;
+using Chickensoft.GodotTestDriver;
+using Chickensoft.GodotTestDriver.Util;
 
 namespace ConnectAPIC.test.src
 {
@@ -22,12 +22,13 @@ namespace ConnectAPIC.test.src
         private readonly ILog _log = new GDLog(nameof(ExampleTest));
         public Fixture MyFixture { get; set; }
         public GameManager MyGameManager { get; set; }
-        public LightDistributionTests(Node testScene) : base(testScene) { }
         public ComponentView RotatedCurve { get; set; }
         public ComponentView StraightLine { get; set; }
         public ComponentView SecondStraightLine { get; set; }
         public LaserType RedLaser { get; set; }
         public LaserType GreenLaser { get; set; }
+        public LightDistributionTests(Node testScene) : base(testScene) 
+        { }
         public void OnResolved()
         {
 
@@ -44,11 +45,11 @@ namespace ConnectAPIC.test.src
             {
                 _log.Print(ex.Message);
             }
-
+            
             // first import all components so that we have curves. 
             // find proper tool from component factory
-            int curveComponentNr = MyGameManager.GridView.ComponentViewFactory.PackedComponentCache.Single(c => c.Value.Draft.identifier == "Bend").Key;
-            int straightComponentNr = MyGameManager.GridView.ComponentViewFactory.PackedComponentCache.Single(c => c.Value.Draft.identifier == "Straight").Key;
+            int curveComponentNr = MyGameManager.GridView.ComponentViewFactory.PackedComponentCache.Single(c => c.Value.Draft.Identifier == "Bend").Key;
+            int straightComponentNr = MyGameManager.GridView.ComponentViewFactory.PackedComponentCache.Single(c => c.Value.Draft.Identifier == "Straight").Key;
             // instantiate tool at position attached to laserInput
             var firstLaserInput = MyGameManager.Grid.ExternalPorts[0];
             var secondLaserInput = MyGameManager.Grid.ExternalPorts[1];
@@ -70,7 +71,7 @@ namespace ConnectAPIC.test.src
             usedPorts.Count.ShouldBe(2);
         }
         [Test]
-        public void ComponentRotationTests()
+        public async Task ComponentRotationTests()
         {
             var outflowSide = CAP_Core.Tiles.RectSide.Up;
             var inflowSide = CAP_Core.Tiles.RectSide.Left;
@@ -80,7 +81,8 @@ namespace ConnectAPIC.test.src
                 new (0, 0, outflowSide, RedLaser, 0, 1),
             };
             RotatedCurve.DisplayLightVector(lightAtPins);
-            MyGameManager.GridViewModel.ShowLightPropagation();
+            await MyGameManager.GridViewModel.ShowLightPropagationAsync();
+            await TestScene.GetTree().NextFrame(10);
             RotatedCurve.AnimationSlots[0].Rotation.ShouldBe(RotatedCurve.RotationCC, "AnimationSlot should rotate according to the rotation of the component");
             RotatedCurve.AnimationSlots[1].Rotation.ShouldBe(RotatedCurve.RotationCC, "AnimationSlot should rotate according to the rotation of the component");
             RotatedCurve.AnimationSlots[2].Rotation.ShouldBe(RotatedCurve.RotationCC, "AnimationSlot should rotate according to the rotation of the component");
@@ -97,19 +99,18 @@ namespace ConnectAPIC.test.src
             // act
             // first test if the connectionWeights are proper
             var compModel = MyGameManager.Grid.GetComponentAt(SecondStraightLine.GridX, SecondStraightLine.GridY);
-            var innerConnections = compModel.LaserWaveLengthToSMatrixMap[GreenLaser.WaveLengthInNm].GetNonNullValues();
+            var innerConnections = compModel.WaveLengthToSMatrixMap[GreenLaser.WaveLengthInNm].GetNonNullValues();
             // then test the light distribution
             SecondStraightLine.HideLightVector();
             SecondStraightLine.DisplayLightVector(lightAtPins);
-            var lightLocallyOn = GetInOutLightValueLeft();
-            MyGameManager.GridViewModel.HideLightPropagation();
-            var lightGloballyOff = GetInOutLightValueLeft();
-            await MyGameManager.GridViewModel.ShowLightPropagation();
-            var lightGloballyOn= GetInOutLightValueLeft();
+            var lightLocallyOn = await GetInOutLightValueLeft();
+            await MyGameManager.GridViewModel.HideLightPropagation();
+            var lightGloballyOff = await GetInOutLightValueLeft();
+            await MyGameManager.GridViewModel.ShowLightPropagationAsync();
+            var lightGloballyOn= await GetInOutLightValueLeft();
             SecondStraightLine.HideLightVector();
-            var lightLocallyOff= GetInOutLightValueLeft();
-
-            // Assert
+            var lightLocallyOff= await GetInOutLightValueLeft();
+            
             innerConnections.First().Value.Magnitude.ShouldBe(1, 0.01);
             lightLocallyOn.In.X.ShouldBe(lightOnIntensity, 0.01);
             lightLocallyOn.Out.X.ShouldBe(0,0.0001, "because not light comes from a right positioned component");
@@ -122,8 +123,9 @@ namespace ConnectAPIC.test.src
             
         }
 
-        private (Vector4 In, Vector4 Out) GetInOutLightValueLeft()
+        private async Task<(Vector4 In, Vector4 Out)> GetInOutLightValueLeft()
         {
+            await TestScene.GetTree().NextFrame(2);
             // get the shader-light intensity value on the left side
             // because only left is defined in the Straight Component (it only has one set of RGB-Overlays and only uses the left in/out values)
             var rightSlotShader = ((ShaderMaterial) SecondStraightLine.AnimationSlots.Single(slot =>

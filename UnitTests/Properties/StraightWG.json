@@ -1,0 +1,75 @@
+{
+    "fileFormatVersion": 1,
+    "identifier": "Straight",
+    "nazcaFunctionParameters": "",
+    "nazcaFunctionName": "placeCell_StraightWG",
+    "sceneResPath": "res://Scenes/Components/Straight/StraightWaveGuide.tscn",
+    "deltaLength": 0,
+    "widthInTiles": 1,
+    "heightInTiles": 1,
+    "pins": [
+        {
+            "number": 0,
+            "name": "west",
+            "matterType": 1,
+            "side": 2,
+            "partX": 0,
+            "partY": 0
+        },
+        {
+            "number": 1,
+            "name": "east",
+            "matterType": 1,
+            "side": 0,
+            "partX": 0,
+            "partY": 0
+        }
+    ],
+    "sMatrices": [
+        {
+            "waveLength": 1550,
+            "connections": [
+                {
+                    "fromPinNr": 0,
+                    "toPinNr": 1,
+                    "real": 1.0,
+                    "imaginary": 2.0,
+                    "nonLinearFormula": "ToComplexFromPolar( Sub(1.0 ,SLIDER0), 1.2161003820350373)"
+                },
+                {
+                    "fromPinNr": 1,
+                    "toPinNr": 0,
+                    "real": 1.0,
+                    "imaginary": 1.0
+                }
+            ]
+        },
+        {
+            "waveLength": 1310,
+            "connections": []
+        },
+        {
+            "waveLength": 980,
+            "connections": []
+        }
+    ],
+    "overlays": [
+        {
+            "overlayAnimTexturePath": "res://dummyPath.png",
+            "rectSide": 2,
+            "tileOffsetX": 0,
+            "tileOffsetY": 1
+        }
+    ],
+    "sliders": [
+        {
+            "sliderNumber": 0,
+            "godotSliderName": "JumpRatioSlider",
+            "godotSliderLabelName": "JumpRatioSliderLabel",
+            "minVal": 0.1,
+            "maxVal": 1.0,
+            "steps": 100,
+            "type": 0
+        }
+    ]
+}

@@ -54,71 +54,71 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
             {
                 throw new Exception("Draft cannot be null - there might have been some error while parsing the json of the component draft");
             }
-            if (draft.overlays == null || draft.overlays.Count == 0)
+            if (draft.Overlays == null || draft.Overlays.Count == 0)
             {
-                errorMsg += ErrorOverlayCountIsNull + $" {nameof(draft.overlays)}.count is 0 - no overlays are defined\n";
+                errorMsg += ErrorOverlayCountIsNull + $" {nameof(draft.Overlays)}.count is 0 - no overlays are defined\n";
             }
-            if (draft.fileFormatVersion > ComponentDraftFileReader.CurrentFileVersion)
+            if (draft.FileFormatVersion > ComponentDraftFileReader.CurrentFileVersion)
             {
-                errorMsg += ErrorFileVersionNotSupported + $" {nameof(draft.fileFormatVersion)} is higher than what this software can handle. The max Version readable is {ComponentDraftFileReader.CurrentFileVersion}\n";
+                errorMsg += ErrorFileVersionNotSupported + $" {nameof(draft.FileFormatVersion)} is higher than what this software can handle. The max Version readable is {ComponentDraftFileReader.CurrentFileVersion}\n";
             }
-            if (draft.pins == null ||draft.pins.Count == 0)
+            if (draft.Pins == null ||draft.Pins.Count == 0)
             {
-                errorMsg += ErrorNoPinsDefined + $" There are no {nameof(draft.pins)} defined at all. At least 1 pin should be defined\n";
+                errorMsg += ErrorNoPinsDefined + $" There are no {nameof(draft.Pins)} defined at all. At least 1 pin should be defined\n";
             }
-            if (string.IsNullOrWhiteSpace(draft.sceneResPath))
+            if (string.IsNullOrWhiteSpace(draft.SceneResPath))
             {
-                errorMsg += ErrorSceneResPathNotExist + $" {nameof(draft.sceneResPath)} is not set\n";
+                errorMsg += ErrorSceneResPathNotExist + $" {nameof(draft.SceneResPath)} is not set\n";
             }
             try
             {
-                if (!ResourceExists(draft.sceneResPath))
+                if (!ResourceExists(draft.SceneResPath))
                 {
-                    errorMsg += ErrorSceneResPathNotExist + $" {nameof(draft.sceneResPath)} does not exist on disk\n";
+                    errorMsg += ErrorSceneResPathNotExist + $" {nameof(draft.SceneResPath)} does not exist on disk\n";
                 }
             }
             catch (Exception ex)
             {
-                errorMsg += ErrorSceneResPathNotExist + $" {nameof(draft.sceneResPath)} - {ex.Message}\n";
+                errorMsg += ErrorSceneResPathNotExist + $" {nameof(draft.SceneResPath)} - {ex.Message}\n";
             }
 
-            if (draft.widthInTiles == 0)
+            if (draft.WidthInTiles == 0)
             {
-                errorMsg += ErrorWidthInTilesSmaller0 + $" {nameof(draft.widthInTiles)} has to be greater than 0\n";
+                errorMsg += ErrorWidthInTilesSmaller0 + $" {nameof(draft.WidthInTiles)} has to be greater than 0\n";
             }
-            if (draft.heightInTiles == 0)
+            if (draft.HeightInTiles == 0)
             {
-                errorMsg += ErrorHeightInTilesSmaller0 + $" {nameof(draft.heightInTiles)} has to be greater than 0\n";
+                errorMsg += ErrorHeightInTilesSmaller0 + $" {nameof(draft.HeightInTiles)} has to be greater than 0\n";
             }
-            if (string.IsNullOrWhiteSpace(draft.identifier))
+            if (string.IsNullOrWhiteSpace(draft.Identifier))
             {
-                errorMsg += ErrorIdentifierNotSet + $" {nameof(draft.identifier)} has to be defined\n";
+                errorMsg += ErrorIdentifierNotSet + $" {nameof(draft.Identifier)} has to be defined\n";
             }
-            if(draft?.overlays != null)
+            if(draft?.Overlays != null)
             {
-                foreach (var overlay in draft.overlays)
+                foreach (var overlay in draft.Overlays)
                 {
                     errorMsg += ValidateOverlay(overlay);
                 }
             }
             
-            errorMsg += ValidatePinNumbersAreUnique(draft.pins);
-            if(draft?.pins != null)
+            errorMsg += ValidatePinNumbersAreUnique(draft.Pins);
+            if(draft?.Pins != null)
             {
-                foreach (var pin in draft.pins)
+                foreach (var pin in draft.Pins)
                 {
-                    errorMsg += ValidatePin(pin, draft.widthInTiles, draft.heightInTiles);
+                    errorMsg += ValidatePin(pin, draft.WidthInTiles, draft.HeightInTiles);
                 }
             }
             
-            if(draft?.sMatrices == null)
+            if(draft?.SMatrices == null)
             {
                 errorMsg += $"{ErrorMatrixNotDefinedForWaveLength} sMatrix is not defined for any WaveLength\n";
             } else
             {
-                foreach (var connection in draft.sMatrices)
+                foreach (var connection in draft.SMatrices)
                 {
-                    errorMsg += ValidateConnection(draft.pins, draft.sMatrices);
+                    errorMsg += ValidateConnection(draft.Pins, draft.SMatrices);
                 }
             }
             
@@ -126,7 +126,7 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
             bool success = true;
             if (errorMsg.Length > 0)
             {
-                errorMsg += $"in ComponentDraft {draft.identifier}\n";
+                errorMsg += $"in ComponentDraft {draft.Identifier}\n";
                 success = false;
             }
             return (success, errorMsg);
@@ -166,35 +166,35 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
         private static string ValidatePin(PinDraft pin, int widthInTiles, int heightInTiles)
         {
             string errorMsg = "";
-            if (pin.partX < 0)
+            if (pin.PartX < 0)
             {
-                errorMsg += ErrorPinPartXSmaller0 + $" {nameof(pin.partX)} has to be >= 0\n";
+                errorMsg += ErrorPinPartXSmaller0 + $" {nameof(pin.PartX)} has to be >= 0\n";
             }
-            if (pin.partX > widthInTiles)
+            if (pin.PartX > widthInTiles)
             {
-                errorMsg += ErrorPinPartXBiggerMaxHeight + $" {nameof(pin.partX)} has to be < widthInTiles \n";
+                errorMsg += ErrorPinPartXBiggerMaxHeight + $" {nameof(pin.PartX)} has to be < widthInTiles \n";
             }
-            if (pin.partY < 0)
+            if (pin.PartY < 0)
             {
-                errorMsg += ErrorPinPartYSmaller0 + $" {nameof(pin.partY)} has to be >= 0\n";
+                errorMsg += ErrorPinPartYSmaller0 + $" {nameof(pin.PartY)} has to be >= 0\n";
             }
-            if (pin.partY > heightInTiles)
+            if (pin.PartY > heightInTiles)
             {
-                errorMsg += ErrorPinPartYBiggerMaxHeight + $" {nameof(pin.partY)} has to be < heightInTiles \n";
+                errorMsg += ErrorPinPartYBiggerMaxHeight + $" {nameof(pin.PartY)} has to be < heightInTiles \n";
             }
             return errorMsg;
         }
         private static string ValidatePinNumbersAreUnique(List<PinDraft> pins)
         {
             var duplicateNumbers = pins
-                .GroupBy(p => p.number)
+                .GroupBy(p => p.Number)
                 .Where(p => p.Count() > 1)
                 .Select(g => g.Key)
                 .ToList();
             if (duplicateNumbers.Any())
             {
                 string numbers = string.Join(',', duplicateNumbers);
-                return ErrorPinNumberDuplicated + $" Each Pin must have a unique {nameof(PinDraft.number)}, but '{numbers}' had been used twice\n";
+                return ErrorPinNumberDuplicated + $" Each Pin must have a unique {nameof(PinDraft.Number)}, but '{numbers}' had been used twice\n";
             }
             return "";
         }
@@ -203,7 +203,7 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
         {
             string errorMsg = "";
             // test if the SMatrices are defined for all given standard wavelengths
-            var definedWaveLengths = matrixDrafts.Select(m => m.waveLength).ToList(); 
+            var definedWaveLengths = matrixDrafts.Select(m => m.WaveLength).ToList(); 
             // we use Reflection to get all properties as this class is used as an enum
             foreach (PropertyInfo prop in typeof(StandardWaveLengths).GetProperties(BindingFlags.Public | BindingFlags.Static)) 
             {
@@ -217,9 +217,9 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
             // test if all pins exist that are being used in the connections of the SMatrices
             foreach(var matrix in matrixDrafts)
             {
-                foreach(var connection in matrix.connections)
+                foreach(var connection in matrix.Connections)
                 {
-                    var allPinNumbers = pins.Select(p => p.number).ToHashSet();
+                    var allPinNumbers = pins.Select(p => p.Number).ToHashSet();
                     if (!allPinNumbers.Contains(connection.FromPinNr))
                     {
                         errorMsg += ErrorFromPinNrInvalid + $"The number '{nameof(Connection.FromPinNr)}' is not defined in the list of Pins\n";

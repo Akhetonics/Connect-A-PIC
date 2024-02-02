@@ -22,11 +22,11 @@ namespace ConnectAPIC.LayoutWindow.View
         [Export] public DragDropProxy DragDropProxy;
         [Export] public ComponentViewFactory ComponentViewFactory;
         [Export] public Texture2D LightOnTexture;
-        [Export] public Texture2D LightOffTexture;
-        [Export] public Button LightOnButton;
+        [Export] private Texture2D LightOffTexture;
+        [Export] private Button LightOnButton;
 
         private GridViewModel ViewModel;
-        public bool lightPropagationIsPressed;
+        public event EventHandler<bool> LightSwitched;
         public const string GridSaveFileExtensionPatterns = "*.pic|*.PIC|*.txt|*.TXT";
 
         public ILogger Logger { get; private set; }
@@ -49,58 +49,48 @@ namespace ConnectAPIC.LayoutWindow.View
             DragDropProxy.OnDropData += _DropData;
             DragDropProxy.Initialize(viewModel.Width, viewModel.Height);
         }
+        public void SetLightButtonOn(bool isLightButtonOn)
+        {
+            LightOnButton.ButtonPressed = isLightButtonOn;
+        }
 
         private void _on_btn_export_nazca_pressed()
         {
             SaveFileDialog.Save(this, path =>
             {
-                Task.Run(async () =>
+                try
                 {
-                    try
-                    {
-                        await ViewModel.ExportToNazcaCommand.ExecuteAsync(new ExportNazcaParameters(path));
-                        NotificationManager.Instance.Notify("Successfully saved file");
-                    }
-                    catch (Exception ex)
-                    {
-                        NotificationManager.Instance.Notify($"{ex.Message}", true);
-                        Logger.PrintErr(ex.Message);
-                    }
-                });
+                    ViewModel.ExportToNazcaCommand.ExecuteAsync(new ExportNazcaParameters(path));
+                    NotificationManager.Instance.Notify("Successfully saved file");
+                }
+                catch (Exception ex)
+                {
+                    NotificationManager.Instance.Notify($"{ex.Message}", true);
+                    Logger.PrintErr(ex.Message);
+                }
+                
             });
         }
 
         private void _on_btn_show_light_propagation_toggled(bool button_pressed)
         {
-            lightPropagationIsPressed = button_pressed;
-
-            try
+            LightSwitched.Invoke(this,button_pressed);
+            if (button_pressed)
             {
-                if (button_pressed)
-                {
-                    ViewModel.HideLightPropagation();
-                    ViewModel.ShowLightPropagation();
-                    LightOnButton.Icon = LightOnTexture;
-
-                }
-                else
-                {
-                    ViewModel.HideLightPropagation();
-                    LightOnButton.Icon = LightOffTexture;
-                }
+                LightOnButton.Icon = LightOnTexture;
             }
-            catch (Exception ex)
+            else
             {
-                Logger.PrintErr(ex.Message);
+                LightOnButton.Icon = LightOffTexture;
             }
         }
         private void _on_btn_save_pressed()
         {
-            SaveFileDialog.Save(this, path =>
+            SaveFileDialog.Save(this, async path =>
             {
                 try
                 {
-                    ViewModel.SaveGridCommand.ExecuteAsync(new SaveGridParameters(path));
+                    await ViewModel.SaveGridCommand.ExecuteAsync(new SaveGridParameters(path));
                     NotificationManager.Instance.Notify("Successfully saved file");
                 }
                 catch (Exception ex)
@@ -113,11 +103,11 @@ namespace ConnectAPIC.LayoutWindow.View
         }
         private void _on_btn_load_pressed()
         {
-            SaveFileDialog.Open(this, path =>
+            SaveFileDialog.Open(this, async path =>
             {
                 try
                 {
-                    ViewModel.LoadGridCommand.ExecuteAsync(new LoadGridParameters(path));
+                    await ViewModel.LoadGridCommand.ExecuteAsync(new LoadGridParameters(path));
                     NotificationManager.Instance.Notify("Successfully loaded file");
                 }
                 catch (Exception ex)

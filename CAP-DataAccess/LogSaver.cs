@@ -6,6 +6,7 @@ namespace CAP_DataAccess
     {
         public const int MaxLogFileSize = 1024 * 1024 * 20; // the last number is the megabytes 
         public const int MaxBackupFiles = 5;
+        private readonly object _logFileLock = new object();
         public LogSaver(ILogger logger)
         {
             Logger = logger;
@@ -13,19 +14,22 @@ namespace CAP_DataAccess
         }
         private void SaveLog(Log log)
         {
-            string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            string appFolder = Path.Combine(appDataFolder, "Connect A PIC");
-            string logFilePath = Path.Combine(appFolder, "logs.txt");
-            string logBackupPathFormat = Path.Combine(appFolder, "logs_{0}.txt"); // Format for backup files for string.Format()
-
-            Directory.CreateDirectory(appFolder);
-
-            if (File.Exists(logFilePath) && new FileInfo(logFilePath).Length > MaxLogFileSize)
+            lock (_logFileLock)
             {
-                RolloverLogs(logFilePath, logBackupPathFormat, MaxBackupFiles);
-            }
+                string appDataFolder = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+                string appFolder = Path.Combine(appDataFolder, "Connect A PIC");
+                string logFilePath = Path.Combine(appFolder, "logs.txt");
+                string logBackupPathFormat = Path.Combine(appFolder, "logs_{0}.txt"); // Format for backup files for string.Format()
 
-            File.AppendAllText(logFilePath, log.TimeStamp + " " + log.Message + Environment.NewLine);
+                Directory.CreateDirectory(appFolder);
+
+                if (File.Exists(logFilePath) && new FileInfo(logFilePath).Length > MaxLogFileSize)
+                {
+                    RolloverLogs(logFilePath, logBackupPathFormat, MaxBackupFiles);
+                }
+
+                File.AppendAllText(logFilePath, log.TimeStamp + " " + log.Message + Environment.NewLine);
+            }
         }
 
         private void RolloverLogs(string currentLogPath, string backupPathFormat, int maxBackups)

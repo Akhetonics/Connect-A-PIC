@@ -1,0 +1,219 @@
+{
+  "fileFormatVersion": 1,
+  "identifier": "DirectionalCoupler",
+  "nazcaFunctionParameters": "deltaLength = 50",
+  "nazcaFunctionName": "placeCell_DirectionalCoupler",
+  "sceneResPath": "res://Scenes/Components/DirectionalCoupler/DirectionalCouplerScene.tscn",
+  "deltaLength": 0.5,
+  "widthInTiles": 2,
+  "heightInTiles": 2,
+  "pins": [
+	{
+	  "number": 0,
+	  "name": "west0",
+	  "matterType": 1,
+	  "side": 2,
+	  "partX": 0,
+	  "partY": 0
+	},
+	{
+	  "number": 1,
+	  "name": "east0",
+	  "matterType": 1,
+	  "side": 0,
+	  "partX": 1,
+	  "partY": 0
+	},
+	{
+	  "number": 2,
+	  "name": "west1",
+	  "matterType": 1,
+	  "side": 2,
+	  "partX": 0,
+	  "partY": 1
+	},
+	{
+	  "number": 3,
+	  "name": "east1",
+	  "matterType": 1,
+	  "side": 0,
+	  "partX": 1,
+	  "partY": 1
+	}
+  ],
+"sMatrices": [
+	{
+	"waveLength" : 1550,
+	"connections": [
+		{
+		"fromPinNr": 0,
+		"toPinNr": 1,
+		"nonLinearFormula" : "ToComplexFromPolar( Sub(1.0 ,SLIDER0), 1.2161003820350373)"
+		},
+		{
+		"fromPinNr": 1,
+		"toPinNr": 0,
+		"nonLinearFormula" : "ToComplexFromPolar( Sub(1.0 ,SLIDER0), 1.2161003820350373)"
+		},
+		{
+		"fromPinNr": 0,
+		"toPinNr": 3,
+		"nonLinearFormula" : "ToComplexFromPolar( SLIDER0, -1.925492271554756)"
+		},
+		{
+		"fromPinNr": 3,
+		"toPinNr": 0,
+		"nonLinearFormula" : "ToComplexFromPolar( SLIDER0, -1.925492271554756)"
+		}
+		,
+		{
+		"fromPinNr": 2,
+		"toPinNr": 1,
+		"nonLinearFormula" : "ToComplexFromPolar( SLIDER0, -1.925492271554756)"
+		},
+		{
+		"fromPinNr": 1,
+		"toPinNr": 2,
+		"nonLinearFormula" : "ToComplexFromPolar( SLIDER0, -1.925492271554756)"
+		},
+		{
+		"fromPinNr": 2,
+		"toPinNr": 3,
+		"nonLinearFormula" : "ToComplexFromPolar( Sub(1.0, SLIDER0), 1.2161003820350373)"
+		},
+		{
+		"fromPinNr": 3,
+		"toPinNr": 2,
+		"nonLinearFormula" : "ToComplexFromPolar( Sub( 1.0 ,SLIDER0), 1.2161003820350373)"
+		}
+ 	 ]
+	},
+	{
+	"waveLength" : 1310,
+	"connections": [
+		{
+		"fromPinNr": 0,
+		"toPinNr": 1,
+		"nonLinearFormula" : "ToComplexFromPolar( Sub(1.0, SLIDER0), 0.1918529864783807)"
+		},
+		{
+		"fromPinNr": 1,
+		"toPinNr": 0,
+		"nonLinearFormula" : "ToComplexFromPolar( Sub(1.0, SLIDER0), 0.1918529864783807)"
+		},
+		{
+		"fromPinNr": 0,
+		"toPinNr": 3,
+		"nonLinearFormula" : "ToComplexFromPolar( SLIDER0, -2.9497396671114124)"
+		},
+		{
+		"fromPinNr": 3,
+		"toPinNr": 0,
+		"nonLinearFormula" : "ToComplexFromPolar( SLIDER0, -2.9497396671114124)"
+		}
+		,
+		{
+		"fromPinNr": 2,
+		"toPinNr": 1,
+		"nonLinearFormula" : "ToComplexFromPolar( SLIDER0, -2.9497396671114124)"
+		},
+		{
+		"fromPinNr": 1,
+		"toPinNr": 2,
+		"nonLinearFormula" : "ToComplexFromPolar( SLIDER0, -2.9497396671114124)"
+		},
+		{
+		"fromPinNr": 2,
+		"toPinNr": 3,
+		"nonLinearFormula" : "ToComplexFromPolar( Sub(1.0, SLIDER0), 0.1918529864783807)"
+		},
+		{
+		"fromPinNr": 3,
+		"toPinNr": 2,
+		"nonLinearFormula" : "ToComplexFromPolar( Sub(1.0, SLIDER0), 0.1918529864783807)"
+		}
+ 	 ]
+	},
+	{
+	"waveLength" : 980,
+	"connections": [
+		{
+		"fromPinNr": 0,
+		"toPinNr": 1,
+		"nonLinearFormula" : "ToComplexFromPolar( Sub(1.0 ,SLIDER0), 3.0774785178021489)"
+		},
+		{
+		"fromPinNr": 1,
+		"toPinNr": 0,
+		"nonLinearFormula" : "ToComplexFromPolar( Sub(1.0 ,SLIDER0), 3.0774785178021489)"
+		},
+		{
+		"fromPinNr": 0,
+		"toPinNr": 3,
+		"nonLinearFormula" : "ToComplexFromPolar( SLIDER0, -0.064114135787644369)"
+		},
+		{
+		"fromPinNr": 3,
+		"toPinNr": 0,
+		"nonLinearFormula" : "ToComplexFromPolar( SLIDER0, -0.064114135787644369)"
+		}
+		,
+		{
+		"fromPinNr": 2,
+		"toPinNr": 1,
+		"nonLinearFormula" : "ToComplexFromPolar( SLIDER0, -0.064114135787644369)"
+		},
+		{
+		"fromPinNr": 1,
+		"toPinNr": 2,
+		"nonLinearFormula" : "ToComplexFromPolar( SLIDER0, -0.064114135787644369)"
+		},
+		{
+		"fromPinNr": 2,
+		"toPinNr": 3,
+		"nonLinearFormula" : "ToComplexFromPolar( Sub(1.0, SLIDER0), 3.0774785178021489)"
+		},
+		{
+		"fromPinNr": 3,
+		"toPinNr": 2,
+		"nonLinearFormula" : "ToComplexFromPolar( Sub(1.0, SLIDER0), 3.0774785178021489)"
+		}
+ 	 ]
+	}
+],
+  "overlays": [
+	{
+	  "overlayAnimTexturePath": "res://Scenes/Components/DirectionalCoupler/Directional Coupler LeftUpIn.png",
+	  "rectSide": 2,
+	  "tileOffsetX": 0,
+	  "tileOffsetY": 0
+	},{
+	  "overlayAnimTexturePath": "res://Scenes/Components/DirectionalCoupler/Directional Coupler LeftDown.png",
+	  "rectSide": 2,
+	  "tileOffsetX": 0,
+	  "tileOffsetY": 1
+	},{
+	  "overlayAnimTexturePath": "res://Scenes/Components/DirectionalCoupler/Directional Coupler RightUp.png",
+	  "rectSide": 0,
+	  "tileOffsetX": 1,
+	  "tileOffsetY": 0
+	},{
+	  "overlayAnimTexturePath": "res://Scenes/Components/DirectionalCoupler/Directional Coupler RightDown.png",
+	  "rectSide": 0,
+	  "tileOffsetX": 1,
+	  "tileOffsetY": 1
+	}
+  ],
+	"sliders":
+	[
+		{
+			"sliderNumber" : 0,
+			"godotSliderName" : "JumpRatioSlider",
+			"godotSliderLabelName" : "JumpRatioSliderLabel",
+			"minVal" : 0.0,
+			"maxVal" : 1.0,
+			"steps" : 100,
+			"type" : 0
+		}
+	]
+}

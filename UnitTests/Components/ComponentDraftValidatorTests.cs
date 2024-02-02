@@ -26,17 +26,17 @@ namespace UnitTests
             
             var draft = new ComponentDraft()
             {
-                fileFormatVersion = ComponentDraftFileReader.CurrentFileVersion + 1, // trigger ErrorFileVersionNotSupported
-                identifier = "", // trigger ErrorIdentifierNotSet
-                sceneResPath = "invalid/path", // trigger ErrorSceneResPathNotExist
-                widthInTiles = 0, // trigger ErrorWidthInTilesSmaller0
-                heightInTiles = 0, // trigger ErrorHeightInTilesSmaller0
-                pins = new List<PinDraft>
+                FileFormatVersion = ComponentDraftFileReader.CurrentFileVersion + 1, // trigger ErrorFileVersionNotSupported
+                Identifier = "", // trigger ErrorIdentifierNotSet
+                SceneResPath = "invalid/path", // trigger ErrorSceneResPathNotExist
+                WidthInTiles = 0, // trigger ErrorWidthInTilesSmaller0
+                HeightInTiles = 0, // trigger ErrorHeightInTilesSmaller0
+                Pins = new List<PinDraft>
             {
-                new PinDraft { number = 1, partX = -1 }, // trigger ErrorPinPartXSmaller0
-                new PinDraft { number = 1, partY = -1 }, // trigger ErrorPinPartYSmaller0 and ErrorPinNumberDuplicated
+                new PinDraft { Number = 1, PartX = -1 }, // trigger ErrorPinPartXSmaller0
+                new PinDraft { Number = 1, PartY = -1 }, // trigger ErrorPinPartYSmaller0 and ErrorPinNumberDuplicated
             },
-                overlays = new List<Overlay>
+                Overlays = new List<Overlay>
             {
                 null, // trigger ErrorOverlayNull
                 new Overlay
@@ -46,11 +46,11 @@ namespace UnitTests
                     tileOffsetY = -1, // trigger ErrorOverlayOffsetYSmaller0
                 }
             },
-                sMatrices = new List<WaveLengthSpecificSMatrix>(){
+                SMatrices = new List<WaveLengthSpecificSMatrix>(){
                     new()
                     {
-                        waveLength = StandardWaveLengths.RedNM, 
-                        connections = new List<CAP_DataAccess.Components.ComponentDraftMapper.DTOs.Connection>()
+                        WaveLength = StandardWaveLengths.RedNM, 
+                        Connections = new List<CAP_DataAccess.Components.ComponentDraftMapper.DTOs.Connection>()
                         {
                              new (){ FromPinNr = 999, ToPinNr = 998 } // trigger ErrorFromPinNrInvalid and ErrorToPinNrInvalid
                         }
@@ -87,12 +87,12 @@ namespace UnitTests
             // Arrange
             var draft = new ComponentDraft
             {
-                sceneResPath = "res://testHost.exe",
-                widthInTiles = 2,
-                heightInTiles = 1,
-                identifier = "test",
-                nazcaFunctionName = "test",
-                overlays = new List<Overlay>
+                SceneResPath = "res://testHost.exe",
+                WidthInTiles = 2,
+                HeightInTiles = 1,
+                Identifier = "test",
+                NazcaFunctionName = "test",
+                Overlays = new List<Overlay>
                 {
                     new Overlay {
                         overlayAnimTexturePath = "res://testHost.exe",
@@ -100,30 +100,30 @@ namespace UnitTests
                         tileOffsetY = 0,
                     }
                 },
-                fileFormatVersion = ComponentDraftFileReader.CurrentFileVersion,
-                pins = new List<PinDraft>
+                FileFormatVersion = ComponentDraftFileReader.CurrentFileVersion,
+                Pins = new List<PinDraft>
                 {
                     new PinDraft {
-                        number = 1,
-                        partX = 0,
-                        partY = 0,
-                        matterType = MatterType.Light,
-                        side = RectSide.Left,
-                        name = "west0",
+                        Number = 1,
+                        PartX = 0,
+                        PartY = 0,
+                        MatterType = MatterType.Light,
+                        Side = RectSide.Left,
+                        Name = "west0",
                     },
                     new PinDraft {
-                        number = 2,
-                        partX = 1,
-                        partY = 0,
-                        matterType = MatterType.Light,
-                        side = RectSide.Right,
-                        name = "east0",
+                        Number = 2,
+                        PartX = 1,
+                        PartY = 0,
+                        MatterType = MatterType.Light,
+                        Side = RectSide.Right,
+                        Name = "east0",
                     }
                 },
-                sMatrices = new List<WaveLengthSpecificSMatrix>(){
+                SMatrices = new List<WaveLengthSpecificSMatrix>(){
                     new() {
-                        waveLength = StandardWaveLengths.RedNM,
-                        connections = new List<CAP_DataAccess.Components.ComponentDraftMapper.DTOs.Connection>()
+                        WaveLength = StandardWaveLengths.RedNM,
+                        Connections = new List<CAP_DataAccess.Components.ComponentDraftMapper.DTOs.Connection>()
                         {
                             new ()
                             {
@@ -142,8 +142,8 @@ namespace UnitTests
                         },
                     },
                     new() {
-                        waveLength = StandardWaveLengths.GreenNM,
-                        connections = new List<CAP_DataAccess.Components.ComponentDraftMapper.DTOs.Connection>()
+                        WaveLength = StandardWaveLengths.GreenNM,
+                        Connections = new List<CAP_DataAccess.Components.ComponentDraftMapper.DTOs.Connection>()
                         {
                             new ()
                             {
@@ -162,8 +162,8 @@ namespace UnitTests
                         },
                     },
                     new() {
-                        waveLength = StandardWaveLengths.BlueNM,
-                        connections = new List<CAP_DataAccess.Components.ComponentDraftMapper.DTOs.Connection>()
+                        WaveLength = StandardWaveLengths.BlueNM,
+                        Connections = new List<CAP_DataAccess.Components.ComponentDraftMapper.DTOs.Connection>()
                         {
                             new ()
                             {

@@ -6,7 +6,7 @@ Gamification of PIC Design (PIC = Photonic integrated circuit)
 
 ## Current Version
 
-Version: <!--version-->0.0.52<!--version-->
+Version: <!--version-->0.0.53<!--version-->
 
 ![image](https://github.com/Akhetonics/Connect-A-PIC/assets/18228325/cde9edb5-f93c-452d-b046-a02134fbc1ba)
 
@@ -84,7 +84,7 @@ just have a look at one of those JSON files there. Keep in mind, that if you wan
 		"toPinNr": 1,
 		"magnitude": 0.5,
 		"phase": 1.2161003820350373,
-		"nonLinearFunction" : "Div(1,Add(PIN1,PIN2))"
+		"nonLinearFormula" : "Div(1,Add(PIN1,PIN2))"
 		},
 	]
 	}
@@ -92,7 +92,7 @@ just have a look at one of those JSON files there. Keep in mind, that if you wan
 // ...
 ```
 You don't have to use "magnitude" and "phase", but can use "real" and "imaginary" instead.
-the nonLinearFunction only supports the functions Add, Sub, Div and Mul for now and those are case sensitive with the first letter being capital and the others are small. 
+the nonLinearFormula only supports the functions Add, Sub, Div and Mul for now and those are case sensitive with the first letter being capital and the others are small. 
 
 # github actions
 there are several github actions for release, spell check, XUnit tests (for all non-Godot functions) and GoDotTest tests (for all Nodes and for integration tests).

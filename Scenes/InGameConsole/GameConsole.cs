@@ -5,6 +5,7 @@ using Chickensoft.AutoInject;
 using SuperNodes.Types;
 using ConnectAPIC.LayoutWindow.ViewModel;
 using CAP_Core.Tiles.Grid;
+using ConnectAPic.LayoutWindow;
 
 namespace ConnectAPIC.Scenes.InGameConsole
 {
@@ -43,13 +44,12 @@ namespace ConnectAPIC.Scenes.InGameConsole
 		public void PrintInfo(string text)
 		{
 			GD.Print(text);
-			Print(text);
+			CallDeferred(nameof(Print),text, false); // make sure it runs on the UI thread
 		}
 		public void PrintErr(string text)
 		{
-			Print(text, true);
-			GD.PrintErr(text);
-			Show();
+			CallDeferred(nameof(Print),text, true);// make sure it runs on the UI thread
+            GD.PrintErr(text);
 		}
 		private void Print(string text, bool isError = false)
 		{
@@ -57,9 +57,10 @@ namespace ConnectAPIC.Scenes.InGameConsole
 			if (isError)
 			{
 				labelTemplate = ErrorTextTemplate;
-			}
+                Show();
+            }
 
-			var newLine = labelTemplate.Duplicate() as RichTextLabel;
+			var newLine = (RichTextLabel)labelTemplate.Duplicate();
 			newLine.Text = text;
 			newLine.Visible = true;
 			LoggingParent.AddChild(newLine);
@@ -85,8 +86,7 @@ namespace ConnectAPIC.Scenes.InGameConsole
 
 				if (eventKey.IsReleased() && eventKey.Keycode == Key.F2)
 				{
-					var matrixPrinter = new GridSMatrixPrinter(ViewModel.MatrixAnalyzer);
-					Print(matrixPrinter.ToString().Replace('\t', ' '));
+					Print("Version: " + GameManager.instance.Version);
 				}
 			}
 		}
