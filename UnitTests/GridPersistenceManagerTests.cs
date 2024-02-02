@@ -47,6 +47,9 @@ namespace UnitTests
             var inputs = grid.GetAllExternalInputs();
             int inputHeight = inputs.FirstOrDefault()?.TilePositionY ?? throw new Exception("there is no StandardInput defined");
             var firstComponent = TestComponentFactory.CreateComponent(TestComponentFactory.StraightWGJson);
+            var firstSlider = new Slider(Guid.NewGuid(), 1, 0.1337, 1, 0.1);
+            firstComponent.AddSlider(1, firstSlider);
+            var sliderCountBeforeSaving = firstComponent.GetAllSliders().Count;
             grid.PlaceComponent(0, inputHeight, firstComponent);
             var secondComponent = ExportNazcaTests.PlaceAndConcatenateComponent(grid, firstComponent);
             var thirdComponent = ExportNazcaTests.PlaceAndConcatenateComponent(grid, secondComponent);
@@ -60,10 +63,16 @@ namespace UnitTests
             await gridPersistenceManager.SaveAsync(tempSavePath);
             var firstComponentConnections = grid.GetComponentAt(0, inputHeight).WaveLengthToSMatrixMap.Values.First().GetNonNullValues();
             await gridPersistenceManager.LoadAsync(tempSavePath, componentFactory);
-            
+            var firstComponentFromGrid = grid.GetComponentAt(0, inputHeight);
+            var sliderFromGrid = firstComponentFromGrid.GetSlider(firstSlider.Number);
+
             // Asserts
-            grid.GetComponentAt(0, inputHeight).Rotation90CounterClock.ShouldBe(firstComponent.Rotation90CounterClock);
-            grid.GetComponentAt(0, inputHeight).Identifier.ShouldBe(firstComponent.Identifier);
+            firstComponentFromGrid.GetAllSliders().Count.ShouldBe(sliderCountBeforeSaving);
+            firstComponentFromGrid.Rotation90CounterClock.ShouldBe(firstComponent.Rotation90CounterClock);
+            sliderFromGrid.MinValue.ShouldBe(sliderFromGrid.MinValue);
+            sliderFromGrid.MaxValue.ShouldBe(sliderFromGrid.MaxValue);
+            sliderFromGrid.Value.ShouldBe(sliderFromGrid.Value);
+            firstComponentFromGrid.Identifier.ShouldBe(firstComponent.Identifier);
             firstComponentConnections.First().Value.Real.ShouldBe(1);
             grid.GetComponentAt(orphanPos.X, orphanPos.Y).Rotation90CounterClock.ShouldBe(orphan.Rotation90CounterClock);
             grid.GetComponentAt(orphanPos.X, orphanPos.Y).Identifier.ShouldBe(orphan.Identifier);

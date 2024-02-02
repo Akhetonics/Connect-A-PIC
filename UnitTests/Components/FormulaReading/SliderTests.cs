@@ -14,7 +14,7 @@ namespace UnitTests.Components.FormulaReading
     {
         const string formula = "ToComplexFromPolar(Sub(1.0, SLIDER0), 1.2161003820350373)";
         [Fact]
-        public void SliderCalculationTest()
+        public async void SliderCalculationTest()
         {
             // Arrange
             var converter = new ComponentDraftConverter(new Logger());
@@ -31,7 +31,7 @@ namespace UnitTests.Components.FormulaReading
             component.GetSlider(0).Value = 0.5;
 
             // Act
-            var outputVector = component.WaveLengthToSMatrixMap[LaserType.Red.WaveLengthInNm].GetLightPropagationAsync(inputVector, 1000);
+            var outputVector = await component.WaveLengthToSMatrixMap[LaserType.Red.WaveLengthInNm].GetLightPropagationAsync(inputVector, 1000, new());
             var outputPinLightVal = outputVector[outFlowID];
 
             // Assert

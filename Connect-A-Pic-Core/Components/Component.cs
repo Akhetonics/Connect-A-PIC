@@ -79,9 +79,13 @@ namespace CAP_Core.Components
             }
         }
 
-        public Slider GetSlider (int sliderNr)
+        public Slider? GetSlider (int sliderNr)
         {
-            return SliderMap[sliderNr];
+            if(SliderMap.TryGetValue(sliderNr, out Slider slider) == true)
+            {
+                return slider;
+            }
+            return null;
         }
         public List<Slider> GetAllSliders()
         {
