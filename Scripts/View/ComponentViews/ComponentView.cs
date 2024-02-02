@@ -106,14 +106,9 @@ namespace ConnectAPIC.LayoutWindow.View
             };
             SliderDebounceTimer.Elapsed += (object sender, System.Timers.ElapsedEventArgs e) =>
             { 
-                // we have to run the sliderchanged in the correct thread - it might happen that the object already got disposed of.
-                try
-                {
-                    CallDeferred(nameof(HandleSliderChangeDeferred), godotSlider, godotSlider.Value);
-                    SliderDebounceTimer.Stop();
-                } catch (ObjectDisposedException)
-                {
-                }
+                // we have to run the sliderchanged in the correct thread
+                CallDeferred(nameof(HandleSliderChangeDeferred), godotSlider, godotSlider.Value);
+                SliderDebounceTimer.Stop();
             };
             godotSlider.Value = sliderData.InitialValue;
             SetSliderLabelText(label, sliderData.InitialValue);
@@ -326,6 +321,14 @@ namespace ConnectAPIC.LayoutWindow.View
                 new (LaserType.Green,tileOffset, inflowSide, OverlayGreen, overlayAnimTexture, new Vector2I(WidthInTiles, HeightInTiles)),
                 new (LaserType.Blue,tileOffset, inflowSide, OverlayBlue, overlayAnimTexture, new Vector2I(WidthInTiles, HeightInTiles)),
             };
+        }
+
+        public override void _ExitTree()
+        {
+            // free the slider timer to avoid object disposed exceptions
+            SliderDebounceTimer.Stop();
+            SliderDebounceTimer.Dispose();
+            SliderDebounceTimer = null;
         }
 
 
