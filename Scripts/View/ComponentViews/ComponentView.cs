@@ -126,14 +126,13 @@ namespace ConnectAPIC.LayoutWindow.View
                 Logger.PrintErr(ex.Message);
             }
         }
-
         private void SetSliderLabelText(RichTextLabel label, double newVal) => label.Text = $"[center]{newVal:F2}";
         public void InitializeComponent(int componentTypeNumber, List<SliderViewData> sliderDataSets, List<AnimationSlotOverlayData> slotDataSets, int widthInTiles, int heightInTiles, ILogger logger)
         {
             this.Logger = logger;
             if (widthInTiles == 0) Logger.PrintErr(nameof(widthInTiles) + " of this element is not set in the TypeNR: " + componentTypeNumber);
             if (heightInTiles == 0) Logger.PrintErr(nameof(heightInTiles) + " of this element is not set in the TypeNR: " + componentTypeNumber);
-            InitializeSliders(sliderDataSets);
+            sliderDataSets.ForEach(s => FindAndInitializeSlider(s));
             this.TypeNumber = componentTypeNumber;
             this.WidthInTiles = widthInTiles;
             this.HeightInTiles = heightInTiles;
@@ -153,15 +152,6 @@ namespace ConnectAPIC.LayoutWindow.View
             }
             RotationCC = _rotationCC;
         }
-
-        private void InitializeSliders(List<SliderViewData> newSliders)
-        {
-            foreach (var slider in newSliders)
-            {
-                FindAndInitializeSlider(slider);
-            }
-        }
-
         private void InitializeLightOverlays()
         {
             if (OverlayBluePrint == null) return;
