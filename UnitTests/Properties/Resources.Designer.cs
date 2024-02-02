@@ -67,7 +67,7 @@ namespace UnitTests.Properties {
         ///  &quot;nazcaFunctionParameters&quot;: &quot;deltaLength = 50&quot;,
         ///  &quot;nazcaFunctionName&quot;: &quot;placeCell_DirectionalCoupler&quot;,
         ///  &quot;sceneResPath&quot;: &quot;res://Scenes/Components/DirectionalCoupler/DirectionalCouplerScene.tscn&quot;,
-        ///  &quot;deltaLength&quot;: 50,
+        ///  &quot;deltaLength&quot;: 0.5,
         ///  &quot;widthInTiles&quot;: 2,
         ///  &quot;heightInTiles&quot;: 2,
         ///  &quot;pins&quot;: [
@@ -83,7 +83,7 @@ namespace UnitTests.Properties {
         ///	  &quot;number&quot;: 1,
         ///	  &quot;name&quot;: &quot;east0&quot;,
         ///	  &quot;matterType&quot;: 1,
-        ///	  &quot;side [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
+        ///	  &quot;sid [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
         /// </summary>
         internal static string DirectionalCouplerDraft {
             get {
