@@ -22,6 +22,7 @@ using System.Reflection;
 using CAP_Core.Grid;
 using System.Globalization;
 using System.Threading;
+using CAP_Core.LightCalculation;
 
 namespace ConnectAPic.LayoutWindow
 {
@@ -60,7 +61,9 @@ namespace ConnectAPic.LayoutWindow
 		public GridView GridView { get; set; }
 		public System.Version Version => Assembly.GetExecutingAssembly().GetName().Version; // Get the version from the assembly
 		public GridManager Grid { get; set; }
-		public static GameManager instance;
+        public LightCalculationService LightCalculator { get; private set; }
+
+        public static GameManager instance;
 		public ILogger Logger { get; set; }
 		private LogSaver LogSaver { get; set; }
 		private List<(String log, bool isError)> InitializationLogs = new();
@@ -159,7 +162,8 @@ namespace ConnectAPic.LayoutWindow
 			GridView = GetNode<GridView>(GridViewPath);
 			this.CheckForNull(x => GridView);
 			Grid = new GridManager(FieldWidth, FieldHeight);
-			GridViewModel = new GridViewModel(GridView, Grid, Logger, componentFactory);
+			LightCalculator = new CAP_Core.LightCalculation.LightCalculationService(Grid.GetAllExternalInputs() , new GridSMatrixAnalyzer(Grid));
+            GridViewModel = new GridViewModel(GridView, Grid, Logger, componentFactory , LightCalculator);
 			GridView.Initialize(GridViewModel, Logger);
 			InitializationLogs.Add(("Initialized GridView and Grid and GridViewModel", false));
 		}

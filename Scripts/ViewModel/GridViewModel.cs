@@ -1,23 +1,18 @@
 ﻿using CAP_Contracts.Logger;
 using CAP_Core.CodeExporter;
 using CAP_Core.Components;
-using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.Components.Creation;
 using CAP_Core.ExternalPorts;
 using CAP_Core.Grid;
 using CAP_Core.Helpers;
-using CAP_Core.Tiles;
-using CAP_Core.Tiles.Grid;
+using CAP_Core.LightCalculation;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scripts.Helpers;
 using ConnectAPIC.Scripts.View.ComponentFactory;
-using ConnectAPIC.Scripts.View.ComponentViews;
 using ConnectAPIC.Scripts.ViewModel.Commands;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Net.Security;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,37 +32,36 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         public ComponentView[,] GridComponentViews { get; private set; }
         public int Width { get => GridComponentViews.GetLength(0); }
         public int Height { get => GridComponentViews.GetLength(1); }
-        private CancellationTokenSource CancelTokenLightCalc = new();
         public GridManager Grid { get; set; }
         public ILogger Logger { get; }
         public ComponentFactory ComponentModelFactory { get; }
         public GridView GridView { get; set; }
+        public LightCalculationService LightCalculator { get; set; }
         public int MaxTileCount { get => Width * Height; }
         public bool IsLightOn { get; set; } = false;
 
-        public GridViewModel(GridView gridView, GridManager grid, ILogger logger, ComponentFactory componentModelFactory)
+        public GridViewModel(GridView gridView, GridManager grid, ILogger logger, ComponentFactory componentModelFactory, LightCalculationService lightCalculator)
         {
             this.GridView = gridView;
             this.Grid = grid;
+            LightCalculator = lightCalculator;
+            LightCalculator.LightCalculationChanged += (object sender, LightCalculationChangeEventArgs e) =>
+            {
+                AssignLightToComponentViews(e.LightVector, e.LaserInUse);
+            };
             GridView.LightSwitched += async (sender, isOn) =>
             {
                 IsLightOn = isOn;
-                try
+                if (isOn)
                 {
-                    if (isOn)
-                    {
-                        await ShowLightPropagationAsync();
-                    }
-                    else
-                    {
-                        await HideLightPropagation();
-                    }
+                    await LightCalculator.ShowLightPropagationAsync();
                 }
-                catch (Exception ex)
+                else
                 {
-                    Logger.PrintErr(ex.Message);
+                    await HideLightPropagation();
                 }
             };
+
             Logger = logger;
             this.ComponentModelFactory = componentModelFactory;
             //this.GridView.Columns = grid.Width;
@@ -81,27 +75,29 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             MoveSliderCommand = new MoveSliderCommand(grid);
             ExportToNazcaCommand = new ExportNazcaCommand(new NazcaExporter(), grid, new DataAccessorGodot());
             CreateEmptyField();
+
             this.Grid.OnComponentPlacedOnTile += Grid_OnComponentPlacedOnTile;
             this.Grid.OnComponentRemoved += Grid_OnComponentRemoved;
+
         }
 
         private async void Grid_OnComponentRemoved(Component component, int x, int y)
         {
             ResetTilesAt(x, y, component.WidthInTiles, component.HeightInTiles);
-            await RecalculateLightPropagation();
+            await RecalculateLightIfNeeded();
         }
 
-        private async Task RecalculateLightPropagation()
+        private async Task RecalculateLightIfNeeded()
         {
             if (IsLightOn)
             {
-                await ShowLightPropagationAsync();
+                await LightCalculator.ShowLightPropagationAsync();
             }
         }
         private async void Grid_OnComponentPlacedOnTile(Component component, int gridX, int gridY)
         {
             CreateComponentView(gridX, gridY, component.Rotation90CounterClock, component.TypeNumber, component.GetAllSliders());
-            await RecalculateLightPropagation();
+            await RecalculateLightIfNeeded();
         }
         public bool IsInGrid(int x, int y, int width, int height)
         {
@@ -152,7 +148,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             ComponentView.SliderChanged += async (ComponentView view, Godot.Slider godotSlider, double newVal) =>
             {
                 await MoveSliderCommand.ExecuteAsync(new MoveSliderCommandArgs(view.GridX, view.GridY, (int)godotSlider.GetMeta(ComponentView.SliderNumberMetaID), newVal));
-                await RecalculateLightPropagation();
+                await RecalculateLightIfNeeded();
             };
             RegisterComponentViewInGridView(ComponentView);
             GridView.DragDropProxy.AddChild(ComponentView); // it has to be the child of the DragDropArea to be displayed
@@ -162,58 +158,6 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
                 ComponentView.SetSliderValue(slider.Number, slider.Value);
             }
             return ComponentView;
-        }
-        private Task LightCalculationTask;
-        public async Task ShowLightPropagationAsync()
-        {
-            await CancelLightCalculation();
-            try
-            {
-                var inputPorts = Grid.GetAllExternalInputs(); // go through all Inputs, so that the light can be turned off properly if e.g. red is turned off but some components have red light.
-                foreach (var port in inputPorts)
-                {
-                    CancelTokenLightCalc.Token.ThrowIfCancellationRequested();
-                    LightCalculationTask = Task.Run(async () =>
-                    {
-                        var MatrixAnalyzer = new GridSMatrixAnalyzer(this.Grid, port.LaserType.WaveLengthInNm);
-                        var resultLightVector = await MatrixAnalyzer.CalculateLightPropagationAsync(CancelTokenLightCalc);
-                        AssignLightToComponentViews(resultLightVector, port.LaserType);
-                    }, CancelTokenLightCalc.Token);
-                    await LightCalculationTask.ConfigureAwait(false);
-                }
-
-            }
-            catch (OperationCanceledException)
-            {
-            }
-            catch (ObjectDisposedException)
-            {
-            }
-            finally
-            {
-                LightCalculationTask = null;
-            }
-        }
-
-        private async Task CancelLightCalculation()
-        {
-            // Cancel the ongoing calculations
-            CancelTokenLightCalc.Cancel();
-
-            try
-            {
-                if (LightCalculationTask != null)
-                {
-                    await Task.WhenAll(new List<Task>() { LightCalculationTask }).ConfigureAwait(false);
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                // all Tasks are cancelled
-            }
-            // Dispose the old CancellationTokenSource and create a new one for the next calculations
-            CancelTokenLightCalc.Dispose();
-            CancelTokenLightCalc = new CancellationTokenSource();
         }
 
         private void AssignLightToComponentViews(Dictionary<Guid, Complex> lightVector, LaserType laserType)
@@ -225,65 +169,28 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
                 {
                     var componentView = GridComponentViews[componentModel.GridXMainTile, componentModel.GridYMainTile];
                     if (componentView == null) return;
-                    List<LightAtPin> lightAtPins = ConvertToLightAtPins(lightVector, laserType, componentModel);
+                    List<LightAtPin> lightAtPins = LightCalculationHelpers.ConvertToLightAtPins(lightVector, laserType, componentModel);
                     componentView.DisplayLightVector(lightAtPins);
                 }
                 catch (Exception ex)
                 {
                     Logger.PrintErr(ex.Message);
                 }
-
             }
-        }
-
-        public static List<LightAtPin> ConvertToLightAtPins(Dictionary<Guid, Complex> lightVector, LaserType laserType, Component componentModel)
-        {
-            List<LightAtPin> lightAtPins = new();
-
-            for (int offsetX = 0; offsetX < componentModel.WidthInTiles; offsetX++)
-            {
-                for (int offsetY = 0; offsetY < componentModel.HeightInTiles; offsetY++)
-                {
-                    var part = componentModel.GetPartAt(offsetX, offsetY);
-                    foreach (var localSide in Enum.GetValues(typeof(RectSide)).OfType<RectSide>())
-                    {
-                        var pin = part.GetPinAt(localSide);
-                        if (pin == null) continue;
-                        var lightFlow = new LightAtPin(
-                            offsetX,
-                            offsetY,
-                            localSide,
-                            laserType,
-                            lightVector.TryGetVal(pin.IDInFlow),
-                            lightVector.TryGetVal(pin.IDOutFlow)
-                            );
-                        lightAtPins.Add(lightFlow);
-                    }
-                }
-            }
-
-            return lightAtPins;
         }
 
         public async Task HideLightPropagation()
         {
             IsLightOn = false;
             GridView.SetLightButtonOn(false);
-            await CancelLightCalculation();
+            await LightCalculator.CancelLightCalculation();
 
-            try
+            for (int x = 0; x < Grid.Width; x++)
             {
-                for (int x = 0; x < Grid.Width; x++)
+                for (int y = 0; y < Grid.Height; y++)
                 {
-                    for (int y = 0; y < Grid.Height; y++)
-                    {
-                        GridComponentViews[x, y]?.HideLightVector();
-                    }
+                    GridComponentViews[x, y]?.HideLightVector();
                 }
-            }
-            catch (Exception ex)
-            {
-                Logger.PrintErr(ex.Message);
             }
         }
     }

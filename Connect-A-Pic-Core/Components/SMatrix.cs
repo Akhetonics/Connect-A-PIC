@@ -1,14 +1,8 @@
 using System.Text;
 using System.Numerics;
 using MathNet.Numerics.LinearAlgebra;
-using System.Linq.Expressions;
 using System.Linq.Dynamic.Core;
-using System.Text.RegularExpressions;
-using System.ComponentModel;
-using System.Linq;
 using CAP_Core.Components.FormulaReading;
-using CAP_Core.Tiles.Grid;
-using MathNet.Numerics;
 
 namespace CAP_Core.Components
 {

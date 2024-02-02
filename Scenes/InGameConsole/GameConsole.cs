@@ -4,7 +4,6 @@ using Godot;
 using Chickensoft.AutoInject;
 using SuperNodes.Types;
 using ConnectAPIC.LayoutWindow.ViewModel;
-using CAP_Core.Tiles.Grid;
 using ConnectAPic.LayoutWindow;
 
 namespace ConnectAPIC.Scenes.InGameConsole

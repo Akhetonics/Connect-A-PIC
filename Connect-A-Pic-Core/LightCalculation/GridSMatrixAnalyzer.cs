@@ -3,39 +3,42 @@ using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.ExternalPorts;
 using CAP_Core.Grid;
 using CAP_Core.Helpers;
+using CAP_Core.Tiles;
 using System.Linq;
 using System.Numerics;
-namespace CAP_Core.Tiles.Grid
+namespace CAP_Core.LightCalculation
 {
-    public class GridSMatrixAnalyzer
+    public interface IMatrixLightCalculator
+    {
+        public Task<Dictionary<Guid, Complex>> CalculateLightPropagationAsync(CancellationTokenSource cancelToken, int LaserWaveLengthInNm);
+    }
+
+    public class GridSMatrixAnalyzer : IMatrixLightCalculator
     {
         public readonly GridManager Grid;
-        public Dictionary<(Guid, Guid), Complex>? InterComponentConnections { get; private set; }
         public SMatrix? SystemSMatrix { get; private set; }
-        public int LaserWaveLengthInNm { get; }
 
-        public GridSMatrixAnalyzer(GridManager grid, int laserWaveLengthInNm)
+        public GridSMatrixAnalyzer(GridManager grid)
         {
             Grid = grid;
-            LaserWaveLengthInNm = laserWaveLengthInNm;
         }
 
         // calculates the light intensity and phase at a given PIN-ID for both light-flow-directions "in" and "out" for a given period of steps
-        public async Task<Dictionary<Guid, Complex>> CalculateLightPropagationAsync(CancellationTokenSource cancelToken)
+        public async Task<Dictionary<Guid, Complex>> CalculateLightPropagationAsync(CancellationTokenSource cancelToken, int LaserWaveLengthInNm)
         {
-            UpdateSystemSMatrix();
+            UpdateSystemSMatrix(LaserWaveLengthInNm);
             var stepCount = SystemSMatrix.PinReference.Count() * 2;
             var usedInputs = Grid.GetUsedExternalInputs()
                                  .Where(i => i.Input.LaserType.WaveLengthInNm == LaserWaveLengthInNm)
                                  .ToList();
             var inputVector = UsedInputConverter.ToVector(usedInputs, SystemSMatrix);
 
-            return await SystemSMatrix.GetLightPropagationAsync(inputVector, stepCount,cancelToken) ?? new Dictionary<Guid, Complex>();
+            return await SystemSMatrix.GetLightPropagationAsync(inputVector, stepCount, cancelToken) ?? new Dictionary<Guid, Complex>();
         }
 
-        private void UpdateSystemSMatrix()
+        private void UpdateSystemSMatrix(int LaserWaveLengthInNm)
         {
-            var allComponentsSMatrices = GetAllComponentsSMatrices((int)LaserWaveLengthInNm);
+            var allComponentsSMatrices = GetAllComponentsSMatrices(LaserWaveLengthInNm);
             SMatrix allConnectionsSMatrix = CreateInterComponentsConnectionsMatrix();
             allComponentsSMatrices.Add(allConnectionsSMatrix);
             SystemSMatrix = SMatrix.CreateSystemSMatrix(allComponentsSMatrices);
@@ -43,14 +46,11 @@ namespace CAP_Core.Tiles.Grid
 
         public SMatrix CreateInterComponentsConnectionsMatrix()
         {
-            if (InterComponentConnections == null || InterComponentConnections.Count <= 0)
-            {
-                CalcAllConnectionsBetweenComponents();
-            }
-            var allUsedPinIDs = InterComponentConnections.SelectMany(c => new[] { c.Key.Item1, c.Key.Item2 }).Distinct().ToList();
+            var interComponentConnections = CalcAllConnectionsBetweenComponents();
+            var allUsedPinIDs = interComponentConnections.SelectMany(c => new[] { c.Key.Item1, c.Key.Item2 }).Distinct().ToList();
             Grid.GetUsedExternalInputs().ForEach(input => allUsedPinIDs.Add(input.AttachedComponentPinId)); // Grating coupler has no internal connections and might be only connected to the Laser directly
             var allConnectionsSMatrix = new SMatrix(allUsedPinIDs, new());
-            allConnectionsSMatrix.SetValues(InterComponentConnections);
+            allConnectionsSMatrix.SetValues(interComponentConnections);
             return allConnectionsSMatrix;
         }
 
@@ -71,22 +71,23 @@ namespace CAP_Core.Tiles.Grid
             };
             return allSMatrices;
         }
-        private void CalcAllConnectionsBetweenComponents()
+        private Dictionary<(Guid LightIn, Guid LightOut), Complex> CalcAllConnectionsBetweenComponents()
         {
             int gridWidth = Grid.Tiles.GetLength(0);
             int gridHeight = Grid.Tiles.GetLength(1);
-            InterComponentConnections = new();
+            var InterComponentConnections = new Dictionary<(Guid LightIn, Guid LightOut), Complex>();
 
             for (int x = 0; x < gridWidth; x++)
             {
                 for (int y = 0; y < gridHeight; y++)
                 {
-                    ConnectAllBorderEdgesOfComponentAt(x, y);
+                    ConnectAllBorderEdgesOfComponentAt(x, y , InterComponentConnections);
                 }
             }
+            return InterComponentConnections;
         }
 
-        private void ConnectAllBorderEdgesOfComponentAt(int x, int y)
+        private void ConnectAllBorderEdgesOfComponentAt(int x, int y , Dictionary<(Guid LightIn, Guid LightOut), Complex> InterComponentConnections)
         {
             Array allSides = Enum.GetValues(typeof(RectSide));
             foreach (RectSide side in allSides)
@@ -112,7 +113,5 @@ namespace CAP_Core.Tiles.Grid
             var centeredComponent = Grid.Tiles[gridX, gridY].Component;
             return centeredComponent != foreignTile.Component;
         }
-
-        public override string ToString() => new GridSMatrixPrinter(this).ToString();
     }
 }

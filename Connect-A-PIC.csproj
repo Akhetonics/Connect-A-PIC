@@ -83,6 +83,9 @@
     <PackageReference Update="Godot.SourceGenerators" Version="4.1.3" />
     <PackageReference Update="GodotSharpEditor" Version="4.1.3" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Scripts\LightCalculation\" />
+  </ItemGroup>
   <PropertyGroup>
     <DefaultItemExcludes Condition="'$(Configuration)' == 'ExportRelease'">
         $(DefaultItemExcludes);test/**/*
