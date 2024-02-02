@@ -8,17 +8,17 @@ using System.Linq;
 using System.Numerics;
 namespace CAP_Core.LightCalculation
 {
-    public interface IMatrixLightCalculator
+    public interface ILightCalculator
     {
         public Task<Dictionary<Guid, Complex>> CalculateLightPropagationAsync(CancellationTokenSource cancelToken, int LaserWaveLengthInNm);
     }
 
-    public class GridSMatrixAnalyzer : IMatrixLightCalculator
+    public class GridLightCalculator : ILightCalculator
     {
         public readonly GridManager Grid;
         public SMatrix? SystemSMatrix { get; private set; }
 
-        public GridSMatrixAnalyzer(GridManager grid)
+        public GridLightCalculator(GridManager grid)
         {
             Grid = grid;
         }
@@ -44,7 +44,7 @@ namespace CAP_Core.LightCalculation
             SystemSMatrix = SMatrix.CreateSystemSMatrix(allComponentsSMatrices);
         }
 
-        public SMatrix CreateInterComponentsConnectionsMatrix()
+        private SMatrix CreateInterComponentsConnectionsMatrix()
         {
             var interComponentConnections = CalcAllConnectionsBetweenComponents();
             var allUsedPinIDs = interComponentConnections.SelectMany(c => new[] { c.Key.Item1, c.Key.Item2 }).Distinct().ToList();
@@ -54,7 +54,7 @@ namespace CAP_Core.LightCalculation
             return allConnectionsSMatrix;
         }
 
-        public List<SMatrix> GetAllComponentsSMatrices(int waveLength)
+        private List<SMatrix> GetAllComponentsSMatrices(int waveLength)
         {
             var allComponents = Grid.GetAllComponents();
             var allSMatrices = new List<SMatrix>();

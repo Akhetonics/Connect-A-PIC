@@ -25,9 +25,9 @@ namespace CAP_Core.LightCalculation
         private Task? LightCalculationTask;
         private CancellationTokenSource CancelTokenLightCalc { get; set; } = new();
         public List<ExternalInput> LightInputs { get; }
-        public IMatrixLightCalculator GridSMatrixAnalyzer { get; }
+        public ILightCalculator GridSMatrixAnalyzer { get; }
 
-        public LightCalculationService(List<ExternalInput> lightInputs , IMatrixLightCalculator gridSMatrixAnalyzer)
+        public LightCalculationService(List<ExternalInput> lightInputs , ILightCalculator gridSMatrixAnalyzer)
         {
             LightInputs = lightInputs;
             GridSMatrixAnalyzer = gridSMatrixAnalyzer;

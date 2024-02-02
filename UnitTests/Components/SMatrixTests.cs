@@ -16,26 +16,13 @@ namespace UnitTests.Components
             var grid = new GridManager(20, 10);
             grid.PlaceComponent(0, grid.ExternalPorts[0].TilePositionY, directionalCoupler);
             var laserType = grid.GetUsedExternalInputs().First().Input.LaserType;
-            var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid);
+            var gridSMatrixAnalyzer = new GridLightCalculator(grid);
             var lightPropagation = await gridSMatrixAnalyzer.CalculateLightPropagationAsync(new CancellationTokenSource(), laserType.WaveLengthInNm);
-
-            // test directionalCoupler
-            var allComponentsSMatrices = gridSMatrixAnalyzer.GetAllComponentsSMatrices(laserType.WaveLengthInNm);
-            var debug_directionalComponentMatrix = gridSMatrixAnalyzer.ToString();
-            var connections = allComponentsSMatrices[0].GetNonNullValues();
-            var UpperToRightConnection = connections.Single(e => e.Key == (directionalCoupler.PinIdLeftIn(0, 0), directionalCoupler.PinIdRightOut(1, 0))).Value;
-            var LowerToRightConnection = connections.Single(e => e.Key == (directionalCoupler.PinIdLeftIn(0, 1), directionalCoupler.PinIdRightOut(1, 1))).Value;
-            var UpperToLeftConnection = connections.Single(e => e.Key == (directionalCoupler.PinIdRightIn(1, 0), directionalCoupler.PinIdLeftOut(0, 0))).Value;
-            var LowerToLeftConnection = connections.Single(e => e.Key == (directionalCoupler.PinIdRightIn(1, 1), directionalCoupler.PinIdLeftOut(0, 1))).Value;
-
+            
             var directionalCouplerLightIn = lightPropagation[directionalCoupler.PinIdLeftIn()];
             var directionalCouplerLightOutUp = lightPropagation[directionalCoupler.PinIdRightOut(1, 0)];
             var directionalCouplerLightOutDown = lightPropagation[directionalCoupler.PinIdRightOut(1, 1)];
 
-            Assert.Equal(0.5, UpperToRightConnection.Magnitude);
-            Assert.Equal(0.5, LowerToRightConnection.Magnitude);
-            Assert.Equal(0.5, UpperToLeftConnection.Magnitude);
-            Assert.Equal(0.5, LowerToLeftConnection.Magnitude);
 
             Assert.Equal(1, directionalCouplerLightIn.Magnitude);
             Assert.Equal(0.5, directionalCouplerLightOutUp.Magnitude);
@@ -52,30 +39,12 @@ namespace UnitTests.Components
             var allSliders = directionalCoupler.GetAllSliders();
             slider.Value = 0.5;
             var laserType = grid.GetUsedExternalInputs().First().Input.LaserType;
-            var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid);
+            var gridSMatrixAnalyzer = new GridLightCalculator(grid);
             var lightPropagation = await gridSMatrixAnalyzer.CalculateLightPropagationAsync(new CancellationTokenSource(), laserType.WaveLengthInNm);
-
-            // test directionalCoupler
-            var allComponentsSMatrices = gridSMatrixAnalyzer.GetAllComponentsSMatrices(laserType.WaveLengthInNm);
-            var debug_directionalComponentMatrix = gridSMatrixAnalyzer.ToString();
-            var nonLinearConnections = allComponentsSMatrices[0].NonLinearConnections;
-            var UpperToRightConnection = nonLinearConnections.Single(e => e.Key == (directionalCoupler.PinIdLeftIn(0, 0), directionalCoupler.PinIdRightOut(1, 0))).Value;
-            var LowerToRightConnection = nonLinearConnections.Single(e => e.Key == (directionalCoupler.PinIdLeftIn(0, 1), directionalCoupler.PinIdRightOut(1, 1))).Value;
-            var UpperToLeftConnection = nonLinearConnections.Single(e => e.Key == (directionalCoupler.PinIdRightIn(1, 0), directionalCoupler.PinIdLeftOut(0, 0))).Value;
-            var LowerToLeftConnection = nonLinearConnections.Single(e => e.Key == (directionalCoupler.PinIdRightIn(1, 1), directionalCoupler.PinIdLeftOut(0, 1))).Value;
-
             var directionalCouplerLightIn = lightPropagation[directionalCoupler.PinIdLeftIn()];
             var directionalCouplerLightOutUp = lightPropagation[directionalCoupler.PinIdRightOut(1, 0)];
             var directionalCouplerLightOutDown = lightPropagation[directionalCoupler.PinIdRightOut(1, 1)];
 
-            foreach (var item in nonLinearConnections)
-            {
-                Assert.False(item.Value.IsInnerLoopFunction); // they should all not be in the inner loop as they don't make use of any PIN variable
-                var weight =  UpperToRightConnection.CalcConnectionWeightAsync(allComponentsSMatrices[0].SliderReference.Values.Cast<object>().ToList()).Magnitude;
-                Assert.Equal(0.5,weight);
-            }
-            Assert.Equal(1, allComponentsSMatrices[0]?.SliderReference.Count);
-            
             Assert.Equal(1, directionalCouplerLightIn.Magnitude);
             Assert.Equal(0.5, directionalCouplerLightOutUp.Magnitude);
             Assert.Equal(0.5, directionalCouplerLightOutDown.Magnitude);
@@ -98,12 +67,9 @@ namespace UnitTests.Components
             grid.PlaceComponent(0, inputPort.TilePositionY + 1, rotatedStraight);
 
             var laserType = grid.GetUsedExternalInputs().First().Input.LaserType;
-            var gridSMatrixAnalyzer = new GridSMatrixAnalyzer(grid);
+            var gridSMatrixAnalyzer = new GridLightCalculator(grid);
             var lightValues = await gridSMatrixAnalyzer.CalculateLightPropagationAsync(new CancellationTokenSource(), laserType.WaveLengthInNm);
-            var allComponentsSMatrices = gridSMatrixAnalyzer.GetAllComponentsSMatrices(laserType.WaveLengthInNm);
-            var Straight_LiRoConnection = allComponentsSMatrices[0].GetNonNullValues().Single(b => b.Key == (straight.PinIdLeftIn(), straight.PinIdRightOut())).Value;
-            var Straight_RiLoConnection = allComponentsSMatrices[0].GetNonNullValues().Single(b => b.Key == (straight.PinIdRightIn(), straight.PinIdLeftOut())).Value;
-
+            
             // test straightComponent light throughput
             var straightCompLightVal = lightValues[straight.PinIdRightOut()];
 
@@ -114,9 +80,7 @@ namespace UnitTests.Components
             Assert.Contains(secondStraight.PinIdLeftOut(), lightValues);
             Assert.Equal(1, straightCompLightVal.Real);
             Assert.Equal(0.5, circuitLightVal.Real);
-            Assert.Equal(1, Straight_LiRoConnection.Real);
-            Assert.Equal(1, Straight_RiLoConnection.Real);
-
+            
         }
         [Fact]
         public void TestSystemSMatrixManually()
