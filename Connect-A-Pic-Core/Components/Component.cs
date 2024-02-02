@@ -50,7 +50,7 @@ namespace CAP_Core.Components
                 s.Value = (s.MinValue + s.MaxValue) / 2;
             });
             NazcaFunctionName = nazcaFunctionName;
-            NazcaFunctionParameters = nazcaFunctionParams;
+            NazcaFunctionParameters = "deltaLength = " + sliders.FirstOrDefault()?.Value;
         }
         public void AddSlider(int sliderNr , Slider slider)
         {
@@ -76,6 +76,7 @@ namespace CAP_Core.Components
                         sMatrix.SliderReference.Add(slider.ID, slider.Value);
                     }
                 }
+                NazcaFunctionParameters = "deltaLength = " + slider.Value;
             }
         }
 

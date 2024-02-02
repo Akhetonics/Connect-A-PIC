@@ -85,7 +85,6 @@ namespace UnitTests
                         tileOffsetY = 0,
                     }
                 },
-                DeltaLength = 1,
             };
 
             // Act

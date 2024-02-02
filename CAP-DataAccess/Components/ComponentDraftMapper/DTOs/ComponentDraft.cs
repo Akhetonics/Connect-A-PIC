@@ -19,8 +19,6 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper.DTOs
         public string NazcaFunctionName { get; set; }
         [JsonPropertyName("sceneResPath")]
         public string SceneResPath { get; set; }
-        [JsonPropertyName("deltaLength")]
-        public int DeltaLength { get; set; }
         [JsonPropertyName("widthInTiles")]
         public int WidthInTiles { get; set; }
         [JsonPropertyName("heightInTiles")]
