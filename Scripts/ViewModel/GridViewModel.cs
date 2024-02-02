@@ -45,26 +45,14 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             this.GridView = gridView;
             this.Grid = grid;
             LightCalculator = lightCalculator;
-            LightCalculator.LightCalculationChanged += (object sender, LightCalculationChangeEventArgs e) =>
-            {
-                AssignLightToComponentViews(e.LightVector, e.LaserInUse);
-            };
-            GridView.LightSwitched += async (sender, isOn) =>
-            {
+            LightCalculator.LightCalculationChanged += (object sender, LightCalculationChangeEventArgs e)
+                => AssignLightToComponentViews(e.LightVector, e.LaserInUse);
+            GridView.LightSwitched += async (sender, isOn) => {
                 IsLightOn = isOn;
-                if (isOn)
-                {
-                    await LightCalculator.ShowLightPropagationAsync();
-                }
-                else
-                {
-                    await HideLightPropagation();
-                }
+                await RecalculateLightIfNeeded();
             };
-
             Logger = logger;
             this.ComponentModelFactory = componentModelFactory;
-            //this.GridView.Columns = grid.Width;
             this.GridComponentViews = new ComponentView[grid.Width, grid.Height];
             CreateComponentCommand = new CreateComponentCommand(grid, componentModelFactory);
             DeleteComponentCommand = new DeleteComponentCommand(grid);
@@ -92,6 +80,9 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             if (IsLightOn)
             {
                 await LightCalculator.ShowLightPropagationAsync();
+            } else
+            {
+                await HideLightPropagation();
             }
         }
         private async void Grid_OnComponentPlacedOnTile(Component component, int gridX, int gridY)
@@ -99,10 +90,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             CreateComponentView(gridX, gridY, component.Rotation90CounterClock, component.TypeNumber, component.GetAllSliders());
             await RecalculateLightIfNeeded();
         }
-        public bool IsInGrid(int x, int y, int width, int height)
-        {
-            return x >= 0 && y >= 0 && x + width <= this.Width && y + height <= this.Height;
-        }
+        public bool IsInGrid(int x, int y, int width, int height) => x >= 0 && y >= 0 && x + width <= this.Width && y + height <= this.Height;
 
         public void CreateEmptyField()
         {
@@ -152,30 +140,19 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             };
             RegisterComponentViewInGridView(ComponentView);
             GridView.DragDropProxy.AddChild(ComponentView); // it has to be the child of the DragDropArea to be displayed
-            // set sliders initial values
-            foreach (var slider in slidersInUse)
-            {
-                ComponentView.SetSliderValue(slider.Number, slider.Value);
-            }
+                                                            // set sliders initial values
+            slidersInUse.ForEach(s => ComponentView.SetSliderValue(s.Number, s.Value));
             return ComponentView;
         }
 
         private void AssignLightToComponentViews(Dictionary<Guid, Complex> lightVector, LaserType laserType)
         {
-            List<Component> components = Grid.GetAllComponents();
-            foreach (var componentModel in components)
+            foreach (var componentModel in Grid.GetAllComponents())
             {
-                try
-                {
-                    var componentView = GridComponentViews[componentModel.GridXMainTile, componentModel.GridYMainTile];
-                    if (componentView == null) return;
-                    List<LightAtPin> lightAtPins = LightCalculationHelpers.ConvertToLightAtPins(lightVector, laserType, componentModel);
-                    componentView.DisplayLightVector(lightAtPins);
-                }
-                catch (Exception ex)
-                {
-                    Logger.PrintErr(ex.Message);
-                }
+                var componentView = GridComponentViews[componentModel.GridXMainTile, componentModel.GridYMainTile];
+                if (componentView == null) return;
+                List<LightAtPin> lightAtPins = LightCalculationHelpers.ConvertToLightAtPins(lightVector, laserType, componentModel);
+                componentView.DisplayLightVector(lightAtPins);
             }
         }
 

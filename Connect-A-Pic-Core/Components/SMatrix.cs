@@ -6,7 +6,7 @@ using CAP_Core.Components.FormulaReading;
 
 namespace CAP_Core.Components
 {
-    public class SMatrix : ICloneable
+    public class SMatrix 
     {
         public Matrix<Complex> SMat; // the SMat works like SMat[PinNROutflow, PinNRInflow] --> so opposite from what one might expect
         public readonly Dictionary<Guid, int> PinReference; // all PinIDs inside of the matrix. the int is the index of the row/column in the SMat.. and also of the inputVector.
@@ -178,52 +178,6 @@ namespace CAP_Core.Components
             }
             return GuidsAndLightValues;
         }
-
-        public override string ToString()
-        {
-            return "SliderNum: " + SliderReference.Count + " SMat: " + SMat.ToString();
-        }
-        public string ToString(bool leaveOutImaginary)
-        {
-            var result = new StringBuilder();
-
-            // Add header with the PinReference IDs for clarity
-            result.Append("|\t");
-            foreach (var pinGuid in PinReference)
-            {
-                result.Append(pinGuid.ToString()[..MaxToStringPinGuidSize] + "\t");  // Just showing first 6 chars of GUID for brevity
-            }
-            result.AppendLine("|");
-
-            // Now, iterate over each row of the matrix
-            for (int i = 0; i < size; i++)
-            {
-                result.Append($"{ReversePinReference[i].ToString()[..MaxToStringPinGuidSize]}\t");
-                for (int j = 0; j < size; j++)
-                {
-                    var complexValue = SMat[i, j];
-                    if (leaveOutImaginary || complexValue.Imaginary == 0)
-                    {
-                        result.Append($"{complexValue.Real:F2}\t");
-                    }
-                    else
-                    {
-                        result.Append($"{complexValue.Real:F2}+{complexValue.Imaginary:F1}i\t");
-                    }
-                }
-                result.AppendLine("|");
-            }
-
-            return result.ToString();
-        }
-
-        public object Clone()
-        {
-            var allPinIDs = PinReference.Select(p => p.Key).ToList();
-            var allSliderIDs = SliderReference.Select(s=> (s.Key,s.Value)).ToList();
-            var clonedSMatrix = new SMatrix(allPinIDs, allSliderIDs);
-            clonedSMatrix.SetValues(GetNonNullValues());
-            return clonedSMatrix;
-        }
+       
     }
 }
