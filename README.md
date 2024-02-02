@@ -8,7 +8,7 @@ Gamification of PIC Design (PIC = Photonic integrated circuit)
 
 Version: <!--version-->0.0.53<!--version-->
 
-![image](https://github.com/Akhetonics/Connect-A-PIC/assets/18228325/cde9edb5-f93c-452d-b046-a02134fbc1ba)
+![image](https://github.com/Akhetonics/Connect-A-PIC/assets/18228325/2615d391-ab97-4c42-9234-11cc0b130b2c)
 
 ## Downloads
 
@@ -137,7 +137,7 @@ We welcome contributions to this project. If you're interested in helping, you c
     - If you find bugs or have suggestions for improvements, feel free to open an issue in the project's issue tracker.
 
 3. **Code Guidelines:**
-    - Please ensure your code adheres to the project’s coding conventions for consistency.
+    - Please ensure your code adheres to the projectÂ’s coding conventions for consistency.
 
 4. **Testing:**
     - Include unit tests for new features to maintain the project's stability and reliability.
