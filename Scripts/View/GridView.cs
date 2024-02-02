@@ -62,7 +62,7 @@ namespace ConnectAPIC.LayoutWindow.View
                 {
                     try
                     {
-                        await ViewModel.ExportToNazcaCommand.ExecuteAsync(new ExportNazcaParameters(path));
+                    ViewModel.ExportToNazcaCommand.ExecuteAsync(new ExportNazcaParameters(path)).RunSynchronously();
                         NotificationManager.Instance.Notify("Successfully saved file");
                     }
                     catch (Exception ex)
