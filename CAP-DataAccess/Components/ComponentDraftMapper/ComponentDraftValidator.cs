@@ -31,6 +31,11 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
         public static readonly string ErrorPinPartYBiggerMaxHeight = "Err_017";
         public static readonly string ErrorPinPartXBiggerMaxHeight = "Err_018";
         public static readonly string ErrorMatrixNotDefinedForWaveLength = "Err_019";
+        public static readonly string ErrorSliderNumberMustBeUnique = "Err_20";
+        public static readonly string ErrorSliderMaxIsBiggerThanMin = "Err_21";
+        public static readonly string ErrorSliderLabelNameNotDefined = "Err_22";
+        public static readonly string ErrorSliderNameNotDefined = "Err_23";
+        public static readonly string ErrorSliderStepHasToBeGreaterThanNull = "Err_24";
 
         public IResourcePathChecker ResourcePathChecker { get; }
 
@@ -50,7 +55,7 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
         public (bool isValid, string errorMsg) Validate(ComponentDraft draft)
         {
             string errorMsg = "";
-            if(draft == null)
+            if (draft == null)
             {
                 throw new Exception("Draft cannot be null - there might have been some error while parsing the json of the component draft");
             }
@@ -62,7 +67,7 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
             {
                 errorMsg += ErrorFileVersionNotSupported + $" {nameof(draft.FileFormatVersion)} is higher than what this software can handle. The max Version readable is {ComponentDraftFileReader.CurrentFileVersion}\n";
             }
-            if (draft.Pins == null ||draft.Pins.Count == 0)
+            if (draft.Pins == null || draft.Pins.Count == 0)
             {
                 errorMsg += ErrorNoPinsDefined + $" There are no {nameof(draft.Pins)} defined at all. At least 1 pin should be defined\n";
             }
@@ -94,34 +99,29 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
             {
                 errorMsg += ErrorIdentifierNotSet + $" {nameof(draft.Identifier)} has to be defined\n";
             }
-            if(draft?.Overlays != null)
-            {
-                foreach (var overlay in draft.Overlays)
-                {
-                    errorMsg += ValidateOverlay(overlay);
-                }
-            }
-            
+            errorMsg += ValidateAllOverlays(draft);
+            errorMsg += ValidateAllSliders(draft);
             errorMsg += ValidatePinNumbersAreUnique(draft.Pins);
-            if(draft?.Pins != null)
+            if (draft?.Pins != null)
             {
                 foreach (var pin in draft.Pins)
                 {
                     errorMsg += ValidatePin(pin, draft.WidthInTiles, draft.HeightInTiles);
                 }
             }
-            
-            if(draft?.SMatrices == null)
+
+            if (draft?.SMatrices == null)
             {
                 errorMsg += $"{ErrorMatrixNotDefinedForWaveLength} sMatrix is not defined for any WaveLength\n";
-            } else
+            }
+            else
             {
                 foreach (var connection in draft.SMatrices)
                 {
                     errorMsg += ValidateConnection(draft.Pins, draft.SMatrices);
                 }
             }
-            
+
 
             bool success = true;
             if (errorMsg.Length > 0)
@@ -130,6 +130,50 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
                 success = false;
             }
             return (success, errorMsg);
+        }
+
+        private static string ValidateAllSliders(ComponentDraft draft)
+        {
+            string sliderErrorMsg = "";
+            if (draft?.Sliders != null)
+            {
+                foreach (var slider in draft.Sliders)
+                {
+                    if (String.IsNullOrWhiteSpace(slider.GodotSliderName))
+                    {
+                        sliderErrorMsg += ErrorSliderNameNotDefined + $"{nameof(draft.Identifier)} SliderName cannot be blank, it must be set to the name of the Godot slider node\n";
+                    }
+                    if (String.IsNullOrWhiteSpace(slider.GodotSliderLabelName))
+                    {
+                        sliderErrorMsg += ErrorSliderLabelNameNotDefined + $"{nameof(draft.Identifier)} SliderLabelName cannot be blank, but rather should contain the name of the label that should display the slider value\n";
+                    }
+                    if (slider.MaxVal <= slider.MinVal)
+                    {
+                        sliderErrorMsg += ErrorSliderMaxIsBiggerThanMin + $"{nameof(draft.Identifier)} the Max value '{slider.MaxVal}' of the slider is bigger than the Min Value '{slider.MinVal}' - please fix that\n";
+                    }
+                    if (slider.Steps <= 0)
+                    {
+                        sliderErrorMsg += ErrorSliderStepHasToBeGreaterThanNull + $"{nameof(draft.Identifier)} steps has to be greater than 0, but is: '{slider.Steps}'\n";
+                    }
+                }
+                sliderErrorMsg += ValidateSliderNumbersAreUnique(draft.Sliders);
+            }
+
+            return sliderErrorMsg;
+        }
+
+        private string ValidateAllOverlays(ComponentDraft draft)
+        {
+            string newErrorMsgs = "";
+            if (draft?.Overlays != null)
+            {
+                foreach (var overlay in draft.Overlays)
+                {
+                    newErrorMsgs += ValidateOverlay(overlay);
+                }
+            }
+
+            return newErrorMsgs;
         }
 
         private string ValidateOverlay(Overlay overlay)
@@ -184,28 +228,46 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
             }
             return errorMsg;
         }
-        private static string ValidatePinNumbersAreUnique(List<PinDraft> pins)
+        private static string ValidateNumbersAreUnique<T>(List<T> items, Func<T, int> numberSelector, string errorMessagePrefix, string uniqueProperty)
         {
-            var duplicateNumbers = pins
-                .GroupBy(p => p.Number)
-                .Where(p => p.Count() > 1)
+            var duplicateNumbers = items
+                .GroupBy(numberSelector)
+                .Where(g => g.Count() > 1)
                 .Select(g => g.Key)
                 .ToList();
             if (duplicateNumbers.Any())
             {
-                string numbers = string.Join(',', duplicateNumbers);
-                return ErrorPinNumberDuplicated + $" Each Pin must have a unique {nameof(PinDraft.Number)}, but '{numbers}' had been used twice\n";
+                string numbers = string.Join(", ", duplicateNumbers);
+                return $"{errorMessagePrefix} Each item must have a unique {uniqueProperty}, but '{numbers}' has been used more than once.\n";
             }
             return "";
+        }
+        private static string ValidatePinNumbersAreUnique(List<PinDraft> pins)
+        {
+            return ValidateNumbersAreUnique(
+                pins,
+                p => p.Number,
+                ErrorPinNumberDuplicated,
+                nameof(PinDraft.Number)
+            );
+        }
+        private static string ValidateSliderNumbersAreUnique(List<SliderDraft> drafts)
+        {
+            return ValidateNumbersAreUnique(
+                drafts,
+                d => d.SliderNumber,
+                ErrorSliderNumberMustBeUnique,
+                nameof(SliderDraft.SliderNumber)
+            );
         }
 
         private static string ValidateConnection(List<PinDraft> pins, List<WaveLengthSpecificSMatrix> matrixDrafts)
         {
             string errorMsg = "";
             // test if the SMatrices are defined for all given standard wavelengths
-            var definedWaveLengths = matrixDrafts.Select(m => m.WaveLength).ToList(); 
+            var definedWaveLengths = matrixDrafts.Select(m => m.WaveLength).ToList();
             // we use Reflection to get all properties as this class is used as an enum
-            foreach (PropertyInfo prop in typeof(StandardWaveLengths).GetProperties(BindingFlags.Public | BindingFlags.Static)) 
+            foreach (PropertyInfo prop in typeof(StandardWaveLengths).GetProperties(BindingFlags.Public | BindingFlags.Static))
             {
                 int waveLength = (int)prop.GetValue(null);
                 if (!definedWaveLengths.Contains(waveLength))
@@ -215,9 +277,9 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
             }
 
             // test if all pins exist that are being used in the connections of the SMatrices
-            foreach(var matrix in matrixDrafts)
+            foreach (var matrix in matrixDrafts)
             {
-                foreach(var connection in matrix.Connections)
+                foreach (var connection in matrix.Connections)
                 {
                     var allPinNumbers = pins.Select(p => p.Number).ToHashSet();
                     if (!allPinNumbers.Contains(connection.FromPinNr))
@@ -230,7 +292,7 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
                     }
                 }
             }
-            
+
             return errorMsg;
         }
 

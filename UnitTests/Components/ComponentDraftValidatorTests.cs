@@ -56,7 +56,28 @@ namespace UnitTests
                         }
                     }
                     // the other wavelengths are not defined which should trigger ErrorMatrixNotDefinedForWaveLength
+                },
+                Sliders = new List<SliderDraft>
+            {
+                new SliderDraft
+                {
+                    SliderNumber = 0,
+                    GodotSliderName = "", // should throw an error
+                    GodotSliderLabelName = "SliderLabel",
+                    MaxVal = 10,
+                    MinVal = 5,
+                    Steps = 1
+                },
+                new SliderDraft
+                {
+                    SliderNumber = 0, // should throw slider number must be unique
+                    GodotSliderName = "SliderName",
+                    GodotSliderLabelName = "", // should throw an error
+                    MaxVal = 5,
+                    MinVal = 10, // should throw an error
+                    Steps = 0 // should throw an error
                 }
+            }
             };
 
 
@@ -78,6 +99,11 @@ namespace UnitTests
             Assert.Contains(ComponentDraftValidator.ErrorFromPinNrInvalid, result.errorMsg);
             Assert.Contains(ComponentDraftValidator.ErrorToPinNrInvalid, result.errorMsg);
             Assert.Contains(ComponentDraftValidator.ErrorMatrixNotDefinedForWaveLength, result.errorMsg);
+            Assert.Contains(ComponentDraftValidator.ErrorSliderLabelNameNotDefined, result.errorMsg);
+            Assert.Contains(ComponentDraftValidator.ErrorSliderMaxIsBiggerThanMin, result.errorMsg);
+            Assert.Contains(ComponentDraftValidator.ErrorSliderNameNotDefined, result.errorMsg);
+            Assert.Contains(ComponentDraftValidator.ErrorSliderNumberMustBeUnique, result.errorMsg);
+            Assert.Contains(ComponentDraftValidator.ErrorSliderStepHasToBeGreaterThanNull, result.errorMsg);
         }
 
         [Fact]
