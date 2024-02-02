@@ -63,14 +63,7 @@ public partial class DragDropProxy : Control
         {
             DragPreview.Modulate = new Color(1, 0, 0, 0.5f);
         }
-
-        var rotationDisposition = new Vector2(0, 0);
-        if (data is ComponentView component)
-        {
-            rotationDisposition = component.GetPositionDisplacementAfterRotation();
-        }
-       
-        DragPreview.Position = position + this.GlobalPosition + rotationDisposition;
+        DragPreview.Position = position + this.GlobalPosition ;
         SetDragPreview(DragPreview);
     }
 

@@ -1,4 +1,5 @@
-﻿using CAP_Core.ExternalPorts;
+﻿using CAP_Core.Components;
+using CAP_Core.ExternalPorts;
 
 namespace CAP_Core.Tiles.Grid
 {
@@ -14,7 +15,7 @@ namespace CAP_Core.Tiles.Grid
         {
             if (matrix == null) return "";
             var allPinsInField = GetAllPinShortNames();
-            var matrixStringified = matrix.ToString();
+            var matrixStringified = matrix.ToString(false);
             foreach (Guid guid in matrix.PinReference.Keys)
             {
                 matrixStringified = matrixStringified.Replace(guid.ToString()[..SMatrix.MaxToStringPinGuidSize], allPinsInField[guid]);
@@ -49,7 +50,7 @@ namespace CAP_Core.Tiles.Grid
 
         public override string ToString()
         {
-            string Debug_allConnections = GetSMatrixWithPinNames(Analyzer.CreateAllConnectionsMatrix());
+            string Debug_allConnections = GetSMatrixWithPinNames(Analyzer.CreateInterComponentsConnectionsMatrix());
             var allComponentsSMatrices = Analyzer.GetAllComponentsSMatrices((int)Analyzer.LaserWaveLengthInNm);
             string SystemSMatrixWithNamedPins = GetSMatrixWithPinNames(Analyzer.SystemSMatrix);
 
@@ -70,7 +71,7 @@ namespace CAP_Core.Tiles.Grid
             foreach (var externalPort in Analyzer.Grid.GetUsedExternalInputs().DistinctBy(d => d.Input.LaserType.WaveLengthInNm))
             {
                 var usedLaserType = externalPort.Input.LaserType;
-                var lightPropagation = Analyzer.CalculateLightPropagation().Result;
+                var lightPropagation = Analyzer.CalculateLightPropagationAsync(new CancellationTokenSource()).Result;
                 foreach (var lightIntensity in lightPropagation)
                 {
                     string lightColorName = usedLaserType.Color.ToReadableString();

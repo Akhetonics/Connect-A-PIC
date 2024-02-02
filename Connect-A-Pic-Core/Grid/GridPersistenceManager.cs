@@ -32,13 +32,15 @@ namespace CAP_Core.Grid
                     if (MyGrid.Tiles[x, y]?.Component == null) continue;
                     var component = MyGrid.Tiles[x, y].Component;
                     if (x != component.GridXMainTile || y != component.GridYMainTile) continue;
+
                     gridData.Add(new GridComponentData()
                     {
                         Identifier = component.Identifier,
                         Rotation = (int)component.Rotation90CounterClock,
+                        Sliders = component.GetAllSliders(),
                         X = x,
                         Y = y,
-                    });
+                    }) ;
                 }
             }
             var json = JsonSerializer.Serialize(gridData);
@@ -54,7 +56,33 @@ namespace CAP_Core.Grid
             {
                 var component = componentFactory.CreateComponentByIdentifier(data.Identifier);
                 component.Rotation90CounterClock = (DiscreteRotation)data.Rotation;
+                LoadSliders(data, component);
                 MyGrid.PlaceComponent(data.X, data.Y, component);
+            }
+        }
+
+        /// <summary>
+        /// inserts the slider with Value, Number, Min/Max values from GridComponentData into the actual Component 
+        /// Or updates its Value if the slider is already defined by the ComponentDraft
+        /// </summary>
+        /// <param name="data"></param>
+        /// <param name="component"></param>
+        private static void LoadSliders(GridComponentData? data, Component component)
+        {
+            if (data?.Sliders != null)
+            {
+                foreach (var sliderToLoad in data.Sliders)
+                {
+                    var predefinedSlider = component.GetSlider(sliderToLoad.Number);
+                    if(predefinedSlider == null)
+                    {
+                        component.AddSlider(sliderToLoad.Number, sliderToLoad);
+                    }
+                    else
+                    {
+                        predefinedSlider.Value = sliderToLoad.Value;
+                    }
+                }
             }
         }
 
@@ -64,6 +92,17 @@ namespace CAP_Core.Grid
             public int Y { get; set; }
             public int Rotation { get; set; }
             public string Identifier { get; set; }
+            public List<Slider>? Sliders { get; set; }
+        }
+        public class GridSliderData
+        {
+            public GridSliderData(int nr , double value)
+            {
+                Nr = nr;
+                Value = value;
+            }
+            public int Nr { get; set; }
+            public double Value { get; set; }
         }
     }
 

@@ -6,9 +6,8 @@ using System.Text.Json.Serialization;
 
 namespace CAP_Core.Components
 {
-    public class Pin : INotifyPropertyChanged, ICloneable
+    public class Pin : ICloneable
     {
-        public event PropertyChangedEventHandler PropertyChanged;
         public string Name { get; set; } // the nazca name like b0, a0, a1}
         public int PinNumber { get; private set; }// the number specified in the draft 
         public Guid IDInFlow { get; set; } // each pin is divided into two IDs -> inflow and outflow ID.
@@ -22,7 +21,6 @@ namespace CAP_Core.Components
             private set
             {
                 _side = value;
-                NotifyPropertyChanged();
             }
         }
         private MatterType _matterType;
@@ -32,7 +30,6 @@ namespace CAP_Core.Components
             set
             {
                 SetMatterType(value);
-                NotifyPropertyChanged();
             }
         }
         public Pin(string Name, int pinNumber, MatterType newMatterType, RectSide side, Guid idInFlow, Guid idOutFlow) : this(Name, pinNumber,newMatterType, side)
@@ -44,12 +41,12 @@ namespace CAP_Core.Components
         {
             MatterType = newMatterType;
         }
-        protected Pin(string Name, int pinNumber, RectSide side)
+        public Pin(string Name, int pinNumber, RectSide side)
         {
             Side = side;
             this.Name = Name;
             this.PinNumber = pinNumber;
-            MatterType = MatterType.None;
+            MatterType = MatterType.Light;
             IDInFlow = Guid.NewGuid();
             IDOutFlow = Guid.NewGuid();
         }
@@ -63,10 +60,7 @@ namespace CAP_Core.Components
             SetMatterType(MatterType.None);
             Name = "";
         }
-        private void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+
         public override string ToString()
         {
             return $"{Name}: {MatterType}";

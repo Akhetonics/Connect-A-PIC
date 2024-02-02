@@ -35,7 +35,7 @@ namespace UnitTests
             var PartDownRight = component.GetPartAt(1, 1);
             var laserType = grid.GetUsedExternalInputs().First().Input.LaserType;
             // test if I can get the non-Null values
-            component.LaserWaveLengthToSMatrixMap[StandardWaveLengths.RedNM].GetNonNullValues();
+            component.WaveLengthToSMatrixMap[StandardWaveLengths.RedNM].GetNonNullValues();
             var command = new RotateComponentCommand(grid);
             var args = new RotateComponentArgs(component.GridXMainTile, component.GridYMainTile);
             await command.ExecuteAsync(args);
@@ -77,10 +77,10 @@ namespace UnitTests
             var inputLaserType = grid.GetUsedExternalInputs().First().Input.LaserType;
 
             // after cloning the connections should have the new PinIDs
-            var connections = component.LaserWaveLengthToSMatrixMap[inputLaserType.WaveLengthInNm].GetNonNullValues();
+            var connections = component.WaveLengthToSMatrixMap[inputLaserType.WaveLengthInNm].GetNonNullValues();
             // for debug reasons
-            var oldIDs = componentOld.LaserWaveLengthToSMatrixMap[inputLaserType.WaveLengthInNm].GetNonNullValues().Keys;
-            var newIDs = component.LaserWaveLengthToSMatrixMap[inputLaserType.WaveLengthInNm].GetNonNullValues().Keys;
+            var oldIDs = componentOld.WaveLengthToSMatrixMap[inputLaserType.WaveLengthInNm].GetNonNullValues().Keys;
+            var newIDs = component.WaveLengthToSMatrixMap[inputLaserType.WaveLengthInNm].GetNonNullValues().Keys;
             var allNewIDs = Component.GetAllPins(component.Parts).SelectMany(p=>new[] { p.IDInFlow, p.IDOutFlow });
             var allOldIDs = Component.GetAllPins(componentOld.Parts).SelectMany(p=>new[] { p.IDInFlow, p.IDOutFlow });
 

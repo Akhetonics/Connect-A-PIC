@@ -1,4 +1,4 @@
-﻿using CAP_Core.Grid.FormulaReading;
+﻿using CAP_Core.Components.FormulaReading;
 
 namespace CAP_Core.Components
 {

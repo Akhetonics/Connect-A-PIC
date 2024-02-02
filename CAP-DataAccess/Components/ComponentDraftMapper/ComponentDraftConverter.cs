@@ -1,9 +1,11 @@
 ﻿using CAP_Contracts.Logger;
 using CAP_Core.Components;
 using CAP_Core.Components.ComponentHelpers;
+using CAP_Core.Components.FormulaReading;
 using CAP_Core.Grid.FormulaReading;
-using CAP_Core.Tiles.Grid;
 using CAP_DataAccess.Components.ComponentDraftMapper.DTOs;
+using MathNet.Numerics;
+using System.Data;
 using System.Globalization;
 using System.Numerics;
 
@@ -28,95 +30,105 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
 
         private Component ConvertDraftToComponent(ComponentDraft draft, int typeNumber)
         {
+            if (draft == null) throw new InvalidOperationException($"The parameter {nameof(draft)} cannot be null");
             try
             {
                 var parts = CreatePartsFromDraft(draft);
-                var connections = CreateWaveLengthSpecificSMatricesFromDrafts(draft, parts);
-                return new Component(connections, draft.nazcaFunctionName, draft.nazcaFunctionParameters, parts, typeNumber, draft.identifier, DiscreteRotation.R0);
+                var allSliders = CreateSliderMap(draft);
+                var wavelengthToMatrixMap = CreateWaveLengthSpecificSMatricesFromDrafts(allSliders, draft, parts);
+                return new Component(wavelengthToMatrixMap, allSliders, draft.NazcaFunctionName, draft.NazcaFunctionParameters, parts, typeNumber, draft.Identifier, DiscreteRotation.R0);
             }
             catch (Exception ex)
             {
-                Logger.PrintErr($"Exception at converting draft to Component: '{draft.identifier}' path: '{draft.sceneResPath}' msg: '{ex.Message}' ");
-                return null; // Or handle the exception as required
+                Logger.PrintErr($"Exception at converting draft to Component: '{draft.Identifier}' path: '{draft.SceneResPath}' msg: '{ex.Message}' ");
+                throw ex;
             }
         }
         private Part[,] CreatePartsFromDraft(ComponentDraft draft)
         {
-            var parts = new Part[draft.widthInTiles, draft.heightInTiles];
-            var pinsGroupedByPosition = draft.pins
-                .GroupBy(p => (p.partX, p.partY))
+            var parts = new Part[draft.WidthInTiles, draft.HeightInTiles];
+            var pinsGroupedByPosition = draft.Pins
+                .GroupBy(p => (p.PartX, p.PartY))
                 .ToDictionary(g => g.Key, g => g.ToList());
 
             foreach (var group in pinsGroupedByPosition)
             {
                 var (x, y) = group.Key;
-                var realPins = group.Value.Select(pinDraft => new Pin(pinDraft.name, pinDraft.number, pinDraft.matterType, pinDraft.side)).ToList();
+                var realPins = group.Value.Select(pinDraft => new Pin(pinDraft.Name, pinDraft.Number, pinDraft.MatterType, pinDraft.Side)).ToList();
                 parts[x, y] = new Part(realPins);
             }
 
             return parts;
         }
 
-        private Dictionary<int, SMatrix> CreateWaveLengthSpecificSMatricesFromDrafts(ComponentDraft draft, Part[,] parts)
+        private Dictionary<int, SMatrix> CreateWaveLengthSpecificSMatricesFromDrafts(List<Slider> allSliders , ComponentDraft draft, Part[,] parts)
         {
             var definedMatrices = new Dictionary<int, SMatrix>();
             var allPins = Component.GetAllPins(parts);
+            var allSliderGuids = allSliders.Select(s=> (s.ID , s.Value) ).ToList();
             var allPinsGuids = allPins.SelectMany(p => new[] { p.IDInFlow, p.IDOutFlow }).ToList();
             var pinNumberToModelMap = CreatePinNumberToModelMap(draft, parts);
 
-            foreach (var matrixDraft in draft.sMatrices)
+            foreach (var matrixDraft in draft.SMatrices)
             {
-                var matrixModel = new SMatrix(allPinsGuids);
-                var connections = new Dictionary<(Guid, Guid), Complex>();
-                var nonLinearConnectionFunctions = new Dictionary<(Guid, Guid), ConnectionFunction>();
-
-                foreach (var connectionDraft in matrixDraft.connections)
-                {
-                    if (!pinNumberToModelMap.TryGetValue(connectionDraft.FromPinNr, out var fromPinModel))
-                    {
-                        Logger.PrintErr($"unable to find suitable pin for 'fromPinNr' {connectionDraft.FromPinNr}.");
-                        continue;
-                    }
-                    if (!pinNumberToModelMap.TryGetValue(connectionDraft.ToPinNr, out var toPinModel))
-                    {
-                        Logger.PrintErr($"unable to find suitable pin for 'toPinNr' {connectionDraft.FromPinNr}.");
-                        continue;
-                    }
-                    connections.Add((fromPinModel.IDInFlow, toPinModel.IDOutFlow), connectionDraft.ToComplexNumber());
-                    if (TryGetNonLinearConnectionFunction(connectionDraft, allPins, out var connectionFunction))
-                    {
-                        nonLinearConnectionFunctions.Add((fromPinModel.IDInFlow, toPinModel.IDOutFlow), connectionFunction);
-                    }
-                }
-
-                matrixModel.SetValues(connections);
-                matrixModel.SetNonLinearConnectionFunctions(nonLinearConnectionFunctions);
-                definedMatrices.Add(matrixDraft.waveLength, matrixModel);
+                var matrixModel = new SMatrix(allPinsGuids, allSliderGuids);
+                (var nonLinearConnections , var linearConnections) = CreateConnections(allPins, allSliders, pinNumberToModelMap, matrixDraft);
+                matrixModel.SetValues(linearConnections);
+                matrixModel.NonLinearConnections = nonLinearConnections;
+                definedMatrices.Add(matrixDraft.WaveLength, matrixModel);
             }
 
             return definedMatrices;
         }
 
+        private ( Dictionary<(Guid, Guid), ConnectionFunction> NonLinearConnections , Dictionary<(Guid,Guid),Complex> LinearConnections) 
+            CreateConnections(List<Pin> allPins, List<Slider> allSliders ,Dictionary<int, Pin> pinNumberToModelMap, WaveLengthSpecificSMatrix matrixDraft)
+        {
+            var connections = new Dictionary<(Guid, Guid), Complex>();
+            var nonLinearConnectionFunctions = new Dictionary<(Guid, Guid), ConnectionFunction>();
+
+            foreach (var connectionDraft in matrixDraft.Connections)
+            {
+                if (!pinNumberToModelMap.TryGetValue(connectionDraft.FromPinNr, out var fromPinModel))
+                {
+                    Logger.PrintErr($"unable to find suitable pin for 'fromPinNr' {connectionDraft.FromPinNr}.");
+                    continue;
+                }
+                if (!pinNumberToModelMap.TryGetValue(connectionDraft.ToPinNr, out var toPinModel))
+                {
+                    Logger.PrintErr($"unable to find suitable pin for 'toPinNr' {connectionDraft.FromPinNr}.");
+                    continue;
+                }
+                connections.Add((fromPinModel.IDInFlow, toPinModel.IDOutFlow), connectionDraft.ToComplexNumber());
+                if (TryGetNonLinearConnectionFunction(connectionDraft, allPins, allSliders, out var connectionFunction))
+                {
+                    nonLinearConnectionFunctions.Add((fromPinModel.IDInFlow, toPinModel.IDOutFlow), connectionFunction);
+                }
+            }
+
+            return (nonLinearConnectionFunctions , connections);
+        }
+
         public static Dictionary<int, Pin> CreatePinNumberToModelMap(ComponentDraft draft, Part[,] parts)
         {
             var map = new Dictionary<int, Pin>();
-            foreach (var pin in draft.pins)
+            foreach (var pin in draft.Pins)
             {
                 var modelPin = FindModelPin(parts, pin);
                 if (modelPin != null)
                 {
-                    map[pin.number] = modelPin;
+                    map[pin.Number] = modelPin;
                 }
             }
             return map;
         }
-        private bool TryGetNonLinearConnectionFunction(DTOs.Connection connectionDraft, List<Pin> allPins, out ConnectionFunction function)
+        private bool TryGetNonLinearConnectionFunction(DTOs.Connection connectionDraft, List<Pin> allPins, List<Slider> allSliders, out ConnectionFunction function)
         {
             function = default;
             if (String.IsNullOrWhiteSpace(connectionDraft.Formula) || allPins?.Count == 0) 
                 return false;
             
-            var convertedFunction = MathExpressionReader.ConvertToDelegate(connectionDraft.Formula, allPins);
+            var convertedFunction = MathExpressionReader.ConvertToDelegate(connectionDraft.Formula, allPins, allSliders);
             if (convertedFunction != null)
             {
                 function = (ConnectionFunction)convertedFunction;
@@ -125,9 +137,21 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
             return false;
         }
 
+        private static List< Slider> CreateSliderMap(ComponentDraft draft)
+        {
+            var sliderIdToValueMap = new List<Slider>();
+            if (draft?.Sliders != null)
+            {
+                foreach (var slider in draft.Sliders)
+                {
+                    sliderIdToValueMap.Add(new Slider(Guid.NewGuid(), slider.SliderNumber, (slider.MinVal + slider.MaxVal) / 2, slider.MaxVal, slider.MinVal));
+                }
+            }
+            return sliderIdToValueMap;
+        }
         private static Pin FindModelPin(Part[,] parts, PinDraft pinDraft)
         {
-            return parts[pinDraft.partX, pinDraft.partY].Pins.Single(p => p.Side == pinDraft.side && p.MatterType == pinDraft.matterType);
+            return parts[pinDraft.PartX, pinDraft.PartY].Pins.Single(p => p.Side == pinDraft.Side && p.MatterType == pinDraft.MatterType);
         }
     }
 }

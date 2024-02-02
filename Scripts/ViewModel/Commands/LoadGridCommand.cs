@@ -20,11 +20,13 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
         private GridPersistenceManager gridPersistenceManager;
 
         public IComponentFactory ComponentFactory { get; }
+        public GridViewModel ViewModel { get; }
 
         public LoadGridCommand(GridManager grid, IDataAccessor dataAccessor, IComponentFactory componentFactory, GridViewModel viewModel)
         { 
             this.gridPersistenceManager = new GridPersistenceManager(grid, dataAccessor);
             ComponentFactory = componentFactory;
+            ViewModel = viewModel;
         }
         
         public bool CanExecute(object parameter)
@@ -36,12 +38,12 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             return false;
         }
         
-        public Task ExecuteAsync(object parameter)
+        public async Task ExecuteAsync(object parameter)
         {
-            if (!CanExecute(parameter)) return default;
+            if (!CanExecute(parameter)) return;
             var loadParams = (LoadGridParameters)parameter;
-             gridPersistenceManager.LoadAsync(loadParams.Path, ComponentFactory);
-            return Task.CompletedTask;
+            await ViewModel?.HideLightPropagation();
+            await gridPersistenceManager.LoadAsync(loadParams.Path, ComponentFactory);
         }
     }
 
