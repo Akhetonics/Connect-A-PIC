@@ -180,9 +180,8 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
                         Logger.Print(resultLightVector.ToCustomString());
                         AssignLightToComponentViews(resultLightVector, port.Input.LaserType);
                     }, CancelTokenLightCalc.Token);
+                    await LightCalculationTask.ConfigureAwait(false);
                 }
-
-                await LightCalculationTask.ConfigureAwait(false);
 
             }
             catch (OperationCanceledException)

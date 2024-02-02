@@ -82,7 +82,8 @@ namespace UnitTests.Properties {
         ///	{
         ///	  &quot;number&quot;: 1,
         ///	  &quot;name&quot;: &quot;east0&quot;,
-        ///	  &quot;mat [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
+        ///	  &quot;matterType&quot;: 1,
+        ///	  &quot;side [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
         /// </summary>
         internal static string DirectionalCouplerDraft {
             get {
