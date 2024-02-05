@@ -10,9 +10,11 @@ using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scripts.Helpers;
 using ConnectAPIC.Scripts.View.ComponentFactory;
+using ConnectAPIC.Scripts.View.ComponentViews;
 using ConnectAPIC.Scripts.ViewModel.Commands;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -23,8 +25,6 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
     {
         public ICommand CreateComponentCommand { get; set; }
         public ICommand MoveComponentCommand { get; set; }
-        public ICommand DeleteComponentCommand { get; set; }
-        public ICommand RotateComponentCommand { get; set; }
         public ICommand ExportToNazcaCommand { get; set; }
         public ICommand SaveGridCommand { get; internal set; }
         public ICommand LoadGridCommand { get; internal set; }
@@ -55,8 +55,6 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             this.ComponentModelFactory = componentModelFactory;
             this.GridComponentViews = new ComponentView[grid.Width, grid.Height];
             CreateComponentCommand = new CreateComponentCommand(grid, componentModelFactory);
-            DeleteComponentCommand = new DeleteComponentCommand(grid);
-            RotateComponentCommand = new RotateComponentCommand(grid);
             MoveComponentCommand = new MoveComponentCommand(grid);
             SaveGridCommand = new SaveGridCommand(grid, new FileDataAccessor());
             LoadGridCommand = new LoadGridCommand(grid, new FileDataAccessor(), componentModelFactory, this);
@@ -103,9 +101,9 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
 
         public void RegisterComponentViewInGridView(ComponentView componentView)
         {
-            for (int x = componentView.GridX; x < componentView.GridX + componentView.WidthInTiles; x++)
+            for (int x = componentView.ViewModel.GridX; x < componentView.ViewModel.GridX + componentView.WidthInTiles; x++)
             {
-                for (int y = componentView.GridY; y < componentView.GridY + componentView.HeightInTiles; y++)
+                for (int y = componentView.ViewModel.GridY; y < componentView.ViewModel.GridY + componentView.HeightInTiles; y++)
                 {
                     if (!IsInGrid(x, y, 1, 1)) continue;
                     GridComponentViews[x, y] = componentView;
@@ -132,18 +130,23 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         public ComponentView CreateComponentView(int gridX, int gridY, DiscreteRotation rotationCounterClockwise, int componentTypeNumber, List<Slider> slidersInUse)
         {
             var ComponentView = GridView.ComponentViewFactory.CreateComponentView(componentTypeNumber);
-            ComponentView.RegisterInGrid(gridX, gridY, rotationCounterClockwise, this);
-            ComponentView.SliderChanged += async (ComponentView view, Godot.Slider godotSlider, double newVal) =>
-            {
-                await MoveSliderCommand.ExecuteAsync(new MoveSliderCommandArgs(view.GridX, view.GridY, (int)godotSlider.GetMeta(ComponentView.SliderNumberMetaID), newVal));
+            ComponentView.ViewModel.RegisterInGrid(Grid,gridX, gridY, rotationCounterClockwise);
+            ComponentView.ViewModel.SliderChanged += async (int sliderNumber, double newVal)=> {
+                await MoveSliderCommand.ExecuteAsync(new MoveSliderCommandArgs(ComponentView.ViewModel.GridX, ComponentView.ViewModel.GridY, sliderNumber, newVal));
                 await RecalculateLightIfNeeded();
             };
             RegisterComponentViewInGridView(ComponentView);
             GridView.DragDropProxy.AddChild(ComponentView); // it has to be the child of the DragDropArea to be displayed
                                                             // set sliders initial values
-            slidersInUse.ForEach(s => ComponentView.SetSliderValue(s.Number, s.Value));
+            List<SliderViewData> newSliderData = slidersInUse.Select(s => {
+                var vmSlider = ComponentView.ViewModel.SliderData.Single(data => data.SliderNumber == s.Number); 
+                return new SliderViewData(
+                    vmSlider.GodotSliderLabelName, vmSlider.GodotSliderName, s.MinValue, s.MaxValue, s.Value, vmSlider.Steps, s.Number);
+            }).ToList();
+            ComponentView.ViewModel.SliderData = newSliderData;
             return ComponentView;
         }
+
 
         private void AssignLightToComponentViews(Dictionary<Guid, Complex> lightVector, LaserType laserType)
         {
@@ -152,7 +155,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
                 var componentView = GridComponentViews[componentModel.GridXMainTile, componentModel.GridYMainTile];
                 if (componentView == null) return;
                 List<LightAtPin> lightAtPins = LightCalculationHelpers.ConvertToLightAtPins(lightVector, laserType, componentModel);
-                componentView.DisplayLightVector(lightAtPins);
+                componentView.ViewModel.DisplayLightVector(lightAtPins);
             }
         }
 

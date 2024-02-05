@@ -87,11 +87,11 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
                 errorMsg += ErrorSceneResPathNotExist + $" {nameof(draft.SceneResPath)} - {ex.Message}\n";
             }
 
-            if (draft.WidthInTiles == 0)
+            if (draft.WidthInTiles <= 0)
             {
                 errorMsg += ErrorWidthInTilesSmaller0 + $" {nameof(draft.WidthInTiles)} has to be greater than 0\n";
             }
-            if (draft.HeightInTiles == 0)
+            if (draft.HeightInTiles <= 0)
             {
                 errorMsg += ErrorHeightInTilesSmaller0 + $" {nameof(draft.HeightInTiles)} has to be greater than 0\n";
             }

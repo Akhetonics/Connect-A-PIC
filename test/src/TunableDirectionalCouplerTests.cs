@@ -56,7 +56,7 @@ namespace ConnectAPIC.test.src
             // setup
             // act
             // first test if the connectionWeights are proper
-            var component = MyGameManager.Grid.GetComponentAt(TunableDirectionalCoupler.GridX, TunableDirectionalCoupler.GridY);
+            var component = MyGameManager.Grid.GetComponentAt(TunableDirectionalCoupler.ViewModel.GridX, TunableDirectionalCoupler.ViewModel.GridY);
             var mainSlider = component.GetAllSliders().First();
             var nonLinearConnections = component.WaveLengthToSMatrixMap[RedLaser.WaveLengthInNm].NonLinearConnections;
             var lightIntensity = 1.0;

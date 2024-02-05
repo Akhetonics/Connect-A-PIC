@@ -5,7 +5,7 @@ namespace ConnectAPIC.LayoutWindow.View
 {
     public record AnimationSlotOverlayData
     {
-        public Texture LightFlowOverlay;
+        public Texture LightFlowOverlayPath;
         public RectSide Side;
         public int OffsetX;
         public int OffsetY;

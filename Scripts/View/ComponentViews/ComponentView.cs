@@ -1,4 +1,5 @@
 ﻿using CAP_Contracts.Logger;
+using CAP_Core;
 using CAP_Core.Components;
 using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.ExternalPorts;
@@ -10,8 +11,10 @@ using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scripts.Helpers;
 using ConnectAPIC.Scripts.View.ComponentViews;
+using ConnectAPIC.Scripts.ViewModel;
 using ConnectAPIC.Scripts.ViewModel.Commands;
 using Godot;
+using Godot.Collections;
 using MathNet.Numerics;
 using System;
 using System.Collections.Generic;
@@ -19,69 +22,113 @@ using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using YamlDotNet.Core.Tokens;
 
 namespace ConnectAPIC.LayoutWindow.View
 {
-    public partial class ComponentView : TextureRect
+    public partial class ComponentView : TextureRect 
     {
-        public delegate void SliderChangedEventHandler(ComponentView view, Godot.Slider slider, double newVal);
-        public event SliderChangedEventHandler SliderChanged;
-        public const string SliderNumberMetaID = "SliderNumber";
-        public const string SliderLabelMetaID = "SliderLabel";
-        private System.Timers.Timer SliderDebounceTimer = new(100);
+        public int WidthInTiles { get; set; }
+        public int HeightInTiles { get; set; }
         private List<Godot.Slider> Sliders { get; set; } = new();
-        public int WidthInTiles { get; private set; }
-        public int HeightInTiles { get; private set; }
-        public ILogger Logger { get; private set; }
-        public int TypeNumber { get; set; }
         private Node2D RotationArea { get; set; } // the part of the component that rotates
-        private Sprite2D OverlayBluePrint { get; set; }
+        public Sprite2D OverlayBluePrint { get; set; }
         public Sprite2D OverlayRed { get; private set; } // each laser(color) is independent of the others, so they need their own overlay and shader
         public Sprite2D OverlayGreen { get; private set; }
         public Sprite2D OverlayBlue { get; private set; }
+        public List<AnimationSlot> AnimationSlots { get; private set; } = new();
         private List<Sprite2D> OverlaySprites { get; set; } = new();
         public ShaderMaterial LightOverlayShader { get; set; }
-        public GridViewModel ViewModel { get; private set; }
-        public int GridX { get; set; }
-        public int GridY { get; set; }
-        public List<AnimationSlot> AnimationSlots { get; private set; } = new();
-        private new float RotationDegrees
-        {
+        public ComponentViewModel ViewModel { get; private set; }
+        public const string SliderNumberMetaID = "SliderNumber";
+        public const string SliderLabelMetaID = "SliderLabel";
+        public new float RotationDegrees{
             get => RotationArea?.RotationDegrees ?? 0;
-            set
-            {
+            set{
                 if (RotationArea?.RotationDegrees != null)
                     RotationArea.RotationDegrees = value;
             }
         }
         private new float Rotation { get => RotationArea.Rotation; set => RotationArea.Rotation = value; }
-        private DiscreteRotation _rotationCC;
-        public DiscreteRotation RotationCC
+
+        public ComponentView()
         {
-            get => _rotationCC;
-            set
+            ViewModel = new ComponentViewModel();
+            ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+        }
+
+        private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ComponentViewModel.RotationCC))
             {
-                _rotationCC = value;
-                AnimationSlots?.ForEach(a => a.RotateAttachedComponentCC(value)); // the slots need to know the rotation for proper animation matching
-                RotationDegrees = value.ToDegreesClockwise();
+                AnimationSlots?.ForEach(a => a.RotateAttachedComponentCC(ViewModel.RotationCC)); // the slots need to know the rotation for proper animation matching
+                RotationDegrees = ViewModel.RotationCC.ToDegreesClockwise();
+            } 
+            else if (e.PropertyName == nameof(ComponentViewModel.LightsAtPins))
+            {
+                var lightAndSlots = new List<(LightAtPin light, List<AnimationSlot>)>();
+                var shaderSlotNumber = 1;
+                foreach (LightAtPin light in ViewModel.LightsAtPins)
+                {
+                    var slots = AnimationSlot.FindMatching(AnimationSlots, light);
+                    foreach(var slot in slots)
+                    {
+                        this.ShowAndAssignInAndOutFlowShaderData(slot, light, shaderSlotNumber);
+                        shaderSlotNumber++;
+                    }
+                }
+            }
+            else if (e.PropertyName == nameof(ComponentViewModel.SliderData))
+            {
+                foreach (var sliderData in ViewModel.SliderData)
+                {
+                    FindAndInitializeSlider(sliderData);
+                }
+            }
+            else if (e.PropertyName == nameof(ComponentViewModel.Position))
+            {
+                Position = new Godot.Vector2( ViewModel.Position.X , ViewModel.Position.Y);
+            }
+            else if (e.PropertyName == nameof(ComponentViewModel.Visible))
+            {
+                Visible = ViewModel.Visible;
             }
         }
 
         public override void _Ready()
         {
             base._Ready();
-            RotationArea = (FindChild("?otation*", true, false) ?? FindChild("ROTATION*", true, false)) as Node2D;
-            RotationCC = _rotationCC;
         }
+        public void Initialize(List<AnimationSlotOverlayData> animationSlotOverlays, int widthInTiles, int heightInTiles)
+        {
+            this.WidthInTiles = widthInTiles;
+            this.HeightInTiles = heightInTiles;
 
-        private void FindAndAssignOverlayBlueprint()
+            foreach (var slotData in animationSlotOverlays)
+            {
+                AnimationSlots.AddRange(CreateRGBAnimSlots(slotData.Side, slotData.LightFlowOverlayPath, new Vector2I(slotData.OffsetX, slotData.OffsetY)));
+            }
+            RotationArea = (FindChild("?otation*", true, false) ?? FindChild("ROTATION*", true, false)) as Node2D;
+            LightOverlayShader = new ShaderMaterial();
+            LightOverlayShader.Shader = ResourceLoader.Singleton.Load("res://Scenes/Components/LightOverlayShaded.tres").Duplicate() as Shader;
+            FindAndCreateLightOverlays();
+        }
+        private void FindOverlayBlueprint()
         {
             OverlayBluePrint = FindChild("Overlay", true, false) as Sprite2D;
             OverlayBluePrint ??= FindChild("?verlay", true, false) as Sprite2D;
             OverlayBluePrint ??= FindChild("*?verlay*", true, false) as Sprite2D;
         }
-
-        public void SetSliderValue(int sliderNumber, double value)
+        protected List<AnimationSlot> CreateRGBAnimSlots(RectSide inflowSide, Godot.Texture overlayAnimTexture, Vector2I tileOffset)
+        {
+            return new List<AnimationSlot>()
+            {
+                new (LaserType.Red, tileOffset, inflowSide, OverlayRed, overlayAnimTexture,new Godot.Vector2I(WidthInTiles, HeightInTiles)),
+                new (LaserType.Green,tileOffset, inflowSide, OverlayGreen, overlayAnimTexture, new Godot.Vector2I(WidthInTiles, HeightInTiles)),
+                new (LaserType.Blue,tileOffset, inflowSide, OverlayBlue, overlayAnimTexture, new Godot.Vector2I(WidthInTiles, HeightInTiles)),
+            };
+        }
+        private void SetSliderValue(int sliderNumber, double value)
         {
             var slider = Sliders.Single(s => (int)s.GetMeta(SliderNumberMetaID) == sliderNumber);
             var label = (RichTextLabel)slider.GetMeta(SliderLabelMetaID);
@@ -100,61 +147,20 @@ namespace ConnectAPIC.LayoutWindow.View
             godotSlider.ValueChanged += (newVal) =>
             {
                 SetSliderLabelText(label, newVal);
-                SliderDebounceTimer.AutoReset = false;
-                SliderDebounceTimer.Stop();
-                SliderDebounceTimer.Start();
+                ViewModel.SliderValueChanged(sliderData.SliderNumber, newVal);
             };
-            SliderDebounceTimer.Elapsed += (object sender, System.Timers.ElapsedEventArgs e) =>
-            {
-                // we have to run the HandleSliderChangeDeferred in the correct thread
-                CallDeferred(nameof(HandleSliderChangeDeferred), godotSlider, godotSlider.Value);
-                SliderDebounceTimer.Stop();
-            };
+
             godotSlider.Value = sliderData.InitialValue;
             SetSliderLabelText(label, sliderData.InitialValue);
             godotSlider.Step = (sliderData.MaxVal - sliderData.MinVal) / sliderData.Steps; // step is the distance between two steps in value
             this.Sliders.Add(godotSlider);
         }
 
-        private void HandleSliderChangeDeferred(HSlider godotSlider, double sliderValue)
-        {
-            try
-            {
-                SliderChanged?.Invoke(this, godotSlider, sliderValue);
-            } catch (Exception ex)
-            {
-                Logger.PrintErr(ex.Message);
-            }
-        }
         private void SetSliderLabelText(RichTextLabel label, double newVal) => label.Text = $"[center]{newVal:F2}";
-        public void InitializeComponent(int componentTypeNumber, List<SliderViewData> sliderDataSets, List<AnimationSlotOverlayData> slotDataSets, int widthInTiles, int heightInTiles, ILogger logger)
+        private void FindAndCreateLightOverlays()
         {
-            this.Logger = logger;
-            if (widthInTiles == 0) Logger.PrintErr(nameof(widthInTiles) + " of this element is not set in the TypeNR: " + componentTypeNumber);
-            if (heightInTiles == 0) Logger.PrintErr(nameof(heightInTiles) + " of this element is not set in the TypeNR: " + componentTypeNumber);
-            sliderDataSets.ForEach(s => FindAndInitializeSlider(s));
-            this.TypeNumber = componentTypeNumber;
-            this.WidthInTiles = widthInTiles;
-            this.HeightInTiles = heightInTiles;
-            LightOverlayShader = new ShaderMaterial();
-            LightOverlayShader.Shader = ResourceLoader.Singleton.Load("res://Scenes/Components/LightOverlayShaded.tres").Duplicate() as Shader;
-            FindAndAssignOverlayBlueprint();
+            FindOverlayBlueprint();
             this.CheckForNull(x => x.OverlayBluePrint);
-            InitializeLightOverlays();
-
-            foreach (var slotData in slotDataSets)
-            {
-                if (slotData.LightFlowOverlay == null)
-                {
-                    Logger.PrintErr(nameof(slotData.LightFlowOverlay) + " is null in TypeNR: " + componentTypeNumber);
-                }
-                AnimationSlots.AddRange(CreateRGBAnimSlots(slotData.Side, slotData.LightFlowOverlay, slotData.OffsetX, slotData.OffsetY));
-            }
-            RotationCC = _rotationCC;
-        }
-        private void InitializeLightOverlays()
-        {
-            if (OverlayBluePrint == null) return;
             OverlayBluePrint.Hide();
             OverlayRed = DuplicateAndConfigureOverlay(OverlayBluePrint, LightColor.Red.ToGodotColor());
             OverlayGreen = DuplicateAndConfigureOverlay(OverlayBluePrint, LightColor.Green.ToGodotColor());
@@ -165,27 +171,6 @@ namespace ConnectAPIC.LayoutWindow.View
             OverlaySprites.Add(OverlayBlue);
         }
 
-        public void RegisterInGrid(int gridX, int gridY, DiscreteRotation rotationCounterClockwise, GridViewModel viewModel)
-        {
-            this.GridX = gridX;
-            this.GridY = gridY;
-            this.ViewModel = viewModel;
-            this.RotationCC = rotationCounterClockwise;
-            var rawPosition = new Vector2(this.GridX * GameManager.TilePixelSize, this.GridY * GameManager.TilePixelSize);
-            //Position = rawPosition + GetPositionDisplacementAfterRotation();
-            Position = rawPosition;
-            Visible = true;
-            HideLightVector();
-        }
-
-        public bool IsPlacedOnGrid()
-        {
-            if (ViewModel == null) return false;
-            if (!ViewModel.IsInGrid(GridX, GridY, WidthInTiles, HeightInTiles)) return false;
-            if (ViewModel.GridComponentViews[this.GridX, this.GridY] != this) return false;
-            return true;
-        }
-
         protected Sprite2D DuplicateAndConfigureOverlay(Sprite2D overlayDraft, Godot.Color laserColor)
         {
             var newOverlay = overlayDraft.Duplicate() as Sprite2D;
@@ -194,13 +179,6 @@ namespace ConnectAPIC.LayoutWindow.View
             newOverlay.Material = LightOverlayShader.Duplicate() as ShaderMaterial;
             (newOverlay.Material as ShaderMaterial).SetShaderParameter("laserColor", laserColor);
             return newOverlay;
-        }
-        public void HideLightVector()
-        {
-            OverlayRed?.Hide();
-            OverlayGreen?.Hide();
-            OverlayBlue?.Hide();
-            ResetAllShaderParametersToZero();
         }
 
         private void ResetAllShaderParametersToZero()
@@ -220,48 +198,66 @@ namespace ConnectAPIC.LayoutWindow.View
                 }
             }
         }
-
-        public void DisplayLightVector(List<LightAtPin> lightsAtPins)
+        protected void ShowAndAssignInAndOutFlowShaderData(AnimationSlot slot, LightAtPin lightAtPin, int shaderSlotNumber)
         {
-            int shaderAnimNumber = 1;
-            foreach (LightAtPin light in lightsAtPins)
+            var inFlowDataAndPosition = new Godot.Vector4((float)lightAtPin.lightInFlow.Magnitude, (float)lightAtPin.lightInFlow.Phase, 0, 0);
+            var outFlowDataAndPosition = new Godot.Vector4((float)lightAtPin.lightOutFlow.Magnitude, (float)lightAtPin.lightOutFlow.Phase, 0, 0);
+
+            var overlaySets = new Godot.Collections.Array
             {
-                var matchingSlots = AnimationSlot.FindMatching(AnimationSlots, light);
-                matchingSlots.ForEach(slot =>
+                new Godot.Collections.Dictionary
                 {
-                    AssignInAndOutFlowShaderData(slot, light, shaderAnimNumber);
-                    shaderAnimNumber++;
-                });
-            }
-            // changing Godot objects must happen in the UI thread
-            CallDeferred(nameof(ShowOverlaysDeferred));
+                    {"overlay", slot?.BaseOverlaySprite},
+                    {"name", ShaderParameterNames.LightInFlow + shaderSlotNumber},
+                    {"value", inFlowDataAndPosition}
+                },
+                    new Godot.Collections.Dictionary
+                {
+                    {"overlay", slot?.BaseOverlaySprite},
+                    {"name", ShaderParameterNames.LightOutFlow + shaderSlotNumber},
+                    {"value", outFlowDataAndPosition}
+                },
+                    new Godot.Collections.Dictionary
+                {
+                    {"overlay", slot?.BaseOverlaySprite},
+                    {"name", ShaderParameterNames.Animation + shaderSlotNumber},
+                    {"value", slot.Texture}
+                },
+                    new Godot.Collections.Dictionary
+                {
+                    {"overlay", slot?.BaseOverlaySprite},
+                    {"name", ShaderParameterNames.LightColor},
+                    {"value", slot.MatchingLaser.Color.ToGodotColor()}
+                }
+            };
+
+            CallDeferred(nameof(ShowAndSetShaderParameterDeferred), overlaySets);
         }
 
-        private void ShowOverlaysDeferred()
+        private void ShowAndSetShaderParameterDeferred(Godot.Collections.Array overlaySets)
         {
+            foreach (Godot.Collections.Dictionary overlaySet in overlaySets)
+            {
+                var overlay = overlaySet["overlay"].As<Sprite2D>();
+                var name = overlaySet["name"].ToString();
+                var value = overlaySet["value"];
+
+                if (overlay?.Material is ShaderMaterial shaderMat)
+                {
+                    shaderMat.SetShaderParameter(name, value);
+                }
+            }
             OverlayRed?.Show();
             OverlayGreen?.Show();
             OverlayBlue?.Show();
         }
-
-        protected void AssignInAndOutFlowShaderData(AnimationSlot slot, LightAtPin lightAtPin, int shaderSlotNumber)
+        public void HideLightVector()
         {
-            var InFlowDataAndPosition = new Godot.Vector4((float)lightAtPin.lightInFlow.Magnitude, (float)lightAtPin.lightInFlow.Phase, 0, 0);
-            var outFlowDataAndPosition = new Vector4((float)lightAtPin.lightOutFlow.Magnitude, (float)lightAtPin.lightOutFlow.Phase, 0, 0);
-            // assigning the shaders must run in the UI thread
-            CallDeferred(nameof(SetShaderParameterDeferred), slot?.BaseOverlaySprite, ShaderParameterNames.LightInFlow + shaderSlotNumber, InFlowDataAndPosition);
-            CallDeferred(nameof(SetShaderParameterDeferred), slot?.BaseOverlaySprite, ShaderParameterNames.LightOutFlow + shaderSlotNumber, outFlowDataAndPosition);
-            CallDeferred(nameof(SetShaderParameterDeferred), slot?.BaseOverlaySprite, ShaderParameterNames.Animation + shaderSlotNumber, slot.Texture);
-            CallDeferred(nameof(SetShaderParameterDeferred), slot?.BaseOverlaySprite, ShaderParameterNames.LightColor, slot.MatchingLaser.Color.ToGodotColor());
+            OverlayRed?.Hide();
+            OverlayGreen?.Hide();
+            OverlayBlue?.Hide();
+            ResetAllShaderParametersToZero();
         }
-        private void SetShaderParameterDeferred(Sprite2D overlay, string name, Variant value)
-        {
-            if (overlay?.Material is ShaderMaterial shaderMat)
-            {
-                shaderMat.SetShaderParameter(name, value);
-            }
-        }
-
         public override void _GuiInput(InputEvent inputEvent)
         {
             base._GuiInput(inputEvent);
@@ -277,50 +273,52 @@ namespace ConnectAPIC.LayoutWindow.View
                 }
                 if (mouseEvent.ButtonIndex == MouseButton.Middle && mouseEvent.Pressed)
                 {
-                    ViewModel.DeleteComponentCommand.ExecuteAsync(new DeleteComponentArgs(GridX, GridY)).RunSynchronously();
+                    ViewModel.DeleteComponentCommand?.ExecuteAsync(new DeleteComponentArgs(ViewModel.GridX, ViewModel.GridY)).RunSynchronously();
                 }
                 if (mouseEvent.ButtonIndex == MouseButton.Right && mouseEvent.Pressed)
                 {
-                    var args = new RotateComponentArgs(GridX, GridY);
-                    if (ViewModel.RotateComponentCommand.CanExecute(args))
+                    var args = new RotateComponentArgs(ViewModel.GridX, ViewModel.GridY);
+                    if (ViewModel.RotateComponentCommand?.CanExecute(args) == true)
                     {
-                        ViewModel.RotateComponentCommand.ExecuteAsync(args).RunSynchronously();
+                        ViewModel.RotateComponentCommand?.ExecuteAsync(args).RunSynchronously();
                     }
                     else
                     {
                         // Error Animation
                     }
-
                 }
             }
         }
 
         public virtual ComponentView Duplicate()
         {
-            var copy = base.Duplicate() as ComponentView;
-            copy.RotationCC = this.RotationCC; // give the new copy the proper RotationCC so that it has the correct rotation
+            var copy = (ComponentView) base.Duplicate() ;
+            copy.Initialize(AnimationSlots, WidthInTiles,HeightInTiles);
+            copy._Ready();
+            copy.ViewModel = new ComponentViewModel();
+            copy.ViewModel.RotationCC = ViewModel.RotationCC; // give the new copy the proper RotationCC so that it has the correct rotation
+
+            // deep copy thet list of sliders
+            var newSliderData = new List<SliderViewData>();
+            foreach( var slider in ViewModel.SliderData)
+            {
+                newSliderData.Add(new SliderViewData() { 
+                    GodotSliderLabelName = slider.GodotSliderLabelName,
+                    GodotSliderName = slider.GodotSliderName,
+                    InitialValue = slider.InitialValue,
+                    MaxVal  = slider.MaxVal,
+                    MinVal = slider.MinVal,
+                    SliderNumber = slider.SliderNumber,
+                    Steps = slider.Steps
+                });
+            }
+            copy.ViewModel.InitializeComponent(ViewModel.TypeNumber, newSliderData, ViewModel.Logger);
             return copy;
         }
-
-        protected List<AnimationSlot> CreateRGBAnimSlots(RectSide inflowSide, Texture overlayAnimTexture, int tileOffsetX = 0, int tileOffsetY = 0)
-        {
-            var tileOffset = new Vector2I(tileOffsetX, tileOffsetY);
-            return new List<AnimationSlot>()
-            {
-                new (LaserType.Red, tileOffset, inflowSide, OverlayRed, overlayAnimTexture,new Vector2I(WidthInTiles, HeightInTiles)),
-                new (LaserType.Green,tileOffset, inflowSide, OverlayGreen, overlayAnimTexture, new Vector2I(WidthInTiles, HeightInTiles)),
-                new (LaserType.Blue,tileOffset, inflowSide, OverlayBlue, overlayAnimTexture, new Vector2I(WidthInTiles, HeightInTiles)),
-            };
-        }
-
         public override void _ExitTree()
         {
-            // free the slider timer to avoid object disposed exceptions
-            SliderDebounceTimer.Stop();
-            SliderDebounceTimer.Dispose();
-            SliderDebounceTimer = null;
+            ViewModel.TreeExited();
+            base._ExitTree();
         }
-
-
     }
 }

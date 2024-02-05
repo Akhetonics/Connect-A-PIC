@@ -72,12 +72,12 @@ namespace ConnectAPIC.LayoutWindow.View
                     var overlayBluePrint = ResourceLoader.Load<Texture2D>(overlay.overlayAnimTexturePath);
                     if (overlayBluePrint == null)
                     {
-                        Logger.PrintErr("BluePrint could not be loaded in Type: " + draft.Identifier + " ComponentTypeNR: " + componentNR + " path: " + overlay.overlayAnimTexturePath);
+                        Logger.PrintErr($"'{nameof(overlayBluePrint)}' could not be loaded in Type: " + draft.Identifier + " ComponentTypeNR: " + componentNR + " path: " + overlay.overlayAnimTexturePath);
                         continue;
                     }
                     slotDataSets.Add(new AnimationSlotOverlayData()
                     {
-                        LightFlowOverlay = overlayBluePrint,
+                        LightFlowOverlayPath = overlay.overlayAnimTexturePath,
                         OffsetX = overlay.tileOffsetX,
                         OffsetY = overlay.tileOffsetY,
                         Side = overlay.rectSide
@@ -86,7 +86,9 @@ namespace ConnectAPIC.LayoutWindow.View
                 ComponentView componentView = new();
                 componentView._Ready();
                 componentView.AddChild((TextureRect)packedScene.Instantiate());
-                componentView.InitializeComponent(componentNR, MapDataAccessSlidersToViewSliders(draft), slotDataSets, draft.WidthInTiles, draft.HeightInTiles, Logger);
+                componentView.Initialize(slotDataSets, draft.WidthInTiles, draft.HeightInTiles);
+                // viewmodel has to be added last, so that the componentView has finished constructing before adding the data ot initialize sliders etc.
+                componentView.ViewModel.InitializeComponent(componentNR, MapDataAccessSlidersToViewSliders(draft), Logger);
                 return componentView;
             }
             catch (Exception ex)
@@ -99,16 +101,15 @@ namespace ConnectAPIC.LayoutWindow.View
         private static List<SliderViewData> MapDataAccessSlidersToViewSliders(ComponentDraft draft)
         {
             if (draft.Sliders == null) return new();
-            return draft.Sliders.Select(s => new SliderViewData()
-            {
-                GodotSliderLabelName = s.GodotSliderLabelName,
-                GodotSliderName = s.GodotSliderName,
-                MaxVal = s.MaxVal,
-                MinVal = s.MinVal,
-                InitialValue = (s.MaxVal - s.MinVal) / 2,
-                SliderNumber = s.SliderNumber,
-                Steps = s.Steps
-            }).ToList();
+            return draft.Sliders.Select(s => new SliderViewData(
+                s.GodotSliderLabelName,
+                s.GodotSliderName,
+                s.MinVal,
+                s.MaxVal,
+                (s.MaxVal - s.MinVal) / 2,
+                s.Steps,
+                s.SliderNumber
+            )).ToList();
         }
 
         public Vector2I GetComponentDimensions(int componentTypeNumber)

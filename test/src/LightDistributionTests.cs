@@ -80,12 +80,12 @@ namespace ConnectAPIC.test.src
                 new (0,0,inflowSide,RedLaser,1,0),
                 new (0, 0, outflowSide, RedLaser, 0, 1),
             };
-            RotatedCurve.DisplayLightVector(lightAtPins);
+            RotatedCurve.ViewModel.DisplayLightVector(lightAtPins);
             await MyGameManager.GridViewModel.LightCalculator.ShowLightPropagationAsync();
             await TestScene.GetTree().NextFrame(10);
-            RotatedCurve.AnimationSlots[0].Rotation.ShouldBe(RotatedCurve.RotationCC, "AnimationSlot should rotate according to the rotation of the component");
-            RotatedCurve.AnimationSlots[1].Rotation.ShouldBe(RotatedCurve.RotationCC, "AnimationSlot should rotate according to the rotation of the component");
-            RotatedCurve.AnimationSlots[2].Rotation.ShouldBe(RotatedCurve.RotationCC, "AnimationSlot should rotate according to the rotation of the component");
+            RotatedCurve.AnimationSlots[0].Rotation.ShouldBe(RotatedCurve.ViewModel.RotationCC, "AnimationSlot should rotate according to the rotation of the component");
+            RotatedCurve.AnimationSlots[1].Rotation.ShouldBe(RotatedCurve.ViewModel.RotationCC, "AnimationSlot should rotate according to the rotation of the component");
+            RotatedCurve.AnimationSlots[2].Rotation.ShouldBe(RotatedCurve.ViewModel.RotationCC, "AnimationSlot should rotate according to the rotation of the component");
         }
         [Test]
         public async Task TestShaderAssignment()
@@ -98,11 +98,11 @@ namespace ConnectAPIC.test.src
 
             // act
             // first test if the connectionWeights are proper
-            var compModel = MyGameManager.Grid.GetComponentAt(SecondStraightLine.GridX, SecondStraightLine.GridY);
+            var compModel = MyGameManager.Grid.GetComponentAt(SecondStraightLine.ViewModel.GridX, SecondStraightLine.ViewModel.GridY);
             var innerConnections = compModel.WaveLengthToSMatrixMap[GreenLaser.WaveLengthInNm].GetNonNullValues();
             // then test the light distribution
             SecondStraightLine.HideLightVector();
-            SecondStraightLine.DisplayLightVector(lightAtPins);
+            SecondStraightLine.ViewModel.DisplayLightVector(lightAtPins);
             var lightLocallyOn = await GetInOutLightValueLeft();
             await MyGameManager.GridViewModel.HideLightPropagation();
             var lightGloballyOff = await GetInOutLightValueLeft();

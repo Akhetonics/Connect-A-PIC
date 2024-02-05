@@ -21,7 +21,7 @@ namespace ConnectAPIC.LayoutWindow.View
 		{
 			if( GetChild(0) is ComponentView template)
 			{
-				var newComponent = componentViewFactory.CreateComponentView(template.TypeNumber);
+				var newComponent = componentViewFactory.CreateComponentView(template.ViewModel.TypeNumber);
 				return newComponent;
 			} else
 			{

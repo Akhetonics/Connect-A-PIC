@@ -125,9 +125,9 @@ namespace ConnectAPIC.LayoutWindow.View
                 int gridX = (int)position.X / GameManager.TilePixelSize;
                 int gridY = (int)position.Y / GameManager.TilePixelSize;
                 Component model = null;
-                if (component.IsPlacedOnGrid())
+                if (component.ViewModel.IsPlacedInGrid)
                 {
-                    model = ViewModel.Grid.GetComponentAt(component.GridX, component.GridY, component.WidthInTiles, component.HeightInTiles);
+                    model = ViewModel.Grid.GetComponentAt(component.ViewModel.GridX, component.ViewModel.GridY, component.WidthInTiles, component.HeightInTiles);
                 }
                 bool canDropData = !ViewModel.Grid.IsColliding(gridX, gridY, component.WidthInTiles, component.HeightInTiles, model);
 
@@ -141,13 +141,13 @@ namespace ConnectAPIC.LayoutWindow.View
             Vector2I GridXY = LocalToMap(atPosition);
             if (data.Obj is ComponentView componentView)
             {
-                if (!componentView.IsPlacedOnGrid())
+                if (!componentView.ViewModel.IsPlacedInGrid)
                 {
-                    ViewModel.CreateComponentCommand.ExecuteAsync(new CreateComponentArgs(componentView.TypeNumber, GridXY.X, GridXY.Y, (DiscreteRotation)(componentView.RotationDegrees / 90)));
+                    ViewModel.CreateComponentCommand.ExecuteAsync(new CreateComponentArgs(componentView.ViewModel.TypeNumber, GridXY.X, GridXY.Y, (DiscreteRotation)(componentView.RotationDegrees / 90)));
                 }
                 else
                 {
-                    ViewModel.MoveComponentCommand.ExecuteAsync(new MoveComponentArgs(componentView.GridX, componentView.GridY, GridXY.X, GridXY.Y));
+                    ViewModel.MoveComponentCommand.ExecuteAsync(new MoveComponentArgs(componentView.ViewModel.GridX, componentView.ViewModel.GridY, GridXY.X, GridXY.Y));
                 }
             }
         }

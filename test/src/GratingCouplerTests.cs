@@ -49,7 +49,7 @@ namespace ConnectAPIC.test.src
             upperLightVector,
         };
             GratingCoupler.ShouldNotBeNull("the grating coupler should have been loaded successfully but it didn't");
-            GratingCoupler.DisplayLightVector(lightAtPins);
+            GratingCoupler.ViewModel.DisplayLightVector(lightAtPins);
             await MyGameManager.GridViewModel.LightCalculator.ShowLightPropagationAsync();
             await TestScene.GetTree().NextFrame(10);
             var inflowShaderParam = (Vector4)(GratingCoupler.AnimationSlots[0].BaseOverlaySprite.Material as ShaderMaterial).GetShaderParameter(ShaderParameterNames.LightInFlow + 1);
