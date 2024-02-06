@@ -70,8 +70,10 @@ namespace CAP_Core.LightCalculation
             await Semaphore.WaitAsync();
             try
             {
-                // Cancel the ongoing calculations
-                CancelTokenLightCalc.Cancel();
+                if (!CancelTokenLightCalc.IsCancellationRequested)
+                {
+                    CancelTokenLightCalc.Cancel();
+                }
 
                 if (LightCalculationTask != null)
                 {
@@ -85,9 +87,12 @@ namespace CAP_Core.LightCalculation
                     }
                 }
 
-                // Dispose the old CancellationTokenSource and create a new one for the next calculations
-                CancelTokenLightCalc.Dispose();
-                CancelTokenLightCalc = new CancellationTokenSource();
+                // Reset CTS only if it was cancelled
+                if (CancelTokenLightCalc.IsCancellationRequested)
+                {
+                    CancelTokenLightCalc.Dispose();
+                    CancelTokenLightCalc = new CancellationTokenSource();
+                }
             }
             finally
             {

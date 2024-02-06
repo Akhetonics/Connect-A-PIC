@@ -18,6 +18,7 @@ using Godot.Collections;
 using MathNet.Numerics;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Drawing;
 using System.Linq;
 using System.Reflection;
@@ -37,11 +38,13 @@ namespace ConnectAPIC.LayoutWindow.View
         public Sprite2D OverlayGreen { get; private set; }
         public Sprite2D OverlayBlue { get; private set; }
         public List<AnimationSlot> AnimationSlots { get; private set; } = new();
+        private List<AnimationSlotOverlayData> AnimationSlotRawData { get; set; } = new();
         private List<Sprite2D> OverlaySprites { get; set; } = new();
         public ShaderMaterial LightOverlayShader { get; set; }
         public ComponentViewModel ViewModel { get; private set; }
         public const string SliderNumberMetaID = "SliderNumber";
         public const string SliderLabelMetaID = "SliderLabel";
+        public const string SliderIsCallbackRegistered = "SliderIsCallbackRegistered";
         public new float RotationDegrees{
             get => RotationArea?.RotationDegrees ?? 0;
             set{
@@ -55,6 +58,16 @@ namespace ConnectAPIC.LayoutWindow.View
         {
             ViewModel = new ComponentViewModel();
             ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+            ViewModel.SliderData.CollectionChanged += (object sender, NotifyCollectionChangedEventArgs e) =>
+            {
+                if(e.Action == NotifyCollectionChangedAction.Add)
+                {
+                    foreach ( var slider in e.NewItems.Cast<SliderViewData>().ToList())
+                    {
+                        FindAndInitializeSlider(slider);
+                    }
+                }
+            };
         }
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -80,10 +93,7 @@ namespace ConnectAPIC.LayoutWindow.View
             }
             else if (e.PropertyName == nameof(ComponentViewModel.SliderData))
             {
-                foreach (var sliderData in ViewModel.SliderData)
-                {
-                    FindAndInitializeSlider(sliderData);
-                }
+                Console.WriteLine();
             }
             else if (e.PropertyName == nameof(ComponentViewModel.Position))
             {
@@ -99,20 +109,30 @@ namespace ConnectAPIC.LayoutWindow.View
         {
             base._Ready();
         }
+
         public void Initialize(List<AnimationSlotOverlayData> animationSlotOverlays, int widthInTiles, int heightInTiles)
         {
+            RotationArea = (FindChild("?otation*", true, false) ?? FindChild("ROTATION*", true, false)) as Node2D;
             this.WidthInTiles = widthInTiles;
             this.HeightInTiles = heightInTiles;
+            LightOverlayShader = new ShaderMaterial();
+            LightOverlayShader.Shader = ResourceLoader.Load("res://Scenes/Components/LightOverlayShaded.tres").Duplicate() as Shader;
+            AnimationSlotRawData = animationSlotOverlays;
+            FindAndCreateLightOverlays(); // first create the overlays, then use them to create the animationslots
+            AnimationSlots = ConvertSlotOverlayDataToAnimationSlots(animationSlotOverlays);
+        }
 
+        public List<AnimationSlot> ConvertSlotOverlayDataToAnimationSlots(List<AnimationSlotOverlayData> animationSlotOverlays)
+        {
+            List<AnimationSlot> slots = new();
             foreach (var slotData in animationSlotOverlays)
             {
-                AnimationSlots.AddRange(CreateRGBAnimSlots(slotData.Side, slotData.LightFlowOverlayPath, new Vector2I(slotData.OffsetX, slotData.OffsetY)));
+                var lightOverlayBaseTexture = ResourceLoader.Load<Texture2D>(slotData.LightFlowOverlayPath);
+                slots.AddRange(CreateRGBAnimSlots(slotData.Side, lightOverlayBaseTexture, new Vector2I(slotData.OffsetX, slotData.OffsetY)));
             }
-            RotationArea = (FindChild("?otation*", true, false) ?? FindChild("ROTATION*", true, false)) as Node2D;
-            LightOverlayShader = new ShaderMaterial();
-            LightOverlayShader.Shader = ResourceLoader.Singleton.Load("res://Scenes/Components/LightOverlayShaded.tres").Duplicate() as Shader;
-            FindAndCreateLightOverlays();
+            return slots;
         }
+
         private void FindOverlayBlueprint()
         {
             OverlayBluePrint = FindChild("Overlay", true, false) as Sprite2D;
@@ -135,6 +155,7 @@ namespace ConnectAPIC.LayoutWindow.View
             slider.Value = value;
             SetSliderLabelText(label, value);
         }
+
         // initialize one of the existing sliders
         private void FindAndInitializeSlider(SliderViewData sliderData)
         {
@@ -142,16 +163,20 @@ namespace ConnectAPIC.LayoutWindow.View
             var godotSlider = FindChild(sliderData.GodotSliderName, true, false) as Godot.Slider;
             godotSlider.MinValue = sliderData.MinVal;
             godotSlider.MaxValue = sliderData.MaxVal;
-            godotSlider.SetMeta(SliderNumberMetaID, sliderData.SliderNumber);
+            godotSlider.SetMeta(SliderNumberMetaID, sliderData.Number);
             godotSlider.SetMeta(SliderLabelMetaID, label);
-            godotSlider.ValueChanged += (newVal) =>
+            if((bool)godotSlider.GetMeta(SliderIsCallbackRegistered) != true)
             {
-                SetSliderLabelText(label, newVal);
-                ViewModel.SliderValueChanged(sliderData.SliderNumber, newVal);
-            };
+                godotSlider.SetMeta(SliderIsCallbackRegistered, true);
+                godotSlider.ValueChanged += (newVal) =>
+                {
+                    SetSliderLabelText(label, newVal);
+                    ViewModel.SetSliderValue(sliderData.Number, newVal);
+                };
+            }
 
-            godotSlider.Value = sliderData.InitialValue;
-            SetSliderLabelText(label, sliderData.InitialValue);
+            godotSlider.Value = sliderData.Value;
+            SetSliderLabelText(label, sliderData.Value);
             godotSlider.Step = (sliderData.MaxVal - sliderData.MinVal) / sliderData.Steps; // step is the distance between two steps in value
             this.Sliders.Add(godotSlider);
         }
@@ -173,7 +198,7 @@ namespace ConnectAPIC.LayoutWindow.View
 
         protected Sprite2D DuplicateAndConfigureOverlay(Sprite2D overlayDraft, Godot.Color laserColor)
         {
-            var newOverlay = overlayDraft.Duplicate() as Sprite2D;
+            var newOverlay = (Sprite2D) overlayDraft.Duplicate();
             overlayDraft.GetParent().AddChild(newOverlay);
             newOverlay.Hide();
             newOverlay.Material = LightOverlayShader.Duplicate() as ShaderMaterial;
@@ -251,8 +276,7 @@ namespace ConnectAPIC.LayoutWindow.View
             OverlayGreen?.Show();
             OverlayBlue?.Show();
         }
-        public void HideLightVector()
-        {
+        public void HideLightVector() {
             OverlayRed?.Hide();
             OverlayGreen?.Hide();
             OverlayBlue?.Hide();
@@ -292,29 +316,38 @@ namespace ConnectAPIC.LayoutWindow.View
 
         public virtual ComponentView Duplicate()
         {
-            var copy = (ComponentView) base.Duplicate() ;
-            copy.Initialize(AnimationSlots, WidthInTiles,HeightInTiles);
+            var copy = (ComponentView)base.Duplicate();
+            copy.Initialize(AnimationSlotRawData, WidthInTiles, HeightInTiles);
             copy._Ready();
             copy.ViewModel = new ComponentViewModel();
             copy.ViewModel.RotationCC = ViewModel.RotationCC; // give the new copy the proper RotationCC so that it has the correct rotation
 
             // deep copy thet list of sliders
-            var newSliderData = new List<SliderViewData>();
-            foreach( var slider in ViewModel.SliderData)
-            {
-                newSliderData.Add(new SliderViewData() { 
-                    GodotSliderLabelName = slider.GodotSliderLabelName,
-                    GodotSliderName = slider.GodotSliderName,
-                    InitialValue = slider.InitialValue,
-                    MaxVal  = slider.MaxVal,
-                    MinVal = slider.MinVal,
-                    SliderNumber = slider.SliderNumber,
-                    Steps = slider.Steps
-                });
-            }
+            List<SliderViewData> newSliderData = DuplicateSliders();
             copy.ViewModel.InitializeComponent(ViewModel.TypeNumber, newSliderData, ViewModel.Logger);
             return copy;
         }
+
+        private List<SliderViewData> DuplicateSliders()
+        {
+            var newSliderData = new List<SliderViewData>();
+            foreach (var slider in ViewModel.SliderData)
+            {
+                newSliderData.Add(new SliderViewData()
+                {
+                    GodotSliderLabelName = slider.GodotSliderLabelName,
+                    GodotSliderName = slider.GodotSliderName,
+                    Value = slider.Value,
+                    MaxVal = slider.MaxVal,
+                    MinVal = slider.MinVal,
+                    Number = slider.Number,
+                    Steps = slider.Steps
+                });
+            }
+
+            return newSliderData;
+        }
+
         public override void _ExitTree()
         {
             ViewModel.TreeExited();

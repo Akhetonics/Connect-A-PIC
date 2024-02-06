@@ -12,9 +12,10 @@ namespace ConnectAPIC.Scripts.View.ComponentViews
         public string GodotSliderName { get; set; }
         public double MinVal { get; set; }
         public double MaxVal { get; set; }
-        public double InitialValue { get; set; }
+        public double Value { get; set; }
         public double Steps { get; set; }
-        public int SliderNumber { get; set; }
+        public System.Timers.Timer SliderDebounceTimer { get; set; }
+        public int Number { get; set; }
         public SliderViewData()
         {
             
@@ -25,9 +26,9 @@ namespace ConnectAPIC.Scripts.View.ComponentViews
             GodotSliderName = godotSliderName;
             MinVal = minVal;
             MaxVal = maxVal;
-            InitialValue = initialValue;
+            Value = initialValue;
             Steps = steps;
-            SliderNumber = sliderNumber;
+            Number = sliderNumber;
         }
     }
 }

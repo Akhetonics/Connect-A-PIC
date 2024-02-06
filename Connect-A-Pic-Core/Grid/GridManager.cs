@@ -17,8 +17,16 @@ namespace CAP_Core.Grid
         public event OnComponentChangedEventHandler OnComponentRemoved;
         public event OnComponentChangedEventHandler OnComponentRotated;
         public event OnComponentChangedEventHandler OnComponentMoved;
+        public event EventHandler<bool> OnLightSwitched;
         public List<ExternalPort> ExternalPorts;
-
+        private bool isLightOn;
+        public bool IsLightOn
+        {
+            get => isLightOn; set
+            {
+                isLightOn = value; OnLightSwitched?.Invoke(this, value);
+            }
+        }
         public Tile[,] Tiles { get; private set; }
         public int Width { get; private set; }
         public int Height { get; private set; }

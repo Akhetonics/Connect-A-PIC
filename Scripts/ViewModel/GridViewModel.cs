@@ -36,20 +36,21 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         public ILogger Logger { get; }
         public ComponentFactory ComponentModelFactory { get; }
         public GridView GridView { get; set; }
-        public LightCalculationService LightCalculator { get; set; }
+        private LightCalculationService LightCalculator { get; set; }
         public int MaxTileCount { get => Width * Height; }
-        public bool IsLightOn { get; set; } = false;
+        private bool IsLightOn { get; set; } = false;
 
         public GridViewModel(GridView gridView, GridManager grid, ILogger logger, ComponentFactory componentModelFactory, LightCalculationService lightCalculator)
         {
             this.GridView = gridView;
             this.Grid = grid;
             LightCalculator = lightCalculator;
-            LightCalculator.LightCalculationChanged += (object sender, LightCalculationChangeEventArgs e)
-                => AssignLightToComponentViews(e.LightVector, e.LaserInUse);
-            GridView.LightSwitched += async (sender, isOn) => {
-                IsLightOn = isOn;
-                await RecalculateLightIfNeeded();
+            LightCalculator.LightCalculationChanged += async (object sender, LightCalculationChangeEventArgs e) =>
+            {
+               AssignLightToComponentViews(e.LightVector, e.LaserInUse);
+            };
+            GridView.LightSwitched += (sender, isOn) => {
+                Grid.IsLightOn = isOn;
             };
             Logger = logger;
             this.ComponentModelFactory = componentModelFactory;
@@ -64,29 +65,41 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
 
             this.Grid.OnComponentPlacedOnTile += Grid_OnComponentPlacedOnTile;
             this.Grid.OnComponentRemoved += Grid_OnComponentRemoved;
+            this.Grid.OnLightSwitched += Grid_OnLightSwitched; ;
 
+        }
+
+        private async void Grid_OnLightSwitched(object sender, bool e)
+        {
+            IsLightOn = e;
+            GridView.SetLightButtonOn(e);
+            if (IsLightOn)
+            {
+                await ShowLightPropagation();
+            }
+            else
+            {
+                await HideLightPropagation();
+            }
         }
 
         private async void Grid_OnComponentRemoved(Component component, int x, int y)
         {
             ResetTilesAt(x, y, component.WidthInTiles, component.HeightInTiles);
-            await RecalculateLightIfNeeded();
+            await RecalculateLightIfOn();
         }
 
-        private async Task RecalculateLightIfNeeded()
+        private async Task RecalculateLightIfOn()
         {
             if (IsLightOn)
             {
-                await LightCalculator.ShowLightPropagationAsync();
-            } else
-            {
-                await HideLightPropagation();
-            }
+                await ShowLightPropagation();
+            } 
         }
         private async void Grid_OnComponentPlacedOnTile(Component component, int gridX, int gridY)
         {
             CreateComponentView(gridX, gridY, component.Rotation90CounterClock, component.TypeNumber, component.GetAllSliders());
-            await RecalculateLightIfNeeded();
+            await RecalculateLightIfOn();
         }
         public bool IsInGrid(int x, int y, int width, int height) => x >= 0 && y >= 0 && x + width <= this.Width && y + height <= this.Height;
 
@@ -133,17 +146,20 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             ComponentView.ViewModel.RegisterInGrid(Grid,gridX, gridY, rotationCounterClockwise);
             ComponentView.ViewModel.SliderChanged += async (int sliderNumber, double newVal)=> {
                 await MoveSliderCommand.ExecuteAsync(new MoveSliderCommandArgs(ComponentView.ViewModel.GridX, ComponentView.ViewModel.GridY, sliderNumber, newVal));
-                await RecalculateLightIfNeeded();
+                await RecalculateLightIfOn();
             };
             RegisterComponentViewInGridView(ComponentView);
             GridView.DragDropProxy.AddChild(ComponentView); // it has to be the child of the DragDropArea to be displayed
                                                             // set sliders initial values
-            List<SliderViewData> newSliderData = slidersInUse.Select(s => {
-                var vmSlider = ComponentView.ViewModel.SliderData.Single(data => data.SliderNumber == s.Number); 
+            List<SliderViewData> SliderInitialData = slidersInUse.Select(s => {
+                var vmSlider = ComponentView.ViewModel.SliderData.Single(data => data.Number == s.Number); 
                 return new SliderViewData(
                     vmSlider.GodotSliderLabelName, vmSlider.GodotSliderName, s.MinValue, s.MaxValue, s.Value, vmSlider.Steps, s.Number);
             }).ToList();
-            ComponentView.ViewModel.SliderData = newSliderData;
+            foreach (var slider in SliderInitialData)
+            {
+                ComponentView.ViewModel.SetSliderValue(slider.Number, slider.Value, true);
+            }
             return ComponentView;
         }
 
@@ -159,10 +175,12 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             }
         }
 
+        public async Task ShowLightPropagation()
+        {
+            await LightCalculator.ShowLightPropagationAsync();
+        }
         public async Task HideLightPropagation()
         {
-            IsLightOn = false;
-            GridView.SetLightButtonOn(false);
             await LightCalculator.CancelLightCalculation();
 
             for (int x = 0; x < Grid.Width; x++)
@@ -171,7 +189,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
                 {
                     GridComponentViews[x, y]?.HideLightVector();
                 }
-            }
+            }   
         }
     }
 }

@@ -32,42 +32,42 @@ namespace ConnectAPIC.Scripts.ViewModel
         public ICommand RotateComponentCommand { get; set; }
         public int GridX { get; set; }
         public int GridY { get; set; }
-        private List<SliderViewData> _sliderData;
-        public List<SliderViewData> SliderData
+        private ObservableCollection<SliderViewData> sliderData = new();
+        public ObservableCollection<SliderViewData> SliderData
         {
-            get { return _sliderData; }
-            set { _sliderData = value; OnPropertyChanged(); }
+            get { return sliderData; }
         }
-        private DiscreteRotation _rotationCC;
+        private DiscreteRotation rotationCC;
         public DiscreteRotation RotationCC
         {
-            get => _rotationCC;
-            set { _rotationCC = value; OnPropertyChanged(); }
+            get => rotationCC;
+            set { rotationCC = value; OnPropertyChanged(); }
         }
-        private List<LightAtPin> _lightsAtPins;
+        private List<LightAtPin> lightsAtPins;
         public List<LightAtPin> LightsAtPins
         {
-            get => _lightsAtPins;
-            set { _lightsAtPins = value; OnPropertyChanged(); }
+            get => lightsAtPins;
+            set { lightsAtPins = value; OnPropertyChanged(); }
         }
-        private bool _isVisible;
+        private bool isVisible;
         public bool Visible
         {
-            get => _isVisible;
-            set { _isVisible = value; OnPropertyChanged(); }
+            get => isVisible;
+            set { isVisible = value; OnPropertyChanged(); }
         }
-        private IntVector _rawPosition;
+        private IntVector rawPosition;
         public IntVector Position
         {
-            get => _rawPosition;
-            set { _rawPosition = value; OnPropertyChanged(); }
+            get => rawPosition;
+            set { rawPosition = value; OnPropertyChanged(); }
         }
         public int TypeNumber { get; set; }
         public delegate void SliderChangedEventHandler(int sliderNumber, double newVal);
         public event SliderChangedEventHandler SliderChanged;
         public event PropertyChangedEventHandler PropertyChanged;
-        private System.Timers.Timer SliderDebounceTimer = new(100);
-        public bool IsPlacedInGrid { get; set; }
+        public const int SliderDebounceTimeMs = 100;
+        private bool isPlacedInGrid;
+        public bool IsPlacedInGrid { get => isPlacedInGrid; set { isPlacedInGrid = value; OnPropertyChanged(); } }
 
         public ComponentViewModel()
         {
@@ -75,27 +75,55 @@ namespace ConnectAPIC.Scripts.ViewModel
         public void InitializeComponent(int componentTypeNumber, List<SliderViewData> sliderDataSets,  ILogger logger)
         {
             Logger = logger;
-            this.SliderData = sliderDataSets;
             this.TypeNumber = componentTypeNumber;
-            RotationCC = _rotationCC;
+            RotationCC = rotationCC;
+            RegisterSliderDebounceTimer(sliderDataSets);
         }
 
-        public void SliderValueChanged(int sliderNumber, double newVal)
+        private void RegisterSliderDebounceTimer(List<SliderViewData> sliderDataSets)
         {
-            SliderDebounceTimer.AutoReset = false;
-            SliderDebounceTimer.Stop();
-            SliderDebounceTimer.Start();
-            SliderDebounceTimer.Elapsed += (object sender, System.Timers.ElapsedEventArgs e) =>
+            if (sliderDataSets.Count == 0) return;
+            foreach (var slider in sliderDataSets)
             {
-                SliderChanged?.Invoke(sliderNumber, newVal);
-                SliderDebounceTimer.Stop();
-            };
+                slider.SliderDebounceTimer = new(SliderDebounceTimeMs);
+                slider.SliderDebounceTimer.Elapsed += (object sender, System.Timers.ElapsedEventArgs e) =>
+                {
+                    slider.SliderDebounceTimer.Stop();
+                    var sliderfound = this.SliderData.Single(s => s.Number == slider.Number);
+
+                    SliderChanged?.Invoke((int)sliderfound.Number, sliderfound.Value);
+                };
+                this.SliderData.Add(slider);
+            }
+        }
+
+        public void SetSliderValue(int sliderNumber, double newVal, bool isUpdateView = false)
+        {
+            var slider = SliderData.Single(s => s.Number == sliderNumber);
+            if(slider.Value != newVal)
+            {
+                slider.SliderDebounceTimer.Stop();
+                slider.SliderDebounceTimer.Start();
+                slider.SliderDebounceTimer.AutoReset = false;
+            }
+            slider.Value = newVal;
+
+            if (isUpdateView)
+            {
+                // remove and add the element to get the view updated
+                sliderData.Remove(slider);
+                sliderData.Add(slider);
+            }
         }
         public void TreeExited()
         {
-            SliderDebounceTimer.Stop();
-            SliderDebounceTimer.Dispose();
-            SliderDebounceTimer = null;
+            foreach (var slider in SliderData)
+            {
+                if (slider.SliderDebounceTimer == null) continue;
+                slider.SliderDebounceTimer.Stop();
+                slider.SliderDebounceTimer.Dispose();
+                slider.SliderDebounceTimer = null;
+            }
         }
 
         public void DisplayLightVector(List<LightAtPin> lightsAtPins)

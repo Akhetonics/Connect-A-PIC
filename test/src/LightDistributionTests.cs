@@ -81,7 +81,7 @@ namespace ConnectAPIC.test.src
                 new (0, 0, outflowSide, RedLaser, 0, 1),
             };
             RotatedCurve.ViewModel.DisplayLightVector(lightAtPins);
-            await MyGameManager.GridViewModel.LightCalculator.ShowLightPropagationAsync();
+            await MyGameManager.GridViewModel.ShowLightPropagation() ;
             await TestScene.GetTree().NextFrame(10);
             RotatedCurve.AnimationSlots[0].Rotation.ShouldBe(RotatedCurve.ViewModel.RotationCC, "AnimationSlot should rotate according to the rotation of the component");
             RotatedCurve.AnimationSlots[1].Rotation.ShouldBe(RotatedCurve.ViewModel.RotationCC, "AnimationSlot should rotate according to the rotation of the component");
@@ -106,7 +106,7 @@ namespace ConnectAPIC.test.src
             var lightLocallyOn = await GetInOutLightValueLeft();
             await MyGameManager.GridViewModel.HideLightPropagation();
             var lightGloballyOff = await GetInOutLightValueLeft();
-            await MyGameManager.GridViewModel.LightCalculator.ShowLightPropagationAsync();
+            await MyGameManager.GridViewModel.ShowLightPropagation();
             var lightGloballyOn= await GetInOutLightValueLeft();
             SecondStraightLine.HideLightVector();
             var lightLocallyOff= await GetInOutLightValueLeft();
