@@ -45,12 +45,14 @@ namespace CAP_Core.LightCalculation
                 foreach (var port in LightInputs)
                 {
                     CancelTokenLightCalc.Token.ThrowIfCancellationRequested();
+                    Dictionary<Guid, Complex> resultLightVector = new();
                     LightCalculationTask = Task.Run(async () =>
                     {
-                        var resultLightVector = await GridSMatrixAnalyzer.CalculateLightPropagationAsync(CancelTokenLightCalc, port.LaserType.WaveLengthInNm);
-                        LightCalculationChanged?.Invoke(this, new(resultLightVector, port.LaserType));
+                        resultLightVector = await GridSMatrixAnalyzer.CalculateLightPropagationAsync(CancelTokenLightCalc, port.LaserType.WaveLengthInNm);
                     }, CancelTokenLightCalc.Token);
                     await LightCalculationTask.ConfigureAwait(false);
+                    CancelTokenLightCalc.Token.ThrowIfCancellationRequested();
+                    LightCalculationChanged?.Invoke(this, new(resultLightVector, port.LaserType));
                 }
             }
             catch (OperationCanceledException)

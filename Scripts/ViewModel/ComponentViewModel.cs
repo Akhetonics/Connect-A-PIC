@@ -1,27 +1,17 @@
 ﻿using CAP_Core.Components;
-using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPic.LayoutWindow;
 using ConnectAPIC.Scripts.ViewModel.Commands;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CAP_Core.ExternalPorts;
 using CAP_Core.Helpers;
-using System.Threading;
-using CAP_Core.Tiles;
 using ConnectAPIC.LayoutWindow.View;
-using CAP_Core;
 using ConnectAPIC.Scripts.View.ComponentViews;
 using CAP_Contracts.Logger;
-using ConnectAPIC.Scripts.Helpers;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using CAP_Core.Grid;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.ObjectModel;
-using Godot;
 
 namespace ConnectAPIC.Scripts.ViewModel
 {
