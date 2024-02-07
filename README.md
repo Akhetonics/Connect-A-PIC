@@ -122,7 +122,7 @@ It will load all PCK files, import them into godot, then search for all JSON fil
 The Model can instantiate new components and the View listenes to event registered by the "ViewModel" that the model is firing up whenever there are new Components or when they rotate or when they get deleted.
 
 ## UnitTests
-All tests for the Model or "CAP-Core" can be found here, simply use Visual Studio and start them. We use XUnit to test all business logic and [GoDotTest](https://github.com/chickensoft-games/GoDotTest) to test some features of the frontend, thet "View" - mostly if the shaders are visible correctly.
+All tests for the Model or "CAP-Core" can be found here, simply use Visual Studio and start them. We use XUnit to test all business logic and [GoDotTest](https://github.com/chickensoft-games/GoDotTest) to test some features of the frontend, that "View" - mostly if the shaders are visible correctly.
 
 
 # How to Contribute
