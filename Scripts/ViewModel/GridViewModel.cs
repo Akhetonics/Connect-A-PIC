@@ -45,10 +45,8 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             this.GridView = gridView;
             this.Grid = grid;
             LightCalculator = lightCalculator;
-            LightCalculator.LightCalculationChanged += async (object sender, LightCalculationChangeEventArgs e) =>
-            {
-               AssignLightToComponentViews(e.LightVector, e.LaserInUse);
-            };
+            LightCalculator.LightCalculationChanged += (object sender, LightCalculationChangeEventArgs e) 
+                => AssignLightToComponentViews(e.LightVector, e.LaserInUse);
             GridView.LightSwitched += (sender, isOn) => {
                 Grid.IsLightOn = isOn;
             };
