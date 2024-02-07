@@ -261,6 +261,7 @@ namespace ConnectAPIC.LayoutWindow.View
 
         private void ShowAndSetShaderParameterDeferred(Godot.Collections.Array overlaySets)
         {
+            if (GameManager.instance.Grid.IsLightOn == false) return;
             foreach (Godot.Collections.Dictionary overlaySet in overlaySets)
             {
                 var overlay = overlaySet["overlay"].As<Sprite2D>();
