@@ -79,9 +79,9 @@ namespace ConnectAPIC.Scripts.ViewModel
                 slider.SliderDebounceTimer.Elapsed += (object sender, System.Timers.ElapsedEventArgs e) =>
                 {
                     slider.SliderDebounceTimer.Stop();
-                    var sliderfound = this.SliderData.Single(s => s.Number == slider.Number);
+                    var sliderFound = this.SliderData.Single(s => s.Number == slider.Number);
 
-                    SliderChanged?.Invoke((int)sliderfound.Number, sliderfound.Value);
+                    SliderChanged?.Invoke((int)sliderFound.Number, sliderFound.Value);
                 };
                 this.SliderData.Add(slider);
             }
