@@ -1,4 +1,5 @@
-﻿using NCalc;
+﻿using CAP_Core.Components.ComponentHelpers;
+using NCalc;
 using System.Numerics;
 
 namespace CAP_Core.Grid.FormulaReading
@@ -13,6 +14,7 @@ namespace CAP_Core.Grid.FormulaReading
             public static Complex Mul(Complex a, Complex b) => a * b;
             public static Complex ToComplex(double a, double b) => new Complex(a,b);
             public static Complex ToComplexFromPolar(double a, double b) => Complex.FromPolarCoordinates(a, b);
+            public static Complex PhaseShiftFromWGLength(double a, double b) => PhaseShiftCalculator.CalculateWave(a , b);
             public static Expression CreateExpressionWithCustomFunctions(string expressionString)
             {
                 var e = new Expression(expressionString);
@@ -53,6 +55,12 @@ namespace CAP_Core.Grid.FormulaReading
                         var magnitude = ConvertToComplex(args.Parameters[0].Evaluate());
                         var phase = ConvertToComplex(args.Parameters[1].Evaluate());
                         args.Result = ComplexMath.ToComplexFromPolar(magnitude.Real, phase.Real);
+                    }
+                    if (name.ToLower() == nameof(ComplexMath.PhaseShiftFromWGLength).ToLower())
+                    {
+                        var wireLength = ConvertToComplex(args.Parameters[0].Evaluate());
+                        var lifhtWaveLength = ConvertToComplex(args.Parameters[1].Evaluate());
+                        args.Result = ComplexMath.ToComplexFromPolar(wireLength.Real, lifhtWaveLength.Real);
                     }
                 };
                 return e;

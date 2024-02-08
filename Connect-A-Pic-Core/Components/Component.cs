@@ -5,6 +5,7 @@ using CAP_Core.Helpers;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
 
 namespace CAP_Core.Components
 {
@@ -50,8 +51,20 @@ namespace CAP_Core.Components
                 s.Value = (s.MinValue + s.MaxValue) / 2;
             });
             NazcaFunctionName = nazcaFunctionName;
-            NazcaFunctionParameters = "deltaLength = " + sliders.FirstOrDefault()?.Value;
+            var firstSlider = sliders.FirstOrDefault();
+            NazcaFunctionParameters = InsertSliderValue(NazcaFunctionParameters ?? "");
         }
+        public string InsertSliderValue(string nazcaFunctionParameterString)
+        {
+            if (SliderMap?.Values == null) return nazcaFunctionParameterString;
+            foreach (var slider in SliderMap.Values)
+            {
+                string pattern = "SLIDER" + slider.Number;
+                nazcaFunctionParameterString = Regex.Replace(nazcaFunctionParameterString, Regex.Escape(pattern), slider.Value.ToString(), RegexOptions.IgnoreCase);
+            }
+            return nazcaFunctionParameterString;
+        }
+
         public void AddSlider(int sliderNr , Slider slider)
         {
             if(SliderMap.TryAdd(sliderNr, slider))
