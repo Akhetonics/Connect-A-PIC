@@ -59,8 +59,8 @@ namespace CAP_Core.Grid.FormulaReading
                     if (name.ToLower() == nameof(ComplexMath.PhaseShiftFromWGLength).ToLower())
                     {
                         var wireLength = ConvertToComplex(args.Parameters[0].Evaluate());
-                        var lifhtWaveLength = ConvertToComplex(args.Parameters[1].Evaluate());
-                        args.Result = ComplexMath.PhaseShiftFromWGLength(wireLength.Real, lifhtWaveLength.Real);
+                        var lightWaveLength = ConvertToComplex(args.Parameters[1].Evaluate());
+                        args.Result = ComplexMath.PhaseShiftFromWGLength(wireLength.Real, lightWaveLength.Real);
                     }
                     if(name.ToLower() == "pi")
                     {
