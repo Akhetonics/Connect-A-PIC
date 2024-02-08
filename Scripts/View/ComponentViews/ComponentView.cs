@@ -23,6 +23,7 @@ using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.Xml.Linq;
 using YamlDotNet.Core.Tokens;
 
 namespace ConnectAPIC.LayoutWindow.View
@@ -255,7 +256,10 @@ namespace ConnectAPIC.LayoutWindow.View
                     {"value", slot.MatchingLaser.Color.ToGodotColor()}
                 }
             };
-
+            if (slot?.BaseOverlaySprite?.Material is ShaderMaterial shaderMat)
+            {
+                shaderMat.SetShaderParameter(ShaderParameterNames.LightInFlow + shaderSlotNumber, inFlowDataAndPosition);
+            }
             CallDeferred(nameof(ShowAndSetShaderParameterDeferred), overlaySets);
         }
 
