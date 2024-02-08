@@ -18,12 +18,15 @@ namespace CAP_Core.LightCalculation
         private CancellationTokenSource CancelTokenLightCalc { get; set; } = new();
         public List<ExternalInput> LightInputs { get; }
         public ILightCalculator GridSMatrixAnalyzer { get; }
+        public SynchronizationContext MainThreadContext { get; }
+
         private SemaphoreSlim Semaphore = new (1, 1);
 
         public LightCalculationService(List<ExternalInput> lightInputs, ILightCalculator gridSMatrixAnalyzer)
         {
             LightInputs = lightInputs;
             GridSMatrixAnalyzer = gridSMatrixAnalyzer;
+            MainThreadContext = SynchronizationContext.Current; 
         }
 
         public async Task ShowLightPropagationAsync()
@@ -44,7 +47,9 @@ namespace CAP_Core.LightCalculation
                     await LightCalculationTask.ConfigureAwait(false);
                     CancelTokenLightCalc.Token.ThrowIfCancellationRequested();
                     // the results must run in the main thread so that the UI can be updated properly
-                    LightCalculationChanged?.Invoke(this, new(resultLightVector, port.LaserType));
+                    ExecuteOnMainThread(()=>{
+                        LightCalculationChanged?.Invoke(this, new(resultLightVector, port.LaserType));
+                    });
                 }
             }
             catch (OperationCanceledException)
@@ -59,7 +64,10 @@ namespace CAP_Core.LightCalculation
                 Semaphore.Release();
             }
         }
-
+        private void ExecuteOnMainThread(Action action)
+        {
+            MainThreadContext.Post(_ => action(), null);
+        }
         public async Task CancelLightCalculation()
         {
             await Semaphore.WaitAsync();

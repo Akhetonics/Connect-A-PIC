@@ -224,63 +224,23 @@ namespace ConnectAPIC.LayoutWindow.View
                 }
             }
         }
+
         protected void ShowAndAssignInAndOutFlowShaderData(AnimationSlot slot, LightAtPin lightAtPin, int shaderSlotNumber)
         {
             var inFlowDataAndPosition = new Godot.Vector4((float)lightAtPin.lightInFlow.Magnitude, (float)lightAtPin.lightInFlow.Phase, 0, 0);
             var outFlowDataAndPosition = new Godot.Vector4((float)lightAtPin.lightOutFlow.Magnitude, (float)lightAtPin.lightOutFlow.Phase, 0, 0);
-
-            var overlaySets = new Godot.Collections.Array
-            {
-                new Godot.Collections.Dictionary
-                {
-                    {"overlay", slot?.BaseOverlaySprite},
-                    {"name", ShaderParameterNames.LightInFlow + shaderSlotNumber},
-                    {"value", inFlowDataAndPosition}
-                },
-                    new Godot.Collections.Dictionary
-                {
-                    {"overlay", slot?.BaseOverlaySprite},
-                    {"name", ShaderParameterNames.LightOutFlow + shaderSlotNumber},
-                    {"value", outFlowDataAndPosition}
-                },
-                    new Godot.Collections.Dictionary
-                {
-                    {"overlay", slot?.BaseOverlaySprite},
-                    {"name", ShaderParameterNames.Animation + shaderSlotNumber},
-                    {"value", slot.Texture}
-                },
-                    new Godot.Collections.Dictionary
-                {
-                    {"overlay", slot?.BaseOverlaySprite},
-                    {"name", ShaderParameterNames.LightColor},
-                    {"value", slot.MatchingLaser.Color.ToGodotColor()}
-                }
-            };
             if (slot?.BaseOverlaySprite?.Material is ShaderMaterial shaderMat)
             {
                 shaderMat.SetShaderParameter(ShaderParameterNames.LightInFlow + shaderSlotNumber, inFlowDataAndPosition);
-            }
-            CallDeferred(nameof(ShowAndSetShaderParameterDeferred), overlaySets);
-        }
-
-        private void ShowAndSetShaderParameterDeferred(Godot.Collections.Array overlaySets)
-        {
-            if (GameManager.instance.Grid.IsLightOn == false) return;
-            foreach (Godot.Collections.Dictionary overlaySet in overlaySets)
-            {
-                var overlay = overlaySet["overlay"].As<Sprite2D>();
-                var name = overlaySet["name"].ToString();
-                var value = overlaySet["value"];
-
-                if (overlay?.Material is ShaderMaterial shaderMat)
-                {
-                    shaderMat.SetShaderParameter(name, value);
-                }
+                shaderMat.SetShaderParameter(ShaderParameterNames.LightOutFlow + shaderSlotNumber, outFlowDataAndPosition);
+                shaderMat.SetShaderParameter(ShaderParameterNames.Animation + shaderSlotNumber, slot.Texture);
+                shaderMat.SetShaderParameter(ShaderParameterNames.LightColor + shaderSlotNumber, slot.MatchingLaser.Color.ToGodotColor());
             }
             OverlayRed?.Show();
             OverlayGreen?.Show();
             OverlayBlue?.Show();
         }
+
         public void HideLightVector() {
             OverlayRed?.Hide();
             OverlayGreen?.Hide();
