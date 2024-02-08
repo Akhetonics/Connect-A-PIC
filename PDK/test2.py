@@ -18,6 +18,7 @@ def FullDesign(layoutName):
         cell_4_3 = CAPICPDK.placeCell_Delay(deltaLength = 1.82).put('west', cell_6_2.pin['west1'])
         cell_8_2 = CAPICPDK.placeCell_GratingCoupler().put('west', cell_6_2.pin['east0'])
         cell_8_3 = CAPICPDK.placeCell_Crossing().put('west', cell_6_2.pin['east1'])
+        cell_mmi = CAPICPDK.placeCell_MMI().put('west0',grating.pin['io7'])
     return fullLayoutInner
 
 nd.print_warning = False

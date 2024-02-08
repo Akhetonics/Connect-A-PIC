@@ -62,10 +62,6 @@ namespace CAP_Core.Grid.FormulaReading
                         var lightWaveLength = ConvertToComplex(args.Parameters[1].Evaluate());
                         args.Result = ComplexMath.PhaseShiftFromWGLength(wireLength.Real, lightWaveLength.Real);
                     }
-                    if(name.ToLower() == "pi")
-                    {
-                        args.Result = Math.PI;
-                    }
                 };
                 return e;
             }
