@@ -94,7 +94,6 @@ namespace CAP_Core.Grid.FormulaReading
             expressionDraft = MakePlaceHoldersUpperCase(expressionDraft);
             var expression = ComplexMath.CreateExpressionWithCustomFunctions(expressionDraft);
 
-
             // create a list of Guids for all used parameters in the correct order so that the caller can later provide the correct values from his dictionaries
             var usedParameterGuidMap = ExtractParameterGuids(expressionDraft, pinParameterNameToGuidMap, sliderParameterNameToGuidMap, out bool IsPinsInvolved);
             // add all parameters to the expression for reference
