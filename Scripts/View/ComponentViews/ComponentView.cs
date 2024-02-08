@@ -119,7 +119,7 @@ namespace ConnectAPIC.LayoutWindow.View
             LightOverlayShader = new ShaderMaterial();
             LightOverlayShader.Shader = ResourceLoader.Load("res://Scenes/Components/LightOverlayShaded.tres").Duplicate() as Shader;
             AnimationSlotRawData = animationSlotOverlays;
-            FindAndCreateLightOverlays(); // first create the overlays, then use them to create the animationslots
+            FindAndCreateLightOverlays(); // first create the overlays, then use them to create the animationSlots
             AnimationSlots = ConvertSlotOverlayDataToAnimationSlots(animationSlotOverlays);
         }
 
@@ -265,6 +265,7 @@ namespace ConnectAPIC.LayoutWindow.View
 
         private void ShowAndSetShaderParameterDeferred(Godot.Collections.Array overlaySets)
         {
+            if (GameManager.instance.Grid.IsLightOn == false) return;
             foreach (Godot.Collections.Dictionary overlaySet in overlaySets)
             {
                 var overlay = overlaySet["overlay"].As<Sprite2D>();
@@ -326,7 +327,7 @@ namespace ConnectAPIC.LayoutWindow.View
             copy.ViewModel = new ComponentViewModel();
             copy.ViewModel.RotationCC = ViewModel.RotationCC; // give the new copy the proper RotationCC so that it has the correct rotation
 
-            // deep copy thet list of sliders
+            // deep copy that list of sliders
             List<SliderViewData> newSliderData = DuplicateSliders();
             copy.ViewModel.InitializeComponent(ViewModel.TypeNumber, newSliderData, ViewModel.Logger);
             return copy;

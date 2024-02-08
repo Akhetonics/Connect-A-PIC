@@ -87,7 +87,7 @@ namespace ConnectAPIC.LayoutWindow.View
                 componentView._Ready();
                 componentView.AddChild((TextureRect)packedScene.Instantiate());
                 componentView.Initialize(slotDataSets, draft.WidthInTiles, draft.HeightInTiles);
-                // viewmodel has to be added last, so that the componentView has finished constructing before adding the data ot initialize sliders etc.
+                // viewModel has to be added last, so that the componentView has finished constructing before adding the data ot initialize sliders etc.
                 componentView.ViewModel.InitializeComponent(componentNR, MapDataAccessSlidersToViewSliders(draft), Logger);
                 return componentView;
             }

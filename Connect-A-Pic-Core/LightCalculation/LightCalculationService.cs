@@ -3,23 +3,14 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace CAP_Core.LightCalculation
 {
-    public class LightCalculationChangeEventArgs
-    {
-        public LightCalculationChangeEventArgs(Dictionary<Guid, Complex> lightVector, LaserType laser)
-        {
-            LightVector = lightVector;
-            LaserInUse = laser;
-        }
-        public Dictionary<Guid, Complex> LightVector { get; set; }
-        public LaserType LaserInUse { get; set; }
-    }
-
     public class LightCalculationService
     {
         public event EventHandler<LightCalculationChangeEventArgs> LightCalculationChanged;
@@ -45,12 +36,15 @@ namespace CAP_Core.LightCalculation
                 foreach (var port in LightInputs)
                 {
                     CancelTokenLightCalc.Token.ThrowIfCancellationRequested();
+                    Dictionary<Guid, Complex> resultLightVector = new();
                     LightCalculationTask = Task.Run(async () =>
                     {
-                        var resultLightVector = await GridSMatrixAnalyzer.CalculateLightPropagationAsync(CancelTokenLightCalc, port.LaserType.WaveLengthInNm);
-                        LightCalculationChanged?.Invoke(this, new(resultLightVector, port.LaserType));
+                        resultLightVector = await GridSMatrixAnalyzer.CalculateLightPropagationAsync(CancelTokenLightCalc, port.LaserType.WaveLengthInNm);
                     }, CancelTokenLightCalc.Token);
                     await LightCalculationTask.ConfigureAwait(false);
+                    CancelTokenLightCalc.Token.ThrowIfCancellationRequested();
+                    // the results must run in the main thread so that the UI can be updated properly
+                    LightCalculationChanged?.Invoke(this, new(resultLightVector, port.LaserType));
                 }
             }
             catch (OperationCanceledException)
@@ -65,6 +59,7 @@ namespace CAP_Core.LightCalculation
                 Semaphore.Release();
             }
         }
+
         public async Task CancelLightCalculation()
         {
             await Semaphore.WaitAsync();
