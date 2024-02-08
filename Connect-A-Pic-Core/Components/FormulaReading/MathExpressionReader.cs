@@ -50,12 +50,12 @@ namespace CAP_Core.Grid.FormulaReading
             return map;
         }
 
-        public static ConnectionFunction? ConvertToDelegate(string realOrFormula, List<Pin> allPinsInGrid, List<Slider> allSlidersInGrid )
+        public static ConnectionFunction? ConvertToDelegate(string realOrFormula, List<Pin> allPinsInComponent, List<Slider> allSlidersInComponent )
         {
             // check if it is a formula (nonLinear Connection) or just a double (linear connection)
             if (Double.TryParse(realOrFormula, out _) == false)
             {
-                return ConvertToDelegate(realOrFormula, CreateMapFromPins(allPinsInGrid), CreateMapFromSliders(allSlidersInGrid));
+                return ConvertToDelegate(realOrFormula, CreateMapFromPins(allPinsInComponent), CreateMapFromSliders(allSlidersInComponent));
             }
             return null;
         }
