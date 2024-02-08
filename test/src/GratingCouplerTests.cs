@@ -26,7 +26,7 @@ namespace ConnectAPIC.test.src
         public async Task Setup()
         {
             MyFixture = new Fixture(TestScene.GetTree());
-            MyGameManager = await MyFixture.LoadAndAddScene<GameManager>("res://Scenes/PICEditor.tscn");
+            MyGameManager = await MyFixture.LoadAndAddScene<GameManager>("res://Scenes/PICEditor/PICEditor.tscn");
             // find proper tool from component factory
             int gratingComponentNr = MyGameManager.GridView.ComponentViewFactory.PackedComponentCache.Single(c => c.Value.Draft.Identifier == "GratingCoupler").Key;
             // instantiate tool at the height of the laserInput
@@ -45,9 +45,9 @@ namespace ConnectAPIC.test.src
             var redLaser = LaserType.Red;
             var upperLightVector = new LightAtPin(0, 0, outflowSide, redLaser, 0, 1);
             var lightAtPins = new List<LightAtPin>() {
-            new (0,0,inflowSide,redLaser,1,0),
-            upperLightVector,
-        };
+                new (0,0,inflowSide,redLaser,1,0),
+                upperLightVector,
+            };
             GratingCoupler.ShouldNotBeNull("the grating coupler should have been loaded successfully but it didn't");
             GratingCoupler.ViewModel.DisplayLightVector(lightAtPins);
             await MyGameManager.GridViewModel.ShowLightPropagation();

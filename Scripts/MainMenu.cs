@@ -15,7 +15,7 @@ public partial class MainMenu : Node2D
 	
 	private void _on_new_editor_pressed()
 	{
-		var nextScene = (PackedScene)ResourceLoader.Load("res://Scenes/PICEditor.tscn");
+		var nextScene = (PackedScene)ResourceLoader.Load("res://Scenes/PICEditor/PICEditor.tscn");
 		GetTree().ChangeSceneToPacked(nextScene);
 	}
 }
