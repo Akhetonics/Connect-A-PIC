@@ -60,7 +60,11 @@ namespace CAP_Core.Grid.FormulaReading
                     {
                         var wireLength = ConvertToComplex(args.Parameters[0].Evaluate());
                         var lifhtWaveLength = ConvertToComplex(args.Parameters[1].Evaluate());
-                        args.Result = ComplexMath.ToComplexFromPolar(wireLength.Real, lifhtWaveLength.Real);
+                        args.Result = ComplexMath.PhaseShiftFromWGLength(wireLength.Real, lifhtWaveLength.Real);
+                    }
+                    if(name.ToLower() == "pi")
+                    {
+                        args.Result = Math.PI;
                     }
                 };
                 return e;
