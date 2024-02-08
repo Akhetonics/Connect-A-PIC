@@ -55,7 +55,7 @@ namespace ConnectAPIC.Scripts.ViewModel
         public delegate void SliderChangedEventHandler(int sliderNumber, double newVal);
         public event SliderChangedEventHandler SliderChanged;
         public event PropertyChangedEventHandler PropertyChanged;
-        public const int SliderDebounceTimeMs = 100;
+        public const int SliderDebounceTimeMs = 50;
         private bool isPlacedInGrid;
         public bool IsPlacedInGrid { get => isPlacedInGrid; set { isPlacedInGrid = value; OnPropertyChanged(); } }
 

@@ -57,7 +57,14 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
                 var realPins = group.Value.Select(pinDraft => new Pin(pinDraft.Name, pinDraft.Number, pinDraft.MatterType, pinDraft.Side)).ToList();
                 parts[x, y] = new Part(realPins);
             }
-
+            // initialize all parts that have no pins at all
+            for ( var x = 0; x < draft.WidthInTiles; x++)
+            {
+                for (var y = 0; y < draft.HeightInTiles; y++)
+                {
+                    parts[x,y] ??= new Part();
+                }
+            }
             return parts;
         }
 
