@@ -39,7 +39,7 @@ namespace ConnectAPIC.test.src
             MyFixture = new Fixture(TestScene.GetTree());
             try
             {
-                MyGameManager = await MyFixture.LoadAndAddScene<GameManager>("res://Scenes/PICEditor.tscn");
+                MyGameManager = await MyFixture.LoadAndAddScene<GameManager>("res://Scenes/PICEditor/PICEditor.tscn");
             }
             catch (Exception ex)
             {
