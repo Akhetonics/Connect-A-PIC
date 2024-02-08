@@ -10,11 +10,11 @@ namespace CAP_Core.Components.ComponentHelpers
     public class PhaseShiftCalculator
     {
         public const double TileWidthInNM = 250000.0;
-        public const double refractionIndexSiliconNitride = 2.0;
+        public const double EffectiveRefractionIndexSiliconNitride = 2.0;
 
         public static Complex CalculateWave(double waveGuideLengthNM, double laserWaveLengthNM)
         {
-            var phaseShift = 2 * Math.PI * refractionIndexSiliconNitride * waveGuideLengthNM / laserWaveLengthNM;
+            var phaseShift = 2 * Math.PI * EffectiveRefractionIndexSiliconNitride * waveGuideLengthNM / laserWaveLengthNM;
             phaseShift %= (2 * Math.PI);
 
             // Create a complex number with magnitude 1 and the calculated phase shift
@@ -24,7 +24,6 @@ namespace CAP_Core.Components.ComponentHelpers
 
         public static double CalculateImaginaryPart(double waveGuideLengthNM, double laserWaveLengthNM)
         {
-            var imaginaryPart = refractionIndexSiliconNitride * waveGuideLengthNM / laserWaveLengthNM;
             return CalculateWave(waveGuideLengthNM,laserWaveLengthNM).Imaginary;
         }
     }
