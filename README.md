@@ -127,7 +127,7 @@ All tests for the Model or "CAP-Core" can be found here, simply use Visual Studi
 
 # How to Contribute
 
-We welcome contributions to this project. If you're interested in helping, you can contribute in the following ways:
+We welcome contributions to this project. If you're interested in helping, you can [contribute in the following ways](https://github.com/Akhetonics/Connect-A-PIC/wiki/CONTRIBUTING):
 
 1. **Pull Requests:** 
     - For any changes or improvements, please submit a pull request. 
@@ -138,7 +138,7 @@ We welcome contributions to this project. If you're interested in helping, you c
     - If you find bugs or have suggestions for improvements, feel free to open an issue in the project's issue tracker.
 
 3. **Code Guidelines:**
-    - Please ensure your code adheres to the projects coding conventions for consistency.
+    - Please ensure your code adheres to the project's [coding conventions](https://github.com/Akhetonics/Connect-A-PIC/wiki/CONTRIBUTING#architecture-and-coding-standards) for consistency.
 
 4. **Testing:**
     - Include unit tests for new features to maintain the project's stability and reliability.
