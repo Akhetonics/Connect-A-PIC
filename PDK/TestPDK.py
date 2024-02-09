@@ -34,43 +34,7 @@ class TestPDK(object):
             nd.Pin('west', width=self._WGWidth).put(0, 0, 180)
             nd.Pin('center', width=self._WGWidth).put(self._CellSize/2,self._CellSize/2)
         return akhetCell
-    
-    def placeCell_MMI(self):
-        with nd.Cell(name='AkhetCell_MMI') as akhetCell:
-            #define the outer box of the MMI
-            nd.Polygon(layer=self._BoxLayer, points=[
-                (0, 0.5 * self._CellSize), 
-                (3 * self._CellSize, 0.5 * self._CellSize), 
-                (3 * self._CellSize, -2.5 * self._CellSize), 
-                (0, -2.5 * self._CellSize)]).put()
-            
-            # add text for clarification
-            nd.text(text='3x3 MMI', height=15, layer=self._TextLayer, align='lb').put(0.05 * self._CellSize, 0.4 * self._CellSize)
-            
-            # MMI-structure big box
-            nd.Polygon(layer=self._SiNLayer, points=[
-                (0.5 * self._CellSize, 0.25 * self._CellSize), 
-                (2.5 * self._CellSize, 0.25 * self._CellSize), 
-                (2.5 * self._CellSize, -2.25 * self._CellSize), 
-                (0.5 * self._CellSize, -2.25 * self._CellSize)]).put(0,0)
-            # and the six waveguids
-            # left
-            nd.strt(length=self._CellSize*0.5, width=self._WGWidth, layer=self._SiNLayer).put(0, 0)
-            nd.strt(length=self._CellSize*0.5, width=self._WGWidth, layer=self._SiNLayer).put(0, -self._CellSize)
-            nd.strt(length=self._CellSize*0.5, width=self._WGWidth, layer=self._SiNLayer).put(0, -2 * self._CellSize)
-            # right
-            nd.strt(length=self._CellSize*0.5, width=self._WGWidth, layer=self._SiNLayer).put(2.5* self._CellSize, 0)
-            nd.strt(length=self._CellSize*0.5, width=self._WGWidth, layer=self._SiNLayer).put(2.5* self._CellSize, -self._CellSize)
-            nd.strt(length=self._CellSize*0.5, width=self._WGWidth, layer=self._SiNLayer).put(2.5* self._CellSize, -2*self._CellSize)
-            # Definiere die Eingangs- und Ausgangspins
-            nd.Pin('west0', width=self._WGWidth).put(0, 0, 180)
-            nd.Pin('west1', width=self._WGWidth).put(0, -self._CellSize, 180)
-            nd.Pin('west2', width=self._WGWidth).put(0, -2 * self._CellSize, 180)
-            nd.Pin('east0', width=self._WGWidth).put(3 * self._CellSize, 0, 0)
-            nd.Pin('east1', width=self._WGWidth).put(3 * self._CellSize, -self._CellSize, 0)
-            nd.Pin('east2', width=self._WGWidth).put(3 * self._CellSize, -2 * self._CellSize, 0)
-        return akhetCell
-    
+
     def placeCell_BendWG(self):
         with nd.Cell(name='AkhetCell_BendWG') as akhetCell:
             nd.Polygon(layer=self._BoxLayer, points=[(0,-self._CellSize * 0.5), (self._CellSize, -self._CellSize * 0.5), (self._CellSize, self._CellSize * 0.5), (0, self._CellSize * 0.5)]).put()
