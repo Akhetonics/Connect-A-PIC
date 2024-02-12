@@ -85,7 +85,7 @@ namespace ConnectAPIC.Scenes.InGameConsole
 
 				if (eventKey.IsReleased() && eventKey.Keycode == Key.F2)
 				{
-					Print("Version: " + GameManager.instance.Version);
+					Print("Version: " + GameManager.Version);
 				}
 			}
 		}

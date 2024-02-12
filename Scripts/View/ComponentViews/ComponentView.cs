@@ -92,10 +92,6 @@ namespace ConnectAPIC.LayoutWindow.View
                     }
                 }
             }
-            else if (e.PropertyName == nameof(ComponentViewModel.SliderData))
-            {
-                Console.WriteLine();
-            }
             else if (e.PropertyName == nameof(ComponentViewModel.Position))
             {
                 Position = new Godot.Vector2( ViewModel.Position.X , ViewModel.Position.Y);
