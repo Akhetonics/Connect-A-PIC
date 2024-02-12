@@ -100,7 +100,6 @@ namespace ConnectAPIC.test.src
         public void Cleanup()
         {
             MyGameManager.Free();
-            GameManager.instance = null;
             MyFixture.Cleanup();
         }
         [Failure]

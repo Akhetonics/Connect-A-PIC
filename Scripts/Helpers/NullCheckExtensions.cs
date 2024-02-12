@@ -27,10 +27,6 @@ namespace ConnectAPIC.Scripts.Helpers
             {
                 string className = instance.GetType().Name;
                 string errorMsg = $"'{variableName}' of this element is not set in the class: '{className}'";
-                if(GameManager.Instance?.Logger != null)
-                {
-                    GameManager.instance.Logger.PrintErr(errorMsg);
-                }
                 GD.PrintErr(errorMsg);
             }
         }

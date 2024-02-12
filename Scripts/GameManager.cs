@@ -26,10 +26,10 @@ using CAP_Core.LightCalculation;
 
 namespace ConnectAPic.LayoutWindow
 {
-    [SuperNode (typeof(Provider))]
-    public partial class GameManager : Node, 
-        IProvide<ToolBox> , IProvide<ILogger>, IProvide<GridView>, IProvide<GridManager>, IProvide<GridViewModel>, IProvide<GameManager>,
-        IProvide<GameConsole> , IProvide<System.Version> , IProvide<ComponentViewFactory> 
+    [SuperNode(typeof(Provider))]
+    public partial class GameManager : Node,
+        IProvide<ToolBox>, IProvide<ILogger>, IProvide<GridView>, IProvide<GridManager>, IProvide<GridViewModel>, IProvide<GameManager>,
+        IProvide<GameConsole>, IProvide<System.Version>, IProvide<ComponentViewFactory>
     {
         #region Dependency Injection
         public override partial void _Notification(int what);
@@ -38,12 +38,12 @@ namespace ConnectAPic.LayoutWindow
         GridView IProvide<GridView>.Value() => GridView;
         GridManager IProvide<GridManager>.Value() => Grid;
         GridViewModel IProvide<GridViewModel>.Value() => GridViewModel;
-        GameManager IProvide<GameManager>.Value() => Instance;
+        GameManager IProvide<GameManager>.Value() => this;
         GameConsole IProvide<GameConsole>.Value() => InGameConsole;
         ComponentViewFactory IProvide<ComponentViewFactory>.Value() => GridView.ComponentViewFactory;
         System.Version IProvide<System.Version>.Value() => Version;
-        #endregion 
-        
+        #endregion
+
         [Export] public NodePath GridViewPath { get; set; }
         public ToolBox MainToolBox { get; set; }
         [Export] private NodePath ToolBoxPath { get; set; }
@@ -59,47 +59,33 @@ namespace ConnectAPic.LayoutWindow
         public static int TilePixelSize { get; private set; } = 62;
         public static int TileBorderLeftDown { get; private set; } = 2;
         public GridView GridView { get; set; }
-        public System.Version Version => Assembly.GetExecutingAssembly().GetName().Version; // Get the version from the assembly
+        public static System.Version Version => Assembly.GetExecutingAssembly().GetName().Version; // Get the version from the assembly
         public GridManager Grid { get; set; }
         public LightCalculationService LightCalculator { get; private set; }
-
-        public static GameManager instance;
         public ILogger Logger { get; set; }
         private LogSaver LogSaver { get; set; }
         private List<(String log, bool isError)> InitializationLogs = new();
         public GridViewModel GridViewModel { get; private set; }
         public ComponentFactory ComponentModelFactory { get; set; }
-        public static GameManager Instance
-        {
-            get { return instance; }
-        }
         public const string ComponentFolderPath = "res://Scenes/Components";
 
         public override void _EnterTree()
         {
             base._EnterTree();
-            if (instance == null)
+            try
             {
-                try
-                {
-                    instance = this;
-                    InitializeLoggingSystemAndConsole();
-                    InitializationLogs.Add(("Program Version: " + Version, false));
-                    ComponentModelFactory = new ComponentFactory();
-                    InitializeGridAndGridView(ComponentModelFactory);
-                    InitializeExternalPortViews(Grid.ExternalPorts);
-                    PCKLoader = new(ComponentFolderPath, Logger);
-                }
-                catch (Exception ex)
-                {
-                    GD.PrintErr(ex.Message);
-                    GD.PrintErr(ex);
-                    InitializationLogs.Add((ex.Message,true));
-                }
+                InitializeLoggingSystemAndConsole();
+                InitializationLogs.Add(("Program Version: " + Version, false));
+                ComponentModelFactory = new ComponentFactory();
+                InitializeGridAndGridView(ComponentModelFactory);
+                InitializeExternalPortViews(Grid.ExternalPorts);
+                PCKLoader = new(ComponentFolderPath, Logger);
             }
-            else
+            catch (Exception ex)
             {
-                QueueFree(); // delete this object as there is already another GameManager in the scene
+                GD.PrintErr(ex.Message);
+                GD.PrintErr(ex);
+                InitializationLogs.Add((ex.Message, true));
             }
         }
 
@@ -112,14 +98,14 @@ namespace ConnectAPic.LayoutWindow
                 this.CheckForNull(x => x.ToolBoxPath);
                 List<Component> modelComponents = new ComponentDraftConverter(Logger).ToComponentModels(componentDrafts);
                 ComponentModelFactory.InitializeComponentDrafts(modelComponents);
-                InitializationLogs.Add(("Initialized ComponentDrafts",false));
+                InitializationLogs.Add(("Initialized ComponentDrafts", false));
 
                 MainToolBox = GetNode<ToolBox>(ToolBoxPath);
                 this.CheckForNull(x => x.MainToolBox);
             }
             catch (Exception ex)
             {
-                InitializationLogs.Add((ex.Message,true));
+                InitializationLogs.Add((ex.Message, true));
             }
 
             ProvideDependenciesOrLogError();
@@ -128,7 +114,8 @@ namespace ConnectAPic.LayoutWindow
                 if (l.isError)
                 {
                     Logger.PrintErr(l.log);
-                } else
+                }
+                else
                 {
                     Logger.Print(l.log);
                 }
@@ -154,7 +141,7 @@ namespace ConnectAPic.LayoutWindow
             Logger = new CAP_Core.Logger();
             LogSaver = new LogSaver(Logger);
             InGameConsole.Initialize(Logger);
-            InitializationLogs.Add(("Initialized LoggingSystem",false));
+            InitializationLogs.Add(("Initialized LoggingSystem", false));
         }
 
         private void InitializeGridAndGridView(ComponentFactory componentFactory)
@@ -162,8 +149,8 @@ namespace ConnectAPic.LayoutWindow
             GridView = GetNode<GridView>(GridViewPath);
             this.CheckForNull(x => GridView);
             Grid = new GridManager(FieldWidth, FieldHeight);
-            LightCalculator = new CAP_Core.LightCalculation.LightCalculationService(Grid.GetAllExternalInputs() , new GridLightCalculator(Grid));
-            GridViewModel = new GridViewModel(GridView, Grid, Logger, componentFactory , LightCalculator);
+            LightCalculator = new CAP_Core.LightCalculation.LightCalculationService(Grid.GetAllExternalInputs(), new GridLightCalculator(Grid));
+            GridViewModel = new GridViewModel(GridView, Grid, Logger, componentFactory, LightCalculator);
             GridView.Initialize(GridViewModel, Logger);
             InitializationLogs.Add(("Initialized GridView and Grid and GridViewModel", false));
         }
@@ -185,7 +172,7 @@ namespace ConnectAPic.LayoutWindow
         {
             draftsAndErrors = draftsAndErrors.Where(d => String.IsNullOrEmpty(d.error) == false).ToList();
             foreach (var d in draftsAndErrors)
-                InitializationLogs.Add(( d.error,true));
+                InitializationLogs.Add((d.error, true));
         }
 
         private void InitializeExternalPortViews(List<ExternalPort> ExternalPorts)
