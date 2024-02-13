@@ -33,7 +33,7 @@ namespace UnitTests.Components.FormulaReading
             Complex outputPinLightValFormula2 = await CalculateFormulaUsingComponent(component, sliderValue2, formula2);
 
             // Assert
-            var expectedValue1 = Complex.FromPolarCoordinates(sliderValue1, 1.2161003820350373);
+            var expectedValue1 = Complex.FromPolarCoordinates(Math.Sqrt(1-sliderValue1), 1.2161003820350373);
             var expectedValue2 = PhaseShiftCalculator.CalculateWave(2 * Math.PI * 125000 + 2000 * sliderValue2, LaserType.Red.WaveLengthInNm);
             Assert.Equal(expectedValue1, outputPinLightValFormula1);
             Assert.Equal(expectedValue2, outputPinLightValFormula2);
