@@ -19,7 +19,8 @@ namespace UnitTests
         public static string GetResourceContent(string resourcePath)
         {
             var resourceManager = new ResourceManager("UnitTests.Properties.Resources", Assembly.GetExecutingAssembly());
-            return resourceManager.GetString(resourcePath);
+            var content = resourceManager.GetString(resourcePath);
+            return content;
         }
         public static Component CreateStraightWaveGuide()
         {
@@ -83,14 +84,14 @@ namespace UnitTests
             var matrixRed = new SMatrix(allPins, new());
             // set the connections
             matrixRed.SetValues(new(){
-                { (leftUpIn, rightUpOut), 0.5f },
-                { (leftUpIn, rightDownOut), 0.5f },
-                { (leftDownIn, rightUpOut), 0.5f },
-                { (leftDownIn, rightDownOut), 0.5f },
-                { (rightUpIn, leftUpOut), 0.5f },
-                { (rightUpIn, leftDownOut), 0.5f },
-                { (rightDownIn, leftUpOut), 0.5f },
-                { (rightDownIn, leftDownOut), 0.5f },
+                { (leftUpIn, rightUpOut), Math.Sqrt(0.5f) },
+                { (leftUpIn, rightDownOut), Math.Sqrt(0.5f) },
+                { (leftDownIn, rightUpOut), Math.Sqrt(0.5f) },
+                { (leftDownIn, rightDownOut), Math.Sqrt(0.5f) },
+                { (rightUpIn, leftUpOut), Math.Sqrt(0.5f) },
+                { (rightUpIn, leftDownOut), Math.Sqrt(0.5f) },
+                { (rightDownIn, leftUpOut), Math.Sqrt(0.5f) },
+                { (rightDownIn, leftDownOut), Math.Sqrt(0.5f) },
 
             });
             var connections = new Dictionary<int, SMatrix>
@@ -105,12 +106,12 @@ namespace UnitTests
         public static Component CreateComponent(string componentJson)
         {
             var dummyJsonDataAccessor = new DummyDataAccessor(componentJson);
-            var straightComponentDraft = new ComponentDraftFileReader(dummyJsonDataAccessor).TryReadJson("").draft;
-            if (straightComponentDraft == null)
+            var componentDraft = new ComponentDraftFileReader(dummyJsonDataAccessor).TryReadJson("").draft;
+            if (componentDraft == null)
             {
                 throw new Exception("JSON could not be parsed");
             }
-            var drafts = new List<ComponentDraft>() { straightComponentDraft };
+            var drafts = new List<ComponentDraft>() { componentDraft };
             var validator = new ComponentDraftValidator(dummyJsonDataAccessor);
             string draftErrors = "";
             foreach (var item in drafts.Select(d => validator.Validate(d)).ToList())

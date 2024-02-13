@@ -168,7 +168,7 @@ class TestPDK(object):
             angle = 45
             radians = math.pi * angle / 180 
             offsetLength = (self._CellSize * 0.5 - (self._WGWidth + self._CouplerSpacing) * 0.5 - (self._BendRadius * (1 - math.cos(radians))) * 2) * (1 / math.cos(radians))
-            coupleLength = self._CrossOver * (deltaLength / 100)
+            coupleLength = self._CrossOver * (deltaLength )
             totalLength = coupleLength + 4 * math.sin(radians) * self._BendRadius + 2 * offsetLength * math.cos(radians)
 
             nd.bend(angle=-angle, radius=self._BendRadius, width=self._WGWidth, layer=self._SiNLayer).put(0, 0)
