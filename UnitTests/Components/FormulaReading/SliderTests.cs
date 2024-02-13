@@ -13,7 +13,7 @@ namespace UnitTests.Components.FormulaReading
 {
     public class SliderTests
     {
-        const string formula1 = "ToComplexFromPolar(Sub(1.0, SLIDER0), 1.2161003820350373)";
+        const string formula1 = "ToComplexFromPolar( Sqrt(1.0 -SLIDER0), 1.2161003820350373)";
         const string formula2 = "PhaseShiftFromWGLength(Slider0 * 2000 + 125000 * 2 * 3.1415926535897931, 1550)";
         [Fact]
         public async void SliderCalculationTest()
@@ -47,7 +47,7 @@ namespace UnitTests.Components.FormulaReading
             component.GetSlider(0).Value = sliderValue;
 
             // Act
-            var outputVector = await component.WaveLengthToSMatrixMap[LaserType.Red.WaveLengthInNm].GetLightPropagationAsync(inputVector, 1000, new());
+            var outputVector = await component.WaveLengthToSMatrixMap[LaserType.Red.WaveLengthInNm].CalcFieldAtPinsAfterStepsAsync(inputVector, 1000, new());
             var outputPinLightVal = outputVector[outFlowID];
             return outputPinLightVal;
         }

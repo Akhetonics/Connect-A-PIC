@@ -104,7 +104,7 @@ namespace CAP_Core.Components
         }
 
         // n is the number of time steps to move forward "steps=3" would return the light propagation after 3 steps.
-        public async Task<Dictionary<Guid, Complex>> GetLightPropagationAsync(MathNet.Numerics.LinearAlgebra.Vector<Complex> inputVector, int maxSteps , CancellationTokenSource cancellation)
+        public async Task<Dictionary<Guid, Complex>> CalcFieldAtPinsAfterStepsAsync(MathNet.Numerics.LinearAlgebra.Vector<Complex> inputVector, int maxSteps , CancellationTokenSource cancellation)
         {
             if (maxSteps < 1) return new Dictionary<Guid, Complex>();
 
@@ -113,7 +113,7 @@ namespace CAP_Core.Components
             try
             {
 
-                var inputAfterSteps = SMat * inputVector;
+                var inputAfterSteps = SMat * inputVector + inputVector;
                 for (int i = 1; i < maxSteps; i++)
                 {
                     cancellation.Token.ThrowIfCancellationRequested();
@@ -130,7 +130,8 @@ namespace CAP_Core.Components
                 }
 
                 return ConvertToDictWithGuids(inputAfterSteps);
-            } catch 
+            }
+            catch 
             {
                 return new Dictionary<Guid, Complex>();
             }

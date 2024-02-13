@@ -31,9 +31,9 @@ namespace CAP_Core.LightCalculation
             var usedInputs = Grid.GetUsedExternalInputs()
                                  .Where(i => i.Input.LaserType.WaveLengthInNm == LaserWaveLengthInNm)
                                  .ToList();
-            var inputVector = UsedInputConverter.ToVector(usedInputs, SystemSMatrix);
+            var inputVector = UsedInputConverter.ToVectorOfFields(usedInputs, SystemSMatrix);
 
-            return await SystemSMatrix.GetLightPropagationAsync(inputVector, stepCount, cancelToken) ?? new Dictionary<Guid, Complex>();
+            return await SystemSMatrix.CalcFieldAtPinsAfterStepsAsync(inputVector, stepCount, cancelToken) ?? new Dictionary<Guid, Complex>();
         }
 
         private void UpdateSystemSMatrix(int LaserWaveLengthInNm)

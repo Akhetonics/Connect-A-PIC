@@ -71,16 +71,17 @@ namespace ConnectAPIC.test.src
             var innerConnections = compModel.WaveLengthToSMatrixMap[RedLaser.WaveLengthInNm].GetNonNullValues();
             // then test the light distribution
             await MyGameManager.GridViewModel.ShowLightPropagation();
-            var lightGloballyOnUp = await GetLightOnRightDownSide(new Vector2I(1,0));
-            var lightGloballyOnDown = await GetLightOnRightDownSide(new Vector2I(1,1));
+            var lightGloballyOnUp = await GetLightOnRightDownSide(new Vector2I(1,0) , 3);
+            var lightGloballyOnDown = await GetLightOnRightDownSide(new Vector2I(1,1) , 4);
 
+            LastDirectionalCoupler.ViewModel.GridX.ShouldBe(3);
             lightGloballyOnUp.In.X.ShouldBe(0);
             lightGloballyOnUp.Out.X.ShouldBe(0);
             lightGloballyOnDown.In.X.ShouldBe(0);
             lightGloballyOnDown.Out.X.ShouldBe(lightOnIntensity, 0.01);
         }
 
-        private async Task<(Vector4 In, Vector4 Out)> GetLightOnRightDownSide(Vector2I offset)
+        private async Task<(Vector4 In, Vector4 Out)> GetLightOnRightDownSide(Vector2I offset , int overlayNumber)
         {
             await TestScene.GetTree().NextFrame(2);
             // get the shader-light intensity value on the left side
@@ -91,8 +92,8 @@ namespace ConnectAPIC.test.src
                     && (ShaderMaterial)slot.BaseOverlaySprite?.Material != null
                     && slot.Side == RectSide.Right)
                 .BaseOverlaySprite.Material) ?? throw new Exception("Shader is not properly assigned to Overlay");
-            var rightIn = (Godot.Vector4)rightSlotShader.GetShaderParameter(ShaderParameterNames.LightInFlow + 1);
-            var rightOut = (Godot.Vector4)rightSlotShader.GetShaderParameter(ShaderParameterNames.LightOutFlow + 1);
+            var rightIn = (Godot.Vector4)rightSlotShader.GetShaderParameter(ShaderParameterNames.LightInFlow + overlayNumber);
+            var rightOut = (Godot.Vector4)rightSlotShader.GetShaderParameter(ShaderParameterNames.LightOutFlow + overlayNumber);
             return (rightIn, rightOut);
         }
 
