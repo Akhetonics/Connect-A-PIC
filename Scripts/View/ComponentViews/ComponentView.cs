@@ -82,6 +82,16 @@ namespace ConnectAPIC.LayoutWindow.View
             {
                 var lightAndSlots = new List<(LightAtPin light, List<AnimationSlot>)>();
                 var shaderSlotNumber = 1;
+                
+                if(ViewModel.LightsAtPins.FirstOrDefault().lightType == LaserType.Red)
+                {
+                    oldDebugLabels.ForEach(l => {
+                        l.Item1.QueueFree();
+                        l.Item2.QueueFree();
+                    });
+                    oldDebugLabels = new();
+                }
+                
                 foreach (LightAtPin light in ViewModel.LightsAtPins)
                 {
                     var slots = AnimationSlot.FindMatching(AnimationSlots, light);
@@ -231,13 +241,59 @@ namespace ConnectAPIC.LayoutWindow.View
                 shaderMat.SetShaderParameter(ShaderParameterNames.LightOutFlow + shaderSlotNumber, outFlowDataAndPosition);
                 shaderMat.SetShaderParameter(ShaderParameterNames.Animation + shaderSlotNumber, slot.Texture);
                 shaderMat.SetShaderParameter(ShaderParameterNames.LightColor + shaderSlotNumber, slot.MatchingLaser.Color.ToGodotColor());
+                // add debug info text
+                if ((lightAtPin.lightOutFlow.Magnitude > 0 || lightAtPin.lightOutFlow.Phase > 0) && lightAtPin.lightType == LaserType.Red)
+                {
+                    var text = "P:" + lightAtPin.lightOutFlow.Magnitude.ToString("F2") + "\nφ" + lightAtPin.lightOutFlow.Phase.ToString("F2");
+                    CreateDebugLabel(new Vector2I(slot.TileOffset.X * GameManager.TilePixelSize + 10, slot.TileOffset.Y * GameManager.TilePixelSize), text);
+                }
             }
+
+           
             OverlayRed?.Show();
             OverlayGreen?.Show();
             OverlayBlue?.Show();
         }
+        List<(Godot.Label, Timer)> oldDebugLabels = new();
+        private void CreateDebugLabel(Vector2I offset , string text)
+        {
+            // create the label
+            var infoLabel = new Godot.Label();
+            AddChild(infoLabel);
 
-        public void HideLightVector() {
+
+            // set the text 
+            infoLabel.CustomMinimumSize = new Vector2(GameManager.TilePixelSize, 50); // Größe des Labels
+            infoLabel.GlobalPosition = new Vector2(GlobalPosition.X + offset.X , GlobalPosition.Y + offset.Y ); 
+            infoLabel.Text = text;
+            infoLabel.MoveToFront();
+
+            // create the background
+            ColorRect background = new ColorRect();
+            background.Color = new Godot.Color(0.1f, 0.1f, 0.1f, 0.5f);
+            background.CustomMinimumSize = infoLabel.CustomMinimumSize;
+            AddChild(background);
+            background.GlobalPosition = infoLabel.GlobalPosition;
+            infoLabel.MoveToFront();
+
+            // timer to destroy after time
+            var timer = new Timer();
+            AddChild(timer);
+            timer.WaitTime = 10; 
+            timer.OneShot = true; 
+            timer.Timeout +=()=>
+            {
+                infoLabel.QueueFree();
+                background.QueueFree();
+                timer.QueueFree();
+            };
+            timer.Start();
+            oldDebugLabels.Add((infoLabel, timer));
+        }
+
+        
+    
+    public void HideLightVector() {
             OverlayRed?.Hide();
             OverlayGreen?.Hide();
             OverlayBlue?.Hide();
