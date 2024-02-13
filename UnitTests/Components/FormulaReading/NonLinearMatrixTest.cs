@@ -53,7 +53,7 @@ namespace UnitTests.Components.FormulaReading
             SMatrix sMatrix = new(pins, new());
             sMatrix.NonLinearConnections = nonLinearConnections;
             sMatrix.SetValues(linearConnections);
-            var outputLight = await sMatrix.GetLightPropagationAsync(inputVector, 10 , new CancellationTokenSource());
+            var outputLight = await sMatrix.CalcFieldAtPinsAfterStepsAsync(inputVector, 10 , new CancellationTokenSource());
 
             var expectedResult = linearFactor * nonLinearConnections[(pins[0], pins[1])].CalcConnectionWeightAsync(new List<object>() { inputLightStrength });
             var tolerance = 1e-12;
