@@ -33,7 +33,18 @@ namespace CAP_Core.LightCalculation
                                  .ToList();
             var inputVector = UsedInputConverter.ToVectorOfFields(usedInputs, SystemSMatrix);
 
-            return await SystemSMatrix.CalcFieldAtPinsAfterStepsAsync(inputVector, stepCount, cancelToken) ?? new Dictionary<Guid, Complex>();
+            var fieldsAtPins = await SystemSMatrix.CalcFieldAtPinsAfterStepsAsync(inputVector, stepCount, cancelToken) ?? new Dictionary<Guid, Complex>();
+            var powerAtPins = ConvertFieldsToPowerAtPins(fieldsAtPins);
+            return powerAtPins;
+        }
+
+        private static Dictionary<Guid, Complex> ConvertFieldsToPowerAtPins(Dictionary<Guid, Complex> fieldsAtPins)
+        {
+            foreach (var PinGuids in fieldsAtPins.Keys)
+            {
+                fieldsAtPins[PinGuids] = Complex.FromPolarCoordinates( Math.Pow(fieldsAtPins[PinGuids].Magnitude, 2) , fieldsAtPins[PinGuids].Phase);
+            }
+            return fieldsAtPins;
         }
 
         private void UpdateSystemSMatrix(int LaserWaveLengthInNm)

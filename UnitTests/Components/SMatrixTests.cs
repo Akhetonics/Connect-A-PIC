@@ -24,9 +24,9 @@ namespace UnitTests.Components
             var directionalCouplerLightOutDown = lightPropagation[directionalCoupler.PinIdRightOut(1, 1)];
 
 
-            Assert.Equal(1, directionalCouplerLightIn.Magnitude);
-            Assert.Equal(0.5, directionalCouplerLightOutUp.Magnitude);
-            Assert.Equal(0.5, directionalCouplerLightOutDown.Magnitude);
+            Assert.Equal(1, directionalCouplerLightIn.Magnitude, 0.000000001);
+            Assert.Equal(0.5, directionalCouplerLightOutUp.Magnitude, 0.000000001);
+            Assert.Equal(0.5, directionalCouplerLightOutDown.Magnitude, 0.000000001);
         }
 
         [Fact]
@@ -37,7 +37,7 @@ namespace UnitTests.Components
             grid.PlaceComponent(0, grid.ExternalPorts[0].TilePositionY, directionalCoupler);
             var slider = directionalCoupler.GetSlider(0);
             var allSliders = directionalCoupler.GetAllSliders();
-            slider.Value = 0.5;
+            slider.Value = 0.75;
             var laserType = grid.GetUsedExternalInputs().First().Input.LaserType;
             var gridSMatrixAnalyzer = new GridLightCalculator(grid);
             var lightPropagation = await gridSMatrixAnalyzer.CalculateLightPropagationAsync(new CancellationTokenSource(), laserType.WaveLengthInNm);
@@ -45,9 +45,9 @@ namespace UnitTests.Components
             var directionalCouplerLightOutUp = lightPropagation[directionalCoupler.PinIdRightOut(1, 0)];
             var directionalCouplerLightOutDown = lightPropagation[directionalCoupler.PinIdRightOut(1, 1)];
 
-            Assert.Equal(1, directionalCouplerLightIn.Magnitude);
-            Assert.Equal(0.5, directionalCouplerLightOutUp.Magnitude);
-            Assert.Equal(0.5, directionalCouplerLightOutDown.Magnitude);
+            Assert.Equal(1, directionalCouplerLightIn.Magnitude, 0.000000001);
+            Assert.Equal(0.25, directionalCouplerLightOutUp.Magnitude, 0.000000001);
+            Assert.Equal(0.75, directionalCouplerLightOutDown.Magnitude, 0.000000001);
         }
 
         [Fact]
@@ -78,8 +78,8 @@ namespace UnitTests.Components
             string allDebugInformation = gridSMatrixAnalyzer.ToString();
 
             Assert.Contains(secondStraight.PinIdLeftOut(), lightValues);
-            Assert.Equal(1, straightCompLightVal.Real);
-            Assert.Equal(0.5, circuitLightVal.Real);
+            Assert.Equal(1, straightCompLightVal.Real, 0.000000001);
+            Assert.Equal(0.5, circuitLightVal.Real, 0.000000001);
             
         }
         [Fact]

@@ -32,15 +32,15 @@
                 {
                     "fromPinNr": 0,
                     "toPinNr": 1,
-                    "real": 1.0,
-                    "imaginary": 2.0,
-                    "nonLinearFormula": "ToComplexFromPolar( Sub(1.0 ,SLIDER0), 1.2161003820350373)"
+                    "magnitude": 1.0,
+                    "phase": 2.0,
+                    "nonLinearFormula": "ToComplexFromPolar( Sqrt(1.0 - SLIDER0), 1.2161003820350373)"
                 },
                 {
                     "fromPinNr": 1,
                     "toPinNr": 0,
-                    "real": 1.0,
-                    "imaginary": 1.0
+                    "magnitude": 1.0,
+                    "phase": 1.0
                 }
             ]
         },
