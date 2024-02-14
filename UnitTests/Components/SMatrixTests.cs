@@ -86,7 +86,7 @@ namespace UnitTests.Components
         private static Complex CalculateDirectionalCouplerField( Complex inputUp, Complex inputDown, double lightFlipRatio, double waveGuidePhaseShift)
         {
             return Complex.Sqrt(1 - lightFlipRatio) * inputUp * Complex.Exp(Complex.ImaginaryOne * waveGuidePhaseShift) +
-                   Complex.Sqrt(    lightFlipRatio) * inputDown * Complex.Exp(Complex.ImaginaryOne * (0.5 * Math.PI + waveGuidePhaseShift )) ;// for now d = 0.5 because the phaseshift with d = slider * pi + PhiNew odes not work
+                   Complex.Sqrt(    lightFlipRatio) * inputDown * Complex.Exp(Complex.ImaginaryOne * (0.5 * Math.PI + waveGuidePhaseShift )) ;// for now d = 0.5 because the phaseShift with d = slider * pi + PhiNew odes not work
         }
         
         private static bool AreComplexNumbersEqual(Complex num1, Complex num2 , double Tolerance = 1e-6)
