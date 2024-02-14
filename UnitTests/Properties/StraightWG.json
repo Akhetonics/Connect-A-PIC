@@ -1,75 +1,89 @@
 {
-    "fileFormatVersion": 1,
-    "identifier": "Straight",
-    "nazcaFunctionParameters": "",
-    "nazcaFunctionName": "placeCell_StraightWG",
-    "sceneResPath": "res://Scenes/Components/Straight/StraightWaveGuide.tscn",
-    "deltaLength": 0,
-    "widthInTiles": 1,
-    "heightInTiles": 1,
-    "pins": [
+  "fileFormatVersion": 1,
+  "identifier": "Straight",
+  "nazcaFunctionParameters": "",
+  "nazcaFunctionName": "placeCell_StraightWG",
+  "sceneResPath": "res://Scenes/Components/Straight/StraightWaveGuide.tscn",
+  "deltaLength": 0,
+  "widthInTiles": 1,
+  "heightInTiles": 1,
+  "pins": [
+    {
+      "number": 0,
+      "name": "west",
+      "matterType": 1,
+      "side": 2,
+      "partX": 0,
+      "partY": 0
+    },
+    {
+      "number": 1,
+      "name": "east",
+      "matterType": 1,
+      "side": 0,
+      "partX": 0,
+      "partY": 0
+    }
+  ],
+  "sMatrices": [
+    {
+      "waveLength": 1550,
+      "connections": [
         {
-            "number": 0,
-            "name": "west",
-            "matterType": 1,
-            "side": 2,
-            "partX": 0,
-            "partY": 0
+          "fromPinNr": 0,
+          "toPinNr": 1,
+          "magnitude": 0.9999802,
+          "phase": 1.54
         },
         {
-            "number": 1,
-            "name": "east",
-            "matterType": 1,
-            "side": 0,
-            "partX": 0,
-            "partY": 0
+          "fromPinNr": 1,
+          "toPinNr": 0,
+          "magnitude": 0.9999802,
+          "phase": 1.54
         }
-    ],
-    "sMatrices": [
+      ]
+    },
+    {
+      "waveLength": 1310,
+      "connections": [
         {
-            "waveLength": 1550,
-            "connections": [
-                {
-                    "fromPinNr": 0,
-                    "toPinNr": 1,
-                    "magnitude": 1.0,
-                    "phase": 2.0,
-                    "nonLinearFormula": "ToComplexFromPolar( Sqrt(1.0 - SLIDER0), 1.2161003820350373)"
-                },
-                {
-                    "fromPinNr": 1,
-                    "toPinNr": 0,
-                    "magnitude": 1.0,
-                    "phase": 1.0
-                }
-            ]
+          "fromPinNr": 0,
+          "toPinNr": 1,
+          "magnitude": 0.9999802,
+          "phase": 0.3
         },
         {
-            "waveLength": 1310,
-            "connections": []
+          "fromPinNr": 1,
+          "toPinNr": 0,
+          "magnitude": 0.9999802,
+          "phase": 0.3
+        }
+      ]
+    },
+    {
+      "waveLength": 980,
+      "connections": [
+        {
+          "fromPinNr": 0,
+          "toPinNr": 1,
+          "magnitude": 0.9999802,
+          "phase": 1.8
         },
         {
-            "waveLength": 980,
-            "connections": []
+          "fromPinNr": 1,
+          "toPinNr": 0,
+          "magnitude": 0.9999802,
+          "phase": 1.8
         }
-    ],
-    "overlays": [
-        {
-            "overlayAnimTexturePath": "res://dummyPath.png",
-            "rectSide": 2,
-            "tileOffsetX": 0,
-            "tileOffsetY": 1
-        }
-    ],
-    "sliders": [
-        {
-            "sliderNumber": 0,
-            "godotSliderName": "JumpRatioSlider",
-            "godotSliderLabelName": "JumpRatioSliderLabel",
-            "minVal": 0.1,
-            "maxVal": 1.0,
-            "steps": 100,
-            "type": 0
-        }
-    ]
+      ]
+    }
+  ],
+  "overlays": [
+    {
+      "overlayAnimTexturePath": "res://Scenes/Components/Straight/Component I_Horizontal_Overlay.png",
+      "rectSide": 2,
+      "tileOffsetX": 0,
+      "tileOffsetY": 0
+    }
+  ]
 }

@@ -86,8 +86,7 @@ namespace ConnectAPIC.LayoutWindow.View
                 if(ViewModel.LightsAtPins.FirstOrDefault().lightType == LaserType.Red)
                 {
                     oldDebugLabels.ForEach(l => {
-                        l.Item1.QueueFree();
-                        l.Item2.QueueFree();
+                        l.QueueFree();
                     });
                     oldDebugLabels = new();
                 }
@@ -233,28 +232,29 @@ namespace ConnectAPIC.LayoutWindow.View
 
         protected void ShowAndAssignInAndOutFlowShaderData(AnimationSlot slot, LightAtPin lightAtPin, int shaderSlotNumber)
         {
-            var inFlowDataAndPosition = new Godot.Vector4((float)lightAtPin.lightInFlow.Magnitude, (float)lightAtPin.lightInFlow.Phase, 0, 0);
-            var outFlowDataAndPosition = new Godot.Vector4((float)lightAtPin.lightOutFlow.Magnitude, (float)lightAtPin.lightOutFlow.Phase, 0, 0);
+            var inFlowPower = Math.Pow(lightAtPin.lightFieldInFlow.Magnitude,2);
+            var outFlowPower = Math.Pow(lightAtPin.lightFieldOutFlow.Magnitude,2);
+            var inFlowPowerAndPhase = new Godot.Vector4((float)inFlowPower, (float)lightAtPin.lightFieldInFlow.Phase, 0, 0);
+            var outFlowPowerAndPhase = new Godot.Vector4((float)outFlowPower, (float)lightAtPin.lightFieldOutFlow.Phase, 0, 0);
             if (slot?.BaseOverlaySprite?.Material is ShaderMaterial shaderMat)
             {
-                shaderMat.SetShaderParameter(ShaderParameterNames.LightInFlow + shaderSlotNumber, inFlowDataAndPosition);
-                shaderMat.SetShaderParameter(ShaderParameterNames.LightOutFlow + shaderSlotNumber, outFlowDataAndPosition);
+                shaderMat.SetShaderParameter(ShaderParameterNames.LightInFlow + shaderSlotNumber, inFlowPowerAndPhase);
+                shaderMat.SetShaderParameter(ShaderParameterNames.LightOutFlow + shaderSlotNumber, outFlowPowerAndPhase);
                 shaderMat.SetShaderParameter(ShaderParameterNames.Animation + shaderSlotNumber, slot.Texture);
                 shaderMat.SetShaderParameter(ShaderParameterNames.LightColor + shaderSlotNumber, slot.MatchingLaser.Color.ToGodotColor());
-                // add debug info text
-                if ((lightAtPin.lightOutFlow.Magnitude > 0 || lightAtPin.lightOutFlow.Phase > 0) && lightAtPin.lightType == LaserType.Red)
-                {
-                    var text = "P:" + lightAtPin.lightOutFlow.Magnitude.ToString("F2") + "\nφ" + lightAtPin.lightOutFlow.Phase.ToString("F2");
-                    CreateDebugLabel(new Vector2I(slot.TileOffset.X * GameManager.TilePixelSize + 10, slot.TileOffset.Y * GameManager.TilePixelSize), text);
-                }
             }
 
-           
+            // add debug info text
+            if ((lightAtPin.lightFieldOutFlow.Magnitude > 0 || lightAtPin.lightFieldOutFlow.Phase > 0) && lightAtPin.lightType == LaserType.Red)
+            {
+                var text = "P:" + outFlowPower.ToString("F2") + "\nφ" + lightAtPin.lightFieldOutFlow.Phase.ToString("F2");
+                CreateDebugLabel(new Vector2I((int)(slot.TileOffset.X * GameManager.TilePixelSize +10), slot.TileOffset.Y * GameManager.TilePixelSize), text);
+            }
             OverlayRed?.Show();
             OverlayGreen?.Show();
             OverlayBlue?.Show();
         }
-        List<(Godot.Label, Timer)> oldDebugLabels = new();
+        List<Godot.Node> oldDebugLabels = new();
         private void CreateDebugLabel(Vector2I offset , string text)
         {
             // create the label
@@ -266,29 +266,19 @@ namespace ConnectAPIC.LayoutWindow.View
             infoLabel.CustomMinimumSize = new Vector2(GameManager.TilePixelSize, 50); // Größe des Labels
             infoLabel.GlobalPosition = new Vector2(GlobalPosition.X + offset.X , GlobalPosition.Y + offset.Y ); 
             infoLabel.Text = text;
+            infoLabel.MouseFilter = MouseFilterEnum.Ignore;
             infoLabel.MoveToFront();
 
             // create the background
             ColorRect background = new ColorRect();
             background.Color = new Godot.Color(0.1f, 0.1f, 0.1f, 0.5f);
             background.CustomMinimumSize = infoLabel.CustomMinimumSize;
+            background.MouseFilter = MouseFilterEnum.Ignore;
             AddChild(background);
             background.GlobalPosition = infoLabel.GlobalPosition;
             infoLabel.MoveToFront();
-
-            // timer to destroy after time
-            var timer = new Timer();
-            AddChild(timer);
-            timer.WaitTime = 10; 
-            timer.OneShot = true; 
-            timer.Timeout +=()=>
-            {
-                infoLabel.QueueFree();
-                background.QueueFree();
-                timer.QueueFree();
-            };
-            timer.Start();
-            oldDebugLabels.Add((infoLabel, timer));
+            oldDebugLabels.Add(infoLabel);
+            oldDebugLabels.Add(background);
         }
 
         

@@ -10,7 +10,7 @@ namespace CAP_Core.LightCalculation
 {
     public interface ILightCalculator
     {
-        public Task<Dictionary<Guid, Complex>> CalculateLightPropagationAsync(CancellationTokenSource cancelToken, int LaserWaveLengthInNm);
+        public Task<Dictionary<Guid, Complex>> CalculateFieldPropagationAsync(CancellationTokenSource cancelToken, int LaserWaveLengthInNm);
     }
 
     public class GridLightCalculator : ILightCalculator
@@ -24,7 +24,7 @@ namespace CAP_Core.LightCalculation
         }
 
         // calculates the light intensity and phase at a given PIN-ID for both light-flow-directions "in" and "out" for a given period of steps
-        public async Task<Dictionary<Guid, Complex>> CalculateLightPropagationAsync(CancellationTokenSource cancelToken, int LaserWaveLengthInNm)
+        public async Task<Dictionary<Guid, Complex>> CalculateFieldPropagationAsync(CancellationTokenSource cancelToken, int LaserWaveLengthInNm)
         {
             UpdateSystemSMatrix(LaserWaveLengthInNm);
             var stepCount = SystemSMatrix.PinReference.Count() * 2;
@@ -34,16 +34,6 @@ namespace CAP_Core.LightCalculation
             var inputVector = UsedInputConverter.ToVectorOfFields(usedInputs, SystemSMatrix);
 
             var fieldsAtPins = await SystemSMatrix.CalcFieldAtPinsAfterStepsAsync(inputVector, stepCount, cancelToken) ?? new Dictionary<Guid, Complex>();
-            var powerAtPins = ConvertFieldsToPowerAtPins(fieldsAtPins);
-            return powerAtPins;
-        }
-
-        private static Dictionary<Guid, Complex> ConvertFieldsToPowerAtPins(Dictionary<Guid, Complex> fieldsAtPins)
-        {
-            foreach (var PinGuids in fieldsAtPins.Keys)
-            {
-                fieldsAtPins[PinGuids] = Complex.FromPolarCoordinates( Math.Pow(fieldsAtPins[PinGuids].Magnitude, 2) , fieldsAtPins[PinGuids].Phase);
-            }
             return fieldsAtPins;
         }
 

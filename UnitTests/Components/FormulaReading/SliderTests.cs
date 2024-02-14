@@ -19,24 +19,18 @@ namespace UnitTests.Components.FormulaReading
         public async void SliderCalculationTest()
         {
             // Arrange
-            var converter = new ComponentDraftConverter(new Logger());
-            var reader = new ComponentDraftFileReader(new DummyDataAccessor(TestComponentFactory.StraightWGJson));
-            var draftOrError = reader.TryReadJson("");
-
-            Assert.True(string.IsNullOrEmpty(draftOrError.error), $"Error reading Json: {draftOrError.error}");
-            Assert.NotNull(draftOrError.draft);
-
-            var component = converter.ToComponentModels(new List<ComponentDraft> { draftOrError.draft }).First();
+            var component = TestComponentFactory.CreateComponent(TestComponentFactory.StraightWGJson);
+            component.AddSlider(0, new Slider(Guid.NewGuid(), 0, 0.5, 1, 0));
             var sliderValue1 = 0.5;
             var sliderValue2 = LaserType.Red.WaveLengthInNm / 1000 / 2;
             Complex outputPinLightValFormula1 = await CalculateFormulaUsingComponent(component, sliderValue1, formula1);
             Complex outputPinLightValFormula2 = await CalculateFormulaUsingComponent(component, sliderValue2, formula2);
 
             // Assert
-            var expectedValue1 = Complex.FromPolarCoordinates(Math.Sqrt(1-sliderValue1), 1.2161003820350373);
-            var expectedValue2 = PhaseShiftCalculator.CalculateWave(2 * Math.PI * 125000 + 2000 * sliderValue2, LaserType.Red.WaveLengthInNm);
-            Assert.Equal(expectedValue1, outputPinLightValFormula1);
-            Assert.Equal(expectedValue2, outputPinLightValFormula2);
+            var expectedFieldValue1 = Complex.FromPolarCoordinates(Math.Sqrt(1-sliderValue1), 1.2161003820350373);
+            var expectedFieldValue2 = PhaseShiftCalculator.CalculateWave(sliderValue2 * 2000 + 125000 * 2 * Math.PI , LaserType.Red.WaveLengthInNm);
+            Assert.Equal(expectedFieldValue1, outputPinLightValFormula1);
+            Assert.Equal(expectedFieldValue2, outputPinLightValFormula2);
         }
 
         private async Task<Complex> CalculateFormulaUsingComponent(Component component , double sliderValue, string formula)
@@ -57,9 +51,14 @@ namespace UnitTests.Components.FormulaReading
             var mainConnection = (component.Parts[0,0].GetPinAt(CAP_Core.Tiles.RectSide.Left).IDInFlow, component.Parts[0,0].GetPinAt(CAP_Core.Tiles.RectSide.Right).IDOutFlow);
             var nonLinConnections = component.WaveLengthToSMatrixMap[LaserType.Red.WaveLengthInNm].NonLinearConnections;
 
+            var allSliders = component.GetAllSliders();
+            var function = (ConnectionFunction)MathExpressionReader.ConvertToDelegate(formula, component.GetAllPins(), allSliders);
             if (nonLinConnections.ContainsKey(mainConnection))
             {
-                nonLinConnections[mainConnection] = (ConnectionFunction)MathExpressionReader.ConvertToDelegate(formula, component.GetAllPins(), component.GetAllSliders());
+                nonLinConnections[mainConnection] = function;
+            } else
+            {
+                nonLinConnections.Add(mainConnection, function);
             }
         }
     }

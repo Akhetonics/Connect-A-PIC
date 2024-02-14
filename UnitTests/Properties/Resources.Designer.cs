@@ -62,28 +62,29 @@ namespace UnitTests.Properties {
         
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die {
-        ///  &quot;fileFormatVersion&quot;: 1,
-        ///  &quot;identifier&quot;: &quot;DirectionalCoupler&quot;,
-        ///  &quot;nazcaFunctionParameters&quot;: &quot;deltaLength = 50&quot;,
-        ///  &quot;nazcaFunctionName&quot;: &quot;placeCell_DirectionalCoupler&quot;,
-        ///  &quot;sceneResPath&quot;: &quot;res://Scenes/Components/DirectionalCoupler/DirectionalCouplerScene.tscn&quot;,
-        ///  &quot;deltaLength&quot;: 0.5,
-        ///  &quot;widthInTiles&quot;: 2,
-        ///  &quot;heightInTiles&quot;: 2,
-        ///  &quot;pins&quot;: [
-        ///	{
-        ///	  &quot;number&quot;: 0,
-        ///	  &quot;name&quot;: &quot;west0&quot;,
-        ///	  &quot;matterType&quot;: 1,
-        ///	  &quot;side&quot;: 2,
-        ///	  &quot;partX&quot;: 0,
-        ///	  &quot;partY&quot;: 0
-        ///	},
-        ///	{
-        ///	  &quot;number&quot;: 1,
-        ///	  &quot;name&quot;: &quot;east0&quot;,
-        ///	  &quot;matterType&quot;: 1,
-        ///	  &quot;sid [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
+        ///	&quot;fileFormatVersion&quot;: 1,
+        ///	&quot;identifier&quot;: &quot;DirectionalCoupler&quot;,
+        ///	&quot;nazcaFunctionParameters&quot;: &quot;deltaLength = SLIDER0&quot;,
+        ///	&quot;nazcaFunctionName&quot;: &quot;placeCell_DirectionalCoupler&quot;,
+        ///	&quot;sceneResPath&quot;: &quot;res://Scenes/Components/DirectionalCoupler/DirectionalCouplerScene.tscn&quot;,
+        ///	&quot;widthInTiles&quot;: 2,
+        ///	&quot;heightInTiles&quot;: 2,
+        ///	&quot;pins&quot;: [
+        ///		{
+        ///			&quot;number&quot;: 0,
+        ///			&quot;name&quot;: &quot;west0&quot;,
+        ///			&quot;matterType&quot;: 1,
+        ///			&quot;side&quot;: 2,
+        ///			&quot;partX&quot;: 0,
+        ///			&quot;partY&quot;: 0
+        ///		},
+        ///		{
+        ///			&quot;number&quot;: 1,
+        ///			&quot;name&quot;: &quot;east0&quot;,
+        ///			&quot;matterType&quot;: 1,
+        ///			&quot;side&quot;: 0,
+        ///			&quot;partX&quot;: 1,
+        /// [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
         /// </summary>
         internal static string DirectionalCouplerDraft {
             get {

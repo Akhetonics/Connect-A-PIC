@@ -65,6 +65,7 @@ namespace CAP_Core.Components
             return nazcaFunctionParameterString;
         }
 
+        // adds the slider to the component and its SMatrices
         public void AddSlider(int sliderNr , Slider slider)
         {
             if(SliderMap.TryAdd(sliderNr, slider))
@@ -72,6 +73,16 @@ namespace CAP_Core.Components
                 slider.PropertyChanged += Slider_PropertyChanged;
             }
             SliderMap[slider.Number].Value = slider.Value;
+            foreach(int waveLength in WaveLengthToSMatrixMap.Keys)
+            {
+                if  (WaveLengthToSMatrixMap[waveLength].SliderReference.ContainsKey(slider.ID) == false) {
+                    WaveLengthToSMatrixMap[waveLength].SliderReference.Add(slider.ID, slider.Value);
+                } else
+                {
+                    WaveLengthToSMatrixMap[waveLength].SliderReference[slider.ID] = slider.Value;
+                }
+                
+            }
         }
 
         private void Slider_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)

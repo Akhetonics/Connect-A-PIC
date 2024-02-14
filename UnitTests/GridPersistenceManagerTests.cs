@@ -73,7 +73,7 @@ namespace UnitTests
             sliderFromGrid.MaxValue.ShouldBe(sliderFromGrid.MaxValue);
             sliderFromGrid.Value.ShouldBe(sliderFromGrid.Value);
             firstComponentFromGrid.Identifier.ShouldBe(firstComponent.Identifier);
-            firstComponentConnections.First().Value.Real.ShouldBe(1);
+            firstComponentConnections.First().Value.Magnitude.ShouldBe(1.0 , 1e-4);
             grid.GetComponentAt(orphanPos.X, orphanPos.Y).Rotation90CounterClock.ShouldBe(orphan.Rotation90CounterClock);
             grid.GetComponentAt(orphanPos.X, orphanPos.Y).Identifier.ShouldBe(orphan.Identifier);
         }
