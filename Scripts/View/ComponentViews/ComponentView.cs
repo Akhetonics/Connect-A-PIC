@@ -263,7 +263,7 @@ namespace ConnectAPIC.LayoutWindow.View
 
 
             // set the text 
-            infoLabel.CustomMinimumSize = new Vector2(GameManager.TilePixelSize, 50); // Größe des Labels
+            infoLabel.CustomMinimumSize = new Vector2(GameManager.TilePixelSize, 50); 
             infoLabel.GlobalPosition = new Vector2(GlobalPosition.X + offset.X , GlobalPosition.Y + offset.Y ); 
             infoLabel.Text = text;
             infoLabel.MouseFilter = MouseFilterEnum.Ignore;
