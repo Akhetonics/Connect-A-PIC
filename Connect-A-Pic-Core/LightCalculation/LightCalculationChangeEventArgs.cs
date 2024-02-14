@@ -5,12 +5,12 @@ namespace CAP_Core.LightCalculation
 {
     public class LightCalculationChangeEventArgs
     {
-        public LightCalculationChangeEventArgs(Dictionary<Guid, Complex> lightVector, LaserType laser)
+        public LightCalculationChangeEventArgs(Dictionary<Guid, Complex> lightFieldVector, LaserType laser)
         {
-            LightVector = lightVector;
+            LightFieldVector = lightFieldVector;
             LaserInUse = laser;
         }
-        public Dictionary<Guid, Complex> LightVector { get; set; }
+        public Dictionary<Guid, Complex> LightFieldVector { get; set; }
         public LaserType LaserInUse { get; set; }
     }
 }

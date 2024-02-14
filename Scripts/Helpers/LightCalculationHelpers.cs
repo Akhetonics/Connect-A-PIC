@@ -12,7 +12,7 @@ namespace ConnectAPIC.Scripts.Helpers
     internal static class LightCalculationHelpers
     {
 
-        public static List<LightAtPin> ConvertToLightAtPins(Dictionary<Guid, Complex> lightVector, LaserType laserType, Component componentModel)
+        public static List<LightAtPin> ConvertToLightAtPins(Dictionary<Guid, Complex> lightFieldVector, LaserType laserType, Component componentModel)
         {
             List<LightAtPin> lightAtPins = new();
 
@@ -30,8 +30,8 @@ namespace ConnectAPIC.Scripts.Helpers
                             offsetY,
                             localSide,
                             laserType,
-                            lightVector.TryGetVal(pin.IDInFlow),
-                            lightVector.TryGetVal(pin.IDOutFlow)
+                            lightFieldVector.TryGetVal(pin.IDInFlow),
+                            lightFieldVector.TryGetVal(pin.IDOutFlow)
                             );
                         lightAtPins.Add(lightFlow);
                     }

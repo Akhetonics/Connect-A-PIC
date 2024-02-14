@@ -57,22 +57,22 @@
 				{
 					"fromPinNr": 0,
 					"toPinNr": 3,
-					"nonLinearFormula": "ToComplexFromPolar( Sqrt(SLIDER0), 1.2545454545433 + SLIDER0 * [Pi])"
+					"nonLinearFormula": "ToComplexFromPolar( Sqrt(SLIDER0), 1.2545454545433 + 0.5 * [Pi])"
 				},
 				{
 					"fromPinNr": 3,
 					"toPinNr": 0,
-					"nonLinearFormula": "ToComplexFromPolar( Sqrt(SLIDER0), 1.2545454545433 + SLIDER0 * [Pi])"
+					"nonLinearFormula": "ToComplexFromPolar( Sqrt(SLIDER0), 1.2545454545433 + 0.5 * [Pi])"
 				},
 				{
 					"fromPinNr": 2,
 					"toPinNr": 1,
-					"nonLinearFormula": "ToComplexFromPolar( Sqrt(SLIDER0), 1.2545454545433 + SLIDER0 * [Pi])"
+					"nonLinearFormula": "ToComplexFromPolar( Sqrt(SLIDER0), 1.2545454545433 + 0.5 * [Pi])"
 				},
 				{
 					"fromPinNr": 1,
 					"toPinNr": 2,
-					"nonLinearFormula": "ToComplexFromPolar( Sqrt(SLIDER0), 1.2545454545433 + SLIDER0 * [Pi])"
+					"nonLinearFormula": "ToComplexFromPolar( Sqrt(SLIDER0), 1.2545454545433 + 0.5 * [Pi])"
 				},
 				{
 					"fromPinNr": 2,
@@ -102,22 +102,22 @@
 				{
 					"fromPinNr": 0,
 					"toPinNr": 3,
-					"nonLinearFormula": "ToComplexFromPolar( Sqrt(SLIDER0), 1.2545454545433 + SLIDER0 * [Pi])"
+					"nonLinearFormula": "ToComplexFromPolar( Sqrt(SLIDER0), 1.2545454545433 + 0.5 * [Pi])"
 				},
 				{
 					"fromPinNr": 3,
 					"toPinNr": 0,
-					"nonLinearFormula": "ToComplexFromPolar( Sqrt(SLIDER0), 1.2545454545433 + SLIDER0 * [Pi])"
+					"nonLinearFormula": "ToComplexFromPolar( Sqrt(SLIDER0), 1.2545454545433 + 0.5 * [Pi])"
 				},
 				{
 					"fromPinNr": 2,
 					"toPinNr": 1,
-					"nonLinearFormula": "ToComplexFromPolar( Sqrt(SLIDER0), 1.2545454545433 + SLIDER0 * [Pi])"
+					"nonLinearFormula": "ToComplexFromPolar( Sqrt(SLIDER0), 1.2545454545433 + 0.5 * [Pi])"
 				},
 				{
 					"fromPinNr": 1,
 					"toPinNr": 2,
-					"nonLinearFormula": "ToComplexFromPolar( Sqrt(SLIDER0), 1.2545454545433 + SLIDER0 * [Pi])"
+					"nonLinearFormula": "ToComplexFromPolar( Sqrt(SLIDER0), 1.2545454545433 + 0.5 * [Pi])"
 				},
 				{
 					"fromPinNr": 2,
@@ -147,22 +147,22 @@
 				{
 					"fromPinNr": 0,
 					"toPinNr": 3,
-					"nonLinearFormula": "ToComplexFromPolar( Sqrt(SLIDER0), 1.2545454545433 + SLIDER0 * [Pi])"
+					"nonLinearFormula": "ToComplexFromPolar( Sqrt(SLIDER0), 1.2545454545433 + 0.5 * [Pi])"
 				},
 				{
 					"fromPinNr": 3,
 					"toPinNr": 0,
-					"nonLinearFormula": "ToComplexFromPolar( Sqrt(SLIDER0), 1.2545454545433 + SLIDER0 * [Pi])"
+					"nonLinearFormula": "ToComplexFromPolar( Sqrt(SLIDER0), 1.2545454545433 + 0.5 * [Pi])"
 				},
 				{
 					"fromPinNr": 2,
 					"toPinNr": 1,
-					"nonLinearFormula": "ToComplexFromPolar( Sqrt(SLIDER0), 1.2545454545433 + SLIDER0 * [Pi])"
+					"nonLinearFormula": "ToComplexFromPolar( Sqrt(SLIDER0), 1.2545454545433 + 0.5 * [Pi])"
 				},
 				{
 					"fromPinNr": 1,
 					"toPinNr": 2,
-					"nonLinearFormula": "ToComplexFromPolar( Sqrt(SLIDER0), 1.2545454545433 + SLIDER0 * [Pi])"
+					"nonLinearFormula": "ToComplexFromPolar( Sqrt(SLIDER0), 1.2545454545433 + 0.5 * [Pi])"
 				},
 				{
 					"fromPinNr": 2,

@@ -18,7 +18,7 @@ namespace UnitTests
         public static string DirectionalCouplerJSON => GetResourceContent("DirectionalCouplerDraft");
         public static string GetResourceContent(string resourcePath)
         {
-            var resourceManager = new ResourceManager("UnitTests.Properties.Resources", Assembly.GetExecutingAssembly());
+            var resourceManager = new ResourceManager( "UnitTests.Properties.Resources", Assembly.GetExecutingAssembly());
             var content = resourceManager.GetString(resourcePath);
             return content;
         }
