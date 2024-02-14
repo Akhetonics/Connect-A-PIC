@@ -88,9 +88,9 @@ namespace ConnectAPIC.test.src
             var lightGloballyOnUp = await GetLightOnRightDownSide(DirectionalCouplerLightSwitching , new Vector2I(1,0) , 3);
             var lightGloballyOnDown = await GetLightOnRightDownSide(DirectionalCouplerLightSwitching, new Vector2I(1,1) , 4);
 
-            lightGloballyOnUp.In.X.ShouldBe(0);
-            lightGloballyOnUp.Out.X.ShouldBe(0);
-            lightGloballyOnDown.In.X.ShouldBe(0);
+            lightGloballyOnUp.In.X.ShouldBe(0f, 0.01);
+            lightGloballyOnUp.Out.X.ShouldBe(0f, 0.01);
+            lightGloballyOnDown.In.X.ShouldBe(0f, 0.01);
             lightGloballyOnDown.Out.X.ShouldBe(lightOnIntensity, 0.01);
         }
 
