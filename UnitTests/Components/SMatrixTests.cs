@@ -77,8 +77,6 @@ namespace UnitTests.Components
             var powerEB = Math.Pow(calculatedFieldOutDown.Magnitude, 2);
             var powerSum = powerED + powerEB;
 
-            
-
             Assert.True(AreComplexNumbersEqual(calculatedFieldOutUp ,fieldOutUp));
             Assert.True(AreComplexNumbersEqual(calculatedFieldOutDown ,fieldOutDown));
         }
