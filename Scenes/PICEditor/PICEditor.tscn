@@ -1,9 +1,9 @@
-[gd_scene load_steps=19 format=3 uid="uid://cu6wqy6xwjfo1"]
+[gd_scene load_steps=29 format=3 uid="uid://cu6wqy6xwjfo1"]
 
 [ext_resource type="Script" path="res://Scripts/GameManager.cs" id="1_c0scx"]
 [ext_resource type="Script" path="res://Scripts/View/ComponentFactory/ComponentViewFactory.cs" id="2_7hjmy"]
 [ext_resource type="Script" path="res://Scripts/View/ComponentViews/ComponentView.cs" id="3_celc4"]
-[ext_resource type="TileSet" uid="uid://cbfkdk3hvsq1q" path="res://Scenes/PICEditor/TileSet_PICEditor.tres" id="4_inmj3"]
+[ext_resource type="TileSet" uid="uid://cbfkdk3hvsq1q" path="res://Scenes/PICEditor/TileSet_PICEditor.tres" id="4_mptgl"]
 [ext_resource type="Script" path="res://Scripts/View/GridView.cs" id="5_3575d"]
 [ext_resource type="Texture2D" uid="uid://bt4gh5kxvtjmy" path="res://Scenes/MenuBar/LightOn.png" id="6_1ujuu"]
 [ext_resource type="Texture2D" uid="uid://guwvmqinvxkw" path="res://Scenes/MenuBar/LightOff.png" id="7_5wc4w"]
@@ -11,23 +11,33 @@
 [ext_resource type="Script" path="res://Scripts/View/StandardDialogs/NotificationManager.cs" id="9_gj54m"]
 [ext_resource type="PackedScene" uid="uid://bscqmaslppyt8" path="res://Scenes/NotificationBox.tscn" id="10_06t00"]
 [ext_resource type="PackedScene" uid="uid://dfrjm1onsjusf" path="res://Scenes/ToolBox/Tool_box.tscn" id="11_cqs2p"]
-[ext_resource type="PackedScene" uid="uid://batxcdg720fpl" path="res://Scenes/ExternalInputs/external_input_blue_template.tscn" id="12_ju3tu"]
-[ext_resource type="PackedScene" uid="uid://b6do0hy7ny7x2" path="res://Scenes/ExternalInputs/external_input_red_template.tscn" id="13_wmrte"]
-[ext_resource type="PackedScene" uid="uid://c4uqvn0fwc10d" path="res://Scenes/ExternalInputs/external_input_green_template.tscn" id="14_i374a"]
+[ext_resource type="PackedScene" uid="uid://c5jmuhljnon44" path="res://Scenes/ExternalInputs/external_input.tscn" id="12_gwl6a"]
+[ext_resource type="Texture2D" uid="uid://rlqegom5ey74" path="res://Scenes/ExternalInputs/ExternalInputRedOn.png" id="13_otx74"]
+[ext_resource type="Texture2D" uid="uid://306fqndeeee8" path="res://Scenes/ExternalInputs/ExternalInputRedOff.png" id="14_a68fp"]
+[ext_resource type="Texture2D" uid="uid://dehhahe1v5238" path="res://Scenes/ExternalInputs/ExternalInputBlueOff.png" id="14_anfaj"]
 [ext_resource type="PackedScene" uid="uid://c0mcgj6g7ik52" path="res://Scenes/ExternalInputs/external_output_template.tscn" id="15_v8bo3"]
+[ext_resource type="Texture2D" uid="uid://b1xyqnxrm7bua" path="res://Scenes/ExternalInputs/ExternalInputBlueOn.png" id="15_wh6wu"]
 [ext_resource type="PackedScene" uid="uid://bd8isg4mddv21" path="res://Scenes/InGameConsole/InGameConsole.tscn" id="16_7rcst"]
+[ext_resource type="Texture2D" uid="uid://babpsxo53i8s6" path="res://Scenes/ExternalInputs/ExternalInputGreenOn.png" id="17_ku40t"]
 [ext_resource type="Texture2D" uid="uid://djdwbxfnvfvfb" path="res://Scenes/MenuBar/SaveIcon.png" id="17_q4e7w"]
 [ext_resource type="Texture2D" uid="uid://qtdana7kc4y" path="res://Scenes/MenuBar/LoadIcon.png" id="18_17x6l"]
+[ext_resource type="Texture2D" uid="uid://de6x4qfjsklao" path="res://Scenes/ExternalInputs/ExternalInputGreenOff.png" id="18_i07bm"]
+[ext_resource type="Script" path="res://Scripts/View/GUIControls/MainCamera.cs" id="19_tfkoi"]
+[ext_resource type="PackedScene" uid="uid://cpu4bmee8crlg" path="res://Scenes/PopUpWindow/PopUpWindow.tscn" id="21_u0shi"]
+[ext_resource type="Texture2D" uid="uid://dnku8c3qddqif" path="res://Scenes/MenuBar/HelpIcon.png" id="23_oxlnq"]
+[ext_resource type="Texture2D" uid="uid://cwxymtqs0hclu" path="res://Scenes/ToolBox/CollapseButton.png" id="24_uravt"]
+[ext_resource type="Script" path="res://Scripts/View/GUIControls/ToolBoxCollapseControl.cs" id="25_35kfa"]
+[ext_resource type="Texture2D" uid="uid://bpf4xfrmslfao" path="res://Scenes/ToolBox/CollapseButtonToggledOn.png" id="27_6q7aj"]
 
 [node name="GameManager" type="Node" node_paths=PackedStringArray("ExternalOutputTemplate", "ExternalInputRedTemplate", "ExternalInputGreenTemplate", "ExternalInputBlueTemplate", "InGameConsole")]
 script = ExtResource("1_c0scx")
 GridViewPath = NodePath("GridView")
-ToolBoxPath = NodePath("ToolBox")
+ToolBoxPath = NodePath("GUILayer/Control/MarginContainer/VBoxContainer/ToolBox")
 ExternalOutputTemplate = NodePath("Templates/ExternalOutputTemplate")
-ExternalInputRedTemplate = NodePath("Templates/ExternalInputRedTemplate")
-ExternalInputGreenTemplate = NodePath("Templates/ExternalInputGreenTemplate")
-ExternalInputBlueTemplate = NodePath("Templates/ExternalInputBlueTemplate")
-InGameConsole = NodePath("InGameConsole")
+ExternalInputRedTemplate = NodePath("Templates/ExternalInputRed")
+ExternalInputGreenTemplate = NodePath("Templates/ExternalInputGreen")
+ExternalInputBlueTemplate = NodePath("Templates/ExternalInputBlue")
+InGameConsole = NodePath("GUILayer/InGameConsole")
 
 [node name="ComponentViewFactory" type="Node" parent="."]
 script = ExtResource("2_7hjmy")
@@ -36,7 +46,7 @@ ComponentBaseScriptPath = ExtResource("3_celc4")
 [node name="GridView" type="TileMap" parent="." node_paths=PackedStringArray("DragDropProxy", "ComponentViewFactory", "LightOnButton")]
 texture_filter = 1
 position = Vector2(155.395, 42.7)
-tile_set = ExtResource("4_inmj3")
+tile_set = ExtResource("4_mptgl")
 format = 2
 layer_0/tile_data = PackedInt32Array(0, 65536, 4, 1, 65536, 4, 2, 65536, 4, 3, 65536, 4, 4, 65536, 4, 5, 65536, 4, 6, 65536, 4, 7, 65536, 4, 8, 65536, 4, 9, 65536, 4, 10, 65536, 4, 11, 65536, 4, 12, 65536, 4, 13, 65536, 4, 14, 65536, 4, 15, 65536, 4, 16, 65536, 4, 17, 65536, 4, 18, 65536, 4, 19, 65536, 4, 20, 65536, 4, 21, 65536, 4, 22, 65536, 4, 23, 65536, 4, 65536, 65536, 4, 65537, 65536, 4, 65538, 65536, 4, 65539, 65536, 4, 65540, 65536, 4, 65541, 65536, 4, 65542, 65536, 4, 65543, 65536, 4, 65544, 65536, 4, 65545, 65536, 4, 65546, 65536, 4, 65547, 65536, 4, 65548, 65536, 4, 65549, 65536, 4, 65550, 65536, 4, 65551, 65536, 4, 65552, 65536, 4, 65553, 65536, 4, 65554, 65536, 4, 65555, 65536, 4, 65558, 65536, 4, 65559, 65536, 4, 65557, 65536, 4, 65556, 65536, 4, 131095, 65536, 4, 196631, 65536, 4, 262167, 65536, 4, 327703, 65536, 4, 393239, 65536, 4, 458775, 65536, 4, 524311, 65536, 4, 589847, 65536, 4, 655383, 65536, 4, 720919, 65536, 4, 131094, 65536, 4, 196630, 65536, 4, 262166, 65536, 4, 327702, 65536, 4, 393238, 65536, 4, 458774, 65536, 4, 524310, 65536, 4, 589846, 65536, 4, 655382, 65536, 4, 720918, 65536, 4, 720917, 65536, 4, 720916, 65536, 4, 655381, 65536, 4, 393237, 65536, 4, 327701, 65536, 4, 262165, 65536, 4, 196629, 65536, 4, 196628, 65536, 4, 131092, 65536, 4, 262164, 65536, 4, 327700, 65536, 4, 393236, 65536, 4, 458772, 65536, 4, 524308, 65536, 4, 131093, 65536, 4, 458773, 65536, 4, 524309, 65536, 4, 589845, 65536, 4, 655380, 65536, 4, 589844, 65536, 4, 262163, 65536, 4, 196627, 65536, 4, 131091, 65536, 4, 131090, 65536, 4, 131089, 65536, 4, 131088, 65536, 4, 196623, 65536, 4, 196622, 65536, 4, 196621, 65536, 4, 196620, 65536, 4, 196619, 65536, 4, 196618, 65536, 4, 196617, 65536, 4, 196616, 65536, 4, 196615, 65536, 4, 196614, 65536, 4, 131078, 65536, 4, 131077, 65536, 4, 131076, 65536, 4, 196612, 65536, 4, 196613, 65536, 4, 131081, 65536, 4, 131082, 65536, 4, 131083, 65536, 4, 131084, 65536, 4, 131085, 65536, 4, 131086, 65536, 4, 131087, 65536, 4, 196625, 65536, 4, 196626, 65536, 4, 720915, 65536, 4, 720914, 65536, 4, 720913, 65536, 4, 720912, 65536, 4, 720911, 65536, 4, 720910, 65536, 4, 720909, 65536, 4, 720908, 65536, 4, 720907, 65536, 4, 720906, 65536, 4, 720905, 65536, 4, 720904, 65536, 4, 720903, 65536, 4, 720902, 65536, 4, 720901, 65536, 4, 720900, 65536, 4, 720899, 65536, 4, 655363, 65536, 4, 655362, 65536, 4, 655361, 65536, 4, 655360, 65536, 4, 720896, 65536, 4, 720897, 65536, 4, 720898, 65536, 4, 589824, 65536, 4, 524288, 65536, 4, 458752, 65536, 4, 458753, 65536, 4, 393217, 65536, 4, 327681, 65536, 4, 262145, 65536, 4, 196609, 65536, 4, 131073, 65536, 4, 131072, 65536, 4, 196608, 65536, 4, 262144, 65536, 4, 327680, 65536, 4, 393216, 65536, 4, 131074, 65536, 4, 131075, 65536, 4, 196610, 65536, 4, 196611, 65536, 4, 131079, 65536, 4, 131080, 65536, 4, 196624, 65536, 4, 262153, 65536, 4, 262152, 65536, 4, 262151, 65536, 4, 262150, 65536, 4, 262149, 65536, 4, 262148, 65536, 4, 262147, 65536, 4, 262146, 65536, 4, 262154, 65536, 4, 262155, 65536, 4, 262156, 65536, 4, 262157, 65536, 4, 262158, 65536, 4, 262159, 65536, 4, 262160, 65536, 4, 262161, 65536, 4, 262162, 65536, 4, 327699, 65536, 4, 327698, 65536, 4, 327697, 65536, 4, 327696, 65536, 4, 327695, 65536, 4, 327694, 65536, 4, 327693, 65536, 4, 327692, 65536, 4, 327691, 65536, 4, 327690, 65536, 4, 327689, 65536, 4, 327688, 65536, 4, 327687, 65536, 4, 327686, 65536, 4, 327685, 65536, 4, 327684, 65536, 4, 327683, 65536, 4, 327682, 65536, 4, 393218, 65536, 4, 393219, 65536, 4, 393220, 65536, 4, 393221, 65536, 4, 393222, 65536, 4, 393223, 65536, 4, 393224, 65536, 4, 393225, 65536, 4, 393226, 65536, 4, 393227, 65536, 4, 458764, 65536, 4, 458765, 65536, 4, 458766, 65536, 4, 458767, 65536, 4, 458768, 65536, 4, 458769, 65536, 4, 458770, 65536, 4, 458771, 65536, 4, 393235, 65536, 4, 393234, 65536, 4, 393233, 65536, 4, 393232, 65536, 4, 393231, 65536, 4, 393230, 65536, 4, 393229, 65536, 4, 393228, 65536, 4, 458756, 65536, 4, 458755, 65536, 4, 524290, 65536, 4, 524289, 65536, 4, 458754, 65536, 4, 458757, 65536, 4, 458758, 65536, 4, 458759, 65536, 4, 458760, 65536, 4, 458761, 65536, 4, 458762, 65536, 4, 458763, 65536, 4, 524307, 65536, 4, 524306, 65536, 4, 524305, 65536, 4, 524304, 65536, 4, 524303, 65536, 4, 524302, 65536, 4, 524301, 65536, 4, 524300, 65536, 4, 524299, 65536, 4, 524298, 65536, 4, 524297, 65536, 4, 524296, 65536, 4, 524295, 65536, 4, 524294, 65536, 4, 524293, 65536, 4, 524292, 65536, 4, 524291, 65536, 4, 589825, 65536, 4, 589826, 65536, 4, 589827, 65536, 4, 589828, 65536, 4, 589829, 65536, 4, 589830, 65536, 4, 589831, 65536, 4, 589832, 65536, 4, 589833, 65536, 4, 589834, 65536, 4, 589835, 65536, 4, 589836, 65536, 4, 589837, 65536, 4, 589838, 65536, 4, 589839, 65536, 4, 589840, 65536, 4, 589841, 65536, 4, 589842, 65536, 4, 589843, 65536, 4, 655379, 65536, 4, 655378, 65536, 4, 655377, 65536, 4, 655376, 65536, 4, 655375, 65536, 4, 655374, 65536, 4, 655373, 65536, 4, 655372, 65536, 4, 655371, 65536, 4, 655370, 65536, 4, 655369, 65536, 4, 655368, 65536, 4, 655367, 65536, 4, 655366, 65536, 4, 655365, 65536, 4, 655364, 65536, 4, 196632, 589824, 1, 262168, 589824, 2, 327704, 589824, 3, 393240, 589824, 4, 458776, 589824, 5, 524312, 589824, 6, 589848, 589824, 7, 655384, 589824, 8, 786449, 131072, 9, 786450, 196608, 9, 786451, 262144, 9, 786452, 327680, 9, 786454, 458752, 9, 786455, 524288, 9, 786456, 589824, 9, 786448, 65536, 9, 786453, 393216, 9, 720920, 589824, 8, 786440, 524288, 9, 786441, 131072, 9, 786442, 196608, 9, 786443, 262144, 9, 786444, 327680, 9, 786445, 393216, 9, 786446, 458752, 9, 786447, 524288, 9, 786433, 65536, 9, 786434, 131072, 9, 786435, 196608, 9, 786436, 262144, 9, 786437, 327680, 9, 786438, 393216, 9, 786439, 458752, 9, 851967, 0, 9, 786432, 458752, 9, 327679, 0, 5, 393215, 0, 6, 458751, 0, 7, 524287, 0, 7, 589823, 0, 5, 655359, 0, 6, 720895, 0, 7, 786431, 0, 8, 131071, 0, 2, 196607, 0, 3, 262143, 0, 4, 65535, 0, 1, -1, 0, 0, -65536, 65536, 0, -65535, 131072, 0, -65534, 196608, 0, -65533, 262144, 0, -65532, 327680, 0, -65531, 393216, 0, -65530, 458752, 0, -65529, 65536, 0, -65528, 131072, 0, -65527, 196608, 0, -65526, 262144, 0, -65525, 327680, 0, -65524, 393216, 0, -65523, 458752, 0, -65522, 65536, 0, -65521, 131072, 0, -65520, 65536, 0, -65519, 131072, 0, -65518, 196608, 0, -65517, 262144, 0, -65516, 327680, 0, -65515, 393216, 0, -65514, 458752, 0, -65513, 524288, 0, -65512, 589824, 0, 24, 589824, 1, 65560, 589824, 3, 131096, 589824, 3)
 script = ExtResource("5_3575d")
@@ -44,7 +54,7 @@ DragDropProxy = NodePath("DragDropProxy")
 ComponentViewFactory = NodePath("../ComponentViewFactory")
 LightOnTexture = ExtResource("6_1ujuu")
 LightOffTexture = ExtResource("7_5wc4w")
-LightOnButton = NodePath("../MenuBar2/HBoxContainer/btnShowLightPropagation")
+LightOnButton = NodePath("../GUILayer/MenuBar2/HBoxContainer/btnShowLightPropagation")
 
 [node name="DragDropProxy" type="Control" parent="GridView"]
 layout_mode = 3
@@ -59,40 +69,28 @@ metadata/_edit_use_anchors_ = true
 script = ExtResource("9_gj54m")
 NotificationBoxScene = ExtResource("10_06t00")
 
-[node name="ToolBox" parent="." instance=ExtResource("11_cqs2p")]
-texture_filter = 1
-custom_minimum_size = Vector2(4.615, 2.95)
-anchor_left = 0.850694
-anchor_top = 0.320988
-anchor_right = 0.986979
-anchor_bottom = 0.679012
-
 [node name="Templates" type="Node" parent="."]
 
-[node name="ExternalInputBlueTemplate" parent="Templates" instance=ExtResource("12_ju3tu")]
-texture_filter = 1
-offset_left = 47.0
-offset_top = 161.0
-offset_right = 153.001
-offset_bottom = 225.0
-size_flags_horizontal = 8
-expand_mode = 3
+[node name="ExternalInputRed" parent="Templates" node_paths=PackedStringArray("button") instance=ExtResource("12_gwl6a")]
+position = Vector2(48, 165)
+ligthOnTexture = ExtResource("13_otx74")
+ligthOffTexture = ExtResource("14_a68fp")
+lightColor = Color(0.843137, 0, 0, 1)
+button = NodePath("../../GUILayer/MenuBar2/HBoxContainer/btnShowLightPropagation")
 
-[node name="ExternalInputRedTemplate" parent="Templates" instance=ExtResource("13_wmrte")]
-texture_filter = 1
-offset_left = 47.0
-offset_top = 225.0
-offset_right = 153.0
-offset_bottom = 289.0
-expand_mode = 3
+[node name="ExternalInputBlue" parent="Templates" node_paths=PackedStringArray("button") instance=ExtResource("12_gwl6a")]
+position = Vector2(48, 227)
+ligthOnTexture = ExtResource("15_wh6wu")
+ligthOffTexture = ExtResource("14_anfaj")
+lightColor = Color(0, 0, 1, 1)
+button = NodePath("../../GUILayer/MenuBar2/HBoxContainer/btnShowLightPropagation")
 
-[node name="ExternalInputGreenTemplate" parent="Templates" instance=ExtResource("14_i374a")]
-texture_filter = 1
-offset_left = 47.0
-offset_top = 289.0
-offset_right = 153.0
-offset_bottom = 353.0
-expand_mode = 3
+[node name="ExternalInputGreen" parent="Templates" node_paths=PackedStringArray("button") instance=ExtResource("12_gwl6a")]
+position = Vector2(48, 288)
+ligthOnTexture = ExtResource("17_ku40t")
+ligthOffTexture = ExtResource("18_i07bm")
+lightColor = Color(0, 1, 0, 0.678431)
+button = NodePath("../../GUILayer/MenuBar2/HBoxContainer/btnShowLightPropagation")
 
 [node name="ExternalOutputTemplate" parent="Templates" instance=ExtResource("15_v8bo3")]
 texture_filter = 1
@@ -102,24 +100,50 @@ offset_right = 153.0
 offset_bottom = 417.0
 expand_mode = 3
 
-[node name="InGameConsole" parent="." instance=ExtResource("16_7rcst")]
-offset_left = -5.0
-offset_top = -172.0
-offset_right = -5.0
-offset_bottom = 164.0
+[node name="MainCamera" type="Camera2D" parent="."]
+drag_left_margin = 0.0
+drag_top_margin = 0.0
+drag_right_margin = 0.0
+drag_bottom_margin = 0.0
+script = ExtResource("19_tfkoi")
 
-[node name="MenuBar2" type="MenuBar" parent="."]
-offset_right = 10.0
-offset_bottom = 10.0
+[node name="GUILayer" type="CanvasLayer" parent="."]
+
+[node name="InGameConsole" parent="GUILayer" instance=ExtResource("16_7rcst")]
+visible = false
+anchors_preset = -1
+anchor_top = 0.559
+anchor_right = 0.61
+offset_top = -0.231995
+offset_right = 0.279968
+
+[node name="PopUpWindow" parent="GUILayer" node_paths=PackedStringArray("ToggleButton") instance=ExtResource("21_u0shi")]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -284.0
+offset_top = -162.5
+offset_right = 284.0
+offset_bottom = 162.5
+size_flags_horizontal = 6
+size_flags_vertical = 6
+ToggleButton = NodePath("../MenuBar2/HBoxContainer/btnHelp")
+
+[node name="MenuBar2" type="MenuBar" parent="GUILayer"]
 pivot_offset = Vector2(2.655, 0)
+size_flags_horizontal = 2
+metadata/_edit_use_anchors_ = true
 
-[node name="HBoxContainer" type="HBoxContainer" parent="MenuBar2"]
+[node name="HBoxContainer" type="HBoxContainer" parent="GUILayer/MenuBar2"]
 layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 pivot_offset = Vector2(4, 4)
 
-[node name="btnSave" type="Button" parent="MenuBar2/HBoxContainer"]
+[node name="btnSave" type="Button" parent="GUILayer/MenuBar2/HBoxContainer"]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 toggle_mode = true
@@ -127,7 +151,7 @@ icon = ExtResource("17_q4e7w")
 expand_icon = true
 metadata/_edit_use_anchors_ = true
 
-[node name="btnLoad" type="Button" parent="MenuBar2/HBoxContainer"]
+[node name="btnLoad" type="Button" parent="GUILayer/MenuBar2/HBoxContainer"]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 toggle_mode = true
@@ -135,7 +159,15 @@ icon = ExtResource("18_17x6l")
 expand_icon = true
 metadata/_edit_use_anchors_ = true
 
-[node name="btnShowLightPropagation" type="Button" parent="MenuBar2/HBoxContainer"]
+[node name="btnHelp" type="Button" parent="GUILayer/MenuBar2/HBoxContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+toggle_mode = true
+icon = ExtResource("23_oxlnq")
+expand_icon = true
+metadata/_edit_use_anchors_ = true
+
+[node name="btnShowLightPropagation" type="Button" parent="GUILayer/MenuBar2/HBoxContainer"]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 toggle_mode = true
@@ -143,12 +175,59 @@ icon = ExtResource("7_5wc4w")
 expand_icon = true
 metadata/_edit_use_anchors_ = true
 
-[node name="btnExportNazca" type="Button" parent="MenuBar2/HBoxContainer"]
+[node name="btnExportNazca" type="Button" parent="GUILayer/MenuBar2/HBoxContainer"]
 layout_mode = 2
 text = "Export Nazca"
 metadata/_edit_use_anchors_ = true
 
-[connection signal="pressed" from="MenuBar2/HBoxContainer/btnSave" to="GridView" method="_on_btn_save_pressed"]
-[connection signal="pressed" from="MenuBar2/HBoxContainer/btnLoad" to="GridView" method="_on_btn_load_pressed"]
-[connection signal="toggled" from="MenuBar2/HBoxContainer/btnShowLightPropagation" to="GridView" method="_on_btn_show_light_propagation_toggled"]
-[connection signal="pressed" from="MenuBar2/HBoxContainer/btnExportNazca" to="GridView" method="_on_btn_export_nazca_pressed"]
+[node name="Control" type="Control" parent="GUILayer"]
+layout_mode = 3
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -444.0
+offset_top = -477.0
+grow_horizontal = 0
+grow_vertical = 0
+size_flags_horizontal = 8
+size_flags_vertical = 10
+script = ExtResource("25_35kfa")
+
+[node name="MarginContainer" type="MarginContainer" parent="GUILayer/Control"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = -0.036
+anchor_right = 1.0
+anchor_bottom = 1.036
+offset_top = 15.84
+offset_bottom = -15.84
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="GUILayer/Control/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="HideToggle" type="TextureButton" parent="GUILayer/Control/MarginContainer/VBoxContainer"]
+texture_filter = 1
+layout_mode = 2
+size_flags_horizontal = 8
+focus_mode = 0
+toggle_mode = true
+texture_normal = ExtResource("24_uravt")
+texture_pressed = ExtResource("27_6q7aj")
+
+[node name="ToolBox" parent="GUILayer/Control/MarginContainer/VBoxContainer" instance=ExtResource("11_cqs2p")]
+texture_filter = 1
+layout_mode = 2
+size_flags_horizontal = 8
+size_flags_vertical = 2
+mouse_filter = 1
+
+[connection signal="pressed" from="GUILayer/MenuBar2/HBoxContainer/btnSave" to="GridView" method="_on_btn_save_pressed"]
+[connection signal="pressed" from="GUILayer/MenuBar2/HBoxContainer/btnLoad" to="GridView" method="_on_btn_load_pressed"]
+[connection signal="toggled" from="GUILayer/MenuBar2/HBoxContainer/btnShowLightPropagation" to="GridView" method="_on_btn_show_light_propagation_toggled"]
+[connection signal="pressed" from="GUILayer/MenuBar2/HBoxContainer/btnExportNazca" to="GridView" method="_on_btn_export_nazca_pressed"]
+[connection signal="toggled" from="GUILayer/Control/MarginContainer/VBoxContainer/HideToggle" to="GUILayer/Control" method="OnToggleButtonPressed"]

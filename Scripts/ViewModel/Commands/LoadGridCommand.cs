@@ -1,4 +1,4 @@
-﻿using CAP_Contracts;
+using CAP_Contracts;
 using CAP_Core;
 using CAP_Core.CodeExporter;
 using CAP_Core.Components.Creation;
@@ -14,49 +14,49 @@ using System.Threading.Tasks;
 namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 {
 
-    public class LoadGridCommand : ICommand
-    {
-        public event EventHandler CanExecuteChanged;
-        private GridPersistenceManager gridPersistenceManager;
+	public class LoadGridCommand : ICommand
+	{
+		public event EventHandler CanExecuteChanged;
+		private GridPersistenceManager gridPersistenceManager;
 
-        public IComponentFactory ComponentFactory { get; }
-        public GridViewModel ViewModel { get; }
+		public IComponentFactory ComponentFactory { get; }
+		public GridViewModel ViewModel { get; }
 
-        public LoadGridCommand(GridManager grid, IDataAccessor dataAccessor, IComponentFactory componentFactory, GridViewModel viewModel)
-        { 
-            this.gridPersistenceManager = new GridPersistenceManager(grid, dataAccessor);
-            ComponentFactory = componentFactory;
-            ViewModel = viewModel;
-        }
-        
-        public bool CanExecute(object parameter)
-        {
-            if( parameter is LoadGridParameters)
-            {
-                return true;
-            }
-            return false;
-        }
-        
-        public async Task ExecuteAsync(object parameter)
-        {
-            if (!CanExecute(parameter)) return;
-            var loadParams = (LoadGridParameters)parameter;
-            var lightStatus = ViewModel.Grid.IsLightOn;
-            ViewModel.Grid.IsLightOn = false;
-            await gridPersistenceManager.LoadAsync(loadParams.Path, ComponentFactory);
-            ViewModel.Grid.IsLightOn = lightStatus;
-            
-        }
-    }
+		public LoadGridCommand(GridManager grid, IDataAccessor dataAccessor, IComponentFactory componentFactory, GridViewModel viewModel)
+		{ 
+			this.gridPersistenceManager = new GridPersistenceManager(grid, dataAccessor);
+			ComponentFactory = componentFactory;
+			ViewModel = viewModel;
+		}
+		
+		public bool CanExecute(object parameter)
+		{
+			if( parameter is LoadGridParameters)
+			{
+				return true;
+			}
+			return false;
+		}
+		
+		public async Task ExecuteAsync(object parameter)
+		{
+			if (!CanExecute(parameter)) return;
+			var loadParams = (LoadGridParameters)parameter;
+			var lightStatus = ViewModel.Grid.IsLightOn;
+			ViewModel.Grid.IsLightOn = false;
+			await gridPersistenceManager.LoadAsync(loadParams.Path, ComponentFactory);
+			ViewModel.Grid.IsLightOn = lightStatus;
+			
+		}
+	}
 
-    public class LoadGridParameters
-    {
-        public LoadGridParameters( string path)
-        {
-            Path = path;
-        }
+	public class LoadGridParameters
+	{
+		public LoadGridParameters( string path)
+		{
+			Path = path;
+		}
 
-        public string Path { get; }
-    }
+		public string Path { get; }
+	}
 }
