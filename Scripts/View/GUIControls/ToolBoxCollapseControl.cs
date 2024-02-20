@@ -34,12 +34,13 @@ public partial class ToolBoxCollapseControl : Control
 		if (_isCollapsed)
 		{
 			_targetPosition = _originalToolBoxSize + SlideOffset;
+			MouseFilter = MouseFilterEnum.Ignore;
 		}
 		else
 		{
 			_targetPosition = 0;
-
-		}
+            MouseFilter = MouseFilterEnum.Stop;
+        }
 	}
 
 
