@@ -51,9 +51,9 @@ namespace ConnectAPic.LayoutWindow
 
 		[Export] public int FieldHeight { get; set; } = 12;
 		[Export] public TextureRect ExternalOutputTemplate { get; set; }
-		[Export] public TextureRect ExternalInputRedTemplate { get; set; }
-		[Export] public TextureRect ExternalInputGreenTemplate { get; set; }
-		[Export] public TextureRect ExternalInputBlueTemplate { get; set; }
+		[Export] public Node2D ExternalInputRedTemplate { get; set; }
+		[Export] public Node2D ExternalInputGreenTemplate { get; set; }
+		[Export] public Node2D ExternalInputBlueTemplate { get; set; }
 		[Export] public GameConsole InGameConsole { get; set; }
 		private PCKLoader PCKLoader { get; set; }
 		public static int TilePixelSize { get; private set; } = 62;
@@ -61,9 +61,9 @@ namespace ConnectAPic.LayoutWindow
 		public GridView GridView { get; set; }
 		public System.Version Version => Assembly.GetExecutingAssembly().GetName().Version; // Get the version from the assembly
 		public GridManager Grid { get; set; }
-        public LightCalculationService LightCalculator { get; private set; }
+		public LightCalculationService LightCalculator { get; private set; }
 
-        public static GameManager instance;
+		public static GameManager instance;
 		public ILogger Logger { get; set; }
 		private LogSaver LogSaver { get; set; }
 		private List<(String log, bool isError)> InitializationLogs = new();
@@ -163,7 +163,7 @@ namespace ConnectAPic.LayoutWindow
 			this.CheckForNull(x => GridView);
 			Grid = new GridManager(FieldWidth, FieldHeight);
 			LightCalculator = new CAP_Core.LightCalculation.LightCalculationService(Grid.GetAllExternalInputs() , new GridLightCalculator(Grid));
-            GridViewModel = new GridViewModel(GridView, Grid, Logger, componentFactory , LightCalculator);
+			GridViewModel = new GridViewModel(GridView, Grid, Logger, componentFactory , LightCalculator);
 			GridView.Initialize(GridViewModel, Logger);
 			InitializationLogs.Add(("Initialized GridView and Grid and GridViewModel", false));
 		}
@@ -196,29 +196,33 @@ namespace ConnectAPic.LayoutWindow
 			ExternalOutputTemplate.Visible = false;
 			foreach (var port in ExternalPorts)
 			{
-				TextureRect view;
+				Node2D view;
 				if (port is ExternalInput input)
 				{
-					if (input.LaserType == LaserType.Red) 
+					if (input.LaserType == LaserType.Red)
 					{
-						view = (TextureRect)ExternalInputRedTemplate.Duplicate();
+						view = (Node2D)ExternalInputRedTemplate.Duplicate();
 					}
 					else if (input.LaserType == LaserType.Green)
 					{
-						view = (TextureRect)ExternalInputGreenTemplate.Duplicate();
+						view = (Node2D)ExternalInputGreenTemplate.Duplicate();
 					}
 					else
 					{
-						view = (TextureRect)ExternalInputBlueTemplate.Duplicate();
+						view = (Node2D)ExternalInputBlueTemplate.Duplicate();
 					}
+					view.Visible = true;
+					GridViewModel.GridView.DragDropProxy.AddChild(view);
+					view.Position = new Godot.Vector2(view.Position.X - GridView.GlobalPosition.X, (GameManager.TilePixelSize) * port.TilePositionY);
 				}
 				else
 				{
-					view = (TextureRect)ExternalOutputTemplate.Duplicate();
+					TextureRect tmp;
+					tmp = (TextureRect)ExternalOutputTemplate.Duplicate();
+					tmp.Visible = true;
+					GridViewModel.GridView.DragDropProxy.AddChild(tmp);
+					tmp.Position = new Godot.Vector2(tmp.Position.X - GridView.GlobalPosition.X, (GameManager.TilePixelSize) * port.TilePositionY);
 				}
-				view.Visible = true;
-				GridViewModel.GridView.DragDropProxy.AddChild(view);
-				view.Position = new Godot.Vector2(view.Position.X - GridView.GlobalPosition.X, (GameManager.TilePixelSize) * port.TilePositionY);
 			}
 		}
 

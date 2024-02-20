@@ -48,7 +48,7 @@ namespace ConnectAPIC.Scenes.InGameConsole
 		public void PrintErr(string text)
 		{
 			CallDeferred(nameof(Print),text, true);// make sure it runs on the UI thread
-            GD.PrintErr(text);
+			GD.PrintErr(text);
 		}
 		private void Print(string text, bool isError = false)
 		{
@@ -56,8 +56,8 @@ namespace ConnectAPIC.Scenes.InGameConsole
 			if (isError)
 			{
 				labelTemplate = ErrorTextTemplate;
-                Show();
-            }
+				Show();
+			}
 
 			var newLine = (RichTextLabel)labelTemplate.Duplicate();
 			newLine.Text = text;

@@ -26,7 +26,7 @@ namespace ConnectAPIC.LayoutWindow.View
 			} else
 			{
 				var exceptionText = "child of _GetDragData() is not of type ComponentView even though it should be";
-                GameManager.Instance.Logger.PrintErr(exceptionText);
+				GameManager.Instance.Logger.PrintErr(exceptionText);
 				throw new DataMisalignedException(exceptionText);
 			}
 		}
