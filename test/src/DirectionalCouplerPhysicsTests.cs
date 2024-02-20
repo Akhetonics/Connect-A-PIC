@@ -115,7 +115,7 @@ namespace ConnectAPIC.test.src
             await TestScene.GetTree().NextFrame(2);
             // get the shader-light intensity value on the left side
             // because only left is defined in the Straight Component (it only has one set of RGB-Overlays and only uses the left in/out values)
-            var rightSlotShader = ((ShaderMaterial)component.AnimationSlots.Single(slot =>
+            var rightSlotShader = ((ShaderMaterial)component.OverlayManager.AnimationSlots.Single(slot =>
                     slot.MatchingLaser.WaveLengthInNm == RedLaser.WaveLengthInNm
                     && slot.TileOffset == offset
                     && (ShaderMaterial)slot.BaseOverlaySprite?.Material != null

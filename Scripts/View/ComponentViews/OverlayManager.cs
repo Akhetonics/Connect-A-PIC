@@ -1,5 +1,6 @@
 ﻿using CAP_Core.ExternalPorts;
 using CAP_Core.Tiles;
+using ConnectAPic.LayoutWindow;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.Scripts.Helpers;
 using Godot;
@@ -21,14 +22,18 @@ namespace ConnectAPIC.Scripts.View.ComponentViews
         private List<Sprite2D> OverlaySprites { get; set; } = new();
         public ShaderMaterial LightOverlayShader { get; set; }
         public TextureRect GodotObject { get; }
+        public int WidthInTiles { get; set; }
+        public int HeightInTiles { get; set; }
         public Sprite2D OverlayBluePrint { get; set; }
 
         public OverlayManager(TextureRect godotObject)
         {
             GodotObject = godotObject;
         }
-        public void Initialize(List<AnimationSlotOverlayData> animationSlotOverlays)
+        public void Initialize(List<AnimationSlotOverlayData> animationSlotOverlays, int widthInTiles , int heightInTiles)
         {
+            WidthInTiles = widthInTiles;
+            HeightInTiles = heightInTiles;
             LightOverlayShader = new ShaderMaterial();
             LightOverlayShader.Shader = ResourceLoader.Load("res://Scenes/Components/LightOverlayShaded.tres").Duplicate() as Shader;
             AnimationSlotRawData = animationSlotOverlays;
@@ -72,7 +77,7 @@ namespace ConnectAPIC.Scripts.View.ComponentViews
         private void FindAndCreateLightOverlays()
         {
             FindOverlayBlueprint();
-            this.CheckForNull(x => x.OverlayBluePrint);
+            this.GodotObject.CheckForNull(x => OverlayBluePrint);
             OverlayBluePrint.Hide();
             OverlayRed = DuplicateAndConfigureOverlay(OverlayBluePrint, LightColor.Red.ToGodotColor());
             OverlayGreen = DuplicateAndConfigureOverlay(OverlayBluePrint, LightColor.Green.ToGodotColor());
@@ -123,12 +128,7 @@ namespace ConnectAPIC.Scripts.View.ComponentViews
                 shaderMat.SetShaderParameter(ShaderParameterNames.LightColor + shaderSlotNumber, slot.MatchingLaser.Color.ToGodotColor());
             }
 
-            // add debug info text
-            if ((lightAtPin.lightFieldOutFlow.Magnitude > 0 || lightAtPin.lightFieldOutFlow.Phase > 0) && lightAtPin.lightType == LaserType.Red)
-            {
-                var text = "P:" + outFlowPower.ToString("F2") + "\nφ" + lightAtPin.lightFieldOutFlow.Phase.ToString("F2");
-                CreateDebugLabel(new Vector2I((int)(slot.TileOffset.X * GameManager.TilePixelSize + 10), slot.TileOffset.Y * GameManager.TilePixelSize), text);
-            }
+            
             OverlayRed?.Show();
             OverlayGreen?.Show();
             OverlayBlue?.Show();

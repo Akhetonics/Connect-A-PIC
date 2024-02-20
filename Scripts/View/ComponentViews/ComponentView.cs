@@ -43,22 +43,22 @@ namespace ConnectAPIC.LayoutWindow.View
             }
         }
         private new float Rotation { get => RotationArea.Rotation; set => RotationArea.Rotation = value; }
-        private SliderManager sliderManager { get; }
-        private OverlayManager overlayManager { get; }
+        public SliderManager SliderManager { get; }
+        public OverlayManager OverlayManager { get; set; }
 
         public ComponentView()
         {
             ViewModel = new ComponentViewModel();
             ViewModel.PropertyChanged += ViewModel_PropertyChanged;
-            sliderManager = new SliderManager(ViewModel, this);
-            overlayManager = new OverlayManager();
+            SliderManager = new SliderManager(ViewModel, this);
+            OverlayManager = new OverlayManager(this);
         }
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ComponentViewModel.RotationCC))
             {
-                overlayManager.AnimationSlots?.ForEach(a => a.RotateAttachedComponentCC(ViewModel.RotationCC)); // the slots need to know the rotation for proper animation matching
+                OverlayManager.AnimationSlots?.ForEach(a => a.RotateAttachedComponentCC(ViewModel.RotationCC)); // the slots need to know the rotation for proper animation matching
                 RotationDegrees = ViewModel.RotationCC.ToDegreesClockwise();
             } 
             else if (e.PropertyName == nameof(ComponentViewModel.LightsAtPins))
@@ -66,17 +66,9 @@ namespace ConnectAPIC.LayoutWindow.View
                 var lightAndSlots = new List<(LightAtPin light, List<AnimationSlot>)>();
                 var shaderSlotNumber = 1;
                 
-                if(ViewModel.LightsAtPins.FirstOrDefault().lightType == LaserType.Red)
-                {
-                    oldDebugLabels.ForEach(l => {
-                        l.QueueFree();
-                    });
-                    oldDebugLabels = new();
-                }
-                
                 foreach (LightAtPin light in ViewModel.LightsAtPins)
                 {
-                    var slots = AnimationSlot.FindMatching(overlayManager.AnimationSlots, light);
+                    var slots = AnimationSlot.FindMatching(OverlayManager.AnimationSlots, light);
                     foreach(var slot in slots)
                     {
                         this.ShowAndAssignInAndOutFlowShaderData(slot, light, shaderSlotNumber);
@@ -104,41 +96,13 @@ namespace ConnectAPIC.LayoutWindow.View
             RotationArea = (FindChild("?otation*", true, false) ?? FindChild("ROTATION*", true, false)) as Node2D;
             this.WidthInTiles = widthInTiles;
             this.HeightInTiles = heightInTiles;
-            overlayManager.Initialize(animationSlotOverlays);
+            OverlayManager.Initialize(animationSlotOverlays , WidthInTiles , HeightInTiles);
         }
 
-        protected void ShowAndAssignInAndOutFlowShaderData(AnimationSlot slot, LightAtPin lightAtPin, int shaderSlotNumber)
-        {
-            overlayManager.ShowAndAssignInAndOutFlowShaderData(slot,lightAtPin,shaderSlotNumber);
-        }
-        List<Godot.Node> oldDebugLabels = new();
-        private void CreateDebugLabel(Vector2I offset , string text)
-        {
-            // create the label
-            var infoLabel = new Godot.Label();
-            AddChild(infoLabel);
-
-
-            // set the text 
-            infoLabel.CustomMinimumSize = new Vector2(GameManager.TilePixelSize, 50); 
-            infoLabel.GlobalPosition = new Vector2(GlobalPosition.X + offset.X , GlobalPosition.Y + offset.Y ); 
-            infoLabel.Text = text;
-            infoLabel.MouseFilter = MouseFilterEnum.Ignore;
-            infoLabel.MoveToFront();
-
-            // create the background
-            ColorRect background = new ColorRect();
-            background.Color = new Godot.Color(0.1f, 0.1f, 0.1f, 0.5f);
-            background.CustomMinimumSize = infoLabel.CustomMinimumSize;
-            background.MouseFilter = MouseFilterEnum.Ignore;
-            AddChild(background);
-            background.GlobalPosition = infoLabel.GlobalPosition;
-            infoLabel.MoveToFront();
-            oldDebugLabels.Add(infoLabel);
-            oldDebugLabels.Add(background);
-        }
-
-        public void HideLightVector() => overlayManager.HideLightVector();
+        protected void ShowAndAssignInAndOutFlowShaderData(AnimationSlot slot, LightAtPin lightAtPin, int shaderSlotNumber)=>
+            OverlayManager.ShowAndAssignInAndOutFlowShaderData(slot,lightAtPin,shaderSlotNumber);
+        
+        public void HideLightVector() => OverlayManager.HideLightVector();
 
         public override void _GuiInput(InputEvent inputEvent)
         {
@@ -175,13 +139,13 @@ namespace ConnectAPIC.LayoutWindow.View
         public virtual ComponentView Duplicate()
         {
             var copy = (ComponentView)base.Duplicate();
-            copy.Initialize(overlayManager.AnimationSlotRawData, WidthInTiles, HeightInTiles);
+            copy.Initialize(OverlayManager.AnimationSlotRawData, WidthInTiles, HeightInTiles);
             copy._Ready();
             copy.ViewModel = new ComponentViewModel();
             copy.ViewModel.RotationCC = ViewModel.RotationCC; // give the new copy the proper RotationCC so that it has the correct rotation
 
             // deep copy that list of sliders
-            List<SliderViewData> newSliderData = sliderManager.DuplicateSliders();
+            List<SliderViewData> newSliderData = SliderManager.DuplicateSliders();
             copy.ViewModel.InitializeComponent(ViewModel.TypeNumber, newSliderData, ViewModel.Logger);
             return copy;
         }

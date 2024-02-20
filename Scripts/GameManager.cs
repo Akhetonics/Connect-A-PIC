@@ -23,6 +23,8 @@ using CAP_Core.Grid;
 using System.Globalization;
 using System.Threading;
 using CAP_Core.LightCalculation;
+using ConnectAPIC.Scripts.View.PowerMeter;
+using ConnectAPIC.Scripts.ViewModel;
 
 namespace ConnectAPic.LayoutWindow
 {
@@ -50,7 +52,7 @@ namespace ConnectAPic.LayoutWindow
         [Export] public int FieldWidth { get; set; } = 24;
 
         [Export] public int FieldHeight { get; set; } = 12;
-        [Export] public TextureRect ExternalOutputTemplate { get; set; }
+        [Export] public PackedScene ExternalOutputTemplate { get; set; }
         [Export] public TextureRect ExternalInputRedTemplate { get; set; }
         [Export] public TextureRect ExternalInputGreenTemplate { get; set; }
         [Export] public TextureRect ExternalInputBlueTemplate { get; set; }
@@ -180,10 +182,10 @@ namespace ConnectAPic.LayoutWindow
             ExternalInputRedTemplate.Visible = false;
             ExternalInputGreenTemplate.Visible = false;
             ExternalInputBlueTemplate.Visible = false;
-            ExternalOutputTemplate.Visible = false;
+            TextureRect view = null;
             foreach (var port in ExternalPorts)
             {
-                TextureRect view;
+                view = null;
                 if (port is ExternalInput input)
                 {
                     if (input.LaserType == LaserType.Red)
@@ -201,11 +203,14 @@ namespace ConnectAPic.LayoutWindow
                 }
                 else
                 {
-                    view = (TextureRect)ExternalOutputTemplate.Duplicate();
+                    view = (PowerMeterView)ExternalOutputTemplate.Instantiate();
+                    var powerMeterView = (PowerMeterView) view;
+                    var powerMeterViewModel = new PowerMeterViewModel(Grid, port.TilePositionY, GridViewModel.LightCalculator);
+                    powerMeterView.Initialize(powerMeterViewModel);
                 }
                 view.Visible = true;
                 GridViewModel.GridView.DragDropProxy.AddChild(view);
-                view.Position = new Godot.Vector2(view.Position.X - GridView.GlobalPosition.X, (GameManager.TilePixelSize) * port.TilePositionY);
+                view.Position = new Godot.Vector2(view.Position.X - GridView.GlobalPosition.X, GameManager.TilePixelSize * port.TilePositionY );
             }
         }
 

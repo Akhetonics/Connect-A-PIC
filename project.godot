@@ -21,7 +21,6 @@ file_logging/enable_file_logging=true
 
 [display]
 
-window/stretch/mode="viewport"
 window/stretch/aspect="expand"
 
 [dotnet]

@@ -36,7 +36,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         public ILogger Logger { get; }
         public ComponentFactory ComponentModelFactory { get; }
         public GridView GridView { get; set; }
-        private LightCalculationService LightCalculator { get; set; }
+        public LightCalculationService LightCalculator { get; private set; }
         public int MaxTileCount { get => Width * Height; }
         private bool IsLightOn { get; set; } = false;
 
