@@ -42,7 +42,7 @@ namespace CAP_Core.LightCalculation
                     Dictionary<Guid, Complex> resultLightVector = new();
                     LightCalculationTask = Task.Run(async () =>
                     {
-                        resultLightVector = await GridSMatrixAnalyzer.CalculateLightPropagationAsync(CancelTokenLightCalc, port.LaserType.WaveLengthInNm);
+                        resultLightVector = await GridSMatrixAnalyzer.CalculateFieldPropagationAsync(CancelTokenLightCalc, port.LaserType.WaveLengthInNm);
                     }, CancelTokenLightCalc.Token);
                     await LightCalculationTask.ConfigureAwait(false);
                     CancelTokenLightCalc.Token.ThrowIfCancellationRequested();

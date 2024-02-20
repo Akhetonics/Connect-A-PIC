@@ -19,11 +19,11 @@
 [ext_resource type="Texture2D" uid="uid://djdwbxfnvfvfb" path="res://Scenes/MenuBar/SaveIcon.png" id="17_q4e7w"]
 [ext_resource type="Texture2D" uid="uid://qtdana7kc4y" path="res://Scenes/MenuBar/LoadIcon.png" id="18_17x6l"]
 
-[node name="GameManager" type="Node" node_paths=PackedStringArray("ExternalOutputTemplate", "ExternalInputRedTemplate", "ExternalInputGreenTemplate", "ExternalInputBlueTemplate", "InGameConsole")]
+[node name="GameManager" type="Node" node_paths=PackedStringArray("ExternalInputRedTemplate", "ExternalInputGreenTemplate", "ExternalInputBlueTemplate", "InGameConsole")]
 script = ExtResource("1_c0scx")
 GridViewPath = NodePath("GridView")
 ToolBoxPath = NodePath("ToolBox")
-ExternalOutputTemplate = NodePath("Templates/ExternalOutputTemplate")
+ExternalOutputTemplate = ExtResource("15_v8bo3")
 ExternalInputRedTemplate = NodePath("Templates/ExternalInputRedTemplate")
 ExternalInputGreenTemplate = NodePath("Templates/ExternalInputGreenTemplate")
 ExternalInputBlueTemplate = NodePath("Templates/ExternalInputBlueTemplate")
@@ -92,14 +92,6 @@ offset_left = 47.0
 offset_top = 289.0
 offset_right = 153.0
 offset_bottom = 353.0
-expand_mode = 3
-
-[node name="ExternalOutputTemplate" parent="Templates" instance=ExtResource("15_v8bo3")]
-texture_filter = 1
-offset_left = 42.0
-offset_top = 353.0
-offset_right = 153.0
-offset_bottom = 417.0
 expand_mode = 3
 
 [node name="InGameConsole" parent="." instance=ExtResource("16_7rcst")]

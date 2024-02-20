@@ -19,6 +19,10 @@ config/icon="res://icon.svg"
 
 file_logging/enable_file_logging=true
 
+[display]
+
+window/stretch/aspect="expand"
+
 [dotnet]
 
 project/assembly_name="Connect-A-PIC"

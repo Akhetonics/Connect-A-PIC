@@ -83,9 +83,9 @@ namespace ConnectAPIC.test.src
             RotatedCurve.ViewModel.DisplayLightVector(lightAtPins);
             await MyGameManager.GridViewModel.ShowLightPropagation() ;
             await TestScene.GetTree().NextFrame(10);
-            RotatedCurve.AnimationSlots[0].Rotation.ShouldBe(RotatedCurve.ViewModel.RotationCC, "AnimationSlot should rotate according to the rotation of the component");
-            RotatedCurve.AnimationSlots[1].Rotation.ShouldBe(RotatedCurve.ViewModel.RotationCC, "AnimationSlot should rotate according to the rotation of the component");
-            RotatedCurve.AnimationSlots[2].Rotation.ShouldBe(RotatedCurve.ViewModel.RotationCC, "AnimationSlot should rotate according to the rotation of the component");
+            RotatedCurve.OverlayManager.AnimationSlots[0].Rotation.ShouldBe(RotatedCurve.ViewModel.RotationCC, "AnimationSlot should rotate according to the rotation of the component");
+            RotatedCurve.OverlayManager.AnimationSlots[1].Rotation.ShouldBe(RotatedCurve.ViewModel.RotationCC, "AnimationSlot should rotate according to the rotation of the component");
+            RotatedCurve.OverlayManager.AnimationSlots[2].Rotation.ShouldBe(RotatedCurve.ViewModel.RotationCC, "AnimationSlot should rotate according to the rotation of the component");
         }
         [Test]
         public async Task TestShaderAssignment()
@@ -128,7 +128,7 @@ namespace ConnectAPIC.test.src
             await TestScene.GetTree().NextFrame(2);
             // get the shader-light intensity value on the left side
             // because only left is defined in the Straight Component (it only has one set of RGB-Overlays and only uses the left in/out values)
-            var rightSlotShader = ((ShaderMaterial) SecondStraightLine.AnimationSlots.Single(slot =>
+            var rightSlotShader = ((ShaderMaterial) SecondStraightLine.OverlayManager.AnimationSlots.Single(slot =>
                       slot.MatchingLaser.WaveLengthInNm == GreenLaser.WaveLengthInNm
                    && (ShaderMaterial) slot.BaseOverlaySprite?.Material != null
                    && slot.Side == RectSide.Left)
@@ -142,7 +142,6 @@ namespace ConnectAPIC.test.src
         public void Cleanup()
         {
             MyGameManager.Free();
-            GameManager.instance = null;
             MyFixture.Cleanup();
         }
         [Failure]

@@ -50,7 +50,7 @@ namespace CAP_Core.Grid.FormulaReading
             return map;
         }
 
-        public static ConnectionFunction? ConvertToDelegate(string realOrFormula, List<Pin> allPinsInComponent, List<Slider> allSlidersInComponent )
+        public static ConnectionFunction? ConvertToDelegate(string realOrFormula, List<Pin> allPinsInComponent, List<Slider> allSlidersInComponent)
         {
             // check if it is a formula (nonLinear Connection) or just a double (linear connection)
             if (Double.TryParse(realOrFormula, out _) == false)
@@ -60,14 +60,14 @@ namespace CAP_Core.Grid.FormulaReading
             return null;
         }
 
-        public static Dictionary<string,Guid> ExtractParameterGuids(string expressionDraft,
+        public static Dictionary<string, Guid> ExtractParameterGuids(string expressionDraft,
             Dictionary<string, Guid> pinParameterNameToGuidMap, Dictionary<string, Guid> sliderParameterNameToGuidMap, out bool IsPinsInvolved)
         {
             var regex = new Regex(@"[A-Z]+[0-9]+");
             var matches = regex.Matches(expressionDraft);
-            
-            Dictionary<string,Guid> usedParameterGuids = new();
-            foreach (Match match in matches) 
+
+            Dictionary<string, Guid> usedParameterGuids = new();
+            foreach (Match match in matches)
             {
                 string parameterName = match.Value;
                 if (pinParameterNameToGuidMap.TryGetValue(parameterName, out Guid parameterGuid))
@@ -77,7 +77,7 @@ namespace CAP_Core.Grid.FormulaReading
                 }
                 else if (sliderParameterNameToGuidMap.TryGetValue(parameterName, out parameterGuid))
                 {
-                    usedParameterGuids.TryAdd(parameterName , parameterGuid);
+                    usedParameterGuids.TryAdd(parameterName, parameterGuid);
                     IsPinsInvolved = false;
                 }
                 else
@@ -93,19 +93,19 @@ namespace CAP_Core.Grid.FormulaReading
         {
             expressionDraft = MakePlaceHoldersUpperCase(expressionDraft);
             var expression = ComplexMath.CreateExpressionWithCustomFunctions(expressionDraft);
-
+            
             // create a list of Guids for all used parameters in the correct order so that the caller can later provide the correct values from his dictionaries
             var usedParameterGuidMap = ExtractParameterGuids(expressionDraft, pinParameterNameToGuidMap, sliderParameterNameToGuidMap, out bool IsPinsInvolved);
             // add all parameters to the expression for reference
-            foreach(var key in usedParameterGuidMap.Keys)
+            foreach (var key in usedParameterGuidMap.Keys)
             {
                 expression.Parameters.Add(key, null);
             }
-            
+
             var connectionFunction = new ConnectionFunction(
-                (freshlyInsertedParameters) =>ExecuteExpressionFromDraft(expressionDraft, freshlyInsertedParameters, expression.Parameters.Keys.ToList()),
+                (freshlyInsertedParameters) => ExecuteExpressionFromDraft(expressionDraft, freshlyInsertedParameters, expression.Parameters.Keys.ToList()),
                 expressionDraft,
-                usedParameterGuidMap.Select(p=>p.Value).ToList(),
+                usedParameterGuidMap.Select(p => p.Value).ToList(),
                 IsPinsInvolved
             );
 
@@ -128,7 +128,7 @@ namespace CAP_Core.Grid.FormulaReading
             }
 
             // run the expression
-            var result =  expression.Evaluate();
+            var result = expression.Evaluate();
             if (result == null)
                 throw new InvalidOperationException("Formula cannot be computed: " + expressionDraft);
 
