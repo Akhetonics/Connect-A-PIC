@@ -29,7 +29,7 @@
 [ext_resource type="Script" path="res://Scripts/View/GUIControls/ToolBoxCollapseControl.cs" id="25_35kfa"]
 [ext_resource type="Texture2D" uid="uid://bpf4xfrmslfao" path="res://Scenes/ToolBox/CollapseButtonToggledOn.png" id="27_6q7aj"]
 
-[node name="GameManager" type="Node" node_paths=PackedStringArray("ExternalOutputTemplate", "ExternalInputRedTemplate", "ExternalInputGreenTemplate", "ExternalInputBlueTemplate", "InGameConsole")]
+[node name="GameManager" type="Node" node_paths=PackedStringArray("ExternalInputRedTemplate", "ExternalInputGreenTemplate", "ExternalInputBlueTemplate", "InGameConsole")]
 script = ExtResource("1_c0scx")
 GridViewPath = NodePath("GridView")
 ToolBoxPath = NodePath("GUILayer/Control/MarginContainer/VBoxContainer/ToolBox")

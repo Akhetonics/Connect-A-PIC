@@ -19,9 +19,9 @@ namespace UnitTests.Components
             var gridSMatrixAnalyzer = new GridLightCalculator(grid);
             var lightPropagation = await gridSMatrixAnalyzer.CalculateFieldPropagationAsync(new CancellationTokenSource(), laserType.WaveLengthInNm);
             
-            var directionalCouplerPowerIn = lightPropagation[directionalCoupler.PinIdLeftIn()];
-            var directionalCouplerPowerOutUp = lightPropagation[directionalCoupler.PinIdRightOut(1, 0)];
-            var directionalCouplerPowerOutDown = lightPropagation[directionalCoupler.PinIdRightOut(1, 1)];
+            var directionalCouplerPowerIn = lightPropagation[(Guid)directionalCoupler.PinIdLeftIn()];
+            var directionalCouplerPowerOutUp = lightPropagation[(Guid)directionalCoupler.PinIdRightOut(1, 0)];
+            var directionalCouplerPowerOutDown = lightPropagation[(Guid)directionalCoupler.PinIdRightOut(1, 1)];
 
 
             Assert.Equal(1, Math.Pow(directionalCouplerPowerIn.Magnitude,2), 0.000000001);
@@ -51,20 +51,20 @@ namespace UnitTests.Components
             var lightPropagation = await gridSMatrixAnalyzer.CalculateFieldPropagationAsync(new CancellationTokenSource(), laserType.WaveLengthInNm);
 
             // straight WG
-            var straightFieldIn = lightPropagation[straight.PinIdLeftIn()];
-            var straightFieldOut = lightPropagation[straight.PinIdRightOut()];
+            var straightFieldIn = lightPropagation[(Guid)straight.PinIdLeftIn()];
+            var straightFieldOut = lightPropagation[(Guid)straight.PinIdRightOut()];
             var straightPower = Math.Pow(straightFieldOut.Magnitude, 2);
             // first coupler
-            var firstFieldInUp = lightPropagation[directionalCoupler.PinIdLeftIn(0, 0)];
-            var firstFieldInDown = lightPropagation[directionalCoupler.PinIdLeftIn(0, 1)];
-            var firstFieldOutUp = lightPropagation[directionalCoupler.PinIdRightOut(1, 0)];
-            var firstFieldOutDown = lightPropagation[directionalCoupler.PinIdRightOut(1, 1)];
+            var firstFieldInUp = lightPropagation[(Guid)directionalCoupler.PinIdLeftIn(0, 0)];
+            var firstFieldInDown = lightPropagation[(Guid)directionalCoupler.PinIdLeftIn(0, 1)];
+            var firstFieldOutUp = lightPropagation[(Guid)directionalCoupler.PinIdRightOut(1, 0)];
+            var firstFieldOutDown = lightPropagation[(Guid)directionalCoupler.PinIdRightOut(1, 1)];
             var firstCouplerPower = Math.Pow(firstFieldOutUp.Magnitude, 2) + Math.Pow(firstFieldOutDown.Magnitude, 2);
             // second coupler
-            var fieldInUp = lightPropagation[directionalCoupler2.PinIdLeftIn(0,0)];
-            var fieldInDown = lightPropagation[directionalCoupler2.PinIdLeftIn(0,1)];
-            var fieldOutUp = lightPropagation[directionalCoupler2.PinIdRightOut(1, 0)];
-            var fieldOutDown = lightPropagation[directionalCoupler2.PinIdRightOut(1, 1)];
+            var fieldInUp = lightPropagation[(Guid)directionalCoupler2.PinIdLeftIn(0,0)];
+            var fieldInDown = lightPropagation[(Guid)directionalCoupler2.PinIdLeftIn(0,1)];
+            var fieldOutUp = lightPropagation[(Guid)directionalCoupler2.PinIdRightOut(1, 0)];
+            var fieldOutDown = lightPropagation[(Guid)directionalCoupler2.PinIdRightOut(1, 1)];
             var powerOutUp = Math.Pow(fieldOutUp.Magnitude, 2);
             var powerOutDown = Math.Pow(fieldOutDown.Magnitude, 2);
             var powerSum2 = powerOutUp + powerOutDown;
@@ -114,13 +114,13 @@ namespace UnitTests.Components
             var lightValues = await gridSMatrixAnalyzer.CalculateFieldPropagationAsync(new CancellationTokenSource(), laserType.WaveLengthInNm);
             
             // test straightComponent light throughput
-            var straightCompLightVal = lightValues[straight.PinIdRightOut()];
+            var straightCompLightVal = lightValues[(Guid)straight.PinIdRightOut()];
 
             // test whole circuit's light throughput
-            var circuitLightVal = lightValues[secondStraight.PinIdLeftIn()]; // the light flows into the grating and therefore leaves the circuit.
+            var circuitLightVal = lightValues[(Guid)secondStraight.PinIdLeftIn()]; // the light flows into the grating and therefore leaves the circuit.
             string allDebugInformation = gridSMatrixAnalyzer.ToString();
 
-            Assert.Contains(secondStraight.PinIdLeftOut(), lightValues);
+            Assert.Contains((Guid)secondStraight.PinIdLeftOut(), lightValues);
             Assert.Equal(1, Math.Pow(straightCompLightVal.Real, 2), 0.000000001);
             Assert.Equal(0.5, Math.Pow(circuitLightVal.Real,2), 0.000000001);
             

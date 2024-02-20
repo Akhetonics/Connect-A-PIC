@@ -1,10 +1,28 @@
-[gd_scene load_steps=2 format=3 uid="uid://c0mcgj6g7ik52"]
+[gd_scene load_steps=3 format=3 uid="uid://c0mcgj6g7ik52"]
 
 [ext_resource type="Texture2D" uid="uid://bj1u105ivy4eu" path="res://Scenes/ExternalInputs/ExternalOutput.png" id="1_wgkqj"]
+[ext_resource type="Script" path="res://Scripts/View/PowerMeter/PowerMeterView.cs" id="2_7em6r"]
 
-[node name="ExternalOutputTemplate" type="TextureRect"]
+[node name="ExternalOutputTemplate" type="TextureRect" node_paths=PackedStringArray("InfoLabel")]
 custom_minimum_size = Vector2(64, 64)
-offset_right = 148.48
+offset_left = 42.0
+offset_right = 153.0
 offset_bottom = 64.0
 texture = ExtResource("1_wgkqj")
-expand_mode = 5
+script = ExtResource("2_7em6r")
+InfoLabel = NodePath("RichTextLabel")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+layout_mode = 0
+offset_left = 8.0
+offset_top = -4.0
+offset_right = 108.0
+offset_bottom = 65.0
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 1
+theme_override_constants/shadow_offset_y = 1
+theme_override_constants/shadow_outline_size = 8
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+tab_size = 3

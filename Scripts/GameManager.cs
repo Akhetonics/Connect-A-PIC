@@ -23,6 +23,8 @@ using CAP_Core.Grid;
 using System.Globalization;
 using System.Threading;
 using CAP_Core.LightCalculation;
+using ConnectAPIC.Scripts.View.PowerMeter;
+using ConnectAPIC.Scripts.ViewModel;
 
 namespace ConnectAPic.LayoutWindow
 {
@@ -180,7 +182,7 @@ namespace ConnectAPic.LayoutWindow
             ExternalInputRedTemplate.Visible = false;
             ExternalInputGreenTemplate.Visible = false;
             ExternalInputBlueTemplate.Visible = false;
-            ExternalOutputTemplate.Visible = false;
+            TextureRect view = null;
             foreach (var port in ExternalPorts)
             {
                 Node2D view;
