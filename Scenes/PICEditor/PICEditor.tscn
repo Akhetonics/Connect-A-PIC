@@ -73,22 +73,22 @@ NotificationBoxScene = ExtResource("10_06t00")
 
 [node name="ExternalInputRed" parent="Templates" node_paths=PackedStringArray("button") instance=ExtResource("12_gwl6a")]
 position = Vector2(48, 165)
-ligthOnTexture = ExtResource("13_otx74")
-ligthOffTexture = ExtResource("14_a68fp")
+lightOnTexture = ExtResource("13_otx74")
+lightOffTexture = ExtResource("14_a68fp")
 lightColor = Color(0.843137, 0, 0, 1)
 button = NodePath("../../GUILayer/MenuBar2/HBoxContainer/btnShowLightPropagation")
 
 [node name="ExternalInputBlue" parent="Templates" node_paths=PackedStringArray("button") instance=ExtResource("12_gwl6a")]
 position = Vector2(48, 227)
-ligthOnTexture = ExtResource("15_wh6wu")
-ligthOffTexture = ExtResource("14_anfaj")
+lightOnTexture = ExtResource("15_wh6wu")
+lightOffTexture = ExtResource("14_anfaj")
 lightColor = Color(0, 0, 1, 1)
 button = NodePath("../../GUILayer/MenuBar2/HBoxContainer/btnShowLightPropagation")
 
 [node name="ExternalInputGreen" parent="Templates" node_paths=PackedStringArray("button") instance=ExtResource("12_gwl6a")]
 position = Vector2(48, 288)
-ligthOnTexture = ExtResource("17_ku40t")
-ligthOffTexture = ExtResource("18_i07bm")
+lightOnTexture = ExtResource("17_ku40t")
+lightOffTexture = ExtResource("18_i07bm")
 lightColor = Color(0, 1, 0, 0.678431)
 button = NodePath("../../GUILayer/MenuBar2/HBoxContainer/btnShowLightPropagation")
 
@@ -224,7 +224,6 @@ texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 2
-mouse_filter = 1
 
 [connection signal="pressed" from="GUILayer/MenuBar2/HBoxContainer/btnSave" to="GridView" method="_on_btn_save_pressed"]
 [connection signal="pressed" from="GUILayer/MenuBar2/HBoxContainer/btnLoad" to="GridView" method="_on_btn_load_pressed"]

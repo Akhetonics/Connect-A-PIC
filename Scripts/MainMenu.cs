@@ -3,21 +3,21 @@ using System;
 
 public partial class MainMenu : Node2D
 {
-	// Called when the node enters the scene tree for the first time.
-	public override void _Ready()
-	{
-	}
+    // Called when the node enters the scene tree for the first time.
+    public override void _Ready()
+    {
+    }
 
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
-	{
-	}
-	
-	private void _on_new_editor_pressed()
-	{
-		var nextScene = (PackedScene)ResourceLoader.Load("res://Scenes/PICEditor/PICEditor.tscn");
-		GetTree().ChangeSceneToPacked(nextScene);
-	}
+    // Called every frame. 'delta' is the elapsed time since the previous frame.
+    public override void _Process(double delta)
+    {
+    }
+    
+    private void _on_new_editor_pressed()
+    {
+        var nextScene = (PackedScene)ResourceLoader.Load("res://Scenes/PICEditor/PICEditor.tscn");
+        GetTree().ChangeSceneToPacked(nextScene);
+    }
 }
 
 
