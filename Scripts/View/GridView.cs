@@ -27,7 +27,7 @@ namespace ConnectAPIC.LayoutWindow.View
 
         private GridViewModel ViewModel;
         public event EventHandler<bool> LightSwitched;
-        public const string GridSaveFileExtensionPatterns = "*.pic|*.PIC|*.txt|*.TXT";
+        public const string GridSaveFileExtensionPatterns = "*.pic";
 
         public ILogger Logger { get; private set; }
 
