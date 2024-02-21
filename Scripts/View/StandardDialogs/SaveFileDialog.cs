@@ -6,17 +6,17 @@ namespace ConnectAPIC.LayoutWindow.View
     public class SaveFileDialog
     {
         public static FileDialog Instance;
-        public static void Save(Node parent, Action<string> OnFileSelected, string filters = "*.py|*.txt" )
+        public static void Save(Node parent, Action<string> OnFileSelected, string filters = "*.py" )
         {
             OpenOrSave(parent, OnFileSelected, FileDialog.FileModeEnum.SaveFile, filters);
         }
 
-        public static void Open(Node parent, Action<string> OnFileSelected, string filters = "*.py|*.txt")
+        public static void Open(Node parent, Action<string> OnFileSelected, string filters = "*.py")
         {
             OpenOrSave(parent, OnFileSelected, FileDialog.FileModeEnum.OpenFile, filters);
         }
 
-        private static void OpenOrSave(Node parent, Action<string> OnFileSelected, FileDialog.FileModeEnum fileMode, string filters = "*.py|*.txt")
+        private static void OpenOrSave(Node parent, Action<string> OnFileSelected, FileDialog.FileModeEnum fileMode, string filters = "*.py")
         {
             if (Instance != null) Instance.QueueFree();
             Instance = new FileDialog
