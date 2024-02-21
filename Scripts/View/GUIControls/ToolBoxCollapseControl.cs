@@ -31,17 +31,17 @@ public partial class ToolBoxCollapseControl : Control
     {
         _isCollapsed = toggled_on;
 
-		if (_isCollapsed)
-		{
-			_targetPosition = _originalToolBoxSize + SlideOffset;
-			MouseFilter = MouseFilterEnum.Ignore;
-		}
-		else
-		{
-			_targetPosition = 0;
+        if (_isCollapsed)
+        {
+            _targetPosition = _originalToolBoxSize + SlideOffset;
+            MouseFilter = MouseFilterEnum.Ignore;
+        }
+        else
+        {
+            _targetPosition = 0;
             MouseFilter = MouseFilterEnum.Stop;
         }
-	}
+    }
 
 
 }
