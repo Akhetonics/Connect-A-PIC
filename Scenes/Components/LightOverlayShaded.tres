@@ -39,63 +39,63 @@ uniform  float numAnimationColumns = 4.0;
 
 vec4 getAnimationFrameColor(sampler2D animationTexture, vec2 uvCoord, float speed, vec4 lightInOutFlow) {
     float phaseShift = lightInOutFlow.y;
-	    
+        
     int currentFrameIndex = int(TIME * speed + phaseShift) % int(numAnimationColumns);
     float frameShift = float(currentFrameIndex) / numAnimationColumns; // frameshift shifts the UV.x so that the starting point is in the proper column
-	if(speed < 0.0) // if the speed is negative, then the animation should playbackwards, so 0.75, 0.5, 0.25, 0
-	{
-		 frameShift = 0.75 - frameShift;
-	}
-	
+    if(speed < 0.0) // if the speed is negative, then the animation should playbackwards, so 0.75, 0.5, 0.25, 0
+    {
+         frameShift = 0.75 - frameShift;
+    }
+    
     vec2 adjustedUV = vec2((uvCoord.x / numAnimationColumns + frameShift), uvCoord.y);
     return texture(animationTexture, adjustedUV);
 }
 
 float subtractBlueFromRedLight(vec4 currentInflowColor, float lightInflowIntensity){
-	
-	return currentInflowColor.a *(currentInflowColor.r - currentInflowColor.b) * abs(lightInflowIntensity);
+    
+    return currentInflowColor.a *(currentInflowColor.r - currentInflowColor.b) * abs(lightInflowIntensity);
 }
 void fragment(){
-	float animationspeed = 2.0f;
-	
-	vec4 col_baseTexture = texture(TEXTURE, UV);
-	vec4 col_anim1in  = getAnimationFrameColor(animation1,UV,animationspeed, lightInFlow1);
-	vec4 col_anim1out = getAnimationFrameColor(animation1,UV,-animationspeed, lightOutFlow1);
+    float animationspeed = 2.0f;
+    
+    vec4 col_baseTexture = texture(TEXTURE, UV);
+    vec4 col_anim1in  = getAnimationFrameColor(animation1,UV,animationspeed, lightInFlow1);
+    vec4 col_anim1out = getAnimationFrameColor(animation1,UV,-animationspeed, lightOutFlow1);
     vec4 col_anim2in  = getAnimationFrameColor(animation2,UV,animationspeed, lightInFlow2);
-	vec4 col_anim2out = getAnimationFrameColor(animation2,UV,-animationspeed, lightOutFlow2);
+    vec4 col_anim2out = getAnimationFrameColor(animation2,UV,-animationspeed, lightOutFlow2);
     vec4 col_anim3in  = getAnimationFrameColor(animation3,UV,animationspeed, lightInFlow3);
-	vec4 col_anim3out = getAnimationFrameColor(animation3,UV,-animationspeed, lightOutFlow3);
+    vec4 col_anim3out = getAnimationFrameColor(animation3,UV,-animationspeed, lightOutFlow3);
     vec4 col_anim4in  = getAnimationFrameColor(animation4,UV,animationspeed, lightInFlow4);
-	vec4 col_anim4out = getAnimationFrameColor(animation4,UV,-animationspeed, lightOutFlow4);
+    vec4 col_anim4out = getAnimationFrameColor(animation4,UV,-animationspeed, lightOutFlow4);
     vec4 col_anim5in  = getAnimationFrameColor(animation5,UV,animationspeed, lightInFlow5);
-	vec4 col_anim5out = getAnimationFrameColor(animation5,UV,-animationspeed, lightOutFlow5);
+    vec4 col_anim5out = getAnimationFrameColor(animation5,UV,-animationspeed, lightOutFlow5);
     vec4 col_anim6in  = getAnimationFrameColor(animation6,UV,animationspeed, lightInFlow6);
-	vec4 col_anim6out = getAnimationFrameColor(animation6,UV,-animationspeed, lightOutFlow6);
+    vec4 col_anim6out = getAnimationFrameColor(animation6,UV,-animationspeed, lightOutFlow6);
     vec4 col_anim7in  = getAnimationFrameColor(animation7,UV,animationspeed, lightInFlow7);
-	vec4 col_anim7out = getAnimationFrameColor(animation7,UV,-animationspeed, lightOutFlow7);
+    vec4 col_anim7out = getAnimationFrameColor(animation7,UV,-animationspeed, lightOutFlow7);
     vec4 col_anim8in  = getAnimationFrameColor(animation8,UV,animationspeed, lightInFlow8);
-	vec4 col_anim8out = getAnimationFrameColor(animation8,UV,-animationspeed, lightOutFlow8);
+    vec4 col_anim8out = getAnimationFrameColor(animation8,UV,-animationspeed, lightOutFlow8);
     
   // Der rot Kanal = höhen, z.B.
   // Der blau Kanal = tiefen
   
   float intensity = subtractBlueFromRedLight( col_anim1in, lightInFlow1.x) +
-		subtractBlueFromRedLight( col_anim2in, lightInFlow2.x) +
-		subtractBlueFromRedLight( col_anim3in, lightInFlow3.x) +
-		subtractBlueFromRedLight( col_anim4in, lightInFlow4.x) +
-		subtractBlueFromRedLight( col_anim5in, lightInFlow5.x) +
-		subtractBlueFromRedLight( col_anim6in, lightInFlow6.x) +
-		subtractBlueFromRedLight( col_anim7in, lightInFlow7.x) +
-		subtractBlueFromRedLight( col_anim8in, lightInFlow8.x) +
-		subtractBlueFromRedLight( col_anim1out, lightOutFlow1.x) +
-		subtractBlueFromRedLight( col_anim2out, lightOutFlow2.x) +
-		subtractBlueFromRedLight( col_anim3out, lightOutFlow3.x) +
-		subtractBlueFromRedLight( col_anim4out, lightOutFlow4.x) +
-		subtractBlueFromRedLight( col_anim5out, lightOutFlow5.x) +
-		subtractBlueFromRedLight( col_anim6out, lightOutFlow6.x) +
-		subtractBlueFromRedLight( col_anim7out, lightOutFlow7.x) +
-		subtractBlueFromRedLight( col_anim8out, lightOutFlow8.x);
-	
+        subtractBlueFromRedLight( col_anim2in, lightInFlow2.x) +
+        subtractBlueFromRedLight( col_anim3in, lightInFlow3.x) +
+        subtractBlueFromRedLight( col_anim4in, lightInFlow4.x) +
+        subtractBlueFromRedLight( col_anim5in, lightInFlow5.x) +
+        subtractBlueFromRedLight( col_anim6in, lightInFlow6.x) +
+        subtractBlueFromRedLight( col_anim7in, lightInFlow7.x) +
+        subtractBlueFromRedLight( col_anim8in, lightInFlow8.x) +
+        subtractBlueFromRedLight( col_anim1out, lightOutFlow1.x) +
+        subtractBlueFromRedLight( col_anim2out, lightOutFlow2.x) +
+        subtractBlueFromRedLight( col_anim3out, lightOutFlow3.x) +
+        subtractBlueFromRedLight( col_anim4out, lightOutFlow4.x) +
+        subtractBlueFromRedLight( col_anim5out, lightOutFlow5.x) +
+        subtractBlueFromRedLight( col_anim6out, lightOutFlow6.x) +
+        subtractBlueFromRedLight( col_anim7out, lightOutFlow7.x) +
+        subtractBlueFromRedLight( col_anim8out, lightOutFlow8.x);
+    
 
   COLOR = laserColor * 2.5 * abs(intensity);
 }"
