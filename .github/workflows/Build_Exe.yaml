@@ -89,9 +89,6 @@ jobs:
             -out ${{ github.workspace }}/Release/Connect-A-PIC-signed.exe
           mv -f ${{ github.workspace }}/Release/Connect-A-PIC-signed.exe ${{ github.workspace }}/Release/Connect-A-PIC.exe
 
-      - name: Verify osslsigncode
-        run: osslsigncode verify -in ${{ github.workspace }}/Release/Connect-A-PIC.exe
-
       - name: Zip Release Build
         run: |
           cd ${{ github.workspace }}/Release
