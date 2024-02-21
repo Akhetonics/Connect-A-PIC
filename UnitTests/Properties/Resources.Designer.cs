@@ -71,19 +71,19 @@ namespace UnitTests.Properties {
         ///  &quot;widthInTiles&quot;: 2,
         ///  &quot;heightInTiles&quot;: 2,
         ///  &quot;pins&quot;: [
-        ///	{
-        ///	  &quot;number&quot;: 0,
-        ///	  &quot;name&quot;: &quot;west0&quot;,
-        ///	  &quot;matterType&quot;: 1,
-        ///	  &quot;side&quot;: 2,
-        ///	  &quot;partX&quot;: 0,
-        ///	  &quot;partY&quot;: 0
-        ///	},
-        ///	{
-        ///	  &quot;number&quot;: 1,
-        ///	  &quot;name&quot;: &quot;east0&quot;,
-        ///	  &quot;matterType&quot;: 1,
-        ///	  &quot;sid [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
+        ///    {
+        ///      &quot;number&quot;: 0,
+        ///      &quot;name&quot;: &quot;west0&quot;,
+        ///      &quot;matterType&quot;: 1,
+        ///      &quot;side&quot;: 2,
+        ///      &quot;partX&quot;: 0,
+        ///      &quot;partY&quot;: 0
+        ///    },
+        ///    {
+        ///      &quot;number&quot;: 1,
+        ///      &quot;name&quot;: &quot;east0&quot;,
+        ///      &quot;matterType&quot;: 1,
+        ///      &quot;sid [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
         /// </summary>
         internal static string DirectionalCouplerDraft {
             get {
