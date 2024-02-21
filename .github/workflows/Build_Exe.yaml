@@ -61,6 +61,35 @@ jobs:
             exit 1
           fi
 
+      # Add Setup Certificate step here
+      - name: Setup Certificate
+        run: |
+          echo "${{ secrets.SM_CLIENT_CERT_FILE_B64 }}" | base64 --decode > ${{ github.workspace }}/Certificate_pkcs12.p12
+
+      # Set environment variables and paths for the code signing process
+      - name: Set variables for Code Signing
+        run: |
+          echo "SM_HOST=${{ secrets.SM_HOST }}" >> $GITHUB_ENV
+          echo "SM_API_KEY=${{ secrets.SM_API_KEY }}" >> $GITHUB_ENV
+          echo "SM_CLIENT_CERT_FILE=${{ github.workspace }}/Certificate_pkcs12.p12" >> $GITHUB_ENV
+          echo "SM_CLIENT_CERT_PASSWORD=${{ secrets.SM_CLIENT_CERT_PASSWORD }}" >> $GITHUB_ENV
+
+      - name: Install osslsigncode
+        run: sudo apt-get update && sudo apt-get install -y osslsigncode
+        
+      - name: Sign Windows EXE
+        run: |
+          osslsigncode sign \
+            -pkcs12 ${{ env.SM_CLIENT_CERT_FILE }} \
+            -pass ${{ secrets.SM_CLIENT_CERT_PASSWORD }} \
+            -n "Connect-A-PIC" \
+            -i "http://timestamp.digicert.com" \
+            -t "http://timestamp.digicert.com" \
+            -in ${{ github.workspace }}/Release/Connect-A-PIC.exe \
+            -out ${{ github.workspace }}/Release/Connect-A-PIC.exe
+      - name: Verify osslsigncode
+        run: osslsigncode verify -in {{ github.workspace }}/Release/Connect-A-PIC.exe
+
       - name: Zip Release Build
         run: |
           cd ${{ github.workspace }}/Release
