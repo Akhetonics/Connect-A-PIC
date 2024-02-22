@@ -182,7 +182,7 @@ namespace ConnectAPic.LayoutWindow
             ExternalInputRedTemplate.Visible = false;
             ExternalInputGreenTemplate.Visible = false;
             ExternalInputBlueTemplate.Visible = false;
-            Node view;
+            Node2D view;
             foreach (var port in ExternalPorts)
             {
                 
@@ -190,21 +190,22 @@ namespace ConnectAPic.LayoutWindow
                 {
                     if (input.LaserType == LaserType.Red)
                     {
-                        view = ExternalInputRedTemplate.Duplicate();
+                        view = (Node2D)ExternalInputRedTemplate.Duplicate();
                     }
                     else if (input.LaserType == LaserType.Green)
                     {
-                        view = ExternalInputGreenTemplate.Duplicate();
+                        view = (Node2D)ExternalInputGreenTemplate.Duplicate();
                     }
                     else
                     {
-                        view = ExternalInputBlueTemplate.Duplicate();
+                        view = (Node2D)ExternalInputBlueTemplate.Duplicate();
                     }
                     
                 }
                 else
                 {
                     view = (PowerMeterView)ExternalOutputTemplate.Instantiate();
+                    view.GlobalPosition = new Vector2(GridView.DragDropProxy.GlobalPosition.X, 0); // y will be overridden below
                     var powerMeterView = (PowerMeterView)view;
                     var powerMeterViewModel = new PowerMeterViewModel(Grid, port.TilePositionY, GridViewModel.LightCalculator);
                     powerMeterView.Initialize(powerMeterViewModel);
