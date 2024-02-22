@@ -78,7 +78,7 @@ namespace ConnectAPIC.test.src
             // because only left is defined in the Straight Component (it only has one set of RGB-Overlays and only uses the left in/out values)
             int animationSlotNrUp = 3; // the number of the slot (1-based as the first slot should be on 1)
             int animationSlotNrDown = 4;
-            var rightSlots = TunableDirectionalCoupler.AnimationSlots.Where(slot =>
+            var rightSlots = TunableDirectionalCoupler.OverlayManager.AnimationSlots.Where(slot =>
                       slot.MatchingLaser.WaveLengthInNm == RedLaser.WaveLengthInNm
                       && slot.Side == RectSide.Right
                       && (ShaderMaterial)slot.BaseOverlaySprite?.Material != null
@@ -100,7 +100,6 @@ namespace ConnectAPIC.test.src
         public void Cleanup()
         {
             MyGameManager.Free();
-            GameManager.instance = null;
             MyFixture.Cleanup();
         }
         [Failure]

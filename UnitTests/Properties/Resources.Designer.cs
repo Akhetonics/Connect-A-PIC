@@ -67,7 +67,6 @@ namespace UnitTests.Properties {
         ///  &quot;nazcaFunctionParameters&quot;: &quot;deltaLength = 50&quot;,
         ///  &quot;nazcaFunctionName&quot;: &quot;placeCell_DirectionalCoupler&quot;,
         ///  &quot;sceneResPath&quot;: &quot;res://Scenes/Components/DirectionalCoupler/DirectionalCouplerScene.tscn&quot;,
-        ///  &quot;deltaLength&quot;: 0.5,
         ///  &quot;widthInTiles&quot;: 2,
         ///  &quot;heightInTiles&quot;: 2,
         ///  &quot;pins&quot;: [

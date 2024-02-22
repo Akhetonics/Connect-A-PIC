@@ -23,6 +23,8 @@ using CAP_Core.Grid;
 using System.Globalization;
 using System.Threading;
 using CAP_Core.LightCalculation;
+using ConnectAPIC.Scripts.View.PowerMeter;
+using ConnectAPIC.Scripts.ViewModel;
 
 namespace ConnectAPic.LayoutWindow
 {
@@ -38,7 +40,7 @@ namespace ConnectAPic.LayoutWindow
         GridView IProvide<GridView>.Value() => GridView;
         GridManager IProvide<GridManager>.Value() => Grid;
         GridViewModel IProvide<GridViewModel>.Value() => GridViewModel;
-        GameManager IProvide<GameManager>.Value() => Instance;
+        GameManager IProvide<GameManager>.Value() => this;
         GameConsole IProvide<GameConsole>.Value() => InGameConsole;
         ComponentViewFactory IProvide<ComponentViewFactory>.Value() => GridView.ComponentViewFactory;
         System.Version IProvide<System.Version>.Value() => Version;
@@ -50,7 +52,7 @@ namespace ConnectAPic.LayoutWindow
         [Export] public int FieldWidth { get; set; } = 24;
 
         [Export] public int FieldHeight { get; set; } = 12;
-        [Export] public TextureRect ExternalOutputTemplate { get; set; }
+        [Export] public PackedScene ExternalOutputTemplate { get; set; }
         [Export] public Node2D ExternalInputRedTemplate { get; set; }
         [Export] public Node2D ExternalInputGreenTemplate { get; set; }
         [Export] public Node2D ExternalInputBlueTemplate { get; set; }
@@ -59,47 +61,33 @@ namespace ConnectAPic.LayoutWindow
         public static int TilePixelSize { get; private set; } = 62;
         public static int TileBorderLeftDown { get; private set; } = 2;
         public GridView GridView { get; set; }
-        public System.Version Version => Assembly.GetExecutingAssembly().GetName().Version; // Get the version from the assembly
+        public static System.Version Version => Assembly.GetExecutingAssembly().GetName().Version; // Get the version from the assembly
         public GridManager Grid { get; set; }
         public LightCalculationService LightCalculator { get; private set; }
-
-        public static GameManager instance;
         public ILogger Logger { get; set; }
         private LogSaver LogSaver { get; set; }
         private List<(String log, bool isError)> InitializationLogs = new();
         public GridViewModel GridViewModel { get; private set; }
         public ComponentFactory ComponentModelFactory { get; set; }
-        public static GameManager Instance
-        {
-            get { return instance; }
-        }
         public const string ComponentFolderPath = "res://Scenes/Components";
 
         public override void _EnterTree()
         {
             base._EnterTree();
-            if (instance == null)
+            try
             {
-                try
-                {
-                    instance = this;
-                    InitializeLoggingSystemAndConsole();
-                    InitializationLogs.Add(("Program Version: " + Version, false));
-                    ComponentModelFactory = new ComponentFactory();
-                    InitializeGridAndGridView(ComponentModelFactory);
-                    InitializeExternalPortViews(Grid.ExternalPorts);
-                    PCKLoader = new(ComponentFolderPath, Logger);
-                }
-                catch (Exception ex)
-                {
-                    GD.PrintErr(ex.Message);
-                    GD.PrintErr(ex);
-                    InitializationLogs.Add((ex.Message,true));
-                }
+                InitializeLoggingSystemAndConsole();
+                InitializationLogs.Add(("Program Version: " + Version, false));
+                ComponentModelFactory = new ComponentFactory();
+                InitializeGridAndGridView(ComponentModelFactory);
+                InitializeExternalPortViews(Grid.ExternalPorts);
+                PCKLoader = new(ComponentFolderPath, Logger);
             }
-            else
+            catch (Exception ex)
             {
-                QueueFree(); // delete this object as there is already another GameManager in the scene
+                GD.PrintErr(ex.Message);
+                GD.PrintErr(ex);
+                InitializationLogs.Add((ex.Message, true));
             }
         }
 
@@ -112,14 +100,14 @@ namespace ConnectAPic.LayoutWindow
                 this.CheckForNull(x => x.ToolBoxPath);
                 List<Component> modelComponents = new ComponentDraftConverter(Logger).ToComponentModels(componentDrafts);
                 ComponentModelFactory.InitializeComponentDrafts(modelComponents);
-                InitializationLogs.Add(("Initialized ComponentDrafts",false));
+                InitializationLogs.Add(("Initialized ComponentDrafts", false));
 
                 MainToolBox = GetNode<ToolBox>(ToolBoxPath);
                 this.CheckForNull(x => x.MainToolBox);
             }
             catch (Exception ex)
             {
-                InitializationLogs.Add((ex.Message,true));
+                InitializationLogs.Add((ex.Message, true));
             }
 
             ProvideDependenciesOrLogError();
@@ -128,7 +116,8 @@ namespace ConnectAPic.LayoutWindow
                 if (l.isError)
                 {
                     Logger.PrintErr(l.log);
-                } else
+                }
+                else
                 {
                     Logger.Print(l.log);
                 }
@@ -154,7 +143,7 @@ namespace ConnectAPic.LayoutWindow
             Logger = new CAP_Core.Logger();
             LogSaver = new LogSaver(Logger);
             InGameConsole.Initialize(Logger);
-            InitializationLogs.Add(("Initialized LoggingSystem",false));
+            InitializationLogs.Add(("Initialized LoggingSystem", false));
         }
 
         private void InitializeGridAndGridView(ComponentFactory componentFactory)
@@ -162,8 +151,8 @@ namespace ConnectAPic.LayoutWindow
             GridView = GetNode<GridView>(GridViewPath);
             this.CheckForNull(x => GridView);
             Grid = new GridManager(FieldWidth, FieldHeight);
-            LightCalculator = new CAP_Core.LightCalculation.LightCalculationService(Grid.GetAllExternalInputs() , new GridLightCalculator(Grid));
-            GridViewModel = new GridViewModel(GridView, Grid, Logger, componentFactory , LightCalculator);
+            LightCalculator = new CAP_Core.LightCalculation.LightCalculationService(Grid.GetAllExternalInputs(), new GridLightCalculator(Grid));
+            GridViewModel = new GridViewModel(GridView, Grid, Logger, componentFactory, LightCalculator);
             GridView.Initialize(GridViewModel, Logger);
             InitializationLogs.Add(("Initialized GridView and Grid and GridViewModel", false));
         }
@@ -185,7 +174,7 @@ namespace ConnectAPic.LayoutWindow
         {
             draftsAndErrors = draftsAndErrors.Where(d => String.IsNullOrEmpty(d.error) == false).ToList();
             foreach (var d in draftsAndErrors)
-                InitializationLogs.Add(( d.error,true));
+                InitializationLogs.Add((d.error, true));
         }
 
         private void InitializeExternalPortViews(List<ExternalPort> ExternalPorts)
@@ -193,36 +182,36 @@ namespace ConnectAPic.LayoutWindow
             ExternalInputRedTemplate.Visible = false;
             ExternalInputGreenTemplate.Visible = false;
             ExternalInputBlueTemplate.Visible = false;
-            ExternalOutputTemplate.Visible = false;
+            Node view;
             foreach (var port in ExternalPorts)
             {
-                Node2D view;
+                
                 if (port is ExternalInput input)
                 {
                     if (input.LaserType == LaserType.Red)
                     {
-                        view = (Node2D)ExternalInputRedTemplate.Duplicate();
+                        view = ExternalInputRedTemplate.Duplicate();
                     }
                     else if (input.LaserType == LaserType.Green)
                     {
-                        view = (Node2D)ExternalInputGreenTemplate.Duplicate();
+                        view = ExternalInputGreenTemplate.Duplicate();
                     }
                     else
                     {
-                        view = (Node2D)ExternalInputBlueTemplate.Duplicate();
+                        view = ExternalInputBlueTemplate.Duplicate();
                     }
-                    view.Visible = true;
-                    GridViewModel.GridView.DragDropProxy.AddChild(view);
-                    view.Position = new Godot.Vector2(view.Position.X - GridView.GlobalPosition.X, (GameManager.TilePixelSize) * port.TilePositionY);
+                    
                 }
                 else
                 {
-                    TextureRect tmp;
-                    tmp = (TextureRect)ExternalOutputTemplate.Duplicate();
-                    tmp.Visible = true;
-                    GridViewModel.GridView.DragDropProxy.AddChild(tmp);
-                    tmp.Position = new Godot.Vector2(tmp.Position.X - GridView.GlobalPosition.X, (GameManager.TilePixelSize) * port.TilePositionY);
+                    view = (PowerMeterView)ExternalOutputTemplate.Instantiate();
+                    var powerMeterView = (PowerMeterView)view;
+                    var powerMeterViewModel = new PowerMeterViewModel(Grid, port.TilePositionY, GridViewModel.LightCalculator);
+                    powerMeterView.Initialize(powerMeterViewModel);
                 }
+                view.Visible = true;
+                GridViewModel.GridView.DragDropProxy.AddChild(view);
+                view.Position = new Godot.Vector2(view.Position.X - GridView.GlobalPosition.X, (GameManager.TilePixelSize) * port.TilePositionY);
             }
         }
 

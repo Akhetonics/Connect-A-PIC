@@ -29,14 +29,14 @@
 [ext_resource type="Script" path="res://Scripts/View/GUIControls/ToolBoxCollapseControl.cs" id="25_35kfa"]
 [ext_resource type="Texture2D" uid="uid://bpf4xfrmslfao" path="res://Scenes/ToolBox/CollapseButtonToggledOn.png" id="27_6q7aj"]
 
-[node name="GameManager" type="Node" node_paths=PackedStringArray("ExternalOutputTemplate", "ExternalInputRedTemplate", "ExternalInputGreenTemplate", "ExternalInputBlueTemplate", "InGameConsole")]
+[node name="GameManager" type="Node" node_paths=PackedStringArray("ExternalInputRedTemplate", "ExternalInputGreenTemplate", "ExternalInputBlueTemplate", "InGameConsole")]
 script = ExtResource("1_c0scx")
 GridViewPath = NodePath("GridView")
 ToolBoxPath = NodePath("GUILayer/Control/MarginContainer/VBoxContainer/ToolBox")
-ExternalOutputTemplate = NodePath("Templates/ExternalOutputTemplate")
-ExternalInputRedTemplate = NodePath("Templates/ExternalInputRed")
-ExternalInputGreenTemplate = NodePath("Templates/ExternalInputGreen")
-ExternalInputBlueTemplate = NodePath("Templates/ExternalInputBlue")
+ExternalOutputTemplate = ExtResource("15_v8bo3")
+ExternalInputRedTemplate = NodePath("Templates/ExternalInputRedTemplate")
+ExternalInputGreenTemplate = NodePath("Templates/ExternalInputGreenTemplate")
+ExternalInputBlueTemplate = NodePath("Templates/ExternalInputBlueTemplate")
 InGameConsole = NodePath("GUILayer/InGameConsole")
 
 [node name="ComponentViewFactory" type="Node" parent="."]
@@ -92,13 +92,6 @@ lightOffTexture = ExtResource("18_i07bm")
 lightColor = Color(0, 1, 0, 0.678431)
 button = NodePath("../../GUILayer/MenuBar2/HBoxContainer/btnShowLightPropagation")
 
-[node name="ExternalOutputTemplate" parent="Templates" instance=ExtResource("15_v8bo3")]
-texture_filter = 1
-offset_left = 42.0
-offset_top = 353.0
-offset_right = 153.0
-offset_bottom = 417.0
-expand_mode = 3
 
 [node name="MainCamera" type="Camera2D" parent="."]
 anchor_mode = 0

@@ -36,7 +36,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         public ILogger Logger { get; }
         public ComponentFactory ComponentModelFactory { get; }
         public GridView GridView { get; set; }
-        private LightCalculationService LightCalculator { get; set; }
+        public LightCalculationService LightCalculator { get; private set; }
         public int MaxTileCount { get => Width * Height; }
         private bool IsLightOn { get; set; } = false;
 
@@ -46,7 +46,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             this.Grid = grid;
             LightCalculator = lightCalculator;
             LightCalculator.LightCalculationChanged += (object sender, LightCalculationChangeEventArgs e) 
-                => AssignLightToComponentViews(e.LightVector, e.LaserInUse);
+                => AssignLightFieldsToComponentViews(e.LightFieldVector, e.LaserInUse);
             GridView.LightSwitched += (sender, isOn) => {
                 Grid.IsLightOn = isOn;
             };
@@ -162,13 +162,13 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         }
 
 
-        private void AssignLightToComponentViews(Dictionary<Guid, Complex> lightVector, LaserType laserType)
+        private void AssignLightFieldsToComponentViews(Dictionary<Guid, Complex> lightFieldVector, LaserType laserType)
         {
             foreach (var componentModel in Grid.GetAllComponents())
             {
                 var componentView = GridComponentViews[componentModel.GridXMainTile, componentModel.GridYMainTile];
                 if (componentView == null) return;
-                List<LightAtPin> lightAtPins = LightCalculationHelpers.ConvertToLightAtPins(lightVector, laserType, componentModel);
+                List<LightAtPin> lightAtPins = LightCalculationHelpers.ConvertToLightAtPins(lightFieldVector, laserType, componentModel);
                 componentView.ViewModel.DisplayLightVector(lightAtPins);
             }
         }
