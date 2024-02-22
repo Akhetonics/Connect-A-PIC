@@ -6,7 +6,7 @@ using CAP_Core.Components.FormulaReading;
 
 namespace CAP_Core.Components
 {
-    public class SMatrix 
+    public class SMatrix
     {
         public Matrix<Complex> SMat; // the SMat works like SMat[PinNROutflow, PinNRInflow] --> so opposite from what one might expect
         public readonly Dictionary<Guid, int> PinReference; // all PinIDs inside of the matrix. the int is the index of the row/column in the SMat.. and also of the inputVector.

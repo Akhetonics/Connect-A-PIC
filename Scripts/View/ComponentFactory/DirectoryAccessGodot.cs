@@ -1,4 +1,4 @@
-﻿using CAP_Contracts;
+using CAP_Contracts;
 using CAP_DataAccess.Helpers;
 using Godot;
 using System;

@@ -1,4 +1,4 @@
-﻿using CAP_Contracts;
+using CAP_Contracts;
 using CAP_Core;
 using CAP_Core.CodeExporter;
 using CAP_Core.Components.Creation;

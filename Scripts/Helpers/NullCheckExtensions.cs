@@ -1,4 +1,4 @@
-﻿using ConnectAPic.LayoutWindow;
+using ConnectAPic.LayoutWindow;
 using Godot;
 using System;
 using System.Collections.Generic;

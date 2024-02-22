@@ -1,4 +1,4 @@
-﻿using CAP_Core.ExternalPorts;
+using CAP_Core.ExternalPorts;
 using System;
 using System.Collections.Generic;
 using System.Linq;

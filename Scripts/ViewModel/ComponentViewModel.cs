@@ -1,4 +1,4 @@
-﻿using CAP_Core.Components;
+using CAP_Core.Components;
 using ConnectAPic.LayoutWindow;
 using ConnectAPIC.Scripts.ViewModel.Commands;
 using System.Collections.Generic;

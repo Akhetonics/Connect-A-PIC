@@ -28,10 +28,10 @@ using ConnectAPIC.Scripts.ViewModel;
 
 namespace ConnectAPic.LayoutWindow
 {
-    [SuperNode(typeof(Provider))]
-    public partial class GameManager : Node,
-        IProvide<ToolBox>, IProvide<ILogger>, IProvide<GridView>, IProvide<GridManager>, IProvide<GridViewModel>, IProvide<GameManager>,
-        IProvide<GameConsole>, IProvide<System.Version>, IProvide<ComponentViewFactory>
+    [SuperNode (typeof(Provider))]
+    public partial class GameManager : Node, 
+        IProvide<ToolBox> , IProvide<ILogger>, IProvide<GridView>, IProvide<GridManager>, IProvide<GridViewModel>, IProvide<GameManager>,
+        IProvide<GameConsole> , IProvide<System.Version> , IProvide<ComponentViewFactory> 
     {
         #region Dependency Injection
         public override partial void _Notification(int what);
@@ -44,8 +44,8 @@ namespace ConnectAPic.LayoutWindow
         GameConsole IProvide<GameConsole>.Value() => InGameConsole;
         ComponentViewFactory IProvide<ComponentViewFactory>.Value() => GridView.ComponentViewFactory;
         System.Version IProvide<System.Version>.Value() => Version;
-        #endregion
-
+        #endregion 
+        
         [Export] public NodePath GridViewPath { get; set; }
         public ToolBox MainToolBox { get; set; }
         [Export] private NodePath ToolBoxPath { get; set; }
@@ -53,9 +53,9 @@ namespace ConnectAPic.LayoutWindow
 
         [Export] public int FieldHeight { get; set; } = 12;
         [Export] public PackedScene ExternalOutputTemplate { get; set; }
-        [Export] public TextureRect ExternalInputRedTemplate { get; set; }
-        [Export] public TextureRect ExternalInputGreenTemplate { get; set; }
-        [Export] public TextureRect ExternalInputBlueTemplate { get; set; }
+        [Export] public Node2D ExternalInputRedTemplate { get; set; }
+        [Export] public Node2D ExternalInputGreenTemplate { get; set; }
+        [Export] public Node2D ExternalInputBlueTemplate { get; set; }
         [Export] public GameConsole InGameConsole { get; set; }
         private PCKLoader PCKLoader { get; set; }
         public static int TilePixelSize { get; private set; } = 62;
@@ -182,35 +182,37 @@ namespace ConnectAPic.LayoutWindow
             ExternalInputRedTemplate.Visible = false;
             ExternalInputGreenTemplate.Visible = false;
             ExternalInputBlueTemplate.Visible = false;
-            TextureRect view = null;
+            Node2D view;
             foreach (var port in ExternalPorts)
             {
-                view = null;
+                
                 if (port is ExternalInput input)
                 {
                     if (input.LaserType == LaserType.Red)
                     {
-                        view = (TextureRect)ExternalInputRedTemplate.Duplicate();
+                        view = (Node2D)ExternalInputRedTemplate.Duplicate();
                     }
                     else if (input.LaserType == LaserType.Green)
                     {
-                        view = (TextureRect)ExternalInputGreenTemplate.Duplicate();
+                        view = (Node2D)ExternalInputGreenTemplate.Duplicate();
                     }
                     else
                     {
-                        view = (TextureRect)ExternalInputBlueTemplate.Duplicate();
+                        view = (Node2D)ExternalInputBlueTemplate.Duplicate();
                     }
+                    
                 }
                 else
                 {
                     view = (PowerMeterView)ExternalOutputTemplate.Instantiate();
-                    var powerMeterView = (PowerMeterView) view;
+                    view.GlobalPosition = new Vector2(GridView.DragDropProxy.GlobalPosition.X, 0); // y will be overridden below
+                    var powerMeterView = (PowerMeterView)view;
                     var powerMeterViewModel = new PowerMeterViewModel(Grid, port.TilePositionY, GridViewModel.LightCalculator);
                     powerMeterView.Initialize(powerMeterViewModel);
                 }
                 view.Visible = true;
                 GridViewModel.GridView.DragDropProxy.AddChild(view);
-                view.Position = new Godot.Vector2(view.Position.X - GridView.GlobalPosition.X, GameManager.TilePixelSize * port.TilePositionY );
+                view.Position = new Godot.Vector2(view.Position.X - GridView.GlobalPosition.X, (GameManager.TilePixelSize) * port.TilePositionY);
             }
         }
 

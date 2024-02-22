@@ -1,4 +1,4 @@
-﻿namespace ConnectAPIC.LayoutWindow.View
+namespace ConnectAPIC.LayoutWindow.View
 {
     public static class ShaderParameterNames
     {

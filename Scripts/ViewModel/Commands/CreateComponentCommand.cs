@@ -1,4 +1,4 @@
-﻿using CAP_Core.Components;
+using CAP_Core.Components;
 using CAP_Core.Components.Creation;
 using CAP_Core.Grid;
 using ConnectAPIC.Scripts.ViewModel.Commands;

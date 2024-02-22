@@ -1,4 +1,4 @@
-﻿using CAP_Core.ExternalPorts;
+using CAP_Core.ExternalPorts;
 using CAP_Core.Tiles;
 using System.Numerics;
 

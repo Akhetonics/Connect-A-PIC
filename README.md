@@ -20,10 +20,10 @@ You can download the newest releases [here](https://github.com/Akhetonics/Connec
 This software aims to simplify the design of optical circuits on a chip, which can then be printed using our Nazca-Python export function.
 The designer, developed in C# using Godot 4, consists of three distinct projects
 
-* The "CAP-Core" project (the model) has all the knowledge of where in the field components are placed,		 
-	* it takes care of the Grid [i,j] and it has a function to calculate a Scattered Matrix. 
-	* This S-Matrix can calculate the light-distribution of all light that goes through all the components. 
-	* Each component has a smaller S-Matrix that tells the engine how exactly the light goes from each pin of the component to each other pin - like if the phase shifts or if the light's intensity gets less through the path from one pin to the other pin inside of the component. 
+* The "CAP-Core" project (the model) has all the knowledge of where in the field components are placed,         
+    * it takes care of the Grid [i,j] and it has a function to calculate a Scattered Matrix. 
+    * This S-Matrix can calculate the light-distribution of all light that goes through all the components. 
+    * Each component has a smaller S-Matrix that tells the engine how exactly the light goes from each pin of the component to each other pin - like if the phase shifts or if the light's intensity gets less through the path from one pin to the other pin inside of the component. 
     * The Model also has functions to export the whole game-grid to a python script that then can be used to actually manufacture the chip by sending it to a manufacturer. 
 * Then there is the view and the integrationtests of the Model - the view has no unit tests as I didn't really find a testing suite for godot 4 - this was also one reason to separate the core functionality from the godot 4 engine. 
 * There also is a shader for mixing the light colors properly together that uses phase calculations based on blue and red spheres
@@ -35,15 +35,15 @@ Our Target Audience is students and scientists that are interested in photonics.
 * Install Visual Studio 
 * Download the Visual Studio components: "Game Development with Unity" just in case
 * Install Godot Engine and add a System Variable called "GODOT" to the Path to the godot mono exe file like so:
-	* open your command prompt (WINDOWS+R, type 'cmd' and press enter)
+    * open your command prompt (WINDOWS+R, type 'cmd' and press enter)
 ```shell
 setx GODOT "C:\Program Files\Godot_v4.1\Godot_v4.1.exe" /M
 ```
 * Clone this project into a nice folder
 * Setup Launch Profile for visual Studio where 
-	* "Path to the executable to run" is the Path to your godot_v4.0-beta_mono_win64.exe 
-	* Command Line Arguments is `--path . --verbose`
-	* Working Directory is '.'
+    * "Path to the executable to run" is the Path to your godot_v4.0-beta_mono_win64.exe 
+    * Command Line Arguments is `--path . --verbose`
+    * Working Directory is '.'
 * git clone this project
 Install submodules by executing 'git submodule init', followed by 'git submodule update --recursive --remote'.
  * [Create two external Tools in Visual studio](https://github.com/Akhetonics/Connect-A-PIC/blob/feature/ComponentPackaging/GodotTestVSIntegration.md) to be able to manually run the GoDotTest - Unit tests for Godot via a popup menu.
@@ -77,19 +77,19 @@ just have a look at one of those JSON files there. Keep in mind, that if you wan
 ``` JSON
 // ...
 "sMatrices": [
-	{
-	"waveLength" : 1550,
-	"connections": [
-		{
-		"fromPinNr": 0,
-		"toPinNr": 1,
-		"magnitude": 0.5,
-		"phase": 1.2161003820350373,
-		"nonLinearFormula" : "Div(1,Add(PIN1,PIN2))"
-		},
-	]
-	}
-	]
+    {
+    "waveLength" : 1550,
+    "connections": [
+        {
+        "fromPinNr": 0,
+        "toPinNr": 1,
+        "magnitude": 0.5,
+        "phase": 1.2161003820350373,
+        "nonLinearFormula" : "Div(1,Add(PIN1,PIN2))"
+        },
+    ]
+    }
+    ]
 // ...
 ```
 You don't have to use "magnitude" and "phase", but can use "real" and "imaginary" instead.

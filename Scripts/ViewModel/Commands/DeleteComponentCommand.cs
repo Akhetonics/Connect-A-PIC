@@ -1,4 +1,4 @@
-﻿using CAP_Core.Grid;
+using CAP_Core.Grid;
 using ConnectAPIC.Scripts.ViewModel.Commands;
 using System;
 using System.Threading.Tasks;

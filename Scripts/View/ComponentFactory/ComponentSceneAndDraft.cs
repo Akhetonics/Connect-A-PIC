@@ -1,4 +1,4 @@
-﻿using CAP_DataAccess.Components.ComponentDraftMapper.DTOs;
+using CAP_DataAccess.Components.ComponentDraftMapper.DTOs;
 using Godot;
 
 namespace ConnectAPIC.Scripts.View.ComponentFactory
