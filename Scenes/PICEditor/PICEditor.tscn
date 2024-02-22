@@ -75,7 +75,14 @@ NotificationBoxScene = ExtResource("10_06t00")
 position = Vector2(48, 165)
 lightOnTexture = ExtResource("13_otx74")
 lightOffTexture = ExtResource("14_a68fp")
-lightColor = Color(0.843137, 0, 0, 1)
+lightColor = Color(1, 0, 0, 1)
+button = NodePath("../../GUILayer/MenuBar2/HBoxContainer/btnShowLightPropagation")
+
+[node name="ExternalInputGreen" parent="Templates" node_paths=PackedStringArray("button") instance=ExtResource("12_gwl6a")]
+position = Vector2(48, 288)
+lightOnTexture = ExtResource("17_ku40t")
+lightOffTexture = ExtResource("18_i07bm")
+lightColor = Color(0, 1, 0, 0.219608)
 button = NodePath("../../GUILayer/MenuBar2/HBoxContainer/btnShowLightPropagation")
 
 [node name="ExternalInputBlue" parent="Templates" node_paths=PackedStringArray("button") instance=ExtResource("12_gwl6a")]
@@ -83,13 +90,6 @@ position = Vector2(48, 227)
 lightOnTexture = ExtResource("15_wh6wu")
 lightOffTexture = ExtResource("14_anfaj")
 lightColor = Color(0, 0, 1, 1)
-button = NodePath("../../GUILayer/MenuBar2/HBoxContainer/btnShowLightPropagation")
-
-[node name="ExternalInputGreen" parent="Templates" node_paths=PackedStringArray("button") instance=ExtResource("12_gwl6a")]
-position = Vector2(48, 288)
-lightOnTexture = ExtResource("17_ku40t")
-lightOffTexture = ExtResource("18_i07bm")
-lightColor = Color(0, 1, 0, 0.678431)
 button = NodePath("../../GUILayer/MenuBar2/HBoxContainer/btnShowLightPropagation")
 
 [node name="ExternalOutputTemplate" parent="Templates" instance=ExtResource("15_v8bo3")]

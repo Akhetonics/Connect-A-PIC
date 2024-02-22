@@ -1,4 +1,4 @@
-﻿using CAP_Core.ExternalPorts;
+using CAP_Core.ExternalPorts;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPic.LayoutWindow;
 using Godot;
@@ -14,7 +14,7 @@ using ConnectAPIC.Scripts.ViewModel;
 
 namespace ConnectAPIC.Scripts.View.PowerMeter
 {
-    public partial class PowerMeterView : TextureRect
+    public partial class PowerMeterView : Node2D
     {
         [Export] public RichTextLabel InfoLabel { get; set; }
         public PowerMeterViewModel ViewModel { get; set; }

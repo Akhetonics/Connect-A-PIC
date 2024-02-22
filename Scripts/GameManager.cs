@@ -182,10 +182,10 @@ namespace ConnectAPic.LayoutWindow
             ExternalInputRedTemplate.Visible = false;
             ExternalInputGreenTemplate.Visible = false;
             ExternalInputBlueTemplate.Visible = false;
-            TextureRect view = null;
+            Node2D view;
             foreach (var port in ExternalPorts)
             {
-                Node2D view;
+                
                 if (port is ExternalInput input)
                 {
                     if (input.LaserType == LaserType.Red)
@@ -206,12 +206,15 @@ namespace ConnectAPic.LayoutWindow
                 }
                 else
                 {
-                    TextureRect tmp;
-                    tmp = (TextureRect)ExternalOutputTemplate.Duplicate();
-                    tmp.Visible = true;
-                    GridViewModel.GridView.DragDropProxy.AddChild(tmp);
-                    tmp.Position = new Godot.Vector2(tmp.Position.X - GridView.GlobalPosition.X, (GameManager.TilePixelSize) * port.TilePositionY);
+                    view = (PowerMeterView)ExternalOutputTemplate.Instantiate();
+                    view.GlobalPosition = new Vector2(GridView.DragDropProxy.GlobalPosition.X, 0); // y will be overridden below
+                    var powerMeterView = (PowerMeterView)view;
+                    var powerMeterViewModel = new PowerMeterViewModel(Grid, port.TilePositionY, GridViewModel.LightCalculator);
+                    powerMeterView.Initialize(powerMeterViewModel);
                 }
+                view.Visible = true;
+                GridViewModel.GridView.DragDropProxy.AddChild(view);
+                view.Position = new Godot.Vector2(view.Position.X - GridView.GlobalPosition.X, (GameManager.TilePixelSize) * port.TilePositionY);
             }
         }
 
