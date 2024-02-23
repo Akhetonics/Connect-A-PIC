@@ -92,5 +92,6 @@
     <DefaultItemExcludes Condition="'$(Configuration)' == 'ExportRelease'">
         $(DefaultItemExcludes);test/**/*
     </DefaultItemExcludes>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 </Project>
