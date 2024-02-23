@@ -35,10 +35,15 @@ jobs:
           smksp_cert_sync.exe 
         shell: cmd 
 
+      - name: Create an empty EXE file
+        run: New-Item -Path ".\empty.exe" -ItemType "file"
+
+      - name: Check the file
+        run: Get-Item .\empty.exe
       - name: Signing using Signtool 
         run: | 
-          signtool.exe sign /sha1 ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /v /debug /td SHA256 /fd SHA256 "C:\Windows\System32\certutil.exe" 
-          signtool.exe verify /v /pa "C:\Windows\System32\certutil.exe"
+          signtool.exe sign /sha1 ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /v /debug /td SHA256 /fd SHA256 "empty.exe" 
+          signtool.exe verify /v /pa "empty.exe"
 
       - name: Upload signed EXE as artifact
         uses: actions/upload-artifact@v2
