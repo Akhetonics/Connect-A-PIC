@@ -69,6 +69,13 @@ jobs:
         with:
           name: Connect-A-PIC-EXE
           path: ${{ github.workspace }}/Release/Connect-A-PIC.exe
+      
+      # also upload all the files BUT the exe for the zipping later on.
+      - name: Upload Release directory as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: Connect-A-PIC-RELEASE-FOLDER
+          path: ${{ github.workspace }}/Release/
 
   sign_windows_exe:
     name: Sign Windows Exe
@@ -125,6 +132,12 @@ jobs:
     needs: sign_windows_exe
     runs-on: ubuntu-latest
     steps:
+      - name: Download release folder from artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: Connect-A-PIC-RELEASE-FOLDER
+          path: ./Release
+
       - name: Download signed EXE from artifact
         uses: actions/download-artifact@v2
         with:
