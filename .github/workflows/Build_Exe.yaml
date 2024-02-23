@@ -20,15 +20,6 @@ jobs:
           lfs: true
           submodules: 'recursive'
 
-      - name: Extract Version from Project File
-        id: project_version
-        run: |
-          version=$(grep '<Version>' Connect-A-PIC.csproj | sed -e 's/<[^>]*>//g' | xargs)
-          echo "PROJECTVERSION=$version" >> $GITHUB_ENV
-
-      - name: Print extracted Project version
-        run: echo "The extracted Godot version is $PROJECTVERSION"
-
       - name: 💽 Setup .NET SDK
         uses: actions/setup-dotnet@v3
         with:
@@ -49,6 +40,12 @@ jobs:
 
       - name: Create Build Directory
         run: mkdir -p $GITHUB_WORKSPACE/Release
+
+      - name: Extract Version from Project File and store it for publishing
+        id: project_version
+        run: |
+          version=$(grep '<Version>' Connect-A-PIC.csproj | sed -e 's/<[^>]*>//g' | xargs)
+          echo $version > .\Release\version.txt
 
       - name: 🧑‍🔬 Generate .NET Bindings
         run: godot --headless --build-solutions --quit || exit 0
@@ -160,6 +157,14 @@ jobs:
             exit 1
           fi
           ls -l $releaseDir
+
+      - name: Set project version from version.txt
+        run: |
+          version=$(cat ./Release/version.txt)
+          echo "PROJECTVERSION=$version" >> $GITHUB_ENV
+
+      - name: Print extracted Project version
+        run: echo "The extracted Godot version is $PROJECTVERSION"
 
       - name: Create GitHub Release
         id: create_release
