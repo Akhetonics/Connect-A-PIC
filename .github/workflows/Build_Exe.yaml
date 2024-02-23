@@ -162,9 +162,12 @@ jobs:
         run: |
           version=$(cat ./Release/version.txt)
           echo "PROJECTVERSION=$version" >> $GITHUB_ENV
+          rm ./Release/version.txt
 
       - name: Print extracted Project version
         run: echo "The extracted Godot version is $PROJECTVERSION"
+
+
 
       - name: Create GitHub Release
         id: create_release
