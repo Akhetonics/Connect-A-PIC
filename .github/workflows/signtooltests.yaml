@@ -34,16 +34,17 @@ jobs:
           C:\Windows\System32\certutil.exe -csp "DigiCert Signing Manager KSP" -key -user 
           smksp_cert_sync.exe 
         shell: cmd 
+        
+      - name: Set up MinGW
+        uses: egor-tensin/setup-mingw@v2
+        with:
+          platform: x64
 
-      - name: Setup Tiny C Compiler (TCC)
-        run: |
-          choco install tcc
-
-      - name: Compile C Source to EXE
+      - name: Compile with GCC
         run: |
           echo 'int main() { return 0; }' > minimal.c
-          tcc minimal.c -o minimal.exe
-
+          g++ minimal.c -o minimal.exe
+          
       - name: Check the file
         run: Get-Item .\minimal.exe
       - name: Signing using Signtool 
