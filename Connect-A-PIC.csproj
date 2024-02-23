@@ -41,7 +41,6 @@
     <Compile Remove="Scenes\Scenes.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include=".github\workflows\signtooltests.yaml" />
     <Compile Include="Scenes\ExternalInputs\ExternalInputGraphic.cs" />
   </ItemGroup>
   <ItemGroup>
