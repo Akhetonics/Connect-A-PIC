@@ -68,7 +68,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: Connect-A-PIC-EXE
-          path: $GITHUB_WORKSPACE/Release/Connect-A-PIC.exe
+          path: ${{ github.workspace }}/Release/Connect-A-PIC.exe
   sign_windows_exe:
     name: Sign Windows Exe
     needs: build_windows_exe
