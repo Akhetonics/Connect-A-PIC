@@ -69,6 +69,7 @@ jobs:
         with:
           name: Connect-A-PIC-EXE
           path: ${{ github.workspace }}/Release/Connect-A-PIC.exe
+
   sign_windows_exe:
     name: Sign Windows Exe
     needs: build_windows_exe
@@ -109,7 +110,7 @@ jobs:
 
       - name: Signing using Signtool 
         run: | 
-          signtool.exe sign /sha1 ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 ".\Release\Connect-A-PIC.exe" 
+          signtool.exe sign /sha1 ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /v /debug /td SHA256 /fd SHA256 ".\Release\Connect-A-PIC.exe" 
           signtool.exe verify /v /pa ".\Release\Connect-A-PIC.exe" 
 
       - name: Upload signed EXE as artifact
