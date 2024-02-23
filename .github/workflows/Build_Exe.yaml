@@ -61,33 +61,36 @@ jobs:
             exit 1
           fi
 
-      # Add Setup Certificate step here
-      - name: Setup Certificate
+      - name: Upload EXE as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: Connect-A-PIC-EXE
+          path: $GITHUB_WORKSPACE/Release/Connect-A-PIC.exe
+  sign_windows_exe:
+    name: Sign Windows Exe
+    runs-on: windows-latest
+    steps:
+      - name: Download EXE from artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: Connect-A-PIC-EXE
+          path: ./build
+
+      - name: Decode and save the certificate file
         run: |
-          echo "${{ secrets.SM_CLIENT_CERT_FILE_B64 }}" | base64 --decode > ${{ github.workspace }}/Certificate_pkcs12.p12
+          echo ${{ secrets.SM_CLIENT_CERT_FILE_B64 }} | base64 --decode > certificate.pfx
 
       # Set environment variables and paths for the code signing process
       - name: Set variables for Code Signing
         run: |
           echo "SM_HOST=${{ secrets.SM_HOST }}" >> $GITHUB_ENV
           echo "SM_API_KEY=${{ secrets.SM_API_KEY }}" >> $GITHUB_ENV
-          echo "SM_CLIENT_CERT_FILE=${{ github.workspace }}/Certificate_pkcs12.p12" >> $GITHUB_ENV
+          echo "SM_CLIENT_CERT_FILE=${{ secrets.SM_CLIENT_CERT_FILE_B64 }}" >> $GITHUB_ENV
           echo "SM_CLIENT_CERT_PASSWORD=${{ secrets.SM_CLIENT_CERT_PASSWORD }}" >> $GITHUB_ENV
-
-      - name: Install osslsigncode
-        run: sudo apt-get update && sudo apt-get install -y osslsigncode
         
       - name: Sign Windows EXE
         run: |
-          osslsigncode sign \
-            -pkcs12 ${{ env.SM_CLIENT_CERT_FILE }} \
-            -pass ${{ secrets.SM_CLIENT_CERT_PASSWORD }} \
-            -n "Connect-A-PIC" \
-            -i "http://timestamp.digicert.com" \
-            -t "http://timestamp.digicert.com" \
-            -in ${{ github.workspace }}/Release/Connect-A-PIC.exe \
-            -out ${{ github.workspace }}/Release/Connect-A-PIC-signed.exe
-          mv -f ${{ github.workspace }}/Release/Connect-A-PIC-signed.exe ${{ github.workspace }}/Release/Connect-A-PIC.exe
+          digicert-cli sign --api-key ${{ env.SM_API_KEY }} --host ${{ env.SM_HOST }} --cert-file certificate.pfx --cert-password ${{ secrets.SM_CLIENT_CERT_PASSWORD }} --input ./build/Connect-A-PIC.exe --output ./build/Connect-A-PIC-signed.exe
 
       - name: Zip Release Build
         run: |
@@ -127,3 +130,4 @@ jobs:
           asset_path: ${{ env.zip_path }}
           asset_name: ConnectAPIC.zip
           asset_content_type: application/zip
+      

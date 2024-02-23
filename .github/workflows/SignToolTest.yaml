@@ -1,0 +1,85 @@
+﻿name: Sign with Software Trust Manager KSP
+
+on: push
+
+jobs: 
+  release: 
+    runs-on: ${{ matrix.os }} 
+
+    strategy: 
+      matrix: 
+        os: [windows-latest,ubuntu-latest] 
+         
+    steps: 
+      - name: Check out Git repository 
+        uses: actions/checkout@v2 
+
+      - name: Install Node.js, NPM and Yarn 
+        uses: actions/setup-node@v2 
+        with:  
+          node-version: 14 
+
+      - name: Build/release Electron app 
+        uses: samuelmeuli/action-electron-builder@v1 
+        with:  
+          github_token: ${{ secrets.github_token }} 
+          release: ${{ startsWith(github.ref, 'refs/tags/v') }} 
+          build_script_name: dist  
+
+      - name: NuGet Install 
+        uses: NuGet/setup-nuget@v1.0.5 
+        with: 
+          nuget-version: latest 
+
+      - name: Setup Certificate 
+        run: | 
+          echo "${{secrets.SM_CLIENT_CERT_FILE_B64 }}" | base64 --decode > /d/Certificate_pkcs12.p12 
+          cat /d/Certificate_pkcs12.p12 
+        shell: bash             
+
+      - name: Set variables 
+        id: variables 
+        run: | 
+          echo "::set-output name=version::${GITHUB_REF#refs/tags/v}" 
+          echo "SM_HOST=${{ secrets.SM_HOST }}" >> "$GITHUB_ENV" 
+          echo "SM_API_KEY=${{ secrets.SM_API_KEY }}" >> "$GITHUB_ENV" 
+          echo "SM_CLIENT_CERT_FILE=D:\\Certificate_pkcs12.p12" >> "$GITHUB_ENV" 
+          echo "SM_CLIENT_CERT_PASSWORD=${{ secrets.SM_CLIENT_CERT_PASSWORD }}" >> "$GITHUB_ENV" 
+          echo "C:\Program Files (x86)\Windows Kits\10\App Certification Kit" >> $GITHUB_PATH 
+          echo "C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools" >> $GITHUB_PATH 
+          echo "C:\Program Files\DigiCert\DigiCert One Signing Manager Tools" >> $GITHUB_PATH 
+        shell: bash  
+
+      - name: Setup SSM KSP on windows latest 
+        run: | 
+          curl -X GET  https://one.digicert.com/signingmanager/api-ui/v1/releases/smtools-windows-x64.msi/download -H "x-api-key:%SM_API_KEY%" -o smtools-windows-x64.msi 
+          msiexec /i smtools-windows-x64.msi /quiet /qn 
+          smksp_registrar.exe list 
+          smctl.exe keypair ls 
+          C:\Windows\System32\certutil.exe -csp "DigiCert Signing Manager KSP" -key -user 
+          smksp_cert_sync.exe 
+        shell: cmd 
+
+      - name: Signing using Signtool 
+        run: | 
+          signtool.exe sign /sha1 ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 "D:\a\github-action-electron\github-action-electron\dist\my-electron-app Setup ${{ steps.variables.outputs.version }}.exe" 
+          signtool.exe verify /v /pa "D:\a\github-action-electron\github-action-electron\dist\my-electron-app Setup ${{ steps.variables.outputs.version }}.exe" 
+
+      - name: Signing using Nuget 
+        run: | 
+          copy D:\a\github-action-electron\github-action-electron\UNSIGNED.nupkg D:\a\github-action-electron\github-action-electron\dist\UNSIGNED.nupkg 
+          nuget sign "D:\a\github-action-electron\github-action-electron\dist\UNSIGNED.nupkg" -Timestamper http://timestamp.digicert.com -outputdirectory "D:\a\github-action-electron\github-action-electron\dist\Signed" -CertificateFingerprint ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} -HashAlgorithm SHA256 -Verbosity detailed -Overwrite 
+          nuget verify -All "D:\a\github-action-electron\github-action-electron\dist\Signed\*" 
+
+      - name: Signing using Mage 
+        run: | 
+          copy D:\a\github-action-electron\github-action-electron\UNSIGNED2.manifest D:\a\github-action-electron\github-action-electron\dist\UNSIGNED2.manifest 
+          mage.exe -sign "D:\a\github-action-electron\github-action-electron\dist\UNSIGNED2.manifest" -CertHash ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} -a sha256RSA 
+          mage -Verify "D:\a\github-action-electron\github-action-electron\dist\UNSIGNED2.manifest" 
+
+      - name: Upload artifacts 
+        uses: actions/upload-artifact@v2 
+        with: 
+          name: ${{ matrix.os }} 
+          path: | 
+            dist 
