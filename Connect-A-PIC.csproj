@@ -41,6 +41,7 @@
     <Compile Remove="Scenes\Scenes.csproj" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include=".github\workflows\signtooltests.yaml" />
     <Compile Include="Scenes\ExternalInputs\ExternalInputGraphic.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -91,5 +92,6 @@
     <DefaultItemExcludes Condition="'$(Configuration)' == 'ExportRelease'">
         $(DefaultItemExcludes);test/**/*
     </DefaultItemExcludes>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 </Project>

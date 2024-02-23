@@ -60,34 +60,76 @@ jobs:
             echo "Build failed with exit code $?"
             exit 1
           fi
+      # list files in release folder
+      - name: List files in Release directory
+        run: ls -la $GITHUB_WORKSPACE/Release
 
-      # Add Setup Certificate step here
+      - name: Upload EXE as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: Connect-A-PIC-EXE
+          path: ${{ github.workspace }}/Release/Connect-A-PIC.exe
+
+  sign_windows_exe:
+    name: Sign Windows Exe
+    needs: build_windows_exe
+    runs-on: windows-latest
+    steps:
+      - name: Download EXE from artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: Connect-A-PIC-EXE
+          path: ./Release
+
       - name: Setup Certificate
         run: |
-          echo "${{ secrets.SM_CLIENT_CERT_FILE_B64 }}" | base64 --decode > ${{ github.workspace }}/Certificate_pkcs12.p12
+          echo ${{ secrets.SM_CLIENT_CERT_FILE_B64 }} | base64 --decode > /d/Certificate_pkcs12.p12
+        shell: bash
 
       # Set environment variables and paths for the code signing process
       - name: Set variables for Code Signing
         run: |
           echo "SM_HOST=${{ secrets.SM_HOST }}" >> $GITHUB_ENV
           echo "SM_API_KEY=${{ secrets.SM_API_KEY }}" >> $GITHUB_ENV
-          echo "SM_CLIENT_CERT_FILE=${{ github.workspace }}/Certificate_pkcs12.p12" >> $GITHUB_ENV
+          echo "SM_CLIENT_CERT_FILE=D:\\Certificate_pkcs12.p12" >> "$GITHUB_ENV" 
           echo "SM_CLIENT_CERT_PASSWORD=${{ secrets.SM_CLIENT_CERT_PASSWORD }}" >> $GITHUB_ENV
+          echo "C:\Program Files (x86)\Windows Kits\10\App Certification Kit" >> $GITHUB_PATH 
+          echo "C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools" >> $GITHUB_PATH 
+          echo "C:\Program Files\DigiCert\DigiCert One Signing Manager Tools" >> $GITHUB_PATH 
+        shell: bash
 
-      - name: Install osslsigncode
-        run: sudo apt-get update && sudo apt-get install -y osslsigncode
-        
-      - name: Sign Windows EXE
-        run: |
-          osslsigncode sign \
-            -pkcs12 ${{ env.SM_CLIENT_CERT_FILE }} \
-            -pass ${{ secrets.SM_CLIENT_CERT_PASSWORD }} \
-            -n "Connect-A-PIC" \
-            -i "http://timestamp.digicert.com" \
-            -t "http://timestamp.digicert.com" \
-            -in ${{ github.workspace }}/Release/Connect-A-PIC.exe \
-            -out ${{ github.workspace }}/Release/Connect-A-PIC-signed.exe
-          mv -f ${{ github.workspace }}/Release/Connect-A-PIC-signed.exe ${{ github.workspace }}/Release/Connect-A-PIC.exe
+      - name: Setup SSM KSP on windows latest 
+        run: | 
+          curl -X GET  https://one.digicert.com/signingmanager/api-ui/v1/releases/smtools-windows-x64.msi/download -H "x-api-key:%SM_API_KEY%" -o smtools-windows-x64.msi 
+          msiexec /i smtools-windows-x64.msi /quiet /qn 
+          smksp_registrar.exe list 
+          smctl.exe keypair ls 
+          C:\Windows\System32\certutil.exe -csp "DigiCert Signing Manager KSP" -key -user 
+          smksp_cert_sync.exe 
+        shell: cmd 
+
+      - name: Signing using Signtool 
+        run: | 
+          signtool.exe sign /sha1 ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /v /debug /td SHA256 /fd SHA256 ".\Release\Connect-A-PIC.exe" 
+          signtool.exe verify /v /pa ".\Release\Connect-A-PIC.exe" 
+        shell: cmd
+
+      - name: Upload signed EXE as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: Connect-A-PIC-EXE-SIGNED
+          path: ./Release/Connect-A-PIC.exe
+
+  publish_signed:
+    name: Publish signed Exe
+    needs: sign_windows_exe
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download signed EXE from artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: Connect-A-PIC-EXE-SIGNED
+          path: ./Release
 
       - name: Zip Release Build
         run: |
@@ -127,3 +169,4 @@ jobs:
           asset_path: ${{ env.zip_path }}
           asset_name: ConnectAPIC.zip
           asset_content_type: application/zip
+      

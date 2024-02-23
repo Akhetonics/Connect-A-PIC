@@ -1,0 +1,84 @@
+name: 🖥️ Sign Test
+
+on:
+  push:
+
+jobs:
+  sign_windows_exe:
+    name: Sign Windows Exe
+    runs-on: windows-latest
+    steps:
+      - name: Setup Certificate
+        run: |
+          echo ${{ secrets.SM_CLIENT_CERT_FILE_B64 }} | base64 --decode > /d/Certificate_pkcs12.p12
+        shell: bash
+
+      # Set environment variables and paths for the code signing process
+      - name: Set variables for Code Signing
+        run: |
+          echo "SM_HOST=${{ secrets.SM_HOST }}" >> $GITHUB_ENV
+          echo "SM_API_KEY=${{ secrets.SM_API_KEY }}" >> $GITHUB_ENV
+          echo "SM_CLIENT_CERT_FILE=D:\\Certificate_pkcs12.p12" >> "$GITHUB_ENV" 
+          echo "SM_CLIENT_CERT_PASSWORD=${{ secrets.SM_CLIENT_CERT_PASSWORD }}" >> $GITHUB_ENV
+          echo "C:\Program Files (x86)\Windows Kits\10\App Certification Kit" >> $GITHUB_PATH 
+          echo "C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools" >> $GITHUB_PATH 
+          echo "C:\Program Files\DigiCert\DigiCert One Signing Manager Tools" >> $GITHUB_PATH 
+        shell: bash
+
+      - name: Setup SSM KSP on windows latest 
+        run: | 
+          curl -X GET  https://one.digicert.com/signingmanager/api-ui/v1/releases/smtools-windows-x64.msi/download -H "x-api-key:%SM_API_KEY%" -o smtools-windows-x64.msi 
+          msiexec /i smtools-windows-x64.msi /quiet /qn 
+          smksp_registrar.exe list 
+          smctl.exe keypair ls 
+          C:\Windows\System32\certutil.exe -csp "DigiCert Signing Manager KSP" -key -user 
+          smksp_cert_sync.exe 
+        shell: cmd 
+        
+      - name: Install MinGW
+        run: |
+          choco install mingw -y
+          echo "C:\ProgramData\chocolatey\lib\mingw\tools\install\mingw64\bin" >> $GITHUB_PATH
+      - name: Create Version Info Resource
+        run: |
+          echo '#include <winver.h>' > versioninfo.rc
+          echo 'VS_VERSION_INFO VERSIONINFO' >> versioninfo.rc
+          echo ' FILEVERSION 1,0,0,0' >> versioninfo.rc
+          echo ' PRODUCTVERSION 1,0,0,0' >> versioninfo.rc
+          echo ' FILEFLAGSMASK 0x3fL' >> versioninfo.rc
+          echo ' FILEFLAGS 0x0L' >> versioninfo.rc
+          echo ' FILEOS 0x40004L' >> versioninfo.rc
+          echo ' FILETYPE 0x1L' >> versioninfo.rc
+          echo ' FILESUBTYPE 0x0L' >> versioninfo.rc
+          echo 'BEGIN' >> versioninfo.rc
+          echo '    BLOCK "StringFileInfo"' >> versioninfo.rc
+          echo '    BEGIN' >> versioninfo.rc
+          echo '        BLOCK "040904b0"' >> versioninfo.rc
+          echo '        BEGIN' >> versioninfo.rc
+          echo '            VALUE "CompanyName", "Akhetonics GmbH\\0"' >> versioninfo.rc
+          echo '            VALUE "FileVersion", "1.0.0.0\\0"' >> versioninfo.rc
+          echo '            VALUE "FileDescription", "Connect-A-PIC.exe\\0"' >> versioninfo.rc
+          echo '            VALUE "ProductName", "Connect-A-PIC\\0"' >> versioninfo.rc
+          echo '        END' >> versioninfo.rc
+          echo '    END' >> versioninfo.rc
+          echo '    BLOCK "VarFileInfo"' >> versioninfo.rc
+          echo '    BEGIN' >> versioninfo.rc
+          echo '        VALUE "Translation", 0x409, 1200' >> versioninfo.rc
+          echo '    END' >> versioninfo.rc
+          echo 'END' >> versioninfo.rc
+          windres versioninfo.rc -O coff -o versioninfo.res
+
+      - name: Compile with GCC
+        run: |
+          gcc --version
+          echo 'int main() { return 0; }' > minimal.c
+          gcc minimal.c versioninfo.res -o minimal.exe
+          
+      - name: Check the file
+        run: Get-Item .\minimal.exe
+
+      - name: Signing using Signtool 
+        run: | 
+          echo ${{secrets.SM_CODE_SIGNING_CERT_SHA1_HASH}}
+          signtool.exe sign /sha1 ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /v /debug /td SHA256 /fd SHA256 "minimal.exe" 
+          signtool.exe verify /v /pa "minimal.exe"
