@@ -68,6 +68,7 @@ jobs:
           path: $GITHUB_WORKSPACE/Release/Connect-A-PIC.exe
   sign_windows_exe:
     name: Sign Windows Exe
+    needs: build_windows_exe
     runs-on: windows-latest
     steps:
       - name: Download EXE from artifact
@@ -114,6 +115,7 @@ jobs:
 
   publish_signed:
     name: Publish signed Exe
+    needs: sign_windows_exe
     runs-on: ubuntu-latest
     steps:
       - name: Download signed EXE from artifact
