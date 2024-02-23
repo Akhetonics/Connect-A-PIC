@@ -83,6 +83,7 @@ jobs:
       - name: Setup Certificate
         run: |
           echo ${{ secrets.SM_CLIENT_CERT_FILE_B64 }} | base64 --decode > Certificate_pkcs12.p12
+        shell: bash
 
       # Set environment variables and paths for the code signing process
       - name: Set variables for Code Signing
