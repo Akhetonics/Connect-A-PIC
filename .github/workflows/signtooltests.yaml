@@ -35,15 +35,16 @@ jobs:
           smksp_cert_sync.exe 
         shell: cmd 
         
-      - name: Set up MinGW
-        uses: egor-tensin/setup-mingw@v2
-        with:
-          platform: x64
+      - name: Install MinGW
+        run: |
+          choco install mingw -y
+          echo "C:\ProgramData\chocolatey\lib\mingw\tools\install\mingw64\bin" >> $GITHUB_PATH
 
       - name: Compile with GCC
         run: |
+          gcc --version
           echo 'int main() { return 0; }' > minimal.c
-          g++ minimal.c -o minimal.exe
+          gcc minimal.c -o minimal.exe
           
       - name: Check the file
         run: Get-Item .\minimal.exe
