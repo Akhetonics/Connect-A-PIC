@@ -45,7 +45,7 @@ jobs:
         id: project_version
         run: |
           version=$(grep '<Version>' Connect-A-PIC.csproj | sed -e 's/<[^>]*>//g' | xargs)
-          echo $version > .\Release\version.txt
+          echo $version > $GITHUB_WORKSPACE/Release/version.txt
 
       - name: 🧑‍🔬 Generate .NET Bindings
         run: godot --headless --build-solutions --quit || exit 0
