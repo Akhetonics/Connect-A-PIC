@@ -74,11 +74,11 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: Connect-A-PIC-EXE
-          path: ./build
+          path: ./Release
 
-      - name: Decode and save the certificate file
+      - name: Setup Certificate
         run: |
-          echo ${{ secrets.SM_CLIENT_CERT_FILE_B64 }} | base64 --decode > Certificate_pkcs12.p12 
+          echo ${{ secrets.SM_CLIENT_CERT_FILE_B64 }} | base64 --decode > Certificate_pkcs12.p12
 
       # Set environment variables and paths for the code signing process
       - name: Set variables for Code Signing
@@ -87,10 +87,40 @@ jobs:
           echo "SM_API_KEY=${{ secrets.SM_API_KEY }}" >> $GITHUB_ENV
           echo "SM_CLIENT_CERT_FILE=${{ secrets.SM_CLIENT_CERT_FILE_B64 }}" >> $GITHUB_ENV
           echo "SM_CLIENT_CERT_PASSWORD=${{ secrets.SM_CLIENT_CERT_PASSWORD }}" >> $GITHUB_ENV
-        
-      - name: Sign Windows EXE
-        run: |
-          digicert-cli sign --api-key ${{ env.SM_API_KEY }} --host ${{ env.SM_HOST }} --cert-file Certificate_pkcs12.p12  --cert-password ${{ secrets.SM_CLIENT_CERT_PASSWORD }} --input ./build/Connect-A-PIC.exe --output ./build/Connect-A-PIC-signed.exe
+          echo "C:\Program Files (x86)\Windows Kits\10\App Certification Kit" >> $GITHUB_PATH 
+          echo "C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools" >> $GITHUB_PATH 
+          echo "C:\Program Files\DigiCert\DigiCert One Signing Manager Tools" >> $GITHUB_PATH 
+
+      - name: Setup SSM KSP on windows latest 
+        run: | 
+          curl -X GET  https://one.digicert.com/signingmanager/api-ui/v1/releases/smtools-windows-x64.msi/download -H "x-api-key:%SM_API_KEY%" -o smtools-windows-x64.msi 
+          msiexec /i smtools-windows-x64.msi /quiet /qn 
+          smksp_registrar.exe list 
+          smctl.exe keypair ls 
+          C:\Windows\System32\certutil.exe -csp "DigiCert Signing Manager KSP" -key -user 
+          smksp_cert_sync.exe 
+        shell: cmd 
+
+      - name: Signing using Signtool 
+        run: | 
+          signtool.exe sign /sha1 ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 ".\Release\Connect-A-PIC.exe" 
+          signtool.exe verify /v /pa ".\Release\Connect-A-PIC.exe" 
+
+      - name: Upload signed EXE as artifact
+        uses: actions/upload-artifact@v2
+        with:
+          name: Connect-A-PIC-EXE-SIGNED
+          path: ./Release/Connect-A-PIC.exe
+
+  publish_signed:
+    name: Publish signed Exe
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download signed EXE from artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: Connect-A-PIC-EXE-SIGNED
+          path: ./Release
 
       - name: Zip Release Build
         run: |
