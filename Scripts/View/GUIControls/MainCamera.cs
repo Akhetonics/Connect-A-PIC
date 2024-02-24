@@ -4,9 +4,9 @@ using System;
 public partial class MainCamera : Camera2D
 {
     [Export] public float InitialZoom { get; set; } = 1;
-    [Export] public float ZoomSpeed { get; set; } = 0.05f;
-    [Export] public float MinZoomIn { get; set; } = 0.8f;
-    [Export] public float MaxZoomIn { get; set; } = 2f;
+    [Export] public float ZoomSpeed { get; set; } = 0.1f;
+    [Export] public float MinZoomIn { get; set; } = 0.5f;
+    [Export] public float MaxZoomIn { get; set; } = 2.7f;
     [Export] public float PanSensitivity { get; set; } = 1f;
 
 
@@ -20,25 +20,29 @@ public partial class MainCamera : Camera2D
 
         if(@event is InputEventMouseButton)
         {
-            Vector2 zoomSpd = new Vector2(ZoomSpeed, ZoomSpeed);
-            Vector2 minZoom = new Vector2(MinZoomIn, MinZoomIn);
-            Vector2 maxZoom = new Vector2(MaxZoomIn, MaxZoomIn);
-
             if( ((InputEventMouseButton)@event).ButtonIndex == MouseButton.WheelUp)
             {
-                Zoom += zoomSpd;
+                ZoomCamera(1);
             }
             else if (((InputEventMouseButton)@event).ButtonIndex == MouseButton.WheelDown)
             {
-                Zoom -= zoomSpd;
+                ZoomCamera(-1);
             }
-
-            Zoom = Zoom.Clamp(minZoom, maxZoom);
         }
     }
 
     public override void _Ready()
     {
         Zoom = new Vector2(InitialZoom, InitialZoom);
+    }
+    
+    
+    public void ZoomCamera(int direction){
+        Vector2 previousMousePosition = GetLocalMousePosition();
+        
+        Zoom += Zoom * ZoomSpeed * direction;
+        Zoom = Zoom.Clamp(new Vector2(MinZoomIn, MinZoomIn), new Vector2(MaxZoomIn, MaxZoomIn));
+        
+        Offset += previousMousePosition - GetLocalMousePosition();
     }
 }

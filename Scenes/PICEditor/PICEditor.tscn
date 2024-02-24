@@ -101,7 +101,6 @@ offset_bottom = 417.0
 expand_mode = 3
 
 [node name="MainCamera" type="Camera2D" parent="."]
-anchor_mode = 0
 drag_left_margin = 0.0
 drag_top_margin = 0.0
 drag_right_margin = 0.0
@@ -117,21 +116,6 @@ anchor_top = 0.559
 anchor_right = 0.61
 offset_top = -0.231995
 offset_right = 0.279968
-
-[node name="PopUpWindow" parent="GUILayer" node_paths=PackedStringArray("ToggleButton") instance=ExtResource("21_u0shi")]
-visible = false
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -284.0
-offset_top = -162.5
-offset_right = 284.0
-offset_bottom = 162.5
-size_flags_horizontal = 6
-size_flags_vertical = 6
-ToggleButton = NodePath("../MenuBar2/HBoxContainer/btnHelp")
 
 [node name="MenuBar2" type="MenuBar" parent="GUILayer"]
 pivot_offset = Vector2(2.655, 0)
@@ -225,6 +209,21 @@ texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 2
+
+[node name="PopUpWindow" parent="GUILayer" node_paths=PackedStringArray("ToggleButton") instance=ExtResource("21_u0shi")]
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -284.0
+offset_top = -162.5
+offset_right = 284.0
+offset_bottom = 162.5
+size_flags_horizontal = 6
+size_flags_vertical = 6
+ToggleButton = NodePath("../MenuBar2/HBoxContainer/btnHelp")
 
 [connection signal="pressed" from="GUILayer/MenuBar2/HBoxContainer/btnSave" to="GridView" method="_on_btn_save_pressed"]
 [connection signal="pressed" from="GUILayer/MenuBar2/HBoxContainer/btnLoad" to="GridView" method="_on_btn_load_pressed"]
