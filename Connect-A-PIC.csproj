@@ -42,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Scenes\ExternalInputs\ExternalInputGraphic.cs" />
+    <Compile Include="Scenes\ExternalInputs\NewAssets\ExternalPortView.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Chickensoft.SuperNodes" Version="1.7.0" PrivateAssets="all" OutputItemType="analyzer" />

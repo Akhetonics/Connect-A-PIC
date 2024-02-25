@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://cu6wqy6xwjfo1"]
+[gd_scene load_steps=32 format=3 uid="uid://cu6wqy6xwjfo1"]
 
 [ext_resource type="Script" path="res://Scripts/GameManager.cs" id="1_c0scx"]
 [ext_resource type="Script" path="res://Scripts/View/ComponentFactory/ComponentViewFactory.cs" id="2_7hjmy"]
@@ -28,6 +28,9 @@
 [ext_resource type="Texture2D" uid="uid://cwxymtqs0hclu" path="res://Scenes/ToolBox/CollapseButton.png" id="24_uravt"]
 [ext_resource type="Script" path="res://Scripts/View/GUIControls/ToolBoxCollapseControl.cs" id="25_35kfa"]
 [ext_resource type="Texture2D" uid="uid://bpf4xfrmslfao" path="res://Scenes/ToolBox/CollapseButtonToggledOn.png" id="27_6q7aj"]
+[ext_resource type="PackedScene" uid="uid://duapw8umf7gnn" path="res://Scenes/ExternalInputs/NewAssets/external_port.tscn" id="29_tk1m2"]
+[ext_resource type="Texture2D" uid="uid://btiixf0ktgtmi" path="res://Scenes/ExternalInputs/NewAssets/ExternalInput.png" id="30_ya54t"]
+[ext_resource type="Texture2D" uid="uid://by3bymn4ejijy" path="res://Scenes/ExternalInputs/NewAssets/ExternalOutput.png" id="31_ilg4m"]
 
 [node name="GameManager" type="Node" node_paths=PackedStringArray("ExternalInputRedTemplate", "ExternalInputGreenTemplate", "ExternalInputBlueTemplate", "InGameConsole")]
 script = ExtResource("1_c0scx")
@@ -217,6 +220,11 @@ texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 2
+
+[node name="ExternalInput" parent="." instance=ExtResource("29_tk1m2")]
+position = Vector2(277, 351)
+InputTexture = ExtResource("30_ya54t")
+OutputTexture = ExtResource("31_ilg4m")
 
 [connection signal="pressed" from="GUILayer/MenuBar2/HBoxContainer/btnSave" to="GridView" method="_on_btn_save_pressed"]
 [connection signal="pressed" from="GUILayer/MenuBar2/HBoxContainer/btnLoad" to="GridView" method="_on_btn_load_pressed"]
