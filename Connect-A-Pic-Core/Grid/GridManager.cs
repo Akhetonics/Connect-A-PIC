@@ -3,6 +3,7 @@ using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.ExternalPorts;
 using CAP_Core.Helpers;
 using CAP_Core.Tiles;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using Component = CAP_Core.Components.Component;
 
@@ -18,7 +19,7 @@ namespace CAP_Core.Grid
         public event OnComponentChangedEventHandler OnComponentRotated;
         public event OnComponentChangedEventHandler OnComponentMoved;
         public event EventHandler<bool> OnLightSwitched;
-        public List<ExternalPort> ExternalPorts;
+        public ObservableCollection<ExternalPort> ExternalPorts;
         private bool isLightOn;
         public bool IsLightOn
         {
@@ -37,7 +38,7 @@ namespace CAP_Core.Grid
             if (height < MinHeight) height = MinHeight;
             Width = width;
             Height = height;
-            ExternalPorts = new List<ExternalPort>() {
+            ExternalPorts = new ObservableCollection<ExternalPort>() {
                     new ExternalInput("io0",LaserType.Red, 2,1),
                     new ExternalInput("io1",LaserType.Green, 3, 1),
                     new ExternalInput("io2",LaserType.Blue , 4, 1),

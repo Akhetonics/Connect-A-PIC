@@ -1,4 +1,4 @@
-﻿using CAP_Core.Components.ComponentHelpers;
+using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.ExternalPorts;
 using CAP_Core.Grid;
 using CAP_Core.LightCalculation;
