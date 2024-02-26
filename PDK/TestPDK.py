@@ -1,5 +1,6 @@
 import nazca as nd
 import math
+from nazca.interconnects import Interconnect
 
 class TestPDK(object):
 
@@ -11,17 +12,23 @@ class TestPDK(object):
     
     def __init__(self):
         # General 
-        self._BendRadius = 80  
-        self._WGWidth = 1.2   
+        self._BendRadius = 80
+        self._WGWidth = 1.2
         self._CouplerSpacing = 0.35
-        self._CrossOver = 50 
-
+        self._CrossOver = 50
         self._CellSize = 250        # Has to be a multiple of the Fiber Array pitch for the grating couplers
-        
         self._SiNLayer = 203
         self._GratingLayer = 204
         self._BoxLayer = 1001
         self._TextLayer = 1002
+        # Add xsection definition
+        nd.add_xsection_layer(
+            xsection = "InnerConnections",
+            layer = self._SiNLayer,
+            leftedge=(0.5, self._WGWidth / 2),
+            rightedge=(-0.5, -self._WGWidth / 2)
+        )
+
 
     def placeCell_StraightWG(self):
         with nd.Cell(name='AkhetCell_StraightWG') as akhetCell:
@@ -103,23 +110,24 @@ class TestPDK(object):
             nd.Pin('center', width=self._WGWidth).put(self._CellSize/2,self._CellSize/2)
         return akhetCell
 
-    def MMI_Cell(cellsize):
+    def placeCell_MMI3x3(self):
         wg = 1
-        ic = Interconnect(layer=1)
-        MMI_LENGTH = 160 + 10
-        MMI_WIDTH = 15
-        with nd.Cell(name='MMI') as cell:
-            mmi = MMI_3x3().put('a1',(cellsize - MMI_LENGTH)/2)
-            #inputs and outputs to the cell
+        ic = Interconnect(xs = "InnerConnections")
+        InnerMMIWidth = 160 + 10
+        TotalMMIWidth = self._CellSize * 2
+        TotalMMIHeight = self._CellSize * 3
+        with nd.Cell(name='AkhetCell_MMI3x3') as cell:
+            mmi = self.placeCell_InnerMMI3x3().put('a1',(TotalMMIWidth - InnerMMIWidth)/2)
+            # connect inputs and outputs to the cell
 
-            in0 = ic.strt(length=5).put(0, -cellsize/2 + 125)
+            in0 = ic.strt(length=5).put(0, TotalMMIHeight/2 - self._CellSize/2)
             in1 = ic.strt(length=5).put(0, 0)
-            in2 = ic.strt(length=5).put(0, cellsize/2 - 125)
-            out0 = ic.strt(length=5).put(cellsize-5, -cellsize/2 + 125)
-            out1 = ic.strt(length=5).put(cellsize-5, 0)
-            out2 = ic.strt(length=5).put(cellsize-5, cellsize/2 - 125)
+            in2 = ic.strt(length=5).put(0, -TotalMMIHeight/2 + self._CellSize/2)
+            out0 = ic.strt(length=5).put(TotalMMIWidth-5, TotalMMIHeight/2 - self._CellSize/2)
+            out1 = ic.strt(length=5).put(TotalMMIWidth-5, 0)
+            out2 = ic.strt(length=5).put(TotalMMIWidth-5, -TotalMMIHeight/2 + self._CellSize/2)
         
-            #connect ports to MMI
+            # connect ports to MMI
 
             ic.cobra_p2p(pin1=in0.pin['b0'], pin2=mmi.pin['a0']).put()
             ic.cobra_p2p(pin1=in1.pin['b0'], pin2=mmi.pin['a1']).put()
@@ -127,27 +135,35 @@ class TestPDK(object):
             ic.cobra_p2p(pin1=out0.pin['a0'], pin2=mmi.pin['b0']).put()
             ic.cobra_p2p(pin1=out1.pin['a0'], pin2=mmi.pin['b1']).put()
             ic.cobra_p2p(pin1=out2.pin['a0'], pin2=mmi.pin['b2']).put()
+            
+            # create PINs
+            nd.Pin('west0').put(in0.pin['a0'])
+            nd.Pin('west1').put(in1.pin['a0'])
+            nd.Pin('west2').put(in2.pin['a0'])
+            nd.Pin('east0').put(out0.pin['b0'])
+            nd.Pin('east1').put(out1.pin['b0'])
+            nd.Pin('east2').put(out2.pin['b0'])
 
             return cell
 
-    def MMI_3x3():
-        ic = nd.interconnects.Interconnect(layer=1)
+    def placeCell_InnerMMI3x3(self):
+        ic = nd.interconnects.Interconnect(xs = 'InnerConnections')
         width=15
         length=160
         wg = 1
         taper_width = 3
         taper_length = 10
         delta_spacing = 4
-        with nd.Cell(name='MMI_3x3') as mmi:
+        with nd.Cell(name='InnerMMI3x3') as mmi:
         
             body = ic.strt(length=length, width=width, arrow=False).put(0,0)
             # east tapers
-            t_e0 = ic.taper(width1=wg, width2=taper_width, length=taper_length, arrow=False).put(-taper_length, - delta_spacing)
+            t_e0 = ic.taper(width1=wg, width2=taper_width, length=taper_length, arrow=False).put(-taper_length,  delta_spacing)
             t_e1 = ic.taper(width1=wg, width2=taper_width, length=taper_length, arrow=False).put(-taper_length, 0)
-            t_e2 = ic.taper(width1=wg, width2=taper_width, length=taper_length, arrow=False).put(-taper_length, delta_spacing)
-            t_w0 = ic.taper(width2=wg, width1=taper_width, length=taper_length, arrow=False).put(length, - delta_spacing)
+            t_e2 = ic.taper(width1=wg, width2=taper_width, length=taper_length, arrow=False).put(-taper_length, - delta_spacing)
+            t_w0 = ic.taper(width2=wg, width1=taper_width, length=taper_length, arrow=False).put(length, delta_spacing)
             t_w1 = ic.taper(width2=wg, width1=taper_width, length=taper_length, arrow=False).put(length, 0)
-            t_w2 = ic.taper(width2=wg, width1=taper_width, length=taper_length, arrow=False).put(length, delta_spacing)
+            t_w2 = ic.taper(width2=wg, width1=taper_width, length=taper_length, arrow=False).put(length, - delta_spacing)
 
             nd.Pin('a0').put(t_e0.pin['a0'])
             nd.Pin('a1').put(t_e1.pin['a0'])
