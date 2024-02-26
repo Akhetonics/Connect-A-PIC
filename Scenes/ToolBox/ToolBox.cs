@@ -47,7 +47,6 @@ namespace ConnectAPIC.Scenes.ToolBox
                 }
                 componentInstance.Scale /= biggestScaleFactor;
                 TemplateTileView rect = new();
-                rect.componentViewFactory = ComponentViewFactory;
                 rect.CustomMinimumSize = new Vector2(toolPixelSize, toolPixelSize);
                 rect.AddChild(componentInstance);
                 gridContainer.AddChild(rect);
