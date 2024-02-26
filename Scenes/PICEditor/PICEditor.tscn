@@ -101,6 +101,7 @@ offset_bottom = 417.0
 expand_mode = 3
 
 [node name="MainCamera" type="Camera2D" parent="."]
+anchor_mode = 0
 drag_left_margin = 0.0
 drag_top_margin = 0.0
 drag_right_margin = 0.0
