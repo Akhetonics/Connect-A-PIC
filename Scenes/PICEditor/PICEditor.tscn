@@ -93,6 +93,7 @@ lightColor = Color(0, 0, 1, 1)
 button = NodePath("../../GUILayer/MenuBar2/HBoxContainer/btnShowLightPropagation")
 
 [node name="MainCamera" type="Camera2D" parent="."]
+anchor_mode = 0
 drag_left_margin = 0.0
 drag_top_margin = 0.0
 drag_right_margin = 0.0
