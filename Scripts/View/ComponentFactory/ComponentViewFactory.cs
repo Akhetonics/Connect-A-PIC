@@ -69,18 +69,18 @@ namespace ConnectAPIC.LayoutWindow.View
                 // Map overlays to OverlayViews
                 foreach (Overlay overlay in draft.Overlays)
                 {
-                    var overlayBluePrint = ResourceLoader.Load<Texture2D>(overlay.overlayAnimTexturePath);
+                    var overlayBluePrint = ResourceLoader.Load<Texture2D>(overlay.OverlayAnimTexturePath);
                     if (overlayBluePrint == null)
                     {
-                        Logger.PrintErr($"'{nameof(overlayBluePrint)}' could not be loaded in Type: " + draft.Identifier + " ComponentTypeNR: " + componentNR + " path: " + overlay.overlayAnimTexturePath);
+                        Logger.PrintErr($"'{nameof(overlayBluePrint)}' could not be loaded in Type: " + draft.Identifier + " ComponentTypeNR: " + componentNR + " path: " + overlay.OverlayAnimTexturePath);
                         continue;
                     }
                     slotDataSets.Add(new AnimationSlotOverlayData()
                     {
-                        LightFlowOverlayPath = overlay.overlayAnimTexturePath,
-                        OffsetX = overlay.tileOffsetX,
-                        OffsetY = overlay.tileOffsetY,
-                        Side = overlay.rectSide
+                        LightFlowOverlayPath = overlay.OverlayAnimTexturePath,
+                        OffsetX = overlay.TileOffsetX,
+                        OffsetY = overlay.TileOffsetY,
+                        Side = overlay.RectSide
                     });
                 }
                 ComponentView componentView = new();

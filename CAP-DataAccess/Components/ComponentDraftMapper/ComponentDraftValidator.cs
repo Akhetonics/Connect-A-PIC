@@ -186,23 +186,23 @@ namespace CAP_DataAccess.Components.ComponentDraftMapper
             }
             try
             {
-                if (!ResourceExists(overlay.overlayAnimTexturePath))
+                if (!ResourceExists(overlay.OverlayAnimTexturePath))
                 {
-                    errorMsg += ErrorOverlayTexturePathNotExist + $" {nameof(overlay.overlayAnimTexturePath) + " " + overlay.overlayAnimTexturePath} does not exist on disk\n";
+                    errorMsg += ErrorOverlayTexturePathNotExist + $" {nameof(overlay.OverlayAnimTexturePath) + " " + overlay.OverlayAnimTexturePath} does not exist on disk\n";
                 }
             }
             catch (Exception ex)
             {
-                errorMsg += ErrorOverlayTexturePathNotExist + $" {nameof(overlay.overlayAnimTexturePath) + " '" + overlay?.overlayAnimTexturePath + "'" + ex.Message}' \n";
+                errorMsg += ErrorOverlayTexturePathNotExist + $" {nameof(overlay.OverlayAnimTexturePath) + " '" + overlay?.OverlayAnimTexturePath + "'" + ex.Message}' \n";
             }
 
-            if (overlay.tileOffsetX < 0)
+            if (overlay.TileOffsetX < 0)
             {
-                errorMsg += ErrorOverlayOffsetXSmaller0 + $" {nameof(overlay.tileOffsetX)} cannot be < 0\n";
+                errorMsg += ErrorOverlayOffsetXSmaller0 + $" {nameof(overlay.TileOffsetX)} cannot be < 0\n";
             }
-            if (overlay.tileOffsetY < 0)
+            if (overlay.TileOffsetY < 0)
             {
-                errorMsg += ErrorOverlayOffsetYSmaller0 + $" {nameof(overlay.tileOffsetY)} cannot be < 0\n";
+                errorMsg += ErrorOverlayOffsetYSmaller0 + $" {nameof(overlay.TileOffsetY)} cannot be < 0\n";
             }
             return errorMsg;
         }

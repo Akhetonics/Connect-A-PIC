@@ -1,6 +1,7 @@
-﻿using CAP_Core.Components;
+using CAP_Core.Components;
 using CAP_Core.ExternalPorts;
 using CAP_Core.Tiles;
+using CAP_DataAccess.Components.ComponentDraftMapper.DTOs;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.Scripts.Debuggers;
 using Godot;
@@ -18,11 +19,11 @@ namespace UnitTests
         [Fact]
         public void CheckRotatedAnimationSlots()
         {
-            AnimationSlot slot = new AnimationSlot(CAP_Core.ExternalPorts.LaserType.Red, new Godot.Vector2I(0, 0), RectSide.Right, null, null, new Godot.Vector2I(1,1));
-            LightAtPin lightAtPin = new LightAtPin(0, 0, RectSide.Right, CAP_Core.ExternalPorts.LaserType.Red, new System.Numerics.Complex(1, 0), 0);
+            AnimationSlot slot = new (LaserType.Red, new Godot.Vector2I(0, 0), RectSide.Right, FlowDirection.Both, null, null, new Godot.Vector2I(1,1));
+            LightAtPin lightAtPin = new (0, 0, RectSide.Right, LaserType.Red, new System.Numerics.Complex(1, 0), 0);
             var matchingBeforeRotation = slot.IsMatchingWithLightVector(lightAtPin);
             slot.RotateAttachedComponentCC(DiscreteRotation.R270);
-            lightAtPin = new LightAtPin(0, 0, RectSide.Down, CAP_Core.ExternalPorts.LaserType.Red, new System.Numerics.Complex(1, 0), 0);
+            lightAtPin = new LightAtPin(0, 0, RectSide.Down, LaserType.Red, new System.Numerics.Complex(1, 0), 0);
             var matchingAfterRotation = slot.IsMatchingWithLightVector(lightAtPin);
 
             matchingBeforeRotation.isMatching.ShouldBe(true, $"the lightVector should be at the right pin. Slot: {slot.Side}, light: {lightAtPin} " );
@@ -36,6 +37,7 @@ namespace UnitTests
                 LaserType.Red,
                 new Vector2I(1, 0), // Intentional mismatch in X offset
                 RectSide.Right,
+                FlowDirection.Both,
                 null,
                 null,
                 new Vector2I(1, 1));
@@ -62,6 +64,7 @@ namespace UnitTests
                 LaserType.Red,
                 new Vector2I(0, 1), // Intentional mismatch in Y offset
                 RectSide.Right,
+                FlowDirection.In,
                 null,
                 null,
                 new Vector2I(1, 1));
@@ -91,6 +94,7 @@ namespace UnitTests
                 LaserType.Red,
                 new Vector2I(0, 0),
                 RectSide.Right, // Intentional mismatch in Side
+                FlowDirection.Both,
                 null,
                 null,
                 new Vector2I(1, 1));
@@ -119,7 +123,7 @@ namespace UnitTests
                 LaserType.Red,
                 new Vector2I(0, 0),
                 RectSide.Right,
-                null,
+                FlowDirection.Both, null,
                 null,
                 new Vector2I(1, 1));
 

@@ -1,4 +1,4 @@
-﻿using CAP_Contracts.Logger;
+using CAP_Contracts.Logger;
 using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.Helpers;
 using CAP_Core.Tiles;
@@ -80,9 +80,10 @@ namespace UnitTests
                 {
                     new ()
                     {
-                        overlayAnimTexturePath = "res://Scenes/Components/DirectionalCoupler.tscn",
-                        tileOffsetX = 0,
-                        tileOffsetY = 0,
+                        OverlayAnimTexturePath = "res://Scenes/Components/DirectionalCoupler.tscn",
+                        FlowDirection = FlowDirection.In,
+                        TileOffsetX = 0,
+                        TileOffsetY = 0,
                     }
                 },
             };
