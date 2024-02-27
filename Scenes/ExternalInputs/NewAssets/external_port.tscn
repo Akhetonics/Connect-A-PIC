@@ -1,6 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://duapw8umf7gnn"]
+[gd_scene load_steps=7 format=3 uid="uid://duapw8umf7gnn"]
 
 [ext_resource type="Script" path="res://Scenes/ExternalInputs/NewAssets/ExternalPortView.cs" id="1_5avs6"]
+[ext_resource type="Texture2D" uid="uid://btiixf0ktgtmi" path="res://Scenes/ExternalInputs/NewAssets/ExternalInput.png" id="2_170e3"]
 [ext_resource type="Texture2D" uid="uid://by3bymn4ejijy" path="res://Scenes/ExternalInputs/NewAssets/ExternalOutput.png" id="2_tufcs"]
 [ext_resource type="Texture2D" uid="uid://cc6rldxq46dm7" path="res://Scenes/ExternalInputs/NewAssets/light.png" id="3_ml2q2"]
 [ext_resource type="Texture2D" uid="uid://ccp8jo3jul08s" path="res://Scenes/ExternalInputs/NewAssets/ArrowLight.png" id="3_pwvrn"]
@@ -8,6 +9,8 @@
 
 [node name="ExternalInput" type="Node2D"]
 script = ExtResource("1_5avs6")
+InputTexture = ExtResource("2_170e3")
+OutputTexture = ExtResource("2_tufcs")
 
 [node name="Texture" type="TextureRect" parent="."]
 texture_filter = 1
@@ -15,27 +18,39 @@ anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
 offset_left = -111.0
-offset_bottom = 64.0
+offset_bottom = 62.0
 grow_horizontal = 0
-texture = ExtResource("2_tufcs")
+texture = ExtResource("2_170e3")
 
-[node name="LightContainer" type="Node2D" parent="."]
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -111.0
+offset_bottom = 62.0
+grow_horizontal = 0
 
-[node name="OverallLight" type="PointLight2D" parent="LightContainer"]
-position = Vector2(-77, 33)
+[node name="ArrowLight" type="PointLight2D" parent="Control"]
+position = Vector2(61, 32)
+enabled = false
 color = Color(1, 0, 0, 1)
-texture = ExtResource("3_ml2q2")
-
-[node name="ArrowLight" type="PointLight2D" parent="LightContainer"]
-position = Vector2(-50, 33)
-color = Color(1, 0, 0, 1)
-energy = 7.5
+energy = 16.0
 texture = ExtResource("3_pwvrn")
 
-[node name="InnerLight" type="PointLight2D" parent="LightContainer"]
-position = Vector2(-77, 33)
+[node name="OverallLight" type="PointLight2D" parent="Control"]
+z_index = 1
+position = Vector2(34, 32)
+enabled = false
 color = Color(1, 0, 0, 1)
-energy = 31.65
+energy = 0.5
+texture = ExtResource("3_ml2q2")
+
+[node name="InnerLight" type="PointLight2D" parent="Control"]
+position = Vector2(34, 32)
+enabled = false
+color = Color(1, 0, 0, 1)
+energy = 16.0
 texture = ExtResource("5_1cbkh")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="."]
@@ -43,7 +58,14 @@ offset_left = -144.0
 offset_right = 1296.0
 offset_bottom = 640.0
 scale = Vector2(0.1, 0.1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/shadow_outline_size = 25
 theme_override_font_sizes/normal_font_size = 150
-text = "R:
-G:
-B:"
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+tab_size = 3
+
+[node name="LightContainer" type="Node2D" parent="."]

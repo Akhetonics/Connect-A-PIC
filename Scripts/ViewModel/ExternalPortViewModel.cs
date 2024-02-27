@@ -14,10 +14,14 @@ using System.Collections.Generic;
 using CAP_Core.LightCalculation;
 using CAP_Core.Components;
 using CAP_Core.Components.ComponentHelpers;
+using System.Diagnostics;
 
 
 public partial class ExternalPortViewModel : Node
 {
+    public ExternalPortView ExternalPortInstance { get; set; }
+    public PackedScene ExternalPortTemplate { get; set; }
+
     public GridView GridView { get; }
 
     //TODO: this violates MVVM so need to find another way (need to discuss)
@@ -25,21 +29,19 @@ public partial class ExternalPortViewModel : Node
     public GridManager Grid { get; }
     public List<ExternalPortView> Views { get; }
 
-
-    public event EventHandler<string> PowerChanged;
     public event EventHandler<bool> LightChanged;
 
-    public int TilePositionY { get; }
-    public double PowerRed { get; set; }
-    public double PowerGreen { get; set; }
-    public double PowerBlue { get; set; }
 
-
-    public ExternalPortViewModel(GridManager grid, GridView gridView, GridViewModel gridViewModel)
+    public ExternalPortViewModel(PackedScene externalPortTemplate, GridManager grid, GridView gridView, GridViewModel gridViewModel)
     {
+        ExternalPortTemplate = externalPortTemplate;
+        ExternalPortInstance = externalPortTemplate.Instantiate<ExternalPortView>();
+        ExternalPortInstance.Visible = false;
         GridViewModel = gridViewModel;
         GridView = gridView;
         Grid = grid;
+
+        Views = new List<ExternalPortView>();
 
         Grid.ExternalPorts.CollectionChanged += (object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) =>
         {
@@ -54,49 +56,7 @@ public partial class ExternalPortViewModel : Node
             LightChanged?.Invoke(this, e);
         };
 
-        GridViewModel.LightCalculator.LightCalculationChanged += (object sender, LightCalculationChangeEventArgs e) =>
-        {
-            var touchingComponent = grid.GetComponentAt(0, TilePositionY);
-
-            if (touchingComponent == null)
-            {
-                ResetPowers();
-                return;
-            };
-
-            //TODO: we use tilePositionY here which seems to be unique for each tile
-            //TODO: have to figure out how to do it properly
-            var offsetY = TilePositionY - touchingComponent.GridYMainTile;
-            var touchingPin = touchingComponent.PinIdLeftOut(0, offsetY);
-
-            if (touchingPin == null)
-            {
-                ResetPowers();
-                return;
-            };
-
-            var fieldOut = e.LightFieldVector[(Guid)touchingPin].Magnitude;
-
-            if (e.LaserInUse.Color == LightColor.Red)
-            {
-                PowerRed = fieldOut * fieldOut;
-            }
-            else if (e.LaserInUse.Color == LightColor.Green)
-            {
-                PowerGreen = fieldOut * fieldOut;
-            }
-            else
-            {
-                PowerBlue = fieldOut * fieldOut;
-            }
-
-            PowerChanged?.Invoke(this, AllColorsPower());
-        };
-
-        Grid = grid;
-        TilePositionY = 0; //TODO: find out what is this?
-
-        PowerChanged?.Invoke(this, AllColorsPower());
+        InitializeExternalPortViews(Grid.ExternalPorts);
     }
 
     private void InitializeExternalPortViews(ObservableCollection<ExternalPort> ExternalPorts)
@@ -104,70 +64,33 @@ public partial class ExternalPortViewModel : Node
         ExternalPortView portView;
         foreach (var port in ExternalPorts)
         {
+            portView = ExternalPortTemplate.Instantiate<ExternalPortView>();
+            GridView.DragDropProxy.AddChild(portView);
+
             if (port is ExternalInput input)
             {
                 if (input.LaserType == LaserType.Red)
                 {
-                    portView = new ExternalPortView(this).SetAsInput(1,0,0);
+                    portView.SetAsInput(this, 1,0,0);
                 }
                 else if (input.LaserType == LaserType.Green)
                 {
-                    portView = new ExternalPortView(this).SetAsInput(0, 1, 0);
+                    portView.SetAsInput(this, 0, 1, 0);
                 }
                 else
                 {
-                    portView = new ExternalPortView(this).SetAsInput(0, 0, 1);
+                    portView.SetAsInput(this, 0, 0, 1);
                 }
             }
             else
             {
-                portView = new ExternalPortView(this/*, port.TilePositionY*/).SetAsOutput();
-
-                //view = (PowerMeterView)ExternalOutputTemplate.Instantiate();
-                //view.GlobalPosition = new Vector2(GridView.DragDropProxy.GlobalPosition.X, 0); // y will be overridden below
-                //var powerMeterView = (PowerMeterView)view;
-
-
-                //TODO: figure out how to have one viewModel for each port, each one needs separate tilePositionY
-                //var powerMeterViewModel = new PowerMeterViewModel(Grid, port.TilePositionY, GridViewModel.LightCalculator);
-                //powerMeterView.Initialize(powerMeterViewModel);
+                portView.SetAsOutput(new PowerMeterViewModel(Grid, port.TilePositionY, GridViewModel.LightCalculator));
             }
 
-            Views.Add(portView);
-
             portView.Visible = true;
-            GridViewModel.GridView.DragDropProxy.AddChild(portView);
-            portView.Position = new Vector2(portView.Position.X - GridView.GlobalPosition.X, (GameManager.TilePixelSize) * port.TilePositionY);
+            portView.Position = new Vector2(0, (GameManager.TilePixelSize) * port.TilePositionY);
+            Views.Add(portView);
         }
-    }
-
-    public string AllColorsPower()
-    {
-        string allUsedPowers = "";
-
-        if (PowerRed > 0.005)
-        {
-            allUsedPowers += $"[color=#FF6666]R: {PowerRed:F2}[/color]\n";
-        }
-        if (PowerGreen > 0.005)
-        {
-            allUsedPowers += $"[color=#66FF66]G: {PowerGreen:F2}[/color]\n";
-        }
-        if (PowerBlue > 0.005)
-        {
-            allUsedPowers += $"[color=#6666FF]B: {PowerBlue:F2}[/color]";
-        }
-
-        // Removes the trailing newline character if any colors were added
-        return allUsedPowers.TrimEnd('\n');
-    }
-
-    private void ResetPowers()
-    {
-        PowerRed = 0;
-        PowerGreen = 0;
-        PowerBlue = 0;
-        PowerChanged?.Invoke(this, AllColorsPower());
     }
 
 }

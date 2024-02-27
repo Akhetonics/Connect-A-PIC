@@ -16,7 +16,7 @@ namespace ConnectAPIC.Scenes.ExternalPorts
         [Export] public Texture2D OutputTexture { set; get; }
 
         public ExternalPortViewModel ViewModel { get; set; }
-
+        public PowerMeterViewModel PowerMeterViewModel {  get; set; }
 
         List<PointLight2D> lightContainer;
         TextureRect currentTexture;
@@ -28,24 +28,8 @@ namespace ConnectAPIC.Scenes.ExternalPorts
         float maxPulseEnergy = 1.2f;
 
 
-        public ExternalPortView(ExternalPortViewModel viewModel) {
-            ViewModel = viewModel;
+        public ExternalPortView() {}
 
-            ViewModel.LightChanged += (object sender, bool e) =>
-            {
-                if (isInput) {
-                    if (e)
-                        TurnOn();
-                    else
-                        TurnOff();
-                }
-            };
-
-            viewModel.PowerChanged += (object sender, string e) =>
-            {
-                if (!isInput) DisplayPower(e);
-            };
-        }
 
         public override void _Ready()
         {
@@ -57,7 +41,7 @@ namespace ConnectAPIC.Scenes.ExternalPorts
                 lightContainer.Add(light);
             }
 
-            SetAsOutput();
+            InfoLabel = GetChild<RichTextLabel>(2);
         }
 
         public override void _Process(double delta)
@@ -69,16 +53,19 @@ namespace ConnectAPIC.Scenes.ExternalPorts
         }
 
 
-        public ExternalPortView SetAsOutput()
+        public ExternalPortView SetAsOutput(PowerMeterViewModel powerMeterViewModel)
         {
             isInput = false;
             currentTexture.Texture = OutputTexture;
             TurnOff();
 
+            PowerMeterViewModel = powerMeterViewModel;
+            PowerMeterViewModel.PowerChanged += (object sender, string e) => DisplayPower(e);
+
             return this;
         }
 
-        public ExternalPortView SetAsInput(float red, float green, float blue, float alpha = 1)
+        public ExternalPortView SetAsInput(ExternalPortViewModel viewModel, float red, float green, float blue, float alpha = 1)
         {
             isInput = true;
             lightsOn = false;
@@ -87,6 +74,9 @@ namespace ConnectAPIC.Scenes.ExternalPorts
 
             TurnOff();
             SetLightColor(red, green, blue, alpha);
+
+            ViewModel = viewModel;
+            ViewModel.LightChanged += (object sender, bool e) => ToggleLight(e);
 
             return this;
         }
@@ -132,6 +122,15 @@ namespace ConnectAPIC.Scenes.ExternalPorts
             return this;
         }
 
+        private void ToggleLight(bool isLightOn){
+            if (isInput)
+            {
+                if (isLightOn)
+                    TurnOn();
+                else
+                    TurnOff();
+            }
+        }
 
         private void DisplayPower(string labelText)
         {
