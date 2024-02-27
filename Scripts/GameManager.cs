@@ -52,10 +52,7 @@ namespace ConnectAPic.LayoutWindow
         [Export] public int FieldWidth { get; set; } = 24;
 
         [Export] public int FieldHeight { get; set; } = 12;
-        [Export] public PackedScene ExternalOutputTemplate { get; set; }
-        [Export] public Node2D ExternalInputRedTemplate { get; set; }
-        [Export] public Node2D ExternalInputGreenTemplate { get; set; }
-        [Export] public Node2D ExternalInputBlueTemplate { get; set; }
+        [Export] public PackedScene ExternalPortTemplate { get; set; }
         [Export] public GameConsole InGameConsole { get; set; }
         private PCKLoader PCKLoader { get; set; }
         public static int TilePixelSize { get; private set; } = 62;
@@ -68,6 +65,7 @@ namespace ConnectAPic.LayoutWindow
         private LogSaver LogSaver { get; set; }
         private List<(String log, bool isError)> InitializationLogs = new();
         public GridViewModel GridViewModel { get; private set; }
+        public ExternalPortViewModel ExternalPortViewModel { get; private set; }
         public ComponentFactory ComponentModelFactory { get; set; }
         public const string ComponentFolderPath = "res://Scenes/Components";
 
@@ -80,8 +78,8 @@ namespace ConnectAPic.LayoutWindow
                 InitializationLogs.Add(("Program Version: " + Version, false));
                 ComponentModelFactory = new ComponentFactory();
                 InitializeGridAndGridView(ComponentModelFactory);
-                InitializeExternalPortViews(Grid.ExternalPorts);
                 PCKLoader = new(ComponentFolderPath, Logger);
+
             }
             catch (Exception ex)
             {
@@ -95,6 +93,8 @@ namespace ConnectAPic.LayoutWindow
         {
             try
             {
+                ExternalPortViewModel = new ExternalPortViewModel(ExternalPortTemplate, Grid, GridView, GridViewModel);
+
                 PCKLoader.LoadStandardPCKs();
                 List<ComponentDraft> componentDrafts = EquipViewComponentFactoryWithJSONDrafts();
                 this.CheckForNull(x => x.ToolBoxPath);
@@ -176,45 +176,5 @@ namespace ConnectAPic.LayoutWindow
             foreach (var d in draftsAndErrors)
                 InitializationLogs.Add((d.error, true));
         }
-
-        private void InitializeExternalPortViews(List<ExternalPort> ExternalPorts)
-        {
-            ExternalInputRedTemplate.Visible = false;
-            ExternalInputGreenTemplate.Visible = false;
-            ExternalInputBlueTemplate.Visible = false;
-            Node2D view;
-            foreach (var port in ExternalPorts)
-            {
-                
-                if (port is ExternalInput input)
-                {
-                    if (input.LaserType == LaserType.Red)
-                    {
-                        view = (Node2D)ExternalInputRedTemplate.Duplicate();
-                    }
-                    else if (input.LaserType == LaserType.Green)
-                    {
-                        view = (Node2D)ExternalInputGreenTemplate.Duplicate();
-                    }
-                    else
-                    {
-                        view = (Node2D)ExternalInputBlueTemplate.Duplicate();
-                    }
-                    
-                }
-                else
-                {
-                    view = (PowerMeterView)ExternalOutputTemplate.Instantiate();
-                    view.GlobalPosition = new Vector2(GridView.DragDropProxy.GlobalPosition.X, 0); // y will be overridden below
-                    var powerMeterView = (PowerMeterView)view;
-                    var powerMeterViewModel = new PowerMeterViewModel(Grid, port.TilePositionY, GridViewModel.LightCalculator);
-                    powerMeterView.Initialize(powerMeterViewModel);
-                }
-                view.Visible = true;
-                GridViewModel.GridView.DragDropProxy.AddChild(view);
-                view.Position = new Godot.Vector2(view.Position.X - GridView.GlobalPosition.X, (GameManager.TilePixelSize) * port.TilePositionY);
-            }
-        }
-
     }
 }
