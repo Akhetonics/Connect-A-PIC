@@ -1,5 +1,6 @@
-﻿using CAP_Core.ExternalPorts;
+using CAP_Core.ExternalPorts;
 using CAP_Core.Tiles;
+using CAP_DataAccess.Components.ComponentDraftMapper.DTOs;
 using ConnectAPic.LayoutWindow;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.Scripts.Helpers;
@@ -47,7 +48,7 @@ namespace ConnectAPIC.Scripts.View.ComponentViews
             foreach (var slotData in animationSlotOverlays)
             {
                 var lightOverlayBaseTexture = ResourceLoader.Load<Texture2D>(slotData.LightFlowOverlayPath);
-                slots.AddRange(CreateRGBAnimSlots(slotData.Side, lightOverlayBaseTexture, new Vector2I(slotData.OffsetX, slotData.OffsetY)));
+                slots.AddRange(CreateRGBAnimSlots(slotData.Side, slotData.FlowDirection, lightOverlayBaseTexture, new Vector2I(slotData.OffsetX, slotData.OffsetY)));
             }
             return slots;
         }
@@ -64,13 +65,13 @@ namespace ConnectAPIC.Scripts.View.ComponentViews
             OverlayBluePrint ??= GodotObject.FindChild("?verlay", true, false) as Sprite2D;
             OverlayBluePrint ??= GodotObject.FindChild("*?verlay*", true, false) as Sprite2D;
         }
-        protected List<AnimationSlot> CreateRGBAnimSlots(RectSide inflowSide, Godot.Texture overlayAnimTexture, Vector2I tileOffset)
+        protected List<AnimationSlot> CreateRGBAnimSlots(RectSide inflowSide, FlowDirection flowDirection, Godot.Texture overlayAnimTexture, Vector2I tileOffset)
         {
             return new List<AnimationSlot>()
             {
-                new (LaserType.Red, tileOffset, inflowSide, OverlayRed, overlayAnimTexture,new Godot.Vector2I(WidthInTiles, HeightInTiles)),
-                new (LaserType.Green,tileOffset, inflowSide, OverlayGreen, overlayAnimTexture, new Godot.Vector2I(WidthInTiles, HeightInTiles)),
-                new (LaserType.Blue,tileOffset, inflowSide, OverlayBlue, overlayAnimTexture, new Godot.Vector2I(WidthInTiles, HeightInTiles)),
+                new (LaserType.Red, tileOffset, inflowSide, flowDirection, OverlayRed, overlayAnimTexture,new Godot.Vector2I(WidthInTiles, HeightInTiles)),
+                new (LaserType.Green,tileOffset, inflowSide, flowDirection, OverlayGreen, overlayAnimTexture, new Godot.Vector2I(WidthInTiles, HeightInTiles)),
+                new (LaserType.Blue,tileOffset, inflowSide, flowDirection, OverlayBlue, overlayAnimTexture, new Godot.Vector2I(WidthInTiles, HeightInTiles)),
             };
         }
 
@@ -122,8 +123,14 @@ namespace ConnectAPIC.Scripts.View.ComponentViews
             var outFlowPowerAndPhase = new Godot.Vector4((float)outFlowPower, (float)lightAtPin.lightFieldOutFlow.Phase, 0, 0);
             if (slot?.BaseOverlaySprite?.Material is ShaderMaterial shaderMat)
             {
-                shaderMat.SetShaderParameter(ShaderParameterNames.LightInFlow + shaderSlotNumber, inFlowPowerAndPhase);
-                shaderMat.SetShaderParameter(ShaderParameterNames.LightOutFlow + shaderSlotNumber, outFlowPowerAndPhase);
+                if(slot?.FlowDirection == FlowDirection.In || slot?.FlowDirection == FlowDirection.Both)
+                {
+                    shaderMat.SetShaderParameter(ShaderParameterNames.LightInFlow + shaderSlotNumber, inFlowPowerAndPhase);
+                }
+                if (slot?.FlowDirection == FlowDirection.Out || slot?.FlowDirection == FlowDirection.Both)
+                {
+                    shaderMat.SetShaderParameter(ShaderParameterNames.LightOutFlow + shaderSlotNumber, outFlowPowerAndPhase);
+                }
                 shaderMat.SetShaderParameter(ShaderParameterNames.Animation + shaderSlotNumber, slot.Texture);
                 shaderMat.SetShaderParameter(ShaderParameterNames.LightColor + shaderSlotNumber, slot.MatchingLaser.Color.ToGodotColor());
             }

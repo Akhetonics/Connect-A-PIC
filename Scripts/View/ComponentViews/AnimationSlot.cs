@@ -3,6 +3,7 @@ using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.ExternalPorts;
 using CAP_Core.Helpers;
 using CAP_Core.Tiles;
+using CAP_DataAccess.Components.ComponentDraftMapper.DTOs;
 using ConnectAPic.LayoutWindow;
 using Godot;
 using System;
@@ -14,13 +15,14 @@ namespace ConnectAPIC.LayoutWindow.View
 {
     public class AnimationSlot
     {
-        public AnimationSlot(LaserType color, Vector2I tileOffsetXY, RectSide side, Sprite2D baseOverlaySprite, Texture texture, Vector2I componentSizeInTiles)
+        public AnimationSlot(LaserType color, Vector2I tileOffsetXY, RectSide side, FlowDirection flowDirection, Sprite2D baseOverlaySprite, Texture texture, Vector2I componentSizeInTiles)
         {
             if (componentSizeInTiles.X < 1) throw new WrongSizeException("component Width must be at least 1");
             if (componentSizeInTiles.Y < 1) throw new WrongSizeException("component Height must be at least 1");
             this.MatchingLaser = color;
             TileOffset = tileOffsetXY;
             Side = side;
+            FlowDirection = flowDirection;
             BaseOverlaySprite = baseOverlaySprite;
             this.Texture = texture;
             ComponentSizeInTiles = componentSizeInTiles;
@@ -73,6 +75,7 @@ namespace ConnectAPIC.LayoutWindow.View
         public Vector2I TileOffset { get; private set; }
         public DiscreteRotation Rotation { get; private set; }
         public RectSide Side { get; private set; }
+        public FlowDirection FlowDirection { get; }
         public Sprite2D BaseOverlaySprite { get; }
         public Texture Texture { get; }
         public Vector2I ComponentSizeInTiles { get; }
