@@ -14,6 +14,7 @@ using Shouldly;
 using Chickensoft.GodotTestDriver;
 using Chickensoft.GodotTestDriver.Util;
 using CAP_DataAccess.Components.ComponentDraftMapper.DTOs;
+using CAP_Core.Components.ComponentHelpers;
 
 namespace ConnectAPIC.test.src
 {
@@ -51,61 +52,78 @@ namespace ConnectAPIC.test.src
         }
 
         [Test]
-        public async Task TestShaderAssignment()
+        public async Task TestMMI3x3LightPowers()
         {
             var component = MyGameManager.Grid.GetComponentAt(MMI3x3.ViewModel.GridX, MMI3x3.ViewModel.GridY);
-            var lightIntensity = 1.0;
+            var lightPower = (float)MyGameManager.Grid.GetUsedExternalInputs().FirstOrDefault(i => i.Input.LaserType == LaserType.Red).Input.InFlowPower.Magnitude;
+            MyGameManager.GridViewModel.LightCalculator.LightCalculationChanged += (object sender, CAP_Core.LightCalculation.LightCalculationChangeEventArgs e) =>
+            {
+                var PinUpRight = (Guid)component.PinIdRightOut(2, 0);
+                var PinMiddleRight = (Guid)component.PinIdRightOut(2, 1);
+                var PinDownRight = (Guid)component.PinIdRightOut(2, 2);
+                var PowerUpRight = e.LightFieldVector[PinUpRight];
+                var PowerMiddleRight = e.LightFieldVector[PinMiddleRight];
+                var PowerDownRight = e.LightFieldVector[PinDownRight];
+
+                PowerUpRight.ShouldBe(lightPower / 3);
+                PowerMiddleRight.ShouldBe(lightPower / 3);
+                PowerDownRight.ShouldBe(lightPower / 3);
+            };
+
             MyGameManager.GridViewModel.Grid.IsLightOn = true;
             await MyGameManager.GridViewModel.ShowLightPropagation();
-            var lightGloballyOn = await CheckShaderValuesOnRightPinsAsync();
-            var rightSlots = MMI3x3.OverlayManager.AnimationSlots.Where(slot =>
-                      slot.MatchingLaser.WaveLengthInNm == RedLaser.WaveLengthInNm
-                      && slot.Side == RectSide.Right
-                      && (ShaderMaterial)slot.BaseOverlaySprite?.Material != null
-                      ).ToList();
-            var rightUpSlot = rightSlots.Single(s => s.TileOffset == new Vector2I(2, 0));
-            var rightMiddleSlot = rightSlots.Single(s => s.TileOffset == new Vector2I(2, 1));
-            var rightDownSlot = rightSlots.Single(s => s.TileOffset == new Vector2I(2, 2));
+            
+        }
+
+        [Test]
+        public async Task TestMMI3x3ShaderValues()
+        {
+            var component = MyGameManager.Grid.GetComponentAt(MMI3x3.ViewModel.GridX, MMI3x3.ViewModel.GridY);
+            var lightPower = (float) MyGameManager.Grid.GetUsedExternalInputs().FirstOrDefault(i => i.Input.LaserType == LaserType.Red).Input.InFlowPower.Magnitude;
+            MyGameManager.GridViewModel.Grid.IsLightOn = true;
+            await MyGameManager.GridViewModel.ShowLightPropagation();
+            await TestScene.GetTree().NextFrame(2); // wait some frames to let the shader be applied
+            var redSlots = MMI3x3.OverlayManager.AnimationSlots.Where(slot => slot.MatchingLaser.WaveLengthInNm == RedLaser.WaveLengthInNm).ToList();
+            var rightUpSlot = redSlots.Single(s => s.TileOffset == new Vector2I(2, 0));
+            var rightMiddleSlot = redSlots.Single(s => s.TileOffset == new Vector2I(2, 1));
+            var rightDownSlot = redSlots.Single(s => s.TileOffset == new Vector2I(2, 2));
+            var leftUpSlot = redSlots.Single(s => s.TileOffset == new Vector2I(0, 0));
+            var leftMiddleSlot = redSlots.Single(s => s.TileOffset == new Vector2I(0, 1));
+            var leftDownSlot = redSlots.Single(s => s.TileOffset == new Vector2I(0, 2));
+            // meassure if the animation has the proper alpha values in the shader
+            var lightUpLeft = GetLightAtSlot(leftUpSlot, 1);
+            var lightMiddleLeft = GetLightAtSlot(leftUpSlot, 2);
+            var lightDownLeft = GetLightAtSlot(leftUpSlot, 3);
+            var lightUpRight = GetLightAtSlot(rightUpSlot, 4);
+            var lightMiddleRight = GetLightAtSlot(rightUpSlot, 5);
+            var lightDownRight = GetLightAtSlot(rightUpSlot, 6);
 
             // assert
-            
             MMI3x3.WidthInTiles.ShouldBe(3);
             MMI3x3.HeightInTiles.ShouldBe(3);
             rightUpSlot.FlowDirection.ShouldBe(FlowDirection.In);
             rightMiddleSlot.FlowDirection.ShouldBe(FlowDirection.In);
             rightDownSlot.FlowDirection.ShouldBe(FlowDirection.In);
 
-            lightGloballyOn.OutRightUp.X.ShouldBe((float)(1 / 3 * lightIntensity));
-            lightGloballyOn.OutRightMiddle.X.ShouldBe((float)(1 / 3 * lightIntensity));
-            lightGloballyOn.OutRightDown.X.ShouldBe((float)(1 / 3 * lightIntensity), 0.01);
+            lightUpLeft.inflow.ShouldBe(lightPower/3);
+            lightMiddleLeft.inflow.ShouldBe(lightPower / 3);
+            lightDownLeft.inflow.ShouldBe(lightPower / 3);
+            lightUpRight.inflow.ShouldBe(0);
+            lightMiddleRight.inflow.ShouldBe(0);
+            lightDownRight.inflow.ShouldBe(0);
+
+            // we can only meassure the pins that control the alpha values of the shader - the others will have a value of 0
+            lightUpLeft.outflow.ShouldBe(0);
+            lightMiddleLeft.outflow.ShouldBe(0);
+            lightDownLeft.outflow.ShouldBe(0);
         }
 
-        private async Task<(Vector4 OutRightUp, Vector4 OutRightMiddle, Vector4 OutRightDown)> CheckShaderValuesOnRightPinsAsync()
-        {
-            await TestScene.GetTree().NextFrame(3);
-            // get the shader-light intensity value on the left side
-            // because only left is defined in the Straight Component (it only has one set of RGB-Overlays and only uses the left in/out values)
-            int animationSlotNrUp = 4; // the number of the slot (1-based as the first slot should be on 1)
-            int animationSlotNrMiddle = 5;
-            int animationSlotNrDown = 6;
-            var rightSlots = MMI3x3.OverlayManager.AnimationSlots.Where(slot =>
-                      slot.MatchingLaser.WaveLengthInNm == RedLaser.WaveLengthInNm
-                      && slot.Side == RectSide.Right
-                      && (ShaderMaterial)slot.BaseOverlaySprite?.Material != null
-                      ).ToList();
-            var rightUpSlot = rightSlots.Single(s => s.TileOffset == new Vector2I(2, 0));
-            var rightMiddleSlot = rightSlots.Single(s => s.TileOffset == new Vector2I(2, 1));
-            var rightDownSlot = rightSlots.Single(s => s.TileOffset == new Vector2I(2, 2));
-            Vector4 rightUpLight = GetLightAtSlot(rightUpSlot, animationSlotNrUp);
-            Vector4 rightMiddleLight = GetLightAtSlot(rightMiddleSlot, animationSlotNrMiddle);
-            Vector4 rightDownLight = GetLightAtSlot(rightMiddleSlot, animationSlotNrDown);
-            return (rightUpLight, rightMiddleLight, rightDownLight);
-        }
-
-        private static Vector4 GetLightAtSlot(AnimationSlot rightUpSlot, int animationSlotNumber)
+        private static (float inflow, float outflow ) GetLightAtSlot(AnimationSlot rightUpSlot, int animationSlotNumber)
         {
             var rightSlotShader = (ShaderMaterial)rightUpSlot.BaseOverlaySprite.Material ?? throw new Exception("Shader is not properly assigned to Overlay");
-            return (Vector4)rightSlotShader.GetShaderParameter(ShaderParameterNames.LightOutFlow + animationSlotNumber);
+            var shaderValueInFlow = (Vector4)rightSlotShader.GetShaderParameter(ShaderParameterNames.LightInFlow + animationSlotNumber);
+            var shaderValueOutFlow = (Vector4)rightSlotShader.GetShaderParameter(ShaderParameterNames.LightOutFlow + animationSlotNumber);
+            return (shaderValueInFlow.X, shaderValueOutFlow.X);
         }
 
         [Cleanup]

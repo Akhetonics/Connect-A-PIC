@@ -1,4 +1,4 @@
-﻿using CAP_Core;
+using CAP_Core;
 using CAP_Core.Components;
 using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.Components.Creation;
@@ -14,6 +14,7 @@ namespace UnitTests
 {
     public class TestComponentFactory
     {
+        public static string MMI3x3 => GetResourceContent("MMI3x3");
         public static string StraightWGJson => GetResourceContent("StraightWG");
         public static string DirectionalCouplerJSON => GetResourceContent("DirectionalCouplerDraft");
         public static string GetResourceContent(string resourcePath)
