@@ -94,25 +94,65 @@ namespace UnitTests.Properties {
         
         /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die {
-        ///    &quot;fileFormatVersion&quot;: 1,
-        ///    &quot;identifier&quot;: &quot;Straight&quot;,
-        ///    &quot;nazcaFunctionParameters&quot;: &quot;&quot;,
-        ///    &quot;nazcaFunctionName&quot;: &quot;placeCell_StraightWG&quot;,
-        ///    &quot;sceneResPath&quot;: &quot;res://Scenes/Components/Straight/StraightWaveGuide.tscn&quot;,
-        ///    &quot;deltaLength&quot;: 0,
-        ///    &quot;widthInTiles&quot;: 1,
-        ///    &quot;heightInTiles&quot;: 1,
-        ///    &quot;pins&quot;: [
-        ///        {
-        ///            &quot;number&quot;: 0,
-        ///            &quot;name&quot;: &quot;west&quot;,
-        ///            &quot;matterType&quot;: 1,
-        ///            &quot;side&quot;: 2,
-        ///            &quot;partX&quot;: 0,
-        ///            &quot;partY&quot;: 0
-        ///        },
-        ///        {
-        ///            &quot;number&quot;: 1 [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
+        ///  &quot;fileFormatVersion&quot;: 1,
+        ///  &quot;identifier&quot;: &quot;MMI3x3&quot;,
+        ///  &quot;nazcaFunctionParameters&quot;: &quot;&quot;,
+        ///  &quot;nazcaFunctionName&quot;: &quot;placeCell_MMI3x3&quot;,
+        ///  &quot;sceneResPath&quot;: &quot;res://Scenes/Components/MMI3x3/MMI3x3.tscn&quot;,
+        ///  &quot;widthInTiles&quot;: 3,
+        ///  &quot;heightInTiles&quot;: 3,
+        ///  &quot;pins&quot;: [
+        ///	{
+        ///	  &quot;number&quot;: 0,
+        ///	  &quot;name&quot;: &quot;west0&quot;,
+        ///	  &quot;matterType&quot;: 1,
+        ///	  &quot;side&quot;: 2,
+        ///	  &quot;partX&quot;: 0,
+        ///	  &quot;partY&quot;: 0
+        ///	},
+        ///	{
+        ///	  &quot;number&quot;: 1,
+        ///	  &quot;name&quot;: &quot;east0&quot;,
+        ///	  &quot;matterType&quot;: 1,
+        ///	  &quot;side&quot;: 0,
+        ///	  &quot;partX&quot;: 2,
+        ///	  &quot;partY&quot;: 0
+        ///	},
+        ///	{
+        ///	  &quot;number&quot;: 2,
+        ///	  &quot;n [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
+        /// </summary>
+        internal static string MMI3x3 {
+            get {
+                return ResourceManager.GetString("MMI3x3", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Sucht eine lokalisierte Zeichenfolge, die {
+        ///  &quot;fileFormatVersion&quot;: 1,
+        ///  &quot;identifier&quot;: &quot;Straight&quot;,
+        ///  &quot;nazcaFunctionParameters&quot;: &quot;&quot;,
+        ///  &quot;nazcaFunctionName&quot;: &quot;placeCell_StraightWG&quot;,
+        ///  &quot;sceneResPath&quot;: &quot;res://Scenes/Components/Straight/StraightWaveGuide.tscn&quot;,
+        ///  &quot;deltaLength&quot;: 0,
+        ///  &quot;widthInTiles&quot;: 1,
+        ///  &quot;heightInTiles&quot;: 1,
+        ///  &quot;pins&quot;: [
+        ///    {
+        ///      &quot;number&quot;: 0,
+        ///      &quot;name&quot;: &quot;west&quot;,
+        ///      &quot;matterType&quot;: 1,
+        ///      &quot;side&quot;: 2,
+        ///      &quot;partX&quot;: 0,
+        ///      &quot;partY&quot;: 0
+        ///    },
+        ///    {
+        ///      &quot;number&quot;: 1,
+        ///      &quot;name&quot;: &quot;east&quot;,
+        ///      &quot;matterType&quot;: 1,
+        ///      &quot;side&quot;: 0,
+        ///      &quot;p [Rest der Zeichenfolge wurde abgeschnitten]&quot;; ähnelt.
         /// </summary>
         internal static string StraightWG {
             get {

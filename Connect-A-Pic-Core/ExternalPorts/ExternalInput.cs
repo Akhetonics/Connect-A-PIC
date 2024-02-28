@@ -8,10 +8,10 @@ namespace CAP_Core.ExternalPorts
         public LaserType LaserType { get; }
         public Complex InFlowPower { get; set; }
 		public Complex InFlowField => Complex.FromPolarCoordinates(Math.Sqrt(InFlowPower.Magnitude), InFlowPower.Phase);
-		public ExternalInput(string pinName, LaserType inputLaserType, int tilePositionY, Complex lightInflow) : base(pinName, tilePositionY)
+		public ExternalInput(string pinName, LaserType inputLaserType, int tilePositionY, Complex inflowPower) : base(pinName, tilePositionY)
 		{
             LaserType = inputLaserType;
-            InFlowPower = lightInflow;
+            InFlowPower = inflowPower;
 		}
 	}
 }

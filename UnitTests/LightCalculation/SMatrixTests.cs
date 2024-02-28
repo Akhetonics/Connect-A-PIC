@@ -5,7 +5,7 @@ using CAP_Core.Grid;
 using CAP_Core.LightCalculation;
 using System.Numerics;
 
-namespace UnitTests.Components
+namespace UnitTests.LightCalculation
 {
     public class SMatrixTests
     {
@@ -16,17 +16,17 @@ namespace UnitTests.Components
             var grid = new GridManager(20, 10);
             grid.PlaceComponent(0, grid.ExternalPorts[0].TilePositionY, directionalCoupler);
             var laserType = grid.GetUsedExternalInputs().First().Input.LaserType;
-            var gridSMatrixAnalyzer = new GridLightCalculator(grid);
+            var gridSMatrixAnalyzer = new GridLightCalculator(new SystemMatrixBuilder(grid), grid);
             var lightPropagation = await gridSMatrixAnalyzer.CalculateFieldPropagationAsync(new CancellationTokenSource(), laserType.WaveLengthInNm);
-            
+
             var directionalCouplerPowerIn = lightPropagation[(Guid)directionalCoupler.PinIdLeftIn()];
             var directionalCouplerPowerOutUp = lightPropagation[(Guid)directionalCoupler.PinIdRightOut(1, 0)];
             var directionalCouplerPowerOutDown = lightPropagation[(Guid)directionalCoupler.PinIdRightOut(1, 1)];
 
 
-            Assert.Equal(1, Math.Pow(directionalCouplerPowerIn.Magnitude,2), 0.000000001);
-            Assert.Equal(0.5, Math.Pow(directionalCouplerPowerOutUp.Magnitude,2), 0.000000001);
-            Assert.Equal(0.5, Math.Pow(directionalCouplerPowerOutDown.Magnitude,2), 0.000000001);
+            Assert.Equal(1, Math.Pow(directionalCouplerPowerIn.Magnitude, 2), 0.000000001);
+            Assert.Equal(0.5, Math.Pow(directionalCouplerPowerOutUp.Magnitude, 2), 0.000000001);
+            Assert.Equal(0.5, Math.Pow(directionalCouplerPowerOutDown.Magnitude, 2), 0.000000001);
         }
 
         [Fact]
@@ -47,7 +47,7 @@ namespace UnitTests.Components
 
             //act
             var laserType = grid.GetUsedExternalInputs().First().Input.LaserType;
-            var gridSMatrixAnalyzer = new GridLightCalculator(grid);
+            var gridSMatrixAnalyzer = new GridLightCalculator(new SystemMatrixBuilder(grid), grid);
             var lightPropagation = await gridSMatrixAnalyzer.CalculateFieldPropagationAsync(new CancellationTokenSource(), laserType.WaveLengthInNm);
 
             // straight WG
@@ -61,8 +61,8 @@ namespace UnitTests.Components
             var firstFieldOutDown = lightPropagation[(Guid)directionalCoupler.PinIdRightOut(1, 1)];
             var firstCouplerPower = Math.Pow(firstFieldOutUp.Magnitude, 2) + Math.Pow(firstFieldOutDown.Magnitude, 2);
             // second coupler
-            var fieldInUp = lightPropagation[(Guid)directionalCoupler2.PinIdLeftIn(0,0)];
-            var fieldInDown = lightPropagation[(Guid)directionalCoupler2.PinIdLeftIn(0,1)];
+            var fieldInUp = lightPropagation[(Guid)directionalCoupler2.PinIdLeftIn(0, 0)];
+            var fieldInDown = lightPropagation[(Guid)directionalCoupler2.PinIdLeftIn(0, 1)];
             var fieldOutUp = lightPropagation[(Guid)directionalCoupler2.PinIdRightOut(1, 0)];
             var fieldOutDown = lightPropagation[(Guid)directionalCoupler2.PinIdRightOut(1, 1)];
             var powerOutUp = Math.Pow(fieldOutUp.Magnitude, 2);
@@ -70,24 +70,24 @@ namespace UnitTests.Components
             var powerSum2 = powerOutUp + powerOutDown;
 
             double phaseShiftThroughWaveGuide = 1.2545454545433;
-            
-            var calculatedFieldOutUp = CalculateDirectionalCouplerField(fieldInUp  , fieldInDown , slider.Value, phaseShiftThroughWaveGuide); 
-            var calculatedFieldOutDown = CalculateDirectionalCouplerField(fieldInDown, fieldInUp , slider.Value, phaseShiftThroughWaveGuide);
+
+            var calculatedFieldOutUp = CalculateDirectionalCouplerField(fieldInUp, fieldInDown, slider.Value, phaseShiftThroughWaveGuide);
+            var calculatedFieldOutDown = CalculateDirectionalCouplerField(fieldInDown, fieldInUp, slider.Value, phaseShiftThroughWaveGuide);
             var powerED = Math.Pow(calculatedFieldOutUp.Magnitude, 2);
             var powerEB = Math.Pow(calculatedFieldOutDown.Magnitude, 2);
             var powerSum = powerED + powerEB;
 
-            Assert.True(AreComplexNumbersEqual(calculatedFieldOutUp ,fieldOutUp));
-            Assert.True(AreComplexNumbersEqual(calculatedFieldOutDown ,fieldOutDown));
+            Assert.True(AreComplexNumbersEqual(calculatedFieldOutUp, fieldOutUp));
+            Assert.True(AreComplexNumbersEqual(calculatedFieldOutDown, fieldOutDown));
         }
 
-        private static Complex CalculateDirectionalCouplerField( Complex inputUp, Complex inputDown, double lightFlipRatio, double waveGuidePhaseShift)
+        private static Complex CalculateDirectionalCouplerField(Complex inputUp, Complex inputDown, double lightFlipRatio, double waveGuidePhaseShift)
         {
             return Complex.Sqrt(1 - lightFlipRatio) * inputUp * Complex.Exp(Complex.ImaginaryOne * waveGuidePhaseShift) +
-                   Complex.Sqrt(    lightFlipRatio) * inputDown * Complex.Exp(Complex.ImaginaryOne * (0.5 * Math.PI + waveGuidePhaseShift )) ;// for now d = 0.5 because the phaseShift with d = slider * pi + PhiNew odes not work
+                   Complex.Sqrt(lightFlipRatio) * inputDown * Complex.Exp(Complex.ImaginaryOne * (0.5 * Math.PI + waveGuidePhaseShift));// for now d = 0.5 because the phaseShift with d = slider * pi + PhiNew odes not work
         }
-        
-        private static bool AreComplexNumbersEqual(Complex num1, Complex num2 , double Tolerance = 1e-6)
+
+        private static bool AreComplexNumbersEqual(Complex num1, Complex num2, double Tolerance = 1e-6)
         {
             bool magnitudeCloseEnough = Math.Abs(num1.Magnitude - num2.Magnitude) < Tolerance;
             bool phaseCloseEnough = Math.Abs(num1.Phase - num2.Phase) < Tolerance;
@@ -110,9 +110,9 @@ namespace UnitTests.Components
             grid.PlaceComponent(0, inputPort.TilePositionY + 1, rotatedStraight);
 
             var laserType = grid.GetUsedExternalInputs().First().Input.LaserType;
-            var gridSMatrixAnalyzer = new GridLightCalculator(grid);
+            var gridSMatrixAnalyzer = new GridLightCalculator(new SystemMatrixBuilder(grid), grid);
             var lightValues = await gridSMatrixAnalyzer.CalculateFieldPropagationAsync(new CancellationTokenSource(), laserType.WaveLengthInNm);
-            
+
             // test straightComponent light throughput
             var straightCompLightVal = lightValues[(Guid)straight.PinIdRightOut()];
 
@@ -122,8 +122,8 @@ namespace UnitTests.Components
 
             Assert.Contains((Guid)secondStraight.PinIdLeftOut(), lightValues);
             Assert.Equal(1, Math.Pow(straightCompLightVal.Real, 2), 0.000000001);
-            Assert.Equal(0.5, Math.Pow(circuitLightVal.Real,2), 0.000000001);
-            
+            Assert.Equal(0.5, Math.Pow(circuitLightVal.Real, 2), 0.000000001);
+
         }
         [Fact]
         public void TestSystemSMatrixManually()

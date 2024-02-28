@@ -32,13 +32,15 @@ namespace ConnectAPIC.LayoutWindow.View
             foreach (var componentDraft in drafts)
             {
                 PackedScene packedScene;
-                try {
+                try
+                {
                     packedScene = GD.Load<PackedScene>(componentDraft.SceneResPath);
-                    if(packedScene == null)
+                    if (packedScene == null)
                     {
                         throw new ArgumentException(componentDraft.SceneResPath);
                     }
-                } catch( Exception ex)
+                }
+                catch (Exception ex)
                 {
                     Logger.PrintErr($"Error Loading PackedScene '{componentDraft?.SceneResPath}' of Component: {componentDraft?.Identifier} ex: {ex.Message} )");
                     continue;
@@ -75,17 +77,20 @@ namespace ConnectAPIC.LayoutWindow.View
                         Logger.PrintErr($"'{nameof(overlayBluePrint)}' could not be loaded in Type: " + draft.Identifier + " ComponentTypeNR: " + componentNR + " path: " + overlay.OverlayAnimTexturePath);
                         continue;
                     }
-                    slotDataSets.Add(new AnimationSlotOverlayData()
-                    {
-                        LightFlowOverlayPath = overlay.OverlayAnimTexturePath,
-                        OffsetX = overlay.TileOffsetX,
-                        OffsetY = overlay.TileOffsetY,
-                        Side = overlay.RectSide
-                    });
+                    slotDataSets.Add(
+                        new AnimationSlotOverlayData(
+                            overlay.OverlayAnimTexturePath,
+                            overlay.RectSide,
+                            overlay.FlowDirection ?? FlowDirection.Both,
+                            overlay.TileOffsetX,
+                            overlay.TileOffsetY
+                        ));
                 }
                 ComponentView componentView = new();
                 componentView._Ready();
-                componentView.AddChild((TextureRect)packedScene.Instantiate());
+                var actualComponent = (TextureRect)packedScene.Instantiate();
+                actualComponent.CustomMinimumSize = new(draft.WidthInTiles * GameManager.TilePixelSize, draft.HeightInTiles * GameManager.TilePixelSize);
+                componentView.AddChild(actualComponent);
                 componentView.Initialize(slotDataSets, draft.WidthInTiles, draft.HeightInTiles);
                 // viewModel has to be added last, so that the componentView has finished constructing before adding the data ot initialize sliders etc.
                 componentView.ViewModel.InitializeComponent(componentNR, MapDataAccessSlidersToViewSliders(draft), Logger);
@@ -114,12 +119,12 @@ namespace ConnectAPIC.LayoutWindow.View
 
         public Vector2I GetComponentDimensions(int componentTypeNumber)
         {
-            if(PackedComponentCache.TryGetValue(componentTypeNumber, out var component))
+            if (PackedComponentCache.TryGetValue(componentTypeNumber, out var component))
             {
                 return new Vector2I(component.Draft.WidthInTiles, component.Draft.HeightInTiles);
             }
             Logger.PrintErr($"ComponentTypeNumber {componentTypeNumber} does not exist in ComponentViewFactory");
-            throw new KeyNotFoundException( $"ComponentTypeNumber {componentTypeNumber} does not exist in ComponentViewFactory");
+            throw new KeyNotFoundException($"ComponentTypeNumber {componentTypeNumber} does not exist in ComponentViewFactory");
         }
         public List<int> GetAllComponentIDs()
         {
