@@ -22,32 +22,25 @@ offset_bottom = 62.0
 grow_horizontal = 0
 texture = ExtResource("2_170e3")
 
-[node name="Control" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -111.0
-offset_bottom = 62.0
-grow_horizontal = 0
+[node name="LightContainer" type="Node2D" parent="."]
 
-[node name="ArrowLight" type="PointLight2D" parent="Control"]
-position = Vector2(61, 32)
+[node name="ArrowLight" type="PointLight2D" parent="LightContainer"]
+position = Vector2(-50, 32)
 enabled = false
 color = Color(1, 0, 0, 1)
 energy = 16.0
 texture = ExtResource("3_pwvrn")
 
-[node name="OverallLight" type="PointLight2D" parent="Control"]
+[node name="OverallLight" type="PointLight2D" parent="LightContainer"]
 z_index = 1
-position = Vector2(34, 32)
+position = Vector2(-77, 32)
 enabled = false
 color = Color(1, 0, 0, 1)
 energy = 0.5
 texture = ExtResource("3_ml2q2")
 
-[node name="InnerLight" type="PointLight2D" parent="Control"]
-position = Vector2(34, 32)
+[node name="InnerLight" type="PointLight2D" parent="LightContainer"]
+position = Vector2(-77, 32)
 enabled = false
 color = Color(1, 0, 0, 1)
 energy = 16.0
@@ -67,5 +60,3 @@ bbcode_enabled = true
 fit_content = true
 scroll_active = false
 tab_size = 3
-
-[node name="LightContainer" type="Node2D" parent="."]
