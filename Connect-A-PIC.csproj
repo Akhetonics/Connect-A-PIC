@@ -22,7 +22,7 @@
     <Compile Remove="libraries\**" />
     <Compile Remove="PDK\**" />
     <Compile Remove="Scenes\Components\**" />
-    <Compile Remove="Scenes\ExternalInputs\**" />
+    <Compile Remove="Scripts\View\ExternalPortViews\**" />
     <Compile Remove="Scripts\LightCalculation\**" />
     <Compile Remove="Tests\**" />
     <EmbeddedResource Remove="CAP-DataAccess\**" />
@@ -31,7 +31,7 @@
     <EmbeddedResource Remove="libraries\**" />
     <EmbeddedResource Remove="PDK\**" />
     <EmbeddedResource Remove="Scenes\Components\**" />
-    <EmbeddedResource Remove="Scenes\ExternalInputs\**" />
+    <EmbeddedResource Remove="Scripts\View\ExternalPortViews\**" />
     <EmbeddedResource Remove="Scripts\LightCalculation\**" />
     <EmbeddedResource Remove="Tests\**" />
     <Compile Remove="UnitTests\**" />
@@ -41,7 +41,9 @@
     <Compile Remove="Scenes\Scenes.csproj" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Scenes\ExternalInputs\ExternalPortView.cs" />
+    <Compile Include="Scripts\View\ExternalPortViews\ExternalPortView.cs" />
+    <Compile Include="Scripts\View\ExternalPortViews\ExternalPortViewFactory.cs" />
+    <Compile Include="Scripts\View\ExternalPortViews\PowerMeterView.cs" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Chickensoft.SuperNodes" Version="1.7.0" PrivateAssets="all" OutputItemType="analyzer" />

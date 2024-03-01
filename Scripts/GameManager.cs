@@ -1,7 +1,6 @@
 using CAP_Contracts.Logger;
 using CAP_Core.Components;
 using CAP_Core.Components.Creation;
-using CAP_Core.ExternalPorts;
 using CAP_DataAccess;
 using CAP_DataAccess.Components.ComponentDraftMapper;
 using Chickensoft.AutoInject;
@@ -21,7 +20,7 @@ using System.Reflection;
 using CAP_Core.Grid;
 using CAP_Core.LightCalculation;
 using ConnectAPIC.Scripts.View.PowerMeter;
-using ConnectAPIC.Scripts.ViewModel;
+using ConnectAPIC.Scenes.ExternalPorts;
 
 namespace ConnectAPic.LayoutWindow
 {
@@ -85,13 +84,13 @@ namespace ConnectAPic.LayoutWindow
                 InitializationLogs.Add((ex.Message, true));
             }
         }
-
+        
         public override void _Ready()
         {
             try
             {
                 ExternalPortViewModel = new ExternalPortViewModel(ExternalPortTemplate, Grid, GridView, GridViewModel.LightCalculator);
-
+                ExternalPortViewModel.ExternalPortViewInitialized += (object sender, ExternalPortView e) => GridView.DragDropProxy.AddChild(e);
                 PCKLoader.LoadStandardPCKs();
                 List<ComponentDraft> componentDrafts = EquipViewComponentFactoryWithJSONDrafts();
                 this.CheckForNull(x => x.ToolBoxPath);
