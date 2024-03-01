@@ -19,7 +19,7 @@ namespace CAP_Core.Grid
         public event OnComponentChangedEventHandler OnComponentRotated;
         public event OnComponentChangedEventHandler OnComponentMoved;
         public event EventHandler<bool> OnLightSwitched;
-        public ObservableCollection<ExternalPort> ExternalPorts;
+        public ObservableCollection<ExternalPort> ExternalPorts { get; set; }
         private bool isLightOn;
         public bool IsLightOn
         {

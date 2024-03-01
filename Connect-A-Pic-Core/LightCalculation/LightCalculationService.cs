@@ -18,7 +18,7 @@ namespace CAP_Core.LightCalculation
         public event EventHandler<LightCalculationChangeEventArgs> LightCalculationChanged;
         private Task? LightCalculationTask;
         private CancellationTokenSource CancelTokenLightCalc { get; set; } = new();
-        public List<ExternalInput> LightInputs { get; private set; } //TODO: don't forget to to remove private set; lightInputs was read only
+        public List<ExternalInput> LightInputs { get; private set; } 
         public ILightCalculator GridSMatrixAnalyzer { get; }
         public SynchronizationContext MainThreadContext { get; }
 
@@ -112,11 +112,6 @@ namespace CAP_Core.LightCalculation
             {
                 Semaphore.Release();
             }
-        }
-
-
-        public void temporaryFixRemoveThis(GridManager grid){
-            LightInputs = grid.GetAllExternalInputs();
         }
 
     }
