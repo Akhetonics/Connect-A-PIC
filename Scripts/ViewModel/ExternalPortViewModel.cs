@@ -15,16 +15,18 @@ using CAP_Core.LightCalculation;
 using CAP_Core.Components;
 using CAP_Core.Components.ComponentHelpers;
 using System.Diagnostics;
+using System.Linq;
+using CAP_Core.Components.Creation;
+using CAP_Core;
 
 
 public partial class ExternalPortViewModel : Node
 {
-    public ExternalPortView ExternalPortInstance { get; set; }
     public PackedScene ExternalPortTemplate { get; set; }
     public GridView GridView { get; }
     public GridManager Grid { get; }
     public LightCalculationService LightCalculator { get; }
-    public List<ExternalPortView> Views { get; }
+    public Dictionary<int, ExternalPortView> Views { get; }
     
     public event EventHandler<bool> LightChanged;
 
@@ -32,17 +34,18 @@ public partial class ExternalPortViewModel : Node
     public ExternalPortViewModel(PackedScene externalPortTemplate, GridManager grid, GridView gridView, LightCalculationService lightCalculator)
     {
         ExternalPortTemplate = externalPortTemplate;
-        ExternalPortInstance = externalPortTemplate.Instantiate<ExternalPortView>();
-        ExternalPortInstance.Visible = false;
         LightCalculator = lightCalculator;
         GridView = gridView;
         Grid = grid;
 
-        Views = new List<ExternalPortView>();
+        Views = new Dictionary<int, ExternalPortView>();
 
         Grid.ExternalPorts.CollectionChanged += (object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) =>
         {
-            Views.ForEach(view => { view.QueueFree(); });
+            foreach (ExternalPortView val in Views.Values) {
+                val.Visible = false;
+                val.QueueFree();
+            }
             Views.Clear(); //we free up leftover empty references
 
             InitializeExternalPortViews(Grid.ExternalPorts);
@@ -58,6 +61,7 @@ public partial class ExternalPortViewModel : Node
 
     private void InitializeExternalPortViews(ObservableCollection<ExternalPort> ExternalPorts)
     {
+        Debug.Print("instatiation!");
         ExternalPortView portView;
         foreach (var port in ExternalPorts)
         {
@@ -86,8 +90,58 @@ public partial class ExternalPortViewModel : Node
 
             portView.Visible = true;
             portView.Position = new Vector2(0, (GameManager.TilePixelSize) * port.TilePositionY);
-            Views.Add(portView);
+            portView.SetPortPositionY(port.TilePositionY);
+            Views[port.TilePositionY] = portView;
+
+            portView.Switched += PortsSwitched;
         }
     }
 
+    private void PortsSwitched(object sender, int e)
+    {
+        int portIndex = Grid.ExternalPorts.IndexOf(Grid.ExternalPorts.FirstOrDefault(exPort => exPort.TilePositionY == e));
+
+        if (portIndex == -1)
+        {
+            //TODO: print some error
+            return;
+        }
+
+        if (Grid.ExternalPorts[portIndex] is ExternalInput oldExternalInput){
+            //TODO: need to refactor this after implementing right click menu
+            if (oldExternalInput.LaserType == LaserType.Red)
+            {
+                Grid.ExternalPorts[portIndex] = new ExternalInput(oldExternalInput.PinName, LaserType.Green, oldExternalInput.TilePositionY, oldExternalInput.InFlowPower);
+            }
+            else if (oldExternalInput.LaserType == LaserType.Green)
+            {
+                Grid.ExternalPorts[portIndex] = new ExternalInput(oldExternalInput.PinName, LaserType.Blue, oldExternalInput.TilePositionY, oldExternalInput.InFlowPower);
+            }
+            else
+            {
+                Grid.ExternalPorts[portIndex] = new ExternalOutput(oldExternalInput.PinName, oldExternalInput.TilePositionY);
+            }
+        }
+        else
+        {
+            ExternalOutput oldOutput = (ExternalOutput)Grid.ExternalPorts[portIndex];
+            Grid.ExternalPorts[portIndex] = new ExternalInput(oldOutput.PinName, LaserType.Red, oldOutput.TilePositionY, 1);
+        }
+
+        //TODO: this is a temporary fix remove it after discussion
+        LightCalculator.temporaryFixRemoveThis(Grid);
+
+
+        //TODO: remove this after debuging
+        foreach (var port in Grid.ExternalPorts){
+            if (port is ExternalInput)
+            {
+                Debug.Print("Input: " + port.PinName + " " + port.TilePositionY);
+            }
+            else
+            {
+                Debug.Print("Output: " + port.PinName + " " + port.TilePositionY);
+            }
+        }
+    }
 }

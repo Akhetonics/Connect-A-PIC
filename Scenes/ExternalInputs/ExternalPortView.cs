@@ -18,6 +18,10 @@ namespace ConnectAPIC.Scenes.ExternalPorts
         public ExternalPortViewModel ViewModel { get; set; }
         public PowerMeterViewModel PowerMeterViewModel {  get; set; }
 
+        public int PortPositionY { get; private set; }
+
+        public event EventHandler<int> Switched;
+
         List<PointLight2D> lightContainer;
         TextureRect currentTexture;
         RichTextLabel InfoLabel;
@@ -26,10 +30,6 @@ namespace ConnectAPIC.Scenes.ExternalPorts
         float pulseValue = 0;
         float minPulseEnergy = 0.8f;
         float maxPulseEnergy = 1.2f;
-
-
-        public ExternalPortView() {}
-
 
         public override void _Ready()
         {
@@ -52,6 +52,10 @@ namespace ConnectAPIC.Scenes.ExternalPorts
             }
         }
 
+        public ExternalPortView SetPortPositionY(int positionY) {
+            PortPositionY = positionY;
+            return this;
+        }
 
         public ExternalPortView SetAsOutput(PowerMeterViewModel powerMeterViewModel)
         {
@@ -74,6 +78,8 @@ namespace ConnectAPIC.Scenes.ExternalPorts
 
             TurnOff();
             SetLightColor(red, green, blue, alpha);
+
+            Debug.Print("Set as input");
 
             ViewModel = viewModel;
             ViewModel.LightChanged += (object sender, bool e) => ToggleLight(e);
@@ -144,8 +150,16 @@ namespace ConnectAPIC.Scenes.ExternalPorts
             lightContainer[0].Energy =
             Mathf.Lerp(minPulseEnergy, maxPulseEnergy, Mathf.Abs(Mathf.Sin(pulseValue)));
         }
+        
+        private void OnToggleButtonPressed()
+        {
+            Switched?.Invoke(this, PortPositionY);
+        }
     }
 }
+
+
+
 
 
 
