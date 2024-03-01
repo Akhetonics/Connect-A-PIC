@@ -79,8 +79,6 @@ namespace ConnectAPIC.Scenes.ExternalPorts
             TurnOff();
             SetLightColor(red, green, blue, alpha);
 
-            Debug.Print("Set as input");
-
             ViewModel = viewModel;
             ViewModel.LightChanged += (object sender, bool e) => ToggleLight(e);
 

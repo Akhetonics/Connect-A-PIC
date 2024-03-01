@@ -61,7 +61,6 @@ public partial class ExternalPortViewModel : Node
 
     private void InitializeExternalPortViews(ObservableCollection<ExternalPort> ExternalPorts)
     {
-        Debug.Print("instatiation!");
         ExternalPortView portView;
         foreach (var port in ExternalPorts)
         {
@@ -132,7 +131,7 @@ public partial class ExternalPortViewModel : Node
         LightCalculator.temporaryFixRemoveThis(Grid);
 
 
-        //TODO: remove this after debuging
+        //TODO: remove this after debugging
         foreach (var port in Grid.ExternalPorts){
             if (port is ExternalInput)
             {
