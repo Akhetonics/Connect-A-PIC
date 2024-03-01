@@ -1,8 +1,8 @@
-[gd_scene load_steps=30 format=3 uid="uid://cu6wqy6xwjfo1"]
+[gd_scene load_steps=22 format=3 uid="uid://cu6wqy6xwjfo1"]
 
 [ext_resource type="Script" path="res://Scripts/GameManager.cs" id="1_c0scx"]
 [ext_resource type="Script" path="res://Scripts/View/ComponentFactory/ComponentViewFactory.cs" id="2_7hjmy"]
-[ext_resource type="PackedScene" uid="uid://duapw8umf7gnn" path="res://Scenes/ExternalInputs/NewAssets/external_port.tscn" id="2_gmcq6"]
+[ext_resource type="PackedScene" uid="uid://duapw8umf7gnn" path="res://Scenes/ExternalInputs/external_port.tscn" id="2_dn85u"]
 [ext_resource type="Script" path="res://Scripts/View/ComponentViews/ComponentView.cs" id="3_celc4"]
 [ext_resource type="TileSet" uid="uid://cbfkdk3hvsq1q" path="res://Scenes/PICEditor/TileSet_PICEditor.tres" id="4_mptgl"]
 [ext_resource type="Script" path="res://Scripts/View/GridView.cs" id="5_3575d"]
@@ -12,29 +12,21 @@
 [ext_resource type="Script" path="res://Scripts/View/StandardDialogs/NotificationManager.cs" id="9_gj54m"]
 [ext_resource type="PackedScene" uid="uid://bscqmaslppyt8" path="res://Scenes/NotificationBox.tscn" id="10_06t00"]
 [ext_resource type="PackedScene" uid="uid://dfrjm1onsjusf" path="res://Scenes/ToolBox/Tool_box.tscn" id="11_cqs2p"]
-[ext_resource type="PackedScene" uid="uid://c5jmuhljnon44" path="res://Scenes/ExternalInputs/external_input.tscn" id="12_gwl6a"]
-[ext_resource type="Texture2D" uid="uid://rlqegom5ey74" path="res://Scenes/ExternalInputs/ExternalInputRedOn.png" id="13_otx74"]
-[ext_resource type="Texture2D" uid="uid://306fqndeeee8" path="res://Scenes/ExternalInputs/ExternalInputRedOff.png" id="14_a68fp"]
-[ext_resource type="Texture2D" uid="uid://dehhahe1v5238" path="res://Scenes/ExternalInputs/ExternalInputBlueOff.png" id="14_anfaj"]
-[ext_resource type="Texture2D" uid="uid://b1xyqnxrm7bua" path="res://Scenes/ExternalInputs/ExternalInputBlueOn.png" id="15_wh6wu"]
 [ext_resource type="PackedScene" uid="uid://bd8isg4mddv21" path="res://Scenes/InGameConsole/InGameConsole.tscn" id="16_7rcst"]
-[ext_resource type="Texture2D" uid="uid://babpsxo53i8s6" path="res://Scenes/ExternalInputs/ExternalInputGreenOn.png" id="17_ku40t"]
 [ext_resource type="Texture2D" uid="uid://djdwbxfnvfvfb" path="res://Scenes/MenuBar/SaveIcon.png" id="17_q4e7w"]
 [ext_resource type="Texture2D" uid="uid://qtdana7kc4y" path="res://Scenes/MenuBar/LoadIcon.png" id="18_17x6l"]
-[ext_resource type="Texture2D" uid="uid://de6x4qfjsklao" path="res://Scenes/ExternalInputs/ExternalInputGreenOff.png" id="18_i07bm"]
 [ext_resource type="Script" path="res://Scripts/View/GUIControls/MainCamera.cs" id="19_tfkoi"]
 [ext_resource type="PackedScene" uid="uid://cpu4bmee8crlg" path="res://Scenes/PopUpWindow/PopUpWindow.tscn" id="21_u0shi"]
 [ext_resource type="Texture2D" uid="uid://dnku8c3qddqif" path="res://Scenes/MenuBar/HelpIcon.png" id="23_oxlnq"]
 [ext_resource type="Texture2D" uid="uid://cwxymtqs0hclu" path="res://Scenes/ToolBox/CollapseButton.png" id="24_uravt"]
 [ext_resource type="Script" path="res://Scripts/View/GUIControls/ToolBoxCollapseControl.cs" id="25_35kfa"]
 [ext_resource type="Texture2D" uid="uid://bpf4xfrmslfao" path="res://Scenes/ToolBox/CollapseButtonToggledOn.png" id="27_6q7aj"]
-[ext_resource type="PackedScene" uid="uid://tnmccvafekjl" path="res://Scenes/RightClickMenu/RightClickMenu.tscn" id="29_pobr3"]
 
 [node name="GameManager" type="Node" node_paths=PackedStringArray("InGameConsole")]
 script = ExtResource("1_c0scx")
 GridViewPath = NodePath("GridView")
 ToolBoxPath = NodePath("GUILayer/Control/MarginContainer/VBoxContainer/ToolBox")
-ExternalPortTemplate = ExtResource("2_gmcq6")
+ExternalPortTemplate = ExtResource("2_dn85u")
 InGameConsole = NodePath("GUILayer/InGameConsole")
 
 [node name="ComponentViewFactory" type="Node" parent="."]
@@ -66,32 +58,6 @@ metadata/_edit_use_anchors_ = true
 [node name="NotificationManager" type="Node" parent="."]
 script = ExtResource("9_gj54m")
 NotificationBoxScene = ExtResource("10_06t00")
-
-[node name="Templates" type="Node" parent="."]
-
-[node name="ExternalInputRed" parent="Templates" node_paths=PackedStringArray("button") instance=ExtResource("12_gwl6a")]
-visible = false
-position = Vector2(48, 165)
-lightOnTexture = ExtResource("13_otx74")
-lightOffTexture = ExtResource("14_a68fp")
-lightColor = Color(1, 0, 0, 1)
-button = NodePath("../../GUILayer/MenuBar2/HBoxContainer/btnShowLightPropagation")
-
-[node name="ExternalInputGreen" parent="Templates" node_paths=PackedStringArray("button") instance=ExtResource("12_gwl6a")]
-visible = false
-position = Vector2(48, 288)
-lightOnTexture = ExtResource("17_ku40t")
-lightOffTexture = ExtResource("18_i07bm")
-lightColor = Color(0, 1, 0, 0.219608)
-button = NodePath("../../GUILayer/MenuBar2/HBoxContainer/btnShowLightPropagation")
-
-[node name="ExternalInputBlue" parent="Templates" node_paths=PackedStringArray("button") instance=ExtResource("12_gwl6a")]
-visible = false
-position = Vector2(48, 227)
-lightOnTexture = ExtResource("15_wh6wu")
-lightOffTexture = ExtResource("14_anfaj")
-lightColor = Color(0, 0, 1, 1)
-button = NodePath("../../GUILayer/MenuBar2/HBoxContainer/btnShowLightPropagation")
 
 [node name="MainCamera" type="Camera2D" parent="."]
 anchor_mode = 0
@@ -218,11 +184,6 @@ texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 2
-
-[node name="RightClickMenu" parent="." instance=ExtResource("29_pobr3")]
-position = Vector2(-176, 428)
-disable_mode = 2
-input_pickable = true
 
 [connection signal="pressed" from="GUILayer/MenuBar2/HBoxContainer/btnSave" to="GridView" method="_on_btn_save_pressed"]
 [connection signal="pressed" from="GUILayer/MenuBar2/HBoxContainer/btnLoad" to="GridView" method="_on_btn_load_pressed"]

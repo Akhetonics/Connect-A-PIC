@@ -21,23 +21,20 @@ public partial class ExternalPortViewModel : Node
 {
     public ExternalPortView ExternalPortInstance { get; set; }
     public PackedScene ExternalPortTemplate { get; set; }
-
     public GridView GridView { get; }
-
-    //TODO: this violates MVVM so need to find another way (need to discuss)
-    public GridViewModel GridViewModel { get; }
     public GridManager Grid { get; }
+    public LightCalculationService LightCalculator { get; }
     public List<ExternalPortView> Views { get; }
-
+    
     public event EventHandler<bool> LightChanged;
 
 
-    public ExternalPortViewModel(PackedScene externalPortTemplate, GridManager grid, GridView gridView, GridViewModel gridViewModel)
+    public ExternalPortViewModel(PackedScene externalPortTemplate, GridManager grid, GridView gridView, LightCalculationService lightCalculator)
     {
         ExternalPortTemplate = externalPortTemplate;
         ExternalPortInstance = externalPortTemplate.Instantiate<ExternalPortView>();
         ExternalPortInstance.Visible = false;
-        GridViewModel = gridViewModel;
+        LightCalculator = lightCalculator;
         GridView = gridView;
         Grid = grid;
 
@@ -84,7 +81,7 @@ public partial class ExternalPortViewModel : Node
             }
             else
             {
-                portView.SetAsOutput(new PowerMeterViewModel(Grid, port.TilePositionY, GridViewModel.LightCalculator));
+                portView.SetAsOutput(new PowerMeterViewModel(Grid, port.TilePositionY, LightCalculator));
             }
 
             portView.Visible = true;

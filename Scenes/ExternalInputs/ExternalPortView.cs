@@ -141,9 +141,8 @@ namespace ConnectAPIC.Scenes.ExternalPorts
         {
             pulseValue = (pulseValue + (float)delta) % (2 * Mathf.Pi);
 
-            //TODO: can make so that inner light and outer light fluctuate differently
-            lightContainer.ForEach(x => x.Energy =
-            Mathf.Lerp(minPulseEnergy, maxPulseEnergy, Mathf.Abs(Mathf.Sin(pulseValue))));
+            lightContainer[0].Energy =
+            Mathf.Lerp(minPulseEnergy, maxPulseEnergy, Mathf.Abs(Mathf.Sin(pulseValue)));
         }
     }
 }
