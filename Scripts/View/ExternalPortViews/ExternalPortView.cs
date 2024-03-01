@@ -1,10 +1,12 @@
 using CAP_Core.ExternalPorts;
+using ConnectAPIC.Scripts.Helpers;
 using ConnectAPIC.Scripts.ViewModel;
 using Godot;
 using MathNet.Numerics.Distributions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using static ConnectAPic.LayoutWindow.GameManager;
 
 
 namespace ConnectAPIC.Scenes.ExternalPorts
@@ -17,7 +19,7 @@ namespace ConnectAPIC.Scenes.ExternalPorts
 
         public ExternalPortViewModel ViewModel { get; set; }
         public PowerMeterViewModel PowerMeterViewModel {  get; set; }
-
+        public ExternalPortViewFactory portFactory { get; set; }
         public int PortPositionY { get; private set; }
 
         public event EventHandler<int> Switched;
@@ -31,10 +33,25 @@ namespace ConnectAPIC.Scenes.ExternalPorts
         float minPulseEnergy = 0.8f;
         float maxPulseEnergy = 1.2f;
 
+        public ExternalPortView()
+        {
+            ViewModel.ExternalPorts.CollectionChanged += (object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) => {
+
+                foreach ( var removedItem in e.OldItems)
+                {
+
+                }
+                foreach( var newItem in e.NewItems)
+                {
+
+                }
+            };
+        }
+
         public override void _Ready()
         {
             currentTexture = GetChild<TextureRect>(0);
-
+            this.CheckForNull(x => x.currentTexture);
             lightContainer = new List<PointLight2D>();
             foreach (PointLight2D light in GetChild(1).GetChildren())
             {

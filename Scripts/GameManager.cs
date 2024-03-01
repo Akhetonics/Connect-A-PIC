@@ -1,7 +1,6 @@
 using CAP_Contracts.Logger;
 using CAP_Core.Components;
 using CAP_Core.Components.Creation;
-using CAP_Core.ExternalPorts;
 using CAP_DataAccess;
 using CAP_DataAccess.Components.ComponentDraftMapper;
 using Chickensoft.AutoInject;
@@ -24,14 +23,14 @@ using System.Globalization;
 using System.Threading;
 using CAP_Core.LightCalculation;
 using ConnectAPIC.Scripts.View.PowerMeter;
-using ConnectAPIC.Scripts.ViewModel;
+using ConnectAPIC.Scenes.ExternalPorts;
 
 namespace ConnectAPic.LayoutWindow
 {
-    [SuperNode (typeof(Provider))]
-    public partial class GameManager : Node, 
-        IProvide<ToolBox> , IProvide<ILogger>, IProvide<GridView>, IProvide<GridManager>, IProvide<GridViewModel>, IProvide<GameManager>,
-        IProvide<GameConsole> , IProvide<System.Version> , IProvide<ComponentViewFactory> 
+    [SuperNode(typeof(Provider))]
+    public partial class GameManager : Node,
+        IProvide<ToolBox>, IProvide<ILogger>, IProvide<GridView>, IProvide<GridManager>, IProvide<GridViewModel>, IProvide<GameManager>,
+        IProvide<GameConsole>, IProvide<System.Version>, IProvide<ComponentViewFactory>
     {
         #region Dependency Injection
         public override partial void _Notification(int what);
@@ -44,8 +43,8 @@ namespace ConnectAPic.LayoutWindow
         GameConsole IProvide<GameConsole>.Value() => InGameConsole;
         ComponentViewFactory IProvide<ComponentViewFactory>.Value() => GridView.ComponentViewFactory;
         System.Version IProvide<System.Version>.Value() => Version;
-        #endregion 
-        
+        #endregion
+
         [Export] public NodePath GridViewPath { get; set; }
         public ToolBox MainToolBox { get; set; }
         [Export] private NodePath ToolBoxPath { get; set; }
@@ -88,13 +87,13 @@ namespace ConnectAPic.LayoutWindow
                 InitializationLogs.Add((ex.Message, true));
             }
         }
-
+        
         public override void _Ready()
         {
             try
             {
                 ExternalPortViewModel = new ExternalPortViewModel(ExternalPortTemplate, Grid, GridView, GridViewModel.LightCalculator);
-
+                ExternalPortViewModel.ExternalPortViewInitialized += (object sender, ExternalPortView e) => GridView.DragDropProxy.AddChild(e);
                 PCKLoader.LoadStandardPCKs();
                 List<ComponentDraft> componentDrafts = EquipViewComponentFactoryWithJSONDrafts();
                 this.CheckForNull(x => x.ToolBoxPath);
