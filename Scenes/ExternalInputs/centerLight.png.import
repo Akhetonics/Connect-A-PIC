@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bseakecs4865n"
-path="res://.godot/imported/Body.png-1333a182d90a166e2b765be6c61072dd.ctex"
+uid="uid://d1ufvamoo7a4b"
+path="res://.godot/imported/centerLight.png-95d6ff3fdcd54bdb779fe707ebadbb5c.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Scenes/RightClickMenu/Body.png"
-dest_files=["res://.godot/imported/Body.png-1333a182d90a166e2b765be6c61072dd.ctex"]
+source_file="res://Scenes/ExternalInputs/centerLight.png"
+dest_files=["res://.godot/imported/centerLight.png-95d6ff3fdcd54bdb779fe707ebadbb5c.ctex"]
 
 [params]
 

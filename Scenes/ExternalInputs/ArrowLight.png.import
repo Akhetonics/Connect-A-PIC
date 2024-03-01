@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://d1ufvamoo7a4b"
-path="res://.godot/imported/centerLight.png-0f5f8f65132de88b3edc45054aafb2d2.ctex"
+uid="uid://ccp8jo3jul08s"
+path="res://.godot/imported/ArrowLight.png-19ff795b25ce86add34cec053d795b28.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Scenes/ExternalInputs/NewAssets/centerLight.png"
-dest_files=["res://.godot/imported/centerLight.png-0f5f8f65132de88b3edc45054aafb2d2.ctex"]
+source_file="res://Scenes/ExternalInputs/ArrowLight.png"
+dest_files=["res://.godot/imported/ArrowLight.png-19ff795b25ce86add34cec053d795b28.ctex"]
 
 [params]
 
