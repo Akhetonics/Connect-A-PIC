@@ -21,11 +21,11 @@ namespace ConnectAPIC.Scenes.ExternalPorts
         public int PortPositionY { get; private set; }
 
         public event EventHandler<int> Switched;
+        public bool isInput = false;
 
         List<PointLight2D> lightContainer;
         TextureRect currentTexture;
         RichTextLabel InfoLabel;
-        bool isInput = false;
         bool lightsOn = true;
         float pulseValue = 0;
         float minPulseEnergy = 0.8f;

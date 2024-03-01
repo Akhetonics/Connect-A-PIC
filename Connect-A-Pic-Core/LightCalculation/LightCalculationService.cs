@@ -2,6 +2,7 @@ using CAP_Core.ExternalPorts;
 using CAP_Core.Grid;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Numerics;
 using System.Reflection;
@@ -23,12 +24,21 @@ namespace CAP_Core.LightCalculation
 
         private SemaphoreSlim Semaphore = new (1, 1);
 
-        public LightCalculationService(List<ExternalInput> lightInputs, ILightCalculator gridSMatrixAnalyzer)
+        public LightCalculationService(GridManager grid, ILightCalculator gridSMatrixAnalyzer)
         {
-            LightInputs = lightInputs;
+            LightInputs = grid.GetAllExternalInputs();
+
+            grid.ExternalPorts.CollectionChanged += async (object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) => {
+                LightInputs = grid.GetAllExternalInputs();
+                if (grid.IsLightOn)
+                {
+                    await ShowLightPropagationAsync();
+                }
+            };
             GridSMatrixAnalyzer = gridSMatrixAnalyzer;
             MainThreadContext = SynchronizationContext.Current; 
         }
+
 
         public async Task ShowLightPropagationAsync()
         {

@@ -128,7 +128,7 @@ public partial class ExternalPortViewModel : Node
         }
 
         //TODO: this is a temporary fix remove it after discussion
-        LightCalculator.temporaryFixRemoveThis(Grid);
+        //LightCalculator.temporaryFixRemoveThis(Grid);
 
 
         //TODO: remove this after debugging
