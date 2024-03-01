@@ -1,0 +1,70 @@
+[gd_scene load_steps=8 format=3 uid="uid://duapw8umf7gnn"]
+
+[ext_resource type="Script" path="res://Scenes/ExternalInputs/ExternalPortView.cs" id="1_uv3j5"]
+[ext_resource type="Texture2D" uid="uid://btiixf0ktgtmi" path="res://Scenes/ExternalInputs/ExternalInput.png" id="2_d1ms6"]
+[ext_resource type="Texture2D" uid="uid://by3bymn4ejijy" path="res://Scenes/ExternalInputs/ExternalOutput.png" id="3_k6c8o"]
+[ext_resource type="Texture2D" uid="uid://ccp8jo3jul08s" path="res://Scenes/ExternalInputs/ArrowLight.png" id="4_2a6q5"]
+[ext_resource type="Texture2D" uid="uid://d1ufvamoo7a4b" path="res://Scenes/ExternalInputs/centerLight.png" id="5_e6xjr"]
+
+[sub_resource type="Gradient" id="Gradient_sj78c"]
+offsets = PackedFloat32Array(0, 0.085, 0.745)
+colors = PackedColorArray(1, 1, 1, 1, 0.817521, 0.817521, 0.817521, 1, 0, 0, 0, 1)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_abdqc"]
+gradient = SubResource("Gradient_sj78c")
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[node name="ExternalInput" type="Node2D"]
+script = ExtResource("1_uv3j5")
+InputTexture = ExtResource("2_d1ms6")
+OutputTexture = ExtResource("3_k6c8o")
+
+[node name="Texture" type="TextureRect" parent="."]
+texture_filter = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -111.0
+offset_bottom = 62.0
+grow_horizontal = 0
+texture = ExtResource("2_d1ms6")
+
+[node name="LightContainer" type="Node2D" parent="."]
+
+[node name="OverallLight" type="PointLight2D" parent="LightContainer"]
+z_index = 1
+position = Vector2(-77, 32)
+enabled = false
+color = Color(1, 0, 0, 1)
+energy = 0.5
+texture = SubResource("GradientTexture2D_abdqc")
+
+[node name="ArrowLight" type="PointLight2D" parent="LightContainer"]
+position = Vector2(-50, 32)
+enabled = false
+color = Color(1, 0, 0, 1)
+energy = 16.0
+texture = ExtResource("4_2a6q5")
+
+[node name="InnerLight" type="PointLight2D" parent="LightContainer"]
+position = Vector2(-77, 32)
+enabled = false
+color = Color(1, 0, 0, 1)
+energy = 16.0
+texture = ExtResource("5_e6xjr")
+
+[node name="RichTextLabel" type="RichTextLabel" parent="."]
+offset_left = -144.0
+offset_right = 1296.0
+offset_bottom = 640.0
+scale = Vector2(0.1, 0.1)
+theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
+theme_override_constants/shadow_offset_x = 3
+theme_override_constants/shadow_offset_y = 3
+theme_override_constants/shadow_outline_size = 25
+theme_override_font_sizes/normal_font_size = 150
+bbcode_enabled = true
+fit_content = true
+scroll_active = false
+tab_size = 3

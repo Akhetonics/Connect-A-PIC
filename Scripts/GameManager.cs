@@ -90,7 +90,7 @@ namespace ConnectAPic.LayoutWindow
         {
             try
             {
-                ExternalPortViewModel = new ExternalPortViewModel(ExternalPortTemplate, Grid, GridView, GridViewModel);
+                ExternalPortViewModel = new ExternalPortViewModel(ExternalPortTemplate, Grid, GridView, GridViewModel.LightCalculator);
 
                 PCKLoader.LoadStandardPCKs();
                 List<ComponentDraft> componentDrafts = EquipViewComponentFactoryWithJSONDrafts();
