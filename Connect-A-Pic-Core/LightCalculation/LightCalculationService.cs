@@ -1,4 +1,5 @@
-﻿using CAP_Core.ExternalPorts;
+using CAP_Core.ExternalPorts;
+using CAP_Core.Grid;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +17,7 @@ namespace CAP_Core.LightCalculation
         public event EventHandler<LightCalculationChangeEventArgs> LightCalculationChanged;
         private Task? LightCalculationTask;
         private CancellationTokenSource CancelTokenLightCalc { get; set; } = new();
-        public List<ExternalInput> LightInputs { get; }
+        public List<ExternalInput> LightInputs { get; private set; } //TODO: don't forget to to remove private set; lightInputs was read only
         public ILightCalculator GridSMatrixAnalyzer { get; }
         public SynchronizationContext MainThreadContext { get; }
 
@@ -102,5 +103,11 @@ namespace CAP_Core.LightCalculation
                 Semaphore.Release();
             }
         }
+
+
+        public void temporaryFixRemoveThis(GridManager grid){
+            LightInputs = grid.GetAllExternalInputs();
+        }
+
     }
 }

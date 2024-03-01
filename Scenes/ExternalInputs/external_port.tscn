@@ -68,3 +68,14 @@ bbcode_enabled = true
 fit_content = true
 scroll_active = false
 tab_size = 3
+
+[node name="Button" type="Button" parent="."]
+offset_left = -84.0
+offset_top = -3.0
+offset_right = 836.0
+offset_bottom = 357.0
+scale = Vector2(0.05, 0.05)
+theme_override_font_sizes/font_size = 150
+text = "Test Toggle"
+
+[connection signal="pressed" from="Button" to="." method="OnToggleButtonPressed"]
