@@ -25,10 +25,10 @@ using ConnectAPIC.Scripts.ViewModel;
 
 namespace ConnectAPic.LayoutWindow
 {
-    [SuperNode (typeof(Provider))]
-    public partial class GameManager : Node, 
-        IProvide<ToolBox> , IProvide<ILogger>, IProvide<GridView>, IProvide<GridManager>, IProvide<GridViewModel>, IProvide<GameManager>,
-        IProvide<GameConsole> , IProvide<System.Version> , IProvide<ComponentViewFactory> 
+    [SuperNode(typeof(Provider))]
+    public partial class GameManager : Node,
+        IProvide<ToolBox>, IProvide<ILogger>, IProvide<GridView>, IProvide<GridManager>, IProvide<GridViewModel>, IProvide<GameManager>,
+        IProvide<GameConsole>, IProvide<System.Version>, IProvide<ComponentViewFactory>
     {
         #region Dependency Injection
         public override partial void _Notification(int what);
@@ -41,8 +41,8 @@ namespace ConnectAPic.LayoutWindow
         GameConsole IProvide<GameConsole>.Value() => InGameConsole;
         ComponentViewFactory IProvide<ComponentViewFactory>.Value() => GridView.ComponentViewFactory;
         System.Version IProvide<System.Version>.Value() => Version;
-        #endregion 
-        
+        #endregion
+
         [Export] public NodePath GridViewPath { get; set; }
         public ToolBox MainToolBox { get; set; }
         [Export] private NodePath ToolBoxPath { get; set; }
@@ -182,7 +182,7 @@ namespace ConnectAPic.LayoutWindow
             Node2D view;
             foreach (var port in ExternalPorts)
             {
-                
+
                 if (port is ExternalInput input)
                 {
                     if (input.LaserType == LaserType.Red)
@@ -197,7 +197,7 @@ namespace ConnectAPic.LayoutWindow
                     {
                         view = (Node2D)ExternalInputBlueTemplate.Duplicate();
                     }
-                    
+
                 }
                 else
                 {
