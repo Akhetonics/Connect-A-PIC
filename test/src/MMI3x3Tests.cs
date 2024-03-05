@@ -61,13 +61,13 @@ namespace ConnectAPIC.test.src
                 var PinUpRight = (Guid)component.PinIdRightOut(2, 0);
                 var PinMiddleRight = (Guid)component.PinIdRightOut(2, 1);
                 var PinDownRight = (Guid)component.PinIdRightOut(2, 2);
-                var PowerUpRight = e.LightFieldVector[PinUpRight];
-                var PowerMiddleRight = e.LightFieldVector[PinMiddleRight];
-                var PowerDownRight = e.LightFieldVector[PinDownRight];
+                var FieldUpRight = e.LightFieldVector[PinUpRight];
+                var FieldMiddleRight = e.LightFieldVector[PinMiddleRight];
+                var FieldDownRight = e.LightFieldVector[PinDownRight];
 
-                PowerUpRight.ShouldBe(lightPower / 3);
-                PowerMiddleRight.ShouldBe(lightPower / 3);
-                PowerDownRight.ShouldBe(lightPower / 3);
+                FieldUpRight.Magnitude.ShouldBe( Math.Sqrt(lightPower / 3) , 0.00001);
+                FieldMiddleRight.Magnitude.ShouldBe(Math.Sqrt(lightPower / 3), 0.00001);
+                FieldDownRight.Magnitude.ShouldBe(Math.Sqrt(lightPower / 3), 0.00001);
             };
 
             MyGameManager.GridViewModel.Grid.IsLightOn = true;
