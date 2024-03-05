@@ -182,7 +182,7 @@ namespace ConnectAPic.LayoutWindow
             Node2D view;
             foreach (var port in ExternalPorts)
             {
-                
+
                 if (port is ExternalInput input)
                 {
                     if (input.LaserType == LaserType.Red)
@@ -197,9 +197,7 @@ namespace ConnectAPic.LayoutWindow
                     {
                         view = (Node2D)ExternalInputBlueTemplate.Duplicate();
                     }
-                    view.Visible = true;
-                    GridViewModel.GridView.DragDropProxy.AddChild(view);
-                    view.Position = new Godot.Vector2(view.Position.X - GridView.GlobalPosition.X, (GameManager.TilePixelSize) * port.TilePositionY);
+
                 }
                 else
                 {
