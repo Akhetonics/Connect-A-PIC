@@ -79,7 +79,7 @@ namespace ConnectAPIC.LayoutWindow.View
         public Sprite2D BaseOverlaySprite { get; }
         public Texture Texture { get; }
         public Vector2I ComponentSizeInTiles { get; }
-        public static int MaxShaderAnimationSlots { get; } = 8; // the amount of texture-slots that the shader can handle.
+        public static int MaxShaderAnimationSlots { get; } = 12; // the amount of texture-slots that the shader can handle.
     }
     public class WrongSizeException : Exception
     {
