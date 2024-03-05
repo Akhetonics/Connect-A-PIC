@@ -34,7 +34,9 @@ namespace UnitTests.LightCalculation
             var allConnections = systemMatrix.GetNonNullValues();
             var pinLeftUp = (Guid)component.PinIdLeftIn();
             var pinRightUp = (Guid)component.PinIdRightOut(2, 0);
-            var expectedField = Math.Sqrt(1.0 / 3.0);
+            var pinRightMiddle = (Guid)component.PinIdRightOut(2, 1);
+            var pinRightDown = (Guid)component.PinIdRightOut(2, 2);
+            var expectedField = Math.Sqrt(1.0);
 
             // start light calculation
             var calculator = new GridLightCalculator(builder, grid);
@@ -47,10 +49,8 @@ namespace UnitTests.LightCalculation
             var inputAfterSteps = calculator.SystemSMatrix.SMat * inputVector + inputVector;
 
             fieldVector[pinRightUp].Magnitude.ShouldBe(expectedField, 0.000000001);
-            fieldVector[pinRightUp].Magnitude.ShouldBe(expectedField, 0.000000001);
-            fieldVector[pinRightUp].Magnitude.ShouldBe(expectedField, 0.000000001);
-            fieldVector[pinRightUp].Magnitude.ShouldBe(expectedField, 0.000000001);
-
+            fieldVector[pinRightMiddle].Magnitude.ShouldBe(expectedField, 0.000000001);
+            fieldVector[pinRightDown].Magnitude.ShouldBe(expectedField, 0.000000001);
         }
         
     }
