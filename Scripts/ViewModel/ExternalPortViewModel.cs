@@ -20,6 +20,7 @@ using CAP_Core.Components.Creation;
 using CAP_Core;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Antlr4.Runtime.Misc;
 
 
 public partial class ExternalPortViewModel : Node, INotifyPropertyChanged
@@ -28,17 +29,53 @@ public partial class ExternalPortViewModel : Node, INotifyPropertyChanged
     public LightCalculationService LightCalculator { get; }
     public ObservableCollection<ExternalPort> ExternalPorts { get; set; }
     public event EventHandler<bool> LightChanged;
+    
     private bool _lightIsOn;
-
     public bool LightIsOn
     {
         get { return _lightIsOn; }
-        set { _lightIsOn = value;
+        set {
+            _lightIsOn = value;
             OnPropertyChanged();
         }
     }
 
+    private double _powerRed;
+    public double PowerRed {
+        get => _powerRed;
+        set
+        {
+            _powerRed = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private double _powerGreen;
+    public double PowerGreen
+    {
+        get => _powerGreen;
+        set
+        {
+            _powerGreen = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private double _powerBlue;
+    public double PowerBlue
+    {
+        get => _powerBlue;
+        set
+        {
+            _powerBlue = value;
+            OnPropertyChanged();
+        }
+    }
+
+
     public event PropertyChangedEventHandler PropertyChanged;
+
+
 
     public ExternalPortViewModel(PackedScene externalPortTemplate, GridManager grid, GridView gridView, LightCalculationService lightCalculator)
     {
@@ -61,12 +98,74 @@ public partial class ExternalPortViewModel : Node, INotifyPropertyChanged
 
         Grid.OnLightSwitched += (object sender, bool e) =>
         {
-            LightChanged?.Invoke(this, e);
+            LightIsOn = e;
         };
+
+        lightCalculator.LightCalculationChanged += (object sender, LightCalculationChangeEventArgs e) =>
+        {
+            //TODO: variants of doing this properly
+            // run through external ports and 
+            var touchingComponent = grid.GetComponentAt(0, TilePositionY);
+            if (touchingComponent == null)
+            {
+                ResetPowers();
+                return;
+            };
+
+            var offsetY = TilePositionY - touchingComponent.GridYMainTile;
+            var touchingPin = touchingComponent.PinIdLeftOut(0, offsetY);
+            if (touchingPin == null)
+            {
+                ResetPowers();
+                return;
+            };
+
+            var fieldOut = e.LightFieldVector[(Guid)touchingPin].Magnitude;
+            if (e.LaserInUse.Color == LightColor.Red)
+            {
+                PowerRed = fieldOut * fieldOut;
+            }
+            else if (e.LaserInUse.Color == LightColor.Green)
+            {
+                PowerGreen = fieldOut * fieldOut;
+            }
+            else
+            {
+                PowerBlue = fieldOut * fieldOut;
+            }
+            PowerChanged?.Invoke(this, AllColorsPower());
+        };
+
+        //TilePositionY = tilePositionY;
+        //PowerChanged?.Invoke(this, AllColorsPower());
     }
 
+    public string AllColorsPower()
+    {
+        string allUsedPowers = "";
 
+        if (PowerRed > 0.005)
+        {
+            allUsedPowers += $"[color=#FF6666]R: {PowerRed:F2}[/color]\n";
+        }
+        if (PowerGreen > 0.005)
+        {
+            allUsedPowers += $"[color=#66FF66]G: {PowerGreen:F2}[/color]\n";
+        }
+        if (PowerBlue > 0.005)
+        {
+            allUsedPowers += $"[color=#6666FF]B: {PowerBlue:F2}[/color]";
+        }
 
+        // Removes the trailing newline character if any colors were added
+        return allUsedPowers.TrimEnd('\n');
+    }
+    private void ResetPowers()
+    {
+        PowerRed = 0;
+        PowerGreen = 0;
+        PowerBlue = 0;
+    }
     private void PortsSwitched(object sender, int e)
     {
         int portIndex = Grid.ExternalPorts.IndexOf(Grid.ExternalPorts.FirstOrDefault(exPort => exPort.TilePositionY == e));
@@ -117,4 +216,6 @@ public partial class ExternalPortViewModel : Node, INotifyPropertyChanged
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
+
 }
+
