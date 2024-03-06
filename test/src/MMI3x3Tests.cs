@@ -52,7 +52,7 @@ namespace ConnectAPIC.test.src
         }
 
         [Test]
-        public async Task TestMMI3x3LightPowers()
+        public async Task TestMMI3x3LightFields()
         {
             var component = MyGameManager.Grid.GetComponentAt(MMI3x3.ViewModel.GridX, MMI3x3.ViewModel.GridY);
             var lightPower = (float)MyGameManager.Grid.GetUsedExternalInputs().FirstOrDefault(i => i.Input.LaserType == LaserType.Red).Input.InFlowPower.Magnitude;
@@ -87,23 +87,23 @@ namespace ConnectAPIC.test.src
             var rightUpSlot = redSlots.Single(s => s.TileOffset == new Vector2I(2, 0));
             var rightMiddleSlot = redSlots.Single(s => s.TileOffset == new Vector2I(2, 1));
             var rightDownSlot = redSlots.Single(s => s.TileOffset == new Vector2I(2, 2));
-            var leftUpSlot = redSlots.Single(s => s.TileOffset == new Vector2I(0, 0));
-            var leftMiddleSlot = redSlots.Single(s => s.TileOffset == new Vector2I(0, 1));
-            var leftDownSlot = redSlots.Single(s => s.TileOffset == new Vector2I(0, 2));
+            var leftUpSlot = redSlots.First(s => s.TileOffset == new Vector2I(0, 0));
+            var leftMiddleSlot = redSlots.First(s => s.TileOffset == new Vector2I(0, 1));
+            var leftDownSlot = redSlots.First(s => s.TileOffset == new Vector2I(0, 2));
             // meassure if the animation has the proper alpha values in the shader
             var lightUpLeft = GetLightAtSlot(leftUpSlot, 1);
             var lightMiddleLeft = GetLightAtSlot(leftUpSlot, 2);
             var lightDownLeft = GetLightAtSlot(leftUpSlot, 3);
-            var lightUpRight = GetLightAtSlot(rightUpSlot, 4);
-            var lightMiddleRight = GetLightAtSlot(rightUpSlot, 5);
-            var lightDownRight = GetLightAtSlot(rightUpSlot, 6);
+            var lightUpRight = GetLightAtSlot(rightUpSlot, 7);
+            var lightMiddleRight = GetLightAtSlot(rightUpSlot, 8);
+            var lightDownRight = GetLightAtSlot(rightUpSlot, 9);
 
             // assert
             MMI3x3.WidthInTiles.ShouldBe(3);
             MMI3x3.HeightInTiles.ShouldBe(3);
-            rightUpSlot.FlowDirection.ShouldBe(FlowDirection.In);
-            rightMiddleSlot.FlowDirection.ShouldBe(FlowDirection.In);
-            rightDownSlot.FlowDirection.ShouldBe(FlowDirection.In);
+            rightUpSlot.FlowDirection.ShouldBe(FlowDirection.Both);
+            rightMiddleSlot.FlowDirection.ShouldBe(FlowDirection.Both);
+            rightDownSlot.FlowDirection.ShouldBe(FlowDirection.Both);
 
             lightUpLeft.inflow.ShouldBe(lightPower/3);
             lightMiddleLeft.inflow.ShouldBe(lightPower / 3);
