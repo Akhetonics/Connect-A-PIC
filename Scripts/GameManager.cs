@@ -93,7 +93,7 @@ namespace ConnectAPic.LayoutWindow
             try
             {
                 ExternalPortViewModel = new ExternalPortViewModel(ExternalPortTemplate, Grid, GridView, GridViewModel.LightCalculator);
-                ExternalPortViewModel.ExternalPortViewInitialized += (object sender, ExternalPortView e) => GridView.DragDropProxy.AddChild(e);
+                //ExternalPortViewModel.ExternalPortViewInitialized += (object sender, ExternalPortView e) => GridView.DragDropProxy.AddChild(e);
                 PCKLoader.LoadStandardPCKs();
                 List<ComponentDraft> componentDrafts = EquipViewComponentFactoryWithJSONDrafts();
                 this.CheckForNull(x => x.ToolBoxPath);

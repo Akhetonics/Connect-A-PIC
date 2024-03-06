@@ -3,6 +3,7 @@ using Godot;
 using ConnectAPIC.Scripts.ViewModel;
 using ConnectAPIC.Scenes.ExternalPorts;
 using System.Collections.ObjectModel;
+using System.Collections.Generic;
 
 namespace ConnectAPic.LayoutWindow
 {
@@ -15,40 +16,42 @@ namespace ConnectAPic.LayoutWindow
             {
                 ExternalPortTemplate = externalPortTemplate;
             }
-            private void InitializeExternalPortViews(ObservableCollection<ExternalPort> ExternalPorts)
+            public List<ExternalPortScene> InitializeExternalPortViews(ObservableCollection<ExternalPort> ExternalPorts)
             {
-                ExternalPortView portView;
+                List<ExternalPortScene> portViews = new List<ExternalPortScene>();
+                ExternalPortScene portView;
                 foreach (var port in ExternalPorts)
                 {
-                    portView = ExternalPortTemplate.Instantiate<ExternalPortView>();
+                    portView = ExternalPortTemplate.Instantiate<ExternalPortScene>();
 
                     if (port is ExternalInput input)
                     {
                         if (input.LaserType == LaserType.Red)
                         {
-                            portView.SetAsInput(this, 1, 0, 0);
+                            portView.SetAsInput(1, 0, 0);
                         }
                         else if (input.LaserType == LaserType.Green)
                         {
-                            portView.SetAsInput(this, 0, 1, 0);
+                            portView.SetAsInput(0, 1, 0);
                         }
                         else
                         {
-                            portView.SetAsInput(this, 0, 0, 1);
+                            portView.SetAsInput(0, 0, 1);
                         }
                     }
                     else
                     {
-                        portView.SetAsOutput(new PowerMeterViewModel(Grid, port.TilePositionY, LightCalculator));
+                        portView.SetAsOutput();
                     }
+
+                    portView.SetPortPositionY(port.TilePositionY);
 
                     portView.Visible = true;
                     portView.Position = new Vector2(0, (GameManager.TilePixelSize) * port.TilePositionY);
-                    portView.SetPortPositionY(port.TilePositionY);
-                    Views.Add(port.TilePositionY, portView);
-                    portView.Switched += PortsSwitched;
-                    ExternalPortViewInitialized?.Invoke(this, portView);
+                    portViews.Add(portView);
                 }
+
+                return portViews;
             }
         }
     }
