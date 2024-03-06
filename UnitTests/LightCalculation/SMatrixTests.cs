@@ -1,5 +1,4 @@
 using CAP_Core;
-using CAP_Core.Components;
 using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.Grid;
 using CAP_Core.LightCalculation;

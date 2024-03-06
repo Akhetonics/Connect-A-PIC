@@ -2,6 +2,7 @@ using CAP_Core.Components.Creation;
 using CAP_Core.Components.FormulaReading;
 using CAP_Core.Grid.FormulaReading;
 using CAP_Core.Helpers;
+using CAP_Core.LightCalculation;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Text.Json.Serialization;
