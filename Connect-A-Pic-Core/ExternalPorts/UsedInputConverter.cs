@@ -1,4 +1,4 @@
-﻿using CAP_Core.Components;
+﻿using CAP_Core.LightCalculation;
 using System.Numerics;
 
 namespace CAP_Core.ExternalPorts

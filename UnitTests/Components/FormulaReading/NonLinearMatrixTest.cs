@@ -1,6 +1,7 @@
 ﻿using CAP_Core.Components;
 using CAP_Core.Components.FormulaReading;
 using CAP_Core.Grid.FormulaReading;
+using CAP_Core.LightCalculation;
 using MathNet.Numerics.LinearAlgebra;
 using Shouldly;
 using System.Linq.Dynamic.Core;

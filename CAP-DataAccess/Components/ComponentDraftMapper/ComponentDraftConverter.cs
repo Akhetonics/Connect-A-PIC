@@ -3,6 +3,7 @@ using CAP_Core.Components;
 using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.Components.FormulaReading;
 using CAP_Core.Grid.FormulaReading;
+using CAP_Core.LightCalculation;
 using CAP_DataAccess.Components.ComponentDraftMapper.DTOs;
 using MathNet.Numerics;
 using System.Data;
