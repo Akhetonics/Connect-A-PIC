@@ -1,5 +1,8 @@
 using CAP_Core.ExternalPorts;
 using CAP_DataAccess.Components.ComponentDraftMapper.DTOs;
+using JetBrains.Annotations;
+using MathNet.Numerics;
+using MathNet.Numerics.Statistics;
 using Shouldly;
 using System;
 using System.Collections.Generic;
@@ -70,14 +73,35 @@ namespace UnitTests.LightCalculation
         [Fact]
         public void TestMMICalculatorLightPropagation3X3()
         {
-            var sMatrix = SMatrixMMICalculator.GetSMatrix(3);
+            var dimensions = 3;
+            var sMatrix = SMatrixMMICalculator.GetSMatrix(dimensions);
             var inputVector = MathNet.Numerics.LinearAlgebra.Vector<Complex>.Build.Dense(sMatrix.RowCount);
-            inputVector[0] = 0.6;
-            
+            inputVector[0] = Complex.FromPolarCoordinates(1, 0.33);
+            //inputVector[1] = Complex.FromPolarCoordinates(1, 1.44);
+            //inputVector[2] = Complex.FromPolarCoordinates(1, 2.55);
+
+            // Act
             var outputVector = sMatrix * inputVector;
+            var outputVector2 = sMatrix * outputVector;
+            var outputVector3 = sMatrix * outputVector2;
+            var outputVector4 = sMatrix * outputVector3;
             var outputUp = outputVector[0].Magnitude;
-            
-            Assert.Equal((double)outputVector[1].Magnitude , (double) inputVector[0].Magnitude / 3, (double)0.000001);
+            // Calculate the total energy at input and output
+            double inputEnergy = inputVector.Sum(x => x.MagnitudeSquared());
+            double outputEnergy = outputVector.Sum(x => x.MagnitudeSquared());
+            double outputEnergy2 = outputVector2.Sum(x => x.MagnitudeSquared());
+            double outputEnergy3 = outputVector3.Sum(x => x.MagnitudeSquared());
+            // Assert
+            // Check if the total energy is conserved (within a small tolerance)
+            Assert.True(Math.Abs(inputEnergy - outputEnergy) < 1e-12, $"Energy conservation failed. Input energy: {inputEnergy}, Output energy: {outputEnergy}");
+            Assert.True(Math.Abs(inputEnergy - outputEnergy2) < 1e-12, $"Energy conservation failed. Input energy: {inputEnergy}, Output energy: {outputEnergy2}");
+            if(dimensions == 3)
+            {
+                Assert.Equal((inputVector[0].Magnitude + inputVector[1].Magnitude + inputVector[2].Magnitude) / 3, outputVector[1].MagnitudeSquared(), 0.000001);
+            }
+
+            Assert.True((outputVector2 - inputVector).MaximumMagnitudePhase().Magnitude < 1e-10);
+            Assert.True((outputVector2 - inputVector).MaximumMagnitudePhase().Phase < 1e-10);
         }
     }
 }
