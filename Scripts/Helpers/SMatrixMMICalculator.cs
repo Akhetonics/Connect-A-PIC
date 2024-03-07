@@ -19,11 +19,11 @@ namespace ConnectAPIC.Scripts.Helpers
                 Complex alpha;
                 if ((t_column - s_row) % 2 == dimensions % 2)
                 {
-                    alpha = 1 / Math.Sqrt(dimensions) * Complex.Exp(i * Math.PI / dimensions * (1 - Math.Pow(t_column - s_row, 2) / dimensions));
+                    alpha = 1 / Math.Sqrt(dimensions) * Complex.Exp(i * Math.PI / 4 * (1 - Math.Pow(t_column - s_row, 2) / dimensions));
                 }
                 else
                 {
-                    alpha = -1 / Math.Sqrt(dimensions) * Complex.Exp(i * Math.PI / dimensions * (1 - Math.Pow(t_column + s_row - 1, 2) / dimensions));
+                    alpha = -1 / Math.Sqrt(dimensions) * Complex.Exp(i * Math.PI / 4 * (1 - Math.Pow(t_column + s_row - 1, 2) / dimensions));
                 }
                 return alpha;
             }
