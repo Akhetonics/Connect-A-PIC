@@ -52,20 +52,20 @@ namespace UnitTests.LightCalculation
             //  4  <->  5
             //  6  <->  7
             int dimensions = 4;
-            var connections = SMatrixMMICalculator.GetConnections(dimensions);
+            var connections = SMatrix3_3MMICalculator.GetConnections(1550);
             var referenceMatrix = GetReferenceMMIMatrix();
-            var json = SMatrixMMICalculator.GetConnectionsJson(connections);
-            var smatrixText = SMatrixMMICalculator.GetSMatrixString(dimensions);
+            var json = SMatrix3_3MMICalculator.GetConnectionsJson(connections);
+            var smatrixText = SMatrix3_3MMICalculator.GetSMatrixString(1550);
 
             // test if the MMI's complex matrix is matching with the values in the calculated MMI 4x4 Matrix
             for (int row = 0; row < dimensions; row++) // inputs
             {
                 for (int column = 0; column < dimensions; column++) // outputs
                 {
-                    var connection = connections.Single(c => c.FromPinNr == row * 2  && c.ToPinNr == column * 2 + 1);
+                    var connection = connections.Single(c => c.FromPinNr == row * 2 && c.ToPinNr == column * 2 + 1);
                     Complex reference = referenceMatrix[row, column];
-                    reference.Magnitude.ShouldBe((double)connection.Magnitude ,1e-10);
-                    ArePhasesEqual(reference.Phase,(double)connection.Phase).ShouldBe(true);
+                    reference.Magnitude.ShouldBe((double)connection.Magnitude, 1e-10);
+                    ArePhasesEqual(reference.Phase, (double)connection.Phase).ShouldBe(true);
                 }
             }
         }
@@ -73,12 +73,13 @@ namespace UnitTests.LightCalculation
         [Fact]
         public void TestMMICalculatorLightPropagation3X3()
         {
-            var dimensions = 3;
-            var sMatrix = SMatrixMMICalculator.GetSMatrix(dimensions);
+            // working with this formula now: https://gigvvy.com/journals/ijase/articles/ijase-201303-11-1-031.pdf
+            var sMatrix = SMatrix3_3MMICalculator.GetSMatrix(0);
+            var sMatrixstring = SMatrix3_3MMICalculator.GetSMatrixString(0);
             var inputVector = MathNet.Numerics.LinearAlgebra.Vector<Complex>.Build.Dense(sMatrix.RowCount);
-            inputVector[0] = Complex.FromPolarCoordinates(1, 0.33);
-            //inputVector[1] = Complex.FromPolarCoordinates(1, 1.44);
-            //inputVector[2] = Complex.FromPolarCoordinates(1, 2.55);
+            inputVector[0] = Complex.FromPolarCoordinates(1, 0);
+            inputVector[1] = Complex.FromPolarCoordinates(1, 0);
+            inputVector[2] = Complex.FromPolarCoordinates(1, 0);
 
             // Act
             var outputVector = sMatrix * inputVector;
@@ -95,11 +96,7 @@ namespace UnitTests.LightCalculation
             // Check if the total energy is conserved (within a small tolerance)
             Assert.True(Math.Abs(inputEnergy - outputEnergy) < 1e-12, $"Energy conservation failed. Input energy: {inputEnergy}, Output energy: {outputEnergy}");
             Assert.True(Math.Abs(inputEnergy - outputEnergy2) < 1e-12, $"Energy conservation failed. Input energy: {inputEnergy}, Output energy: {outputEnergy2}");
-            if(dimensions == 3)
-            {
-                Assert.Equal((inputVector[0].Magnitude + inputVector[1].Magnitude + inputVector[2].Magnitude) / 3, outputVector[1].MagnitudeSquared(), 0.000001);
-            }
-
+            Assert.Equal((inputVector[0].Magnitude + inputVector[1].Magnitude + inputVector[2].Magnitude) / 3, outputVector[1].MagnitudeSquared(), 0.000001);
             Assert.True((outputVector2 - inputVector).MaximumMagnitudePhase().Magnitude < 1e-10);
             Assert.True((outputVector2 - inputVector).MaximumMagnitudePhase().Phase < 1e-10);
         }
