@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://d1ufvamoo7a4b"
-path="res://.godot/imported/centerLight.png-95d6ff3fdcd54bdb779fe707ebadbb5c.ctex"
+path="res://.godot/imported/centerLight.png-1069950d8c9a2478eeb76bddd4715941.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Scenes/ExternalInputs/centerLight.png"
-dest_files=["res://.godot/imported/centerLight.png-95d6ff3fdcd54bdb779fe707ebadbb5c.ctex"]
+source_file="res://Scenes/ExternalPorts/centerLight.png"
+dest_files=["res://.godot/imported/centerLight.png-1069950d8c9a2478eeb76bddd4715941.ctex"]
 
 [params]
 

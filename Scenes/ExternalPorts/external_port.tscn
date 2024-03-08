@@ -1,9 +1,9 @@
 [gd_scene load_steps=7 format=3 uid="uid://duapw8umf7gnn"]
 
-[ext_resource type="Script" path="res://Scenes/ExternalInputs/ExternalPortScript.cs" id="1_knu4t"]
-[ext_resource type="Texture2D" uid="uid://btiixf0ktgtmi" path="res://Scenes/ExternalInputs/ExternalInput.png" id="2_d1ms6"]
-[ext_resource type="Texture2D" uid="uid://ccp8jo3jul08s" path="res://Scenes/ExternalInputs/ArrowLight.png" id="4_2a6q5"]
-[ext_resource type="Texture2D" uid="uid://d1ufvamoo7a4b" path="res://Scenes/ExternalInputs/centerLight.png" id="5_e6xjr"]
+[ext_resource type="Script" path="res://Scripts/View/ExternalPortViews/ExternalPortView.cs" id="1_k7enb"]
+[ext_resource type="Texture2D" uid="uid://btiixf0ktgtmi" path="res://Scenes/ExternalPorts/ExternalInput.png" id="2_hbsyq"]
+[ext_resource type="Texture2D" uid="uid://ccp8jo3jul08s" path="res://Scenes/ExternalPorts/ArrowLight.png" id="3_7qx73"]
+[ext_resource type="Texture2D" uid="uid://d1ufvamoo7a4b" path="res://Scenes/ExternalPorts/centerLight.png" id="4_08arr"]
 
 [sub_resource type="Gradient" id="Gradient_sj78c"]
 offsets = PackedFloat32Array(0, 0.085, 0.745)
@@ -15,7 +15,7 @@ fill = 1
 fill_from = Vector2(0.5, 0.5)
 
 [node name="ExternalInput" type="Node2D"]
-script = ExtResource("1_knu4t")
+script = ExtResource("1_k7enb")
 
 [node name="Texture" type="TextureRect" parent="."]
 texture_filter = 1
@@ -25,7 +25,7 @@ anchor_right = 1.0
 offset_left = -111.0
 offset_bottom = 62.0
 grow_horizontal = 0
-texture = ExtResource("2_d1ms6")
+texture = ExtResource("2_hbsyq")
 metadata/_edit_use_anchors_ = true
 
 [node name="LightContainer" type="Node2D" parent="."]
@@ -43,14 +43,14 @@ position = Vector2(-50, 32)
 enabled = false
 color = Color(1, 0, 0, 1)
 energy = 16.0
-texture = ExtResource("4_2a6q5")
+texture = ExtResource("3_7qx73")
 
 [node name="InnerLight" type="PointLight2D" parent="LightContainer"]
 position = Vector2(-77, 32)
 enabled = false
 color = Color(1, 0, 0, 1)
 energy = 16.0
-texture = ExtResource("5_e6xjr")
+texture = ExtResource("4_08arr")
 
 [node name="RichTextLabel" type="RichTextLabel" parent="."]
 modulate = Color(2, 2, 2, 1)
