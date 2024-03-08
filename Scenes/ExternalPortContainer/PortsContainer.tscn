@@ -1,0 +1,18 @@
+[gd_scene load_steps=2 format=3 uid="uid://cfnwmdequraf3"]
+
+[ext_resource type="Script" path="res://Scenes/ExternalPortContainer/PortsContainer.cs" id="1_1kojt"]
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_1kojt")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -111.0
+offset_bottom = 62.0
+grow_horizontal = 0
+
+[node name="Control" type="Control" parent="VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3

@@ -33,12 +33,6 @@ namespace ConnectAPIC.Scenes.ExternalPorts
             ViewModel = viewModel;
 
             ViewModel.PropertyChanged += ViewModel_PropertyChanged;
-
-            ViewModel.ExternalPorts.CollectionChanged += (object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) =>
-            {
-                //TODO: search if new one is same as 
-
-            };
         }
 
 

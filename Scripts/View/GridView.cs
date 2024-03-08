@@ -34,7 +34,7 @@ namespace ConnectAPIC.LayoutWindow.View
         public override void _Ready()
         {
             base._Ready();
-            this.CheckForNull(x => DragDropProxy);
+            this.CheckForNull(x => DragDropProxy);  
             this.CheckForNull(x => ComponentViewFactory);
             this.CheckForNull(x => LightOnTexture);
             this.CheckForNull(x => LightOffTexture);
