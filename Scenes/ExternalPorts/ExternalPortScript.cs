@@ -11,8 +11,9 @@ using static ConnectAPic.LayoutWindow.GameManager;
 
 namespace ConnectAPIC.Scenes.ExternalPorts
 {
-    public partial class ExternalPortScene: Node2D { 
-    
+    public partial class ExternalPortScene : Node2D
+    {
+
         [Export] public Texture2D InputTexture { set; get; }
         [Export] public Texture2D OutputTexture { set; get; }
 
@@ -23,7 +24,8 @@ namespace ConnectAPIC.Scenes.ExternalPorts
         public bool LightsOn
         {
             get => lightsOn;
-            set {
+            set
+            {
                 lightContainer?.ForEach((PointLight2D x) => x.Enabled = value);
                 lightsOn = value;
             }
@@ -56,7 +58,8 @@ namespace ConnectAPIC.Scenes.ExternalPorts
             }
         }
 
-        public ExternalPortScene SetPortPositionY(int positionY) {
+        public ExternalPortScene SetPortPositionY(int positionY)
+        {
             PortPositionY = positionY;
             return this;
         }
@@ -80,7 +83,7 @@ namespace ConnectAPIC.Scenes.ExternalPorts
 
             return this;
         }
-      
+
 
         /// <summary>
         /// sets color of input pin according to RGBA colors (in range 0-1)
@@ -114,15 +117,4 @@ namespace ConnectAPIC.Scenes.ExternalPorts
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
 

@@ -1,26 +1,14 @@
+using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.ExternalPorts;
 using CAP_Core.Grid;
-using Chickensoft.GodotTestDriver.Drivers;
-using ConnectAPIC.LayoutWindow.View;
-using ConnectAPIC.LayoutWindow.ViewModel;
-using ConnectAPic.LayoutWindow;
-using ConnectAPIC.Scripts.View.PowerMeter;
-using ConnectAPIC.Scripts.ViewModel;
-using ConnectAPIC.Scenes.ExternalPorts;
+using CAP_Core.LightCalculation;
 using Godot;
 using System;
 using System.Collections.ObjectModel;
-using System.Collections.Generic;
-using CAP_Core.LightCalculation;
-using CAP_Core.Components;
-using CAP_Core.Components.ComponentHelpers;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
-using CAP_Core.Components.Creation;
-using CAP_Core;
-using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Antlr4.Runtime.Misc;
 
 
 public partial class ExternalPortViewModel : Node, INotifyPropertyChanged
@@ -28,69 +16,58 @@ public partial class ExternalPortViewModel : Node, INotifyPropertyChanged
     public GridManager Grid { get; }
     public LightCalculationService LightCalculator { get; }
     public ObservableCollection<ExternalPort> ExternalPorts { get; set; }
-    public event EventHandler<bool> LightChanged;
-    
+
+    public int TilePositionY { get; private set; } = -1;
+
+    private bool _isInput;
+    public bool IsInput {
+        get => _isInput;
+        set{
+            _isInput = value;
+            OnPropertyChanged();
+        }
+    }
+
     private bool _lightIsOn;
     public bool LightIsOn
     {
         get { return _lightIsOn; }
-        set {
+        set
+        {
             _lightIsOn = value;
             OnPropertyChanged();
         }
     }
 
-    private double _powerRed;
-    public double PowerRed {
-        get => _powerRed;
-        set
-        {
-            _powerRed = value;
-            OnPropertyChanged();
-        }
-    }
-
-    private double _powerGreen;
-    public double PowerGreen
+    private Vector3 _power; //rgb (0-1) values for power red/green/blue (for now it represents output power, could be input power later)
+    public Vector3 Power
     {
-        get => _powerGreen;
+        get => _power;
         set
         {
-            _powerGreen = value;
+            _power = value;
             OnPropertyChanged();
         }
     }
-
-    private double _powerBlue;
-    public double PowerBlue
-    {
-        get => _powerBlue;
-        set
-        {
-            _powerBlue = value;
-            OnPropertyChanged();
-        }
-    }
-
 
     public event PropertyChangedEventHandler PropertyChanged;
 
-
-
-    public ExternalPortViewModel(PackedScene externalPortTemplate, GridManager grid, GridView gridView, LightCalculationService lightCalculator)
+    public ExternalPortViewModel(GridManager grid, int tilePositionY, LightCalculationService lightCalculator)
     {
         LightCalculator = lightCalculator;
+        TilePositionY = tilePositionY;
+        Power = Vector3.Zero;
         Grid = grid;
 
         Grid.ExternalPorts.CollectionChanged += (object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) =>
         {
             // delete all external ports one by one 
-            foreach(ExternalPort port in e.OldItems)
+            foreach (ExternalPort port in e.OldItems)
             {
                 ExternalPorts.Remove(port);
             }
             // add the new ports
-            foreach(ExternalPort port in e.NewItems)
+            foreach (ExternalPort port in e.NewItems)
             {
                 ExternalPorts.Add(port);
             }
@@ -103,15 +80,12 @@ public partial class ExternalPortViewModel : Node, INotifyPropertyChanged
 
         lightCalculator.LightCalculationChanged += (object sender, LightCalculationChangeEventArgs e) =>
         {
-            //TODO: variants of doing this properly
-            // run through external ports and 
             var touchingComponent = grid.GetComponentAt(0, TilePositionY);
             if (touchingComponent == null)
             {
                 ResetPowers();
                 return;
             };
-
             var offsetY = TilePositionY - touchingComponent.GridYMainTile;
             var touchingPin = touchingComponent.PinIdLeftOut(0, offsetY);
             if (touchingPin == null)
@@ -119,42 +93,59 @@ public partial class ExternalPortViewModel : Node, INotifyPropertyChanged
                 ResetPowers();
                 return;
             };
-
             var fieldOut = e.LightFieldVector[(Guid)touchingPin].Magnitude;
             if (e.LaserInUse.Color == LightColor.Red)
             {
-                PowerRed = fieldOut * fieldOut;
+                // floats should be sufficient for this value
+                SetPower(red: (float)(fieldOut * fieldOut));
             }
             else if (e.LaserInUse.Color == LightColor.Green)
             {
-                PowerGreen = fieldOut * fieldOut;
+                SetPower(green: (float)(fieldOut * fieldOut));
             }
             else
             {
-                PowerBlue = fieldOut * fieldOut;
+                SetPower(blue: (float)(fieldOut * fieldOut));
             }
-            PowerChanged?.Invoke(this, AllColorsPower());
         };
-
-        //TilePositionY = tilePositionY;
-        //PowerChanged?.Invoke(this, AllColorsPower());
     }
 
+    /// <summary>
+    /// Sets power vector, used for conviniently setting power parameter
+    /// </summary>
+    /// <param name="red"> red power value in range [0, 1]</param>
+    /// <param name="green"> green power value in range [0, 1]</param>
+    /// <param name="blue"> blue power value in range [0, 1]</param>
+    /// <param name="setNonZeros"> if true will only set the value which is different from 0 and leave others as they were before in power vector</param>
+    public void SetPower(float red = 0, float green = 0, float blue = 0, bool setNonZeros = false) {
+        if (setNonZeros)
+        {
+            Vector3 power = Power;
+            if(red != 0) power.X = red;
+            if(green != 0) power.Y = green;
+            if (blue != 0) power.Z = blue;
+            Power = power;
+        }
+        else
+        {
+            Power = new Vector3(red, green, blue);
+        }
+    }
     public string AllColorsPower()
     {
         string allUsedPowers = "";
 
-        if (PowerRed > 0.005)
+        if (Power.X > 0.005)
         {
-            allUsedPowers += $"[color=#FF6666]R: {PowerRed:F2}[/color]\n";
+            allUsedPowers += $"[color=#FF6666]R: {Power.X:F2}[/color]\n";
         }
-        if (PowerGreen > 0.005)
+        if (Power.Y > 0.005)
         {
-            allUsedPowers += $"[color=#66FF66]G: {PowerGreen:F2}[/color]\n";
+            allUsedPowers += $"[color=#66FF66]G: {Power.Y:F2}[/color]\n";
         }
-        if (PowerBlue > 0.005)
+        if (Power.Z > 0.005)
         {
-            allUsedPowers += $"[color=#6666FF]B: {PowerBlue:F2}[/color]";
+            allUsedPowers += $"[color=#6666FF]B: {Power.Z:F2}[/color]";
         }
 
         // Removes the trailing newline character if any colors were added
@@ -162,10 +153,14 @@ public partial class ExternalPortViewModel : Node, INotifyPropertyChanged
     }
     private void ResetPowers()
     {
-        PowerRed = 0;
-        PowerGreen = 0;
-        PowerBlue = 0;
+        Power = Vector3.Zero;
     }
+
+    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "")
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+    }
+
     private void PortsSwitched(object sender, int e)
     {
         int portIndex = Grid.ExternalPorts.IndexOf(Grid.ExternalPorts.FirstOrDefault(exPort => exPort.TilePositionY == e));
@@ -211,10 +206,6 @@ public partial class ExternalPortViewModel : Node, INotifyPropertyChanged
             }
         }
 
-    }
-    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "")
-    {
-        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
 }

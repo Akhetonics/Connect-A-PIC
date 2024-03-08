@@ -61,7 +61,7 @@ namespace ConnectAPic.LayoutWindow
         private LogSaver LogSaver { get; set; }
         private List<(String log, bool isError)> InitializationLogs = new();
         public GridViewModel GridViewModel { get; private set; }
-        public ExternalPortViewModel ExternalPortViewModel { get; private set; }
+        public ExternalPortViewFactory PortViewFactory { get; set; }
         public ComponentFactory ComponentModelFactory { get; set; }
         public const string ComponentFolderPath = "res://Scenes/Components";
 
@@ -89,8 +89,10 @@ namespace ConnectAPic.LayoutWindow
         {
             try
             {
-                ExternalPortViewModel = new ExternalPortViewModel(ExternalPortTemplate, Grid, GridView, GridViewModel.LightCalculator);
+                //ExternalPortViewModel = new ExternalPortViewModel(ExternalPortTemplate, Grid, GridView, GridViewModel.LightCalculator);
                 //ExternalPortViewModel.ExternalPortViewInitialized += (object sender, ExternalPortView e) => GridView.DragDropProxy.AddChild(e);
+
+
                 PCKLoader.LoadStandardPCKs();
                 List<ComponentDraft> componentDrafts = EquipViewComponentFactoryWithJSONDrafts();
                 this.CheckForNull(x => x.ToolBoxPath);

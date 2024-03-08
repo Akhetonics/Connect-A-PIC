@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://Scripts/GameManager.cs" id="1_c0scx"]
 [ext_resource type="Script" path="res://Scripts/View/ComponentFactory/ComponentViewFactory.cs" id="2_7hjmy"]
-[ext_resource type="PackedScene" uid="uid://duapw8umf7gnn" path="res://Scenes/ExternalInputs/external_port.tscn" id="2_dn85u"]
+[ext_resource type="PackedScene" uid="uid://duapw8umf7gnn" path="res://Scenes/ExternalPorts/external_port.tscn" id="2_dn85u"]
 [ext_resource type="Script" path="res://Scripts/View/ComponentViews/ComponentView.cs" id="3_celc4"]
 [ext_resource type="TileSet" uid="uid://cbfkdk3hvsq1q" path="res://Scenes/PICEditor/TileSet_PICEditor.tres" id="4_mptgl"]
 [ext_resource type="Script" path="res://Scripts/View/GridView.cs" id="5_3575d"]

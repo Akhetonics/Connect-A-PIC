@@ -1,9 +1,10 @@
 using CAP_Core.ExternalPorts;
-using Godot;
-using ConnectAPIC.Scripts.ViewModel;
+using CAP_Core.Grid;
+using CAP_Core.LightCalculation;
 using ConnectAPIC.Scenes.ExternalPorts;
-using System.Collections.ObjectModel;
+using Godot;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace ConnectAPic.LayoutWindow
 {
@@ -12,43 +13,57 @@ namespace ConnectAPic.LayoutWindow
         public class ExternalPortViewFactory
         {
             public PackedScene ExternalPortTemplate { get; set; }
-            public ExternalPortViewFactory(PackedScene externalPortTemplate)
+            public GridManager Grid {  get; set; }
+            public LightCalculationService LightCalculator { get; set; }
+            public ExternalPortViewFactory(PackedScene externalPortTemplate, GridManager grid, LightCalculationService lightCalculator)
             {
                 ExternalPortTemplate = externalPortTemplate;
+                LightCalculator = lightCalculator;
+                Grid = grid;
             }
-            public List<ExternalPortScene> InitializeExternalPortViews(ObservableCollection<ExternalPort> ExternalPorts)
-            {
-                List<ExternalPortScene> portViews = new List<ExternalPortScene>();
-                ExternalPortScene portView;
-                foreach (var port in ExternalPorts)
-                {
-                    portView = ExternalPortTemplate.Instantiate<ExternalPortScene>();
 
-                    if (port is ExternalInput input)
+            public ExternalPortView InitializeExternalPortView(ExternalPort externalPort)
+            {
+                ExternalPortView portView = ExternalPortTemplate.Instantiate<ExternalPortView>();
+                ExternalPortViewModel portViewModel = new ExternalPortViewModel(Grid, externalPort.TilePositionY, LightCalculator);
+                portView.Initialize(portViewModel);
+                
+                if (externalPort is ExternalInput input)
+                {
+                    portViewModel.IsInput = true;
+
+                    if (input.LaserType == LaserType.Red)
                     {
-                        if (input.LaserType == LaserType.Red)
-                        {
-                            portView.SetAsInput(1, 0, 0);
-                        }
-                        else if (input.LaserType == LaserType.Green)
-                        {
-                            portView.SetAsInput(0, 1, 0);
-                        }
-                        else
-                        {
-                            portView.SetAsInput(0, 0, 1);
-                        }
+                        portViewModel.SetPower(red: 1);
+                    }
+                    else if (input.LaserType == LaserType.Green)
+                    {
+                        portViewModel.SetPower(green: 1);
                     }
                     else
                     {
-                        portView.SetAsOutput();
+                        portViewModel.SetPower(blue: 1);
                     }
+                }
+                else
+                {
+                    portViewModel.IsInput = false;
+                }
 
-                    portView.SetPortPositionY(port.TilePositionY);
+                portView.Visible = true;
+                portView.Position = new Vector2(0, (GameManager.TilePixelSize) * externalPort.TilePositionY);
 
-                    portView.Visible = true;
-                    portView.Position = new Vector2(0, (GameManager.TilePixelSize) * port.TilePositionY);
-                    portViews.Add(portView);
+                return portView;
+            }
+
+            public List<ExternalPortView> InitializeExternalPortViewList(ObservableCollection<ExternalPort> ExternalPorts)
+            {
+                List<ExternalPortView> portViews = new();
+                foreach (var port in ExternalPorts)
+                {
+                    portViews.Add(
+                        InitializeExternalPortView(port)
+                        );
                 }
 
                 return portViews;

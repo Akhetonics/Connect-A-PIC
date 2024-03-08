@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Chickensoft.AutoInject" Version="1.5.0" />
+  </ItemGroup>
+
 </Project>
