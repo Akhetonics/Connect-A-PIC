@@ -15,7 +15,6 @@ public partial class ExternalPortViewModel : Node, INotifyPropertyChanged
 {
     public GridManager Grid { get; }
     public LightCalculationService LightCalculator { get; }
-    public ObservableCollection<ExternalPort> ExternalPorts { get; set; }
 
     public int TilePositionY { get; private set; } = -1;
 
@@ -58,20 +57,6 @@ public partial class ExternalPortViewModel : Node, INotifyPropertyChanged
         TilePositionY = tilePositionY;
         Power = Vector3.Zero;
         Grid = grid;
-
-        Grid.ExternalPorts.CollectionChanged += (object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) =>
-        {
-            // delete all external ports one by one 
-            foreach (ExternalPort port in e.OldItems)
-            {
-                ExternalPorts.Remove(port);
-            }
-            // add the new ports
-            foreach (ExternalPort port in e.NewItems)
-            {
-                ExternalPorts.Add(port);
-            }
-        };
 
         Grid.OnLightSwitched += (object sender, bool e) =>
         {
@@ -117,19 +102,8 @@ public partial class ExternalPortViewModel : Node, INotifyPropertyChanged
     /// <param name="green"> green power value in range [0, 1]</param>
     /// <param name="blue"> blue power value in range [0, 1]</param>
     /// <param name="setNonZeros"> if true will only set the value which is different from 0 and leave others as they were before in power vector</param>
-    public void SetPower(float red = 0, float green = 0, float blue = 0, bool setNonZeros = false) {
-        if (setNonZeros)
-        {
-            Vector3 power = Power;
-            if(red != 0) power.X = red;
-            if(green != 0) power.Y = green;
-            if (blue != 0) power.Z = blue;
-            Power = power;
-        }
-        else
-        {
-            Power = new Vector3(red, green, blue);
-        }
+    public void SetPower(float red = 0, float green = 0, float blue = 0) {
+        Power = new Vector3(red, green, blue);
     }
     public string AllColorsPower()
     {
@@ -161,7 +135,7 @@ public partial class ExternalPortViewModel : Node, INotifyPropertyChanged
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 
-    private void PortsSwitched(object sender, int e)
+   /* private void PortsSwitched(object sender, int e)
     {
         int portIndex = Grid.ExternalPorts.IndexOf(Grid.ExternalPorts.FirstOrDefault(exPort => exPort.TilePositionY == e));
 
@@ -206,7 +180,7 @@ public partial class ExternalPortViewModel : Node, INotifyPropertyChanged
             }
         }
 
-    }
+    }*/
 
 }
 
