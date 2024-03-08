@@ -1,97 +1,127 @@
-using CAP_Core.ExternalPorts;
-using ConnectAPic.LayoutWindow;
-using ConnectAPIC.Scripts.Helpers;
 using ConnectAPIC.Scripts.ViewModel;
 using Godot;
-using MathNet.Numerics.Distributions;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using static ConnectAPic.LayoutWindow.GameManager;
 
 
 namespace ConnectAPIC.Scenes.ExternalPorts
 {
-    public partial class ExternalPortView: Node
+    public partial class ExternalPortView : Node2D
     {
+
+        [Export] public Texture2D InputTexture { set; get; }
+        [Export] public Texture2D OutputTexture { set; get; }
+
+
         public ExternalPortViewModel ViewModel { get; set; }
-        public PowerMeterViewModel PowerMeterViewModel {  get; set; }
-        public ExternalPortViewFactory portFactory { get; set; }
 
-        public event EventHandler<int> Switched;
+        List<PointLight2D> lightContainer;
+        TextureRect currentTexture;
+        RichTextLabel InfoLabel;
+        bool pulsate = false;
+        float pulseValue = 0;
+        float minPulseEnergy = 0.8f;
+        float maxPulseEnergy = 1.2f;
 
-        private List<ExternalPortScene> portScenes;
 
-        bool lightsOn = true;
-
-        public ExternalPortView(PackedScene externalPortTemplate)
+        public ExternalPortView()
         {
-            portFactory = new ExternalPortViewFactory(externalPortTemplate);
-
-            ViewModel.ExternalPorts.CollectionChanged += (object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) => {
-                /* TODO: there can be more complex way to do it so that we changeo only one scene
-                 * but it's not economical for 10-20 prots so this needs to be discussed
-                foreach ( var removedItem in e.OldItems)
-                {
-                
-                }
-                foreach( var newItem in e.NewItems)
-                {
-
-                }*/
-
-                foreach (var scene in portScenes)
-                {
-                    scene.QueueFree();
-                }
-                portScenes.Clear();
-
-                portScenes = portFactory.InitializeExternalPortViews(ViewModel.ExternalPorts);
-            };
-
-            portScenes = portFactory.InitializeExternalPortViews(ViewModel.ExternalPorts);
         }
+
+        public void Initialize(ExternalPortViewModel viewModel)
+        {
+            ViewModel = viewModel;
+
+            ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+
+            ViewModel.ExternalPorts.CollectionChanged += (object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) =>
+            {
+                //TODO: search if new one is same as 
+
+            };
+        }
+
 
         public override void _Ready()
         {
+            currentTexture = GetChild<TextureRect>(0);
+            lightContainer = new List<PointLight2D>();
+            foreach (PointLight2D light in GetChild(1).GetChildren())
+            {
+                lightContainer.Add(light);
+            }
+            InfoLabel = GetChild<RichTextLabel>(2);
         }
 
         public override void _Process(double delta)
         {
-            if (lightsOn && isInput)
+            if (pulsate)
             {
+                Pulsate(delta);
             }
         }
 
-
-        [Export] public RichTextLabel InfoLabel { get; set; }
-        public PowerMeterViewModel ViewModel { get; set; }
-        public PowerMeterView() // should be empty for duplicate to work
+        public void SetAsOutput()
         {
-        }
-        public void Initialize(PowerMeterViewModel viewModel)
-        {
-            ViewModel = viewModel;
-            viewModel.PowerChanged += (object sender, string e) => DisplayPower(e);
+            currentTexture.Texture = OutputTexture;
         }
 
-        public void DisplayPower(string labelText)
+        public void SetAsInput(float alpha = 1)
         {
-            InfoLabel.Text = labelText;
+            currentTexture.Texture = InputTexture;
+            pulseValue = (float)(new Random().NextDouble() * 10);
+            SetLightColor(alpha);
+        }
+
+
+        /// <summary>
+        /// sets color of input pin according to RGBA colors (in range 0-1)
+        /// and returns ExternalPortView with the assigned light color
+        /// </summary>
+        /// <param name="red">float value between 0-1 indicating red</param>
+        /// <param name="green">float value between 0-1 indicating green</param>
+        /// <param name="blue">float value between 0-1 indicating blue</param>
+        /// <param name="alpha">float value between 0-1 indicating transparency</param>
+        /// <returns>ExternalPortView - with lighting of the given type</returns>
+        public void SetLightColor(float alpha = 1)
+        {
+            for (int i = 0; i < lightContainer.Count; i++)
+            {
+                lightContainer[i].Color = new Color(ViewModel.Power.X, ViewModel.Power.Y, ViewModel.Power.Z, alpha);
+            }
+        }
+
+        private void Pulsate(double delta)
+        {
+            pulseValue = (pulseValue + (float)delta) % (2 * Mathf.Pi);
+            lightContainer[0].Energy =
+            Mathf.Lerp(minPulseEnergy, maxPulseEnergy, Mathf.Abs(Mathf.Sin(pulseValue)));
+        }
+
+
+        private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ExternalPortViewModel.LightIsOn))
+            {
+                if (ViewModel.IsInput){
+                    lightContainer?.ForEach((PointLight2D x) => x.Enabled = ViewModel.LightIsOn);
+                    pulsate = ViewModel.LightIsOn;
+                }
+            }
+            else if (e.PropertyName == nameof(ExternalPortViewModel.Power))
+            {
+                if (ViewModel.IsInput)
+                    SetLightColor();
+                else
+                    InfoLabel.Text = ViewModel.AllColorsPower();
+            }
+            else if (e.PropertyName == nameof(ExternalPortViewModel.IsInput))
+            {
+                if (ViewModel.IsInput)
+                    SetAsInput();
+                else
+                    SetAsOutput();
+            }
         }
     }
-
 }
-}
-
-
-
-
-
-
-
-
-
-
-
-
