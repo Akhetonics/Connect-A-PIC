@@ -16,7 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Chickensoft.AutoInject" Version="1.4.0" />
+    <PackageReference Include="Chickensoft.AutoInject" Version="1.5.0" />
   </ItemGroup>
 
   <ItemGroup>
