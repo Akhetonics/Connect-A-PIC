@@ -30,7 +30,7 @@ namespace ConnectAPic.LayoutWindow
     [SuperNode(typeof(Provider))]
     public partial class GameManager : Node,
         IProvide<ToolBox>, IProvide<ILogger>, IProvide<GridView>, IProvide<GridManager>, IProvide<GridViewModel>, IProvide<GameManager>,
-        IProvide<GameConsole>, IProvide<System.Version>, IProvide<ComponentViewFactory>
+        IProvide<GameConsole>, IProvide<System.Version>, IProvide<ComponentViewFactory>//, IProvide<ExternalPortViewFactory>
     {
         #region Dependency Injection
         public override partial void _Notification(int what);
@@ -42,6 +42,9 @@ namespace ConnectAPic.LayoutWindow
         GameManager IProvide<GameManager>.Value() => this;
         GameConsole IProvide<GameConsole>.Value() => InGameConsole;
         ComponentViewFactory IProvide<ComponentViewFactory>.Value() => GridView.ComponentViewFactory;
+        //TODO: this wouldn't work because of externalPortTemplate and light calculator not being assigned?
+        //needs to be discussed for better solution
+        //ExternalPortViewFactory IProvide<ExternalPortViewFactory>.Value() => new ExternalPortViewFactory(ExternalPortTemplate, Grid, LightCalculator);
         System.Version IProvide<System.Version>.Value() => Version;
         #endregion
 
@@ -64,7 +67,6 @@ namespace ConnectAPic.LayoutWindow
         private LogSaver LogSaver { get; set; }
         private List<(String log, bool isError)> InitializationLogs = new();
         public GridViewModel GridViewModel { get; private set; }
-        public ExternalPortViewFactory PortViewFactory { get; set; }
         public ComponentFactory ComponentModelFactory { get; set; }
         public const string ComponentFolderPath = "res://Scenes/Components";
 
