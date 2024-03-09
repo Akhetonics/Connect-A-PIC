@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using CAP_Core.Grid;
 using CAP_Core.ExternalPorts;
 using System.Diagnostics;
+using CAP_Core.LightCalculation;
 
 
 [SuperNode(typeof(Dependent))]
@@ -16,18 +17,18 @@ public partial class PortsContainer : Node2D
 {
     public override partial void _Notification(int what);
     [Dependency] public GridManager GridManager => DependOn<GridManager>();
-    [Dependency] public ExternalPortViewFactory PortViewFactory => DependOn<ExternalPortViewFactory>();
+    [Dependency] public LightCalculationService LightCalculator => DependOn<LightCalculationService>();
 
+    [Export] public PackedScene ExternalPortViewTemplate { get; set; }
+
+    public ExternalPortViewFactory PortViewFactory { get; set; }
     public List<ExternalPortView> Views { get; set; } = new();
-    public PackedScene ExternalPortViewTemplate { get; set; }
-
-
-    //TODO: should observe Grid external ports when external ports change change Views accordingly?
 
 
     public void OnResolved()
     {
-        //Initiate Views according to Grids ExternalPorts?
+        PortViewFactory = new ExternalPortViewFactory(this, GridManager, LightCalculator);
+
         GridManager.ExternalPorts.CollectionChanged += (object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) =>
         {
             ExternalPortView tmpView;
@@ -40,25 +41,11 @@ public partial class PortsContainer : Node2D
             }
             foreach (ExternalPort port in e.NewItems)
             {
-                tmpView = PortViewFactory.InitializeExternalPortView(port);
+                tmpView = PortViewFactory?.InitializeExternalPortView(port);
                 Views.Add(tmpView);
             }
         };
 
-        Views = PortViewFactory.InitializeExternalPortViewList(GridManager.ExternalPorts);
-        Debug.Print("initialized? really?");
-    }
-
-
-
-    // Called when the node enters the scene tree for the first time.
-    public override void _Ready()
-    {
-        //TODO: obtain gridView and place yourself next to GridView?
-    }
-
-    // Called every frame. 'delta' is the elapsed time since the previous frame.
-    public override void _Process(double delta)
-    {
+        Views = PortViewFactory?.InitializeExternalPortViewList(GridManager.ExternalPorts);
     }
 }

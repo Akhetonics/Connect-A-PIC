@@ -27,7 +27,6 @@
 script = ExtResource("1_c0scx")
 GridViewPath = NodePath("GridView")
 ToolBoxPath = NodePath("GUILayer/Control/MarginContainer/VBoxContainer/ToolBox")
-ExternalPortTemplate = ExtResource("2_dn85u")
 InGameConsole = NodePath("GUILayer/InGameConsole")
 
 [node name="ComponentViewFactory" type="Node" parent="."]
@@ -59,6 +58,16 @@ offset_bottom = 800.0
 mouse_filter = 1
 script = ExtResource("8_h35r3")
 metadata/_edit_use_anchors_ = true
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="PortContainer" parent="." instance=ExtResource("22_75h2p")]
+position = Vector2(155.395, 42.7)
+ExternalPortViewTemplate = ExtResource("2_dn85u")
 
 [node name="MainCamera" type="Camera2D" parent="."]
 anchor_mode = 0
@@ -184,8 +193,6 @@ texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 2
-
-[node name="Control" parent="." instance=ExtResource("22_75h2p")]
 
 [connection signal="pressed" from="GUILayer/MenuBar2/HBoxContainer/btnSave" to="GridView" method="_on_btn_save_pressed"]
 [connection signal="pressed" from="GUILayer/MenuBar2/HBoxContainer/btnLoad" to="GridView" method="_on_btn_load_pressed"]

@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://duapw8umf7gnn"]
+[gd_scene load_steps=8 format=3 uid="uid://duapw8umf7gnn"]
 
 [ext_resource type="Script" path="res://Scripts/View/ExternalPortViews/ExternalPortView.cs" id="1_k7enb"]
 [ext_resource type="Texture2D" uid="uid://btiixf0ktgtmi" path="res://Scenes/ExternalPorts/ExternalInput.png" id="2_hbsyq"]
+[ext_resource type="Texture2D" uid="uid://by3bymn4ejijy" path="res://Scenes/ExternalPorts/ExternalOutput.png" id="3_0hsmo"]
 [ext_resource type="Texture2D" uid="uid://ccp8jo3jul08s" path="res://Scenes/ExternalPorts/ArrowLight.png" id="3_7qx73"]
 [ext_resource type="Texture2D" uid="uid://d1ufvamoo7a4b" path="res://Scenes/ExternalPorts/centerLight.png" id="4_08arr"]
 
@@ -16,6 +17,8 @@ fill_from = Vector2(0.5, 0.5)
 
 [node name="ExternalInput" type="Node2D"]
 script = ExtResource("1_k7enb")
+InputTexture = ExtResource("2_hbsyq")
+OutputTexture = ExtResource("3_0hsmo")
 
 [node name="Texture" type="TextureRect" parent="."]
 texture_filter = 1
@@ -33,21 +36,18 @@ metadata/_edit_use_anchors_ = true
 [node name="OverallLight" type="PointLight2D" parent="LightContainer"]
 z_index = 1
 position = Vector2(-77, 32)
-enabled = false
 color = Color(1, 0, 0, 1)
 energy = 0.5
 texture = SubResource("GradientTexture2D_abdqc")
 
 [node name="ArrowLight" type="PointLight2D" parent="LightContainer"]
 position = Vector2(-50, 32)
-enabled = false
 color = Color(1, 0, 0, 1)
 energy = 16.0
 texture = ExtResource("3_7qx73")
 
 [node name="InnerLight" type="PointLight2D" parent="LightContainer"]
 position = Vector2(-77, 32)
-enabled = false
 color = Color(1, 0, 0, 1)
 energy = 16.0
 texture = ExtResource("4_08arr")
@@ -67,14 +67,3 @@ bbcode_enabled = true
 fit_content = true
 scroll_active = false
 tab_size = 3
-
-[node name="Button" type="Button" parent="."]
-offset_left = -84.0
-offset_top = -3.0
-offset_right = 836.0
-offset_bottom = 357.0
-scale = Vector2(0.05, 0.05)
-theme_override_font_sizes/font_size = 150
-text = "Test Toggle"
-
-[connection signal="pressed" from="Button" to="." method="OnToggleButtonPressed"]

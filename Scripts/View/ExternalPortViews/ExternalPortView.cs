@@ -2,6 +2,7 @@ using ConnectAPIC.Scripts.ViewModel;
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 
 namespace ConnectAPIC.Scenes.ExternalPorts
@@ -24,20 +25,10 @@ namespace ConnectAPIC.Scenes.ExternalPorts
         float maxPulseEnergy = 1.2f;
 
 
-        public ExternalPortView()
-        {
-        }
-
         public void Initialize(ExternalPortViewModel viewModel)
         {
             ViewModel = viewModel;
 
-            ViewModel.PropertyChanged += ViewModel_PropertyChanged;
-        }
-
-
-        public override void _Ready()
-        {
             currentTexture = GetChild<TextureRect>(0);
             lightContainer = new List<PointLight2D>();
             foreach (PointLight2D light in GetChild(1).GetChildren())
@@ -45,6 +36,20 @@ namespace ConnectAPIC.Scenes.ExternalPorts
                 lightContainer.Add(light);
             }
             InfoLabel = GetChild<RichTextLabel>(2);
+
+            ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+        }
+
+
+        public override void _Ready()
+        {
+            /*currentTexture = GetChild<TextureRect>(0);
+            lightContainer = new List<PointLight2D>();
+            foreach (PointLight2D light in GetChild(1).GetChildren())
+            {
+                lightContainer.Add(light);
+            }
+            InfoLabel = GetChild<RichTextLabel>(2);*/
         }
 
         public override void _Process(double delta)
@@ -58,6 +63,7 @@ namespace ConnectAPIC.Scenes.ExternalPorts
         public void SetAsOutput()
         {
             currentTexture.Texture = OutputTexture;
+            SetLight(false);
         }
 
         public void SetAsInput(float alpha = 1)
@@ -65,8 +71,8 @@ namespace ConnectAPIC.Scenes.ExternalPorts
             currentTexture.Texture = InputTexture;
             pulseValue = (float)(new Random().NextDouble() * 10);
             SetLightColor(alpha);
+            SetLight(ViewModel.IsLightOn);
         }
-
 
         /// <summary>
         /// sets color of input pin according to RGBA colors (in range 0-1)
@@ -79,9 +85,9 @@ namespace ConnectAPIC.Scenes.ExternalPorts
         /// <returns>ExternalPortView - with lighting of the given type</returns>
         public void SetLightColor(float alpha = 1)
         {
-            for (int i = 0; i < lightContainer.Count; i++)
+            foreach (var light in lightContainer)
             {
-                lightContainer[i].Color = new Color(ViewModel.Power.X, ViewModel.Power.Y, ViewModel.Power.Z, alpha);
+                light.Color = new Color(ViewModel.Power.X, ViewModel.Power.Y, ViewModel.Power.Z, alpha);
             }
         }
 
@@ -92,14 +98,18 @@ namespace ConnectAPIC.Scenes.ExternalPorts
             Mathf.Lerp(minPulseEnergy, maxPulseEnergy, Mathf.Abs(Mathf.Sin(pulseValue)));
         }
 
+        private void SetLight(bool isLightOn)
+        {
+            lightContainer.ForEach((PointLight2D x) => x.Enabled = isLightOn);
+            pulsate = isLightOn;
+        }
 
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(ExternalPortViewModel.LightIsOn))
+            if (e.PropertyName == nameof(ExternalPortViewModel.IsLightOn))
             {
                 if (ViewModel.IsInput){
-                    lightContainer?.ForEach((PointLight2D x) => x.Enabled = ViewModel.LightIsOn);
-                    pulsate = ViewModel.LightIsOn;
+                    SetLight(ViewModel.IsLightOn);
                 }
             }
             else if (e.PropertyName == nameof(ExternalPortViewModel.Power))
