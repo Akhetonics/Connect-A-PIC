@@ -1,3 +1,4 @@
+using Antlr4.Runtime.Tree;
 using CAP_Core.ExternalPorts;
 using CAP_Core.Grid;
 using CAP_Core.LightCalculation;
@@ -5,42 +6,44 @@ using ConnectAPIC.Scenes.ExternalPorts;
 using Godot;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 
 namespace ConnectAPic.LayoutWindow
 {
-    public class ExternalPortViewFactory
+    public partial class ExternalPortViewFactory
     {
-        public PackedScene ExternalPortTemplate { get; set; }
+        public PortsContainer PortsContainer{ get; set; }
         public GridManager Grid {  get; set; }
         public LightCalculationService LightCalculator { get; set; }
-        public ExternalPortViewFactory(PackedScene externalPortTemplate, GridManager grid, LightCalculationService lightCalculator)
+        public ExternalPortViewFactory(PortsContainer portsContainer, GridManager grid, LightCalculationService lightCalculator)
         {
-            ExternalPortTemplate = externalPortTemplate;
+            PortsContainer = portsContainer;
             LightCalculator = lightCalculator;
             Grid = grid;
         }
-    
+
         public ExternalPortView InitializeExternalPortView(ExternalPort externalPort)
         {
-            ExternalPortView portView = ExternalPortTemplate.Instantiate<ExternalPortView>();
+            ExternalPortView portView = PortsContainer.ExternalPortViewTemplate.Instantiate<ExternalPortView>();
             ExternalPortViewModel portViewModel = new ExternalPortViewModel(Grid, externalPort.TilePositionY, LightCalculator);
+
             portView.Initialize(portViewModel);
-            
+
             if (externalPort is ExternalInput input)
             {
                 portViewModel.IsInput = true;
     
                 if (input.LaserType == LaserType.Red)
                 {
-                    portViewModel.SetPower(red: 1);
+                    portViewModel.Power = new Vector3(1, 0, 0);
                 }
                 else if (input.LaserType == LaserType.Green)
                 {
-                    portViewModel.SetPower(green: 1);
+                    portViewModel.Power = new Vector3(0, 1, 0);
                 }
                 else
                 {
-                    portViewModel.SetPower(blue: 1);
+                    portViewModel.Power = new Vector3(0, 0, 1);
                 }
             }
             else
@@ -50,7 +53,7 @@ namespace ConnectAPic.LayoutWindow
     
             portView.Visible = true;
             portView.Position = new Vector2(0, (GameManager.TilePixelSize) * externalPort.TilePositionY);
-    
+            PortsContainer.AddChild(portView);
             return portView;
         }
     
