@@ -27,18 +27,18 @@ public partial class ExternalPortViewModel : Node, INotifyPropertyChanged
         }
     }
 
-    private bool _lightIsOn;
-    public bool LightIsOn
+    private bool _isLightOn;
+    public bool IsLightOn
     {
-        get { return _lightIsOn; }
+        get { return _isLightOn; }
         set
         {
-            _lightIsOn = value;
+            _isLightOn = value;
             OnPropertyChanged();
         }
     }
 
-    private Vector3 _power; //rgb (0-1) values for power red/green/blue (for now it represents output power, could be input power later)
+    private Vector3 _power;
     public Vector3 Power
     {
         get => _power;
@@ -60,11 +60,12 @@ public partial class ExternalPortViewModel : Node, INotifyPropertyChanged
 
         Grid.OnLightSwitched += (object sender, bool e) =>
         {
-            LightIsOn = e;
+            IsLightOn = e;
         };
 
         lightCalculator.LightCalculationChanged += (object sender, LightCalculationChangeEventArgs e) =>
         {
+            if (IsInput) return;
             var touchingComponent = grid.GetComponentAt(0, TilePositionY);
             if (touchingComponent == null)
             {
@@ -79,32 +80,25 @@ public partial class ExternalPortViewModel : Node, INotifyPropertyChanged
                 return;
             };
             var fieldOut = e.LightFieldVector[(Guid)touchingPin].Magnitude;
+            var power = _power;
             if (e.LaserInUse.Color == LightColor.Red)
             {
                 // floats should be sufficient for this value
-                SetPower(red: (float)(fieldOut * fieldOut));
+                power.X = (float)(fieldOut * fieldOut);
             }
             else if (e.LaserInUse.Color == LightColor.Green)
             {
-                SetPower(green: (float)(fieldOut * fieldOut));
+                power.Y = (float)(fieldOut * fieldOut);
             }
             else
             {
-                SetPower(blue: (float)(fieldOut * fieldOut));
+                power.Z = (float)(fieldOut * fieldOut);
             }
+            Power = power;
         };
     }
 
-    /// <summary>
-    /// Sets power vector, used for conviniently setting power parameter
-    /// </summary>
-    /// <param name="red"> red power value in range [0, 1]</param>
-    /// <param name="green"> green power value in range [0, 1]</param>
-    /// <param name="blue"> blue power value in range [0, 1]</param>
-    /// <param name="setNonZeros"> if true will only set the value which is different from 0 and leave others as they were before in power vector</param>
-    public void SetPower(float red = 0, float green = 0, float blue = 0) {
-        Power = new Vector3(red, green, blue);
-    }
+
     public string AllColorsPower()
     {
         string allUsedPowers = "";
@@ -134,53 +128,6 @@ public partial class ExternalPortViewModel : Node, INotifyPropertyChanged
     {
         PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
-
-   /* private void PortsSwitched(object sender, int e)
-    {
-        int portIndex = Grid.ExternalPorts.IndexOf(Grid.ExternalPorts.FirstOrDefault(exPort => exPort.TilePositionY == e));
-
-        if (portIndex == -1)
-        {
-            //TODO: print some error
-            return;
-        }
-
-        if (Grid.ExternalPorts[portIndex] is ExternalInput oldExternalInput)
-        {
-            //TODO: need to refactor this after implementing right click menu
-            if (oldExternalInput.LaserType == LaserType.Red)
-            {
-                Grid.ExternalPorts[portIndex] = new ExternalInput(oldExternalInput.PinName, LaserType.Green, oldExternalInput.TilePositionY, oldExternalInput.InFlowPower);
-            }
-            else if (oldExternalInput.LaserType == LaserType.Green)
-            {
-                Grid.ExternalPorts[portIndex] = new ExternalInput(oldExternalInput.PinName, LaserType.Blue, oldExternalInput.TilePositionY, oldExternalInput.InFlowPower);
-            }
-            else
-            {
-                Grid.ExternalPorts[portIndex] = new ExternalOutput(oldExternalInput.PinName, oldExternalInput.TilePositionY);
-            }
-        }
-        else
-        {
-            ExternalOutput oldOutput = (ExternalOutput)Grid.ExternalPorts[portIndex];
-            Grid.ExternalPorts[portIndex] = new ExternalInput(oldOutput.PinName, LaserType.Red, oldOutput.TilePositionY, 1);
-        }
-
-        //TODO: remove this after debugging
-        foreach (var port in Grid.ExternalPorts)
-        {
-            if (port is ExternalInput)
-            {
-                Debug.Print("Input: " + port.PinName + " " + port.TilePositionY);
-            }
-            else
-            {
-                Debug.Print("Output: " + port.PinName + " " + port.TilePositionY);
-            }
-        }
-
-    }*/
 
 }
 

@@ -27,7 +27,7 @@ namespace ConnectAPic.LayoutWindow
     [SuperNode(typeof(Provider))]
     public partial class GameManager : Node,
         IProvide<ToolBox>, IProvide<ILogger>, IProvide<GridView>, IProvide<GridManager>, IProvide<GridViewModel>, IProvide<GameManager>,
-        IProvide<GameConsole>, IProvide<System.Version>, IProvide<ComponentViewFactory>//, IProvide<ExternalPortViewFactory>
+        IProvide<GameConsole>, IProvide<System.Version>, IProvide<ComponentViewFactory>, IProvide<LightCalculationService>
     {
         #region Dependency Injection
         public override partial void _Notification(int what);
@@ -39,9 +39,7 @@ namespace ConnectAPic.LayoutWindow
         GameManager IProvide<GameManager>.Value() => this;
         GameConsole IProvide<GameConsole>.Value() => InGameConsole;
         ComponentViewFactory IProvide<ComponentViewFactory>.Value() => GridView.ComponentViewFactory;
-        //TODO: this wouldn't work because of externalPortTemplate and light calculator not being assigned?
-        //needs to be discussed for better solution
-        //ExternalPortViewFactory IProvide<ExternalPortViewFactory>.Value() => new ExternalPortViewFactory(ExternalPortTemplate, Grid, LightCalculator);
+        LightCalculationService IProvide<LightCalculationService>.Value() => LightCalculator;
         System.Version IProvide<System.Version>.Value() => Version;
         #endregion
 
@@ -51,12 +49,12 @@ namespace ConnectAPic.LayoutWindow
         [Export] public int FieldWidth { get; set; } = 24;
 
         [Export] public int FieldHeight { get; set; } = 12;
-        [Export] public PackedScene ExternalPortTemplate { get; set; }
         [Export] public GameConsole InGameConsole { get; set; }
         private PCKLoader PCKLoader { get; set; }
         public static int TilePixelSize { get; private set; } = 62;
         public static int TileBorderLeftDown { get; private set; } = 2;
         public GridView GridView { get; set; }
+        public PortsContainer PortsContainer { get; set; }
         public static System.Version Version => Assembly.GetExecutingAssembly().GetName().Version; // Get the version from the assembly
         public GridManager Grid { get; set; }
         public LightCalculationService LightCalculator { get; private set; }
@@ -91,10 +89,6 @@ namespace ConnectAPic.LayoutWindow
         {
             try
             {
-                //ExternalPortViewModel = new ExternalPortViewModel(ExternalPortTemplate, Grid, GridView, GridViewModel.LightCalculator);
-                //ExternalPortViewModel.ExternalPortViewInitialized += (object sender, ExternalPortView e) => GridView.DragDropProxy.AddChild(e);
-
-
                 PCKLoader.LoadStandardPCKs();
                 List<ComponentDraft> componentDrafts = EquipViewComponentFactoryWithJSONDrafts();
                 this.CheckForNull(x => x.ToolBoxPath);
