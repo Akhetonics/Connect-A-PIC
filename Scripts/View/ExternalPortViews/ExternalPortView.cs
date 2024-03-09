@@ -108,8 +108,13 @@ namespace ConnectAPIC.Scenes.ExternalPorts
         {
             if (e.PropertyName == nameof(ExternalPortViewModel.IsLightOn))
             {
-                if (ViewModel.IsInput){
+                if (ViewModel.IsInput)
+                {
                     SetLight(ViewModel.IsLightOn);
+                }
+                else
+                {
+                    InfoLabel.Text = ViewModel.AllColorsPower();
                 }
             }
             else if (e.PropertyName == nameof(ExternalPortViewModel.Power))
