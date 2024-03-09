@@ -1,12 +1,11 @@
-using Antlr4.Runtime.Tree;
 using CAP_Core.ExternalPorts;
 using CAP_Core.Grid;
 using CAP_Core.LightCalculation;
 using ConnectAPIC.Scenes.ExternalPorts;
-using Godot;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
+using System;
+using Godot;
 
 namespace ConnectAPic.LayoutWindow
 {
