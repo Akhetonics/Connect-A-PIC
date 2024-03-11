@@ -6,7 +6,7 @@ Gamification of PIC Design (PIC = Photonic integrated circuit)
 
 ## Current Version
 
-Version: <!--version-->0.0.61<!--version-->
+Version: <!--version-->0.0.62<!--version-->
 
 [![image](https://github.com/Akhetonics/Connect-A-PIC/assets/18228325/2615d391-ab97-4c42-9234-11cc0b130b2c)](https://github.com/Akhetonics/Connect-A-PIC/releases)
 
