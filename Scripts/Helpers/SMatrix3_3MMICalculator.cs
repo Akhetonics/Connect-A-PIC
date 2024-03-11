@@ -13,55 +13,51 @@ namespace ConnectAPIC.Scripts.Helpers
     {
         public class SMatrix3_3MMICalculator
         {
-
-            private static Complex CalculateMatrixElementNew(int i_row, int j_column, int waveLengthNMInVacuum)
+            
+            public static Complex CalculateMatrixElement(double s_row, double t_column, int dimensions )
             {
-                i_row = 3 - i_row;
-                double phaseShift;
-                double Phi0 = 0;
-                if (waveLengthNMInVacuum != 0)
+                double exp;
+                double deltaPhi = 0.0;// 2.0 / 12.0;
+                double basis;
+                double factor;
+                if ((t_column - s_row) % 2 == 4 % 2)
                 {
-                    var specificModeRefractionIndex0 = 1;
-                    var specificModeRefractionIndex1 = 1;
-                    var distributionConstantBeta0 = Math.PI * 2 * specificModeRefractionIndex0 / waveLengthNMInVacuum;
-                    var distributionConstantBeta1 = Math.PI * 2 * specificModeRefractionIndex1 / waveLengthNMInVacuum;
-                    var LMMI = Math.PI / (distributionConstantBeta0 - distributionConstantBeta1);
-                    Phi0 = -distributionConstantBeta0 * LMMI;
-                }
-                
-                if ((j_column + i_row) % 2 == 0)
-                {
-                    phaseShift = Phi0+ Math.PI + Math.PI / 16 * (j_column - i_row) * (8-j_column + i_row);
+                    basis = t_column - s_row;
+                    factor = (1.0 - (Math.Pow(basis, 2.0) / dimensions));
+                    exp = factor / 4.0 + deltaPhi;
                 }
                 else
                 {
-                    phaseShift = Phi0 + Math.PI / 16 * (i_row + j_column - 1) * (8 - j_column - i_row +1);
+                    basis = t_column + s_row - 1.0;
+                    factor = (1.0 - (Math.Pow(basis, 2.0) / dimensions));
+                    exp = (factor / 4.0) + 1.0 + deltaPhi;
                 }
-                return Complex.FromPolarCoordinates(1/Math.Sqrt(3) , phaseShift);
+                var output = Complex.FromPolarCoordinates(1.0 / Math.Sqrt(dimensions), exp * Math.PI);
+                return output;
             }
 
-            public static string GetSMatrixString(int waveLengthNMInVacuum)
+            public static string GetSMatrixString(int dimensions)
             {
                 string smatrixText = "";
-                for (int row = 1; row <= 3; row++) // inputs
+                for (int row = 1; row <= dimensions; row++) // inputs
                 {
-                    for (int column = 1; column <= 3; column++) // outputs
+                    for (int column = 1; column <= dimensions; column++) // outputs
                     {
-                        Complex result = CalculateMatrixElementNew(row, column, waveLengthNMInVacuum);
+                        Complex result = CalculateMatrixElement(row, column, dimensions);
                         // also create the smatrix for reference
-                        smatrixText += $"(r:{result.Magnitude:F4},ϕ:{result.Phase:F4})\t";
+                        smatrixText += $"(r:{result.Magnitude:F4},ϕ: PI*{result.Phase :F4})\t";
                     }
                     smatrixText += "\n";
                 }
                 return smatrixText;
             }
-            public static Matrix<Complex> GetSMatrix(int waveLengthNMInVacuum)
+            public static Matrix<Complex> GetSMatrix(int dimensions)
             {
                 // Create and initialize the matrix with size dimensions x dimensions
                 Matrix<Complex> SMat = Matrix<Complex>.Build.Dense(3, 3, (row, column) =>
                 {
                     // Adjusting the indices by 1, as MathNet.Numerics starts at 0, while your implementation starts at 1
-                    return CalculateMatrixElementNew(row + 1, column + 1, waveLengthNMInVacuum);
+                    return CalculateMatrixElement(row +1, column + 1, dimensions);
                 });
 
                 return SMat;
@@ -79,27 +75,30 @@ namespace ConnectAPIC.Scripts.Helpers
                 string json = JsonSerializer.Serialize(connections, options);
                 return json;
             }
-            public static List<Connection> GetConnections(int waveLengthNMInVacuum)
+            public static List<Connection> GetConnections(int dimensions)
             {
                 List<Connection> connections = new();
                 for (int row = 1; row <= 3; row++) // inputs
                 {
                     for (int column = 1; column <= 3; column++) // outputs
                     {
-                        Complex result = CalculateMatrixElementNew(row, column, waveLengthNMInVacuum);
+                        Complex result = CalculateMatrixElement(row, column, dimensions);
+
+                        var columnID = column * 2 - 1;
+                        var rowID = row * 2 - 2;
 
                         connections.Add(new Connection
                         {
-                            FromPinNr = row * 2 - 2,
-                            ToPinNr = column * 2 - 1,
+                            FromPinNr = rowID,
+                            ToPinNr = columnID,
                             Magnitude = result.Magnitude,
                             Phase = result.Phase
                         });
 
                         connections.Add(new Connection
                         {
-                            FromPinNr = column * 2 - 1,
-                            ToPinNr = row * 2 - 2,
+                            FromPinNr = 5 - rowID,
+                            ToPinNr = 5 - columnID,
                             Magnitude = result.Magnitude,
                             Phase = result.Phase
                         });

@@ -74,8 +74,9 @@ namespace UnitTests.LightCalculation
         public void TestMMICalculatorLightPropagation3X3()
         {
             // working with this formula now: https://gigvvy.com/journals/ijase/articles/ijase-201303-11-1-031.pdf
-            var sMatrix = SMatrix3_3MMICalculator.GetSMatrix(0);
-            var sMatrixstring = SMatrix3_3MMICalculator.GetSMatrixString(0);
+            var sMatrix = SMatrix3_3MMICalculator.GetSMatrix(3);
+            var sMatrixstring = SMatrix3_3MMICalculator.GetSMatrixString(3);
+            var json = SMatrix3_3MMICalculator.GetConnectionsJson(SMatrix3_3MMICalculator.GetConnections(3));
             var inputVector = MathNet.Numerics.LinearAlgebra.Vector<Complex>.Build.Dense(sMatrix.RowCount);
             inputVector[0] = Complex.FromPolarCoordinates(1, 0);
             inputVector[1] = Complex.FromPolarCoordinates(1, 0);
@@ -99,6 +100,14 @@ namespace UnitTests.LightCalculation
             Assert.Equal((inputVector[0].Magnitude + inputVector[1].Magnitude + inputVector[2].Magnitude) / 3, outputVector[1].MagnitudeSquared(), 0.000001);
             Assert.True((outputVector2 - inputVector).MaximumMagnitudePhase().Magnitude < 1e-10);
             Assert.True((outputVector2 - inputVector).MaximumMagnitudePhase().Phase < 1e-10);
+        }
+
+        [Fact]
+        public void TestCalculationFormula()
+        {
+            var result = SMatrix3_3MMICalculator.CalculateMatrixElement(3,2,3);
+
+            result.Phase.ShouldBe(0);
         }
     }
 }
