@@ -36,10 +36,10 @@ namespace ConnectAPIC.Scenes.ToolBox
             foreach (int typeNumber in allComponentTypesNRs)
             {
                 var borderSize = gridContainer.GetThemeConstant("h_separation");
-                var toolPixelSize = GameManager.TilePixelSize - borderSize;
+                var toolTilePixelSize = GameManager.TilePixelSize - borderSize;
                 var componentInstance = ComponentViewFactory.CreateComponentView(typeNumber);
-                componentInstance.CustomMinimumSize = new Vector2(toolPixelSize, toolPixelSize);
-                var componentSizeCorrection = componentInstance.GetBiggestSize() / toolPixelSize;
+                componentInstance.CustomMinimumSize = new Vector2(toolTilePixelSize, toolTilePixelSize);
+                var componentSizeCorrection = componentInstance.GetBiggestSize() / toolTilePixelSize;
                 var biggestScaleFactor = Math.Max(componentSizeCorrection.X, componentSizeCorrection.Y);
                 if (biggestScaleFactor <= 0)
                 {
@@ -47,7 +47,7 @@ namespace ConnectAPIC.Scenes.ToolBox
                 }
                 componentInstance.Scale /= biggestScaleFactor;
                 TemplateTileView rect = new();
-                rect.CustomMinimumSize = new Vector2(toolPixelSize, toolPixelSize);
+                rect.CustomMinimumSize = new Vector2(toolTilePixelSize, toolTilePixelSize);
                 rect.AddChild(componentInstance);
                 gridContainer.AddChild(rect);
             }

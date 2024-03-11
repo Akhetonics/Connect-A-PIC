@@ -71,7 +71,7 @@ namespace ConnectAPIC.LayoutWindow.View
                     var slots = AnimationSlot.FindMatching(OverlayManager.AnimationSlots, light);
                     foreach(var slot in slots)
                     {
-                        this.ShowAndAssignInAndOutFlowShaderData(slot, light, shaderSlotNumber);
+                        OverlayManager.ShowAndAssignInAndOutFlowShaderData(slot, light, shaderSlotNumber);
                         shaderSlotNumber++;
                     }
                 }
@@ -99,9 +99,6 @@ namespace ConnectAPIC.LayoutWindow.View
             OverlayManager.Initialize(animationSlotOverlays , WidthInTiles , HeightInTiles);
         }
 
-        protected void ShowAndAssignInAndOutFlowShaderData(AnimationSlot slot, LightAtPin lightAtPin, int shaderSlotNumber)=>
-            OverlayManager.ShowAndAssignInAndOutFlowShaderData(slot,lightAtPin,shaderSlotNumber);
-        
         public void HideLightVector() => OverlayManager.HideLightVector();
 
         public override void _GuiInput(InputEvent inputEvent)

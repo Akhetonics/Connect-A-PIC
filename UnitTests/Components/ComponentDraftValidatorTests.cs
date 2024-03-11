@@ -39,9 +39,9 @@ namespace UnitTests
                 null, // trigger ErrorOverlayNull
                 new Overlay
                 {
-                    overlayAnimTexturePath = "invalid/path", // trigger ErrorOverlayTexturePathNotExist
-                    tileOffsetX = -1, // trigger ErrorOverlayOffsetXSmaller0
-                    tileOffsetY = -1, // trigger ErrorOverlayOffsetYSmaller0
+                    OverlayAnimTexturePath = "invalid/path", // trigger ErrorOverlayTexturePathNotExist
+                    TileOffsetX = -1, // trigger ErrorOverlayOffsetXSmaller0
+                    TileOffsetY = -1, // trigger ErrorOverlayOffsetYSmaller0
                 }
             },
                 SMatrices = new List<WaveLengthSpecificSMatrix>(){
@@ -119,9 +119,9 @@ namespace UnitTests
                 Overlays = new List<Overlay>
                 {
                     new Overlay {
-                        overlayAnimTexturePath = "res://testHost.exe",
-                        tileOffsetX = 0,
-                        tileOffsetY = 0,
+                        OverlayAnimTexturePath = "res://testHost.exe",
+                        TileOffsetX = 0,
+                        TileOffsetY = 0,
                     }
                 },
                 FileFormatVersion = ComponentDraftFileReader.CurrentFileVersion,

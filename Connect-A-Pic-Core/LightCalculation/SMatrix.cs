@@ -4,7 +4,7 @@ using MathNet.Numerics.LinearAlgebra;
 using System.Linq.Dynamic.Core;
 using CAP_Core.Components.FormulaReading;
 
-namespace CAP_Core.Components
+namespace CAP_Core.LightCalculation
 {
     public class SMatrix
     {
@@ -16,7 +16,7 @@ namespace CAP_Core.Components
         public const int MaxToStringPinGuidSize = 6;
         public Dictionary<(Guid PinIdStart, Guid PinIdEnd), ConnectionFunction> NonLinearConnections { get; set; }
 
-        public SMatrix(List<Guid> allPinsInGrid, List<(Guid sliderID ,double value)> AllSliders)
+        public SMatrix(List<Guid> allPinsInGrid, List<(Guid sliderID, double value)> AllSliders)
         {
             if (allPinsInGrid != null && allPinsInGrid.Count > 0)
             {
@@ -32,17 +32,17 @@ namespace CAP_Core.Components
             PinReference = new();
             ReversePinReference = new();
             int i = 0;
-            foreach( var pin in allPinsInGrid)
+            foreach (var pin in allPinsInGrid)
             {
-                PinReference.Add(pin , i);
+                PinReference.Add(pin, i);
                 ReversePinReference.Add(i, pin);
                 i++;
             }
             NonLinearConnections = new();
             SliderReference = new();
-            foreach( var slider in AllSliders)
+            foreach (var slider in AllSliders)
             {
-                SliderReference.Add(slider.sliderID,slider.value );
+                SliderReference.Add(slider.sliderID, slider.value);
             }
         }
 
@@ -87,7 +87,7 @@ namespace CAP_Core.Components
         {
             var allPinIDs = matrices.SelectMany(x => x.PinReference.Keys).Distinct().ToList();
             var allSliderIDs = matrices.SelectMany(x => x.SliderReference.Select(k => (k.Key, k.Value))).ToList(); // convert SliderReference to the required tuple
-            SMatrix sysMat = new(allPinIDs , allSliderIDs);
+            SMatrix sysMat = new(allPinIDs, allSliderIDs);
 
             foreach (SMatrix matrix in matrices)
             {
@@ -95,7 +95,7 @@ namespace CAP_Core.Components
                 var nonLinearTransfers = matrix.NonLinearConnections;
                 sysMat.SetValues(transfers);
                 // also copy the nonlinear functions
-                foreach(var key in nonLinearTransfers.Keys)
+                foreach (var key in nonLinearTransfers.Keys)
                 {
                     sysMat.NonLinearConnections.Add(key, nonLinearTransfers[key]);
                 }
@@ -104,12 +104,12 @@ namespace CAP_Core.Components
         }
 
         // n is the number of time steps to move forward "steps=3" would return the light propagation after 3 steps.
-        public async Task<Dictionary<Guid, Complex>> CalcFieldAtPinsAfterStepsAsync(MathNet.Numerics.LinearAlgebra.Vector<Complex> inputVector, int maxSteps , CancellationTokenSource cancellation)
+        public async Task<Dictionary<Guid, Complex>> CalcFieldAtPinsAfterStepsAsync(MathNet.Numerics.LinearAlgebra.Vector<Complex> inputVector, int maxSteps, CancellationTokenSource cancellation)
         {
             if (maxSteps < 1) return new Dictionary<Guid, Complex>();
 
             // update the SMat using the non linear connections - including those who are not depending on the input vector (the PIN1 etc)
-            await RecomputeSMatNonLinearPartsAsync(inputVector, SkipOuterLoopFunctions:false);
+            await RecomputeSMatNonLinearPartsAsync(inputVector, SkipOuterLoopFunctions: false);
             try
             {
 
@@ -131,7 +131,7 @@ namespace CAP_Core.Components
 
                 return ConvertToDictWithGuids(inputAfterSteps);
             }
-            catch 
+            catch
             {
                 return new Dictionary<Guid, Complex>();
             }
@@ -140,7 +140,7 @@ namespace CAP_Core.Components
         private List<object> GetWeightParameters(IEnumerable<Guid> parameterGuids, MathNet.Numerics.LinearAlgebra.Vector<Complex> inputVector)
         {
             List<object> usedParameterValues = new();
-            foreach( var paramGuid in parameterGuids)
+            foreach (var paramGuid in parameterGuids)
             {
                 // first check if the parameterGuid is in the pin-Dict
                 if (PinReference.TryGetValue(paramGuid, out int pinNumber))
@@ -156,7 +156,7 @@ namespace CAP_Core.Components
 
             return usedParameterValues;
         }
-        private async Task RecomputeSMatNonLinearPartsAsync(MathNet.Numerics.LinearAlgebra.Vector<Complex> inputVector , bool SkipOuterLoopFunctions = true)
+        private async Task RecomputeSMatNonLinearPartsAsync(MathNet.Numerics.LinearAlgebra.Vector<Complex> inputVector, bool SkipOuterLoopFunctions = true)
         {
             foreach (var connection in NonLinearConnections)
             {
@@ -179,6 +179,6 @@ namespace CAP_Core.Components
             }
             return GuidsAndLightValues;
         }
-       
+
     }
 }

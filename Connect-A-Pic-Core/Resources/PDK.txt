@@ -114,7 +114,7 @@ class TestPDK(object):
         wg = 1
         ic = Interconnect(xs = "InnerConnections")
         InnerMMIWidth = 160 + 10
-        TotalMMIWidth = self._CellSize * 2
+        TotalMMIWidth = self._CellSize * 3
         TotalMMIHeight = self._CellSize * 3
         with nd.Cell(name='AkhetCell_MMI3x3') as cell:
             mmi = self.placeCell_InnerMMI3x3().put('a1',(TotalMMIWidth - InnerMMIWidth)/2)

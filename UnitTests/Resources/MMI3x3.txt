@@ -1,0 +1,447 @@
+{
+  "fileFormatVersion": 1,
+  "identifier": "MMI3x3",
+  "nazcaFunctionParameters": "",
+  "nazcaFunctionName": "placeCell_MMI3x3",
+  "sceneResPath": "res://Scenes/Components/MMI3x3/MMI3x3.tscn",
+  "widthInTiles": 3,
+  "heightInTiles": 3,
+  "pins": [
+	{
+	  "number": 0,
+	  "name": "west0",
+	  "matterType": 1,
+	  "side": 2,
+	  "partX": 0,
+	  "partY": 0
+	},
+	{
+	  "number": 1,
+	  "name": "east0",
+	  "matterType": 1,
+	  "side": 0,
+	  "partX": 2,
+	  "partY": 0
+	},
+	{
+	  "number": 2,
+	  "name": "west1",
+	  "matterType": 1,
+	  "side": 2,
+	  "partX": 0,
+	  "partY": 1
+	},
+	{
+	  "number": 3,
+	  "name": "east1",
+	  "matterType": 1,
+	  "side": 0,
+	  "partX": 2,
+	  "partY": 1
+	},
+	{
+	  "number": 4,
+	  "name": "west2",
+	  "matterType": 1,
+	  "side": 2,
+	  "partX": 0,
+	  "partY": 2
+	},
+	{
+	  "number": 5,
+	  "name": "east2",
+	  "matterType": 1,
+	  "side": 0,
+	  "partX": 2,
+	  "partY": 2
+	}
+  ],
+"sMatrices": [
+	{
+	"waveLength" : 1550,
+	"connections": [
+		{
+		"fromPinNr": 0,
+		"toPinNr": 1,
+		"magnitude" : 0.577350269189625,
+		"phase" : 0.124
+		},
+		{
+		"fromPinNr": 0,
+		"toPinNr": 3,
+		"magnitude" : 0.577350269189625,
+		"phase" : 0.124
+		},
+		{
+		"fromPinNr": 0,
+		"toPinNr": 5,
+		"magnitude" : 0.577350269189625,
+		"phase" : 0.124
+		},
+		{
+		"fromPinNr": 2,
+		"toPinNr": 1,
+		"magnitude" : 0.577350269189625,
+		"phase" : 0.124
+		},
+		{
+		"fromPinNr": 2,
+		"toPinNr": 3,
+		"magnitude" : 0.577350269189625,
+		"phase" : 0.124
+		},
+		{
+		"fromPinNr": 2,
+		"toPinNr": 5,
+		"magnitude" : 0.577350269189625,
+		"phase" : 0.124
+		},
+		{
+		"fromPinNr": 4,
+		"toPinNr": 1,
+		"magnitude" : 0.577350269189625,
+		"phase" : 0.124
+		},
+		{
+		"fromPinNr": 4,
+		"toPinNr": 3,
+		"magnitude" : 0.577350269189625,
+		"phase" : 0.124
+		},
+		{
+		"fromPinNr": 4,
+		"toPinNr": 5,
+		"magnitude" : 0.577350269189625,
+		"phase" : 0.124
+		},
+		
+		
+		{
+		"fromPinNr": 1,
+		"toPinNr": 0,
+		"magnitude" : 0.577350269189625,
+		"phase" : 0.124
+		},
+		{
+		"fromPinNr": 1,
+		"toPinNr": 2,
+		"magnitude" : 0.577350269189625,
+		"phase" : 0.124
+		},
+		{
+		"fromPinNr": 1,
+		"toPinNr": 4,
+		"magnitude" : 0.577350269189625,
+		"phase" : 0.124
+		},
+		{
+		"fromPinNr": 3,
+		"toPinNr": 0,
+		"magnitude" : 0.577350269189625,
+		"phase" : 0.124
+		},
+		{
+		"fromPinNr": 3,
+		"toPinNr": 2,
+		"magnitude" : 0.577350269189625,
+		"phase" : 0.124
+		},
+		{
+		"fromPinNr": 3,
+		"toPinNr": 4,
+		"magnitude" : 0.577350269189625,
+		"phase" : 0.124
+		},
+		{
+		"fromPinNr": 5,
+		"toPinNr": 0,
+		"magnitude" : 0.577350269189625,
+		"phase" : 0.124
+		},
+		{
+		"fromPinNr": 5,
+		"toPinNr": 2,
+		"magnitude" : 0.577350269189625,
+		"phase" : 0.124
+		},
+		{
+		"fromPinNr": 5,
+		"toPinNr": 4,
+		"magnitude" : 0.577350269189625,
+		"phase" : 0.124
+		}
+ 	 ]
+	},
+	{
+	"waveLength" : 1310,
+	"connections": [
+		{
+		"fromPinNr": 0,
+		"toPinNr": 1,
+		"magnitude" : 0.577350269189625,
+		"phase" : 2.3
+		},
+		{
+		"fromPinNr": 0,
+		"toPinNr": 3,
+		"magnitude" : 0.577350269189625,
+		"phase" : 2.3
+		},
+		{
+		"fromPinNr": 0,
+		"toPinNr": 5,
+		"magnitude" : 0.577350269189625,
+		"phase" : 2.3
+		},
+		{
+		"fromPinNr": 2,
+		"toPinNr": 1,
+		"magnitude" : 0.577350269189625,
+		"phase" : 2.3
+		},
+		{
+		"fromPinNr": 2,
+		"toPinNr": 3,
+		"magnitude" : 0.577350269189625,
+		"phase" : 2.3
+		},
+		{
+		"fromPinNr": 2,
+		"toPinNr": 5,
+		"magnitude" : 0.577350269189625,
+		"phase" : 2.3
+		},
+		{
+		"fromPinNr": 4,
+		"toPinNr": 1,
+		"magnitude" : 0.577350269189625,
+		"phase" : 2.3
+		},
+		{
+		"fromPinNr": 4,
+		"toPinNr": 3,
+		"magnitude" : 0.577350269189625,
+		"phase" : 2.3
+		},
+		{
+		"fromPinNr": 4,
+		"toPinNr": 5,
+		"magnitude" : 0.577350269189625,
+		"phase" : 2.3
+		},
+		
+		
+		{
+		"fromPinNr": 1,
+		"toPinNr": 0,
+		"magnitude" : 0.577350269189625,
+		"phase" : 2.3
+		},
+		{
+		"fromPinNr": 1,
+		"toPinNr": 2,
+		"magnitude" : 0.577350269189625,
+		"phase" : 2.3
+		},
+		{
+		"fromPinNr": 1,
+		"toPinNr": 4,
+		"magnitude" : 0.577350269189625,
+		"phase" : 2.3
+		},
+		{
+		"fromPinNr": 3,
+		"toPinNr": 0,
+		"magnitude" : 0.577350269189625,
+		"phase" : 2.3
+		},
+		{
+		"fromPinNr": 3,
+		"toPinNr": 2,
+		"magnitude" : 0.577350269189625,
+		"phase" : 2.3
+		},
+		{
+		"fromPinNr": 3,
+		"toPinNr": 4,
+		"magnitude" : 0.577350269189625,
+		"phase" : 2.3
+		},
+		{
+		"fromPinNr": 5,
+		"toPinNr": 0,
+		"magnitude" : 0.577350269189625,
+		"phase" : 2.3
+		},
+		{
+		"fromPinNr": 5,
+		"toPinNr": 2,
+		"magnitude" : 0.577350269189625,
+		"phase" : 2.3
+		},
+		{
+		"fromPinNr": 5,
+		"toPinNr": 4,
+		"magnitude" : 0.577350269189625,
+		"phase" : 2.3
+		}
+ 	 ]
+	},
+	{
+	"waveLength" : 980,
+	"connections": [
+		{
+		"fromPinNr": 0,
+		"toPinNr": 1,
+		"magnitude" : 0.577350269189625,
+		"phase" : 1.8
+		},
+		{
+		"fromPinNr": 0,
+		"toPinNr": 3,
+		"magnitude" : 0.577350269189625,
+		"phase" : 1.8
+		},
+		{
+		"fromPinNr": 0,
+		"toPinNr": 5,
+		"magnitude" : 0.577350269189625,
+		"phase" : 1.8
+		},
+		{
+		"fromPinNr": 2,
+		"toPinNr": 1,
+		"magnitude" : 0.577350269189625,
+		"phase" : 1.8
+		},
+		{
+		"fromPinNr": 2,
+		"toPinNr": 3,
+		"magnitude" : 0.577350269189625,
+		"phase" : 1.8
+		},
+		{
+		"fromPinNr": 2,
+		"toPinNr": 5,
+		"magnitude" : 0.577350269189625,
+		"phase" : 1.8
+		},
+		{
+		"fromPinNr": 4,
+		"toPinNr": 1,
+		"magnitude" : 0.577350269189625,
+		"phase" : 1.8
+		},
+		{
+		"fromPinNr": 4,
+		"toPinNr": 3,
+		"magnitude" : 0.577350269189625,
+		"phase" : 1.8
+		},
+		{
+		"fromPinNr": 4,
+		"toPinNr": 5,
+		"magnitude" : 0.577350269189625,
+		"phase" : 1.8
+		},
+		
+		
+		{
+		"fromPinNr": 1,
+		"toPinNr": 0,
+		"magnitude" : 0.577350269189625,
+		"phase" : 1.8
+		},
+		{
+		"fromPinNr": 1,
+		"toPinNr": 2,
+		"magnitude" : 0.577350269189625,
+		"phase" : 1.8
+		},
+		{
+		"fromPinNr": 1,
+		"toPinNr": 4,
+		"magnitude" : 0.577350269189625,
+		"phase" : 1.8
+		},
+		{
+		"fromPinNr": 3,
+		"toPinNr": 0,
+		"magnitude" : 0.577350269189625,
+		"phase" : 1.8
+		},
+		{
+		"fromPinNr": 3,
+		"toPinNr": 2,
+		"magnitude" : 0.577350269189625,
+		"phase" : 1.8
+		},
+		{
+		"fromPinNr": 3,
+		"toPinNr": 4,
+		"magnitude" : 0.577350269189625,
+		"phase" : 1.8
+		},
+		{
+		"fromPinNr": 5,
+		"toPinNr": 0,
+		"magnitude" : 0.577350269189625,
+		"phase" : 1.8
+		},
+		{
+		"fromPinNr": 5,
+		"toPinNr": 2,
+		"magnitude" : 0.577350269189625,
+		"phase" : 1.8
+		},
+		{
+		"fromPinNr": 5,
+		"toPinNr": 4,
+		"magnitude" : 0.577350269189625,
+		"phase" : 1.8
+		}
+ 	 ]
+	}
+],
+  "overlays": [
+	{
+	  "overlayAnimTexturePath": "res://Scenes/Components/MMI3x3/Overlays/MMI_B_Overlay.png",
+	  "rectSide": 2,
+	  "flowDirection" : "In",
+	  "tileOffsetX": 0,
+	  "tileOffsetY": 0
+	},{
+	  "overlayAnimTexturePath": "res://Scenes/Components/MMI3x3/Overlays/MMI_A_Overlay.png",
+	  "rectSide": 2,
+	  "flowDirection" : "In",
+	  "tileOffsetX": 0,
+	  "tileOffsetY": 1
+	},{
+	  "overlayAnimTexturePath": "res://Scenes/Components/MMI3x3/Overlays/MMI_C_Overlay.png",
+	  "rectSide": 2,
+	  "flowDirection" : "In",
+	  "tileOffsetX": 0,
+	  "tileOffsetY": 2
+	},
+	
+	{
+	  "overlayAnimTexturePath": "res://Scenes/Components/MMI3x3/Overlays/MMI_C_Overlay_Turned.png",
+	  "rectSide": 0,
+	  "flowDirection" : "In",
+	  "tileOffsetX": 2,
+	  "tileOffsetY": 0
+	},{
+	  "overlayAnimTexturePath": "res://Scenes/Components/MMI3x3/Overlays/MMI_A_Overlay_Turned.png",
+	  "rectSide": 0,
+	  "flowDirection" : "In",
+	  "tileOffsetX": 2,
+	  "tileOffsetY": 1
+	},{
+	  "overlayAnimTexturePath": "res://Scenes/Components/MMI3x3/Overlays/MMI_B_Overlay_Turned.png",
+	  "rectSide": 0,
+	  "flowDirection" : "In",
+	  "tileOffsetX": 2,
+	  "tileOffsetY": 2
+	}
+  ]
+}
