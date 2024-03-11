@@ -28,7 +28,7 @@ namespace UnitTests.LightCalculation
             var RedLaserYPos = grid.GetAllExternalInputs().FirstOrDefault(i => i.LaserType == LaserType.Red).TilePositionY;
             grid.PlaceComponent(0, RedLaserYPos, component);
 
-            // create systemmatrix of this two components
+            // create systemMatrix of this two components
             SystemMatrixBuilder builder = new SystemMatrixBuilder(grid);
             var systemMatrix = builder.GetSystemSMatrix(LaserType.Red.WaveLengthInNm);
             var allConnections = systemMatrix.GetNonNullValues();

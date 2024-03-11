@@ -38,18 +38,18 @@ namespace ConnectAPIC.Scripts.Helpers
 
             public static string GetSMatrixString(int dimensions)
             {
-                string smatrixText = "";
+                string sMatrixText = "";
                 for (int row = 1; row <= dimensions; row++) // inputs
                 {
                     for (int column = 1; column <= dimensions; column++) // outputs
                     {
                         Complex result = CalculateMatrixElement(row, column, dimensions);
                         // also create the smatrix for reference
-                        smatrixText += $"(r:{result.Magnitude:F4},ϕ: PI*{result.Phase :F4})\t";
+                        sMatrixText += $"(r:{result.Magnitude:F4},ϕ: PI*{result.Phase :F4})\t";
                     }
-                    smatrixText += "\n";
+                    sMatrixText += "\n";
                 }
-                return smatrixText;
+                return sMatrixText;
             }
             public static Matrix<Complex> GetSMatrix(int dimensions)
             {
