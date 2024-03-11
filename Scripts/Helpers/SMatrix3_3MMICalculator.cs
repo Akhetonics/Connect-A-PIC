@@ -44,7 +44,7 @@ namespace ConnectAPIC.Scripts.Helpers
                     for (int column = 1; column <= dimensions; column++) // outputs
                     {
                         Complex result = CalculateMatrixElement(row, column, dimensions);
-                        // also create the smatrix for reference
+                        // also create the sMatrix for reference
                         sMatrixText += $"(r:{result.Magnitude:F4},ϕ: PI*{result.Phase :F4})\t";
                     }
                     sMatrixText += "\n";
@@ -65,7 +65,7 @@ namespace ConnectAPIC.Scripts.Helpers
 
             public static string GetConnectionsJson(List<Connection> connections )
             {
-                // Convert connections listto JSON
+                // Convert connections list to JSON
                 var options = new JsonSerializerOptions
                 {
                     DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,

@@ -73,7 +73,7 @@ namespace UnitTests.LightCalculation
         {
             // working with this formula now: https://gigvvy.com/journals/ijase/articles/ijase-201303-11-1-031.pdf
             var sMatrix = SMatrix3_3MMICalculator.GetSMatrix(3);
-            var sMatrixstring = SMatrix3_3MMICalculator.GetSMatrixString(3);
+            var sMatrixString = SMatrix3_3MMICalculator.GetSMatrixString(3);
             var json = SMatrix3_3MMICalculator.GetConnectionsJson(SMatrix3_3MMICalculator.GetConnections(3));
             var inputVector = MathNet.Numerics.LinearAlgebra.Vector<Complex>.Build.Dense(sMatrix.RowCount);
             inputVector[0] = Complex.FromPolarCoordinates(1, 0);

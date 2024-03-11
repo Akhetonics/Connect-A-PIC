@@ -90,7 +90,7 @@ namespace ConnectAPIC.test.src
             var leftUpSlot = redSlots.First(s => s.TileOffset == new Vector2I(0, 0));
             var leftMiddleSlot = redSlots.First(s => s.TileOffset == new Vector2I(0, 1));
             var leftDownSlot = redSlots.First(s => s.TileOffset == new Vector2I(0, 2));
-            // meassure if the animation has the proper alpha values in the shader
+            // measure if the animation has the proper alpha values in the shader
             var lightUpLeft = GetLightAtSlot(leftUpSlot, 1);
             var lightMiddleLeft = GetLightAtSlot(leftUpSlot, 2);
             var lightDownLeft = GetLightAtSlot(leftUpSlot, 3);
@@ -112,7 +112,7 @@ namespace ConnectAPIC.test.src
             lightMiddleRight.inflow.ShouldBe(0);
             lightDownRight.inflow.ShouldBe(0);
 
-            // we can only meassure the pins that control the alpha values of the shader - the others will have a value of 0
+            // we can only measure the pins that control the alpha values of the shader - the others will have a value of 0
             lightUpLeft.outflow.ShouldBe(0);
             lightMiddleLeft.outflow.ShouldBe(0);
             lightDownLeft.outflow.ShouldBe(0);
