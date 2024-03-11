@@ -45,7 +45,7 @@ namespace ConnectAPIC.Scripts.Helpers
                     {
                         Complex result = CalculateMatrixElement(row, column, dimensions);
                         // also create the sMatrix for reference
-                        sMatrixText += $"(r:{result.Magnitude:F4},ϕ: PI*{result.Phase :F4})\t";
+                        sMatrixText += $"(r:{result.Magnitude:F4},ϕ: PI*{result.Phase /Math.PI:F4})\t";
                     }
                     sMatrixText += "\n";
                 }
