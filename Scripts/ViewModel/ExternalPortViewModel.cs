@@ -61,6 +61,11 @@ public partial class ExternalPortViewModel : Node, INotifyPropertyChanged
         Grid.OnLightSwitched += (object sender, bool e) =>
         {
             IsLightOn = e;
+            if (!IsLightOn)
+            {
+                //for some reason when light turns off LightCalculationChanged signal isn't emmited
+                ResetPowers();
+            }
         };
 
         lightCalculator.LightCalculationChanged += (object sender, LightCalculationChangeEventArgs e) =>

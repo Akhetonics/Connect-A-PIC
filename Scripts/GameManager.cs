@@ -19,7 +19,6 @@ using System.Linq;
 using System.Reflection;
 using CAP_Core.Grid;
 using CAP_Core.LightCalculation;
-using ConnectAPIC.Scripts.View.PowerMeter;
 using ConnectAPIC.Scenes.ExternalPorts;
 
 namespace ConnectAPic.LayoutWindow
