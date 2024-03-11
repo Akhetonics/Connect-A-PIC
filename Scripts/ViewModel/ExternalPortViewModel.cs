@@ -63,7 +63,7 @@ public partial class ExternalPortViewModel : Node, INotifyPropertyChanged
             IsLightOn = e;
             if (!IsLightOn)
             {
-                //for some reason when light turns off LightCalculationChanged signal isn't emmited
+                //for some reason when light turns off LightCalculationChanged signal isn't emitted
                 ResetPowers();
             }
         };
