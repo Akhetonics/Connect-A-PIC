@@ -50,6 +50,9 @@ LightOnTexture = ExtResource("6_1ujuu")
 LightOffTexture = ExtResource("7_5wc4w")
 LightOnButton = NodePath("../GUILayer/MenuBar2/HBoxContainer/btnShowLightPropagation")
 
+[node name="PortContainer" parent="GridView" instance=ExtResource("22_75h2p")]
+ExternalPortViewTemplate = ExtResource("2_dn85u")
+
 [node name="DragDropProxy" type="Control" parent="GridView"]
 layout_mode = 3
 anchors_preset = 0
@@ -64,10 +67,6 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
-
-[node name="PortContainer" parent="." instance=ExtResource("22_75h2p")]
-position = Vector2(155.395, 42.7)
-ExternalPortViewTemplate = ExtResource("2_dn85u")
 
 [node name="MainCamera" type="Camera2D" parent="."]
 anchor_mode = 0
