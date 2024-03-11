@@ -36,10 +36,8 @@ namespace UnitTests.LightCalculation
         private static bool ArePhasesEqual(double phase1, double phase2)
         {
             double diff = Math.Abs(phase1 - phase2);
-            double normalizedDiff = diff % (2 * Math.PI); // Normalisiere den Unterschied im Bereich von 0 bis 2π
-
-            // Prüft, ob der Unterschied nahe 0 oder nahe 2π ist, unter Berücksichtigung einer kleinen Toleranz
-            double tolerance = 1e-10; // Toleranz für Gleitkommavergleich
+            double normalizedDiff = diff % (2 * Math.PI); 
+            double tolerance = 1e-10;
             return Math.Abs(normalizedDiff) < tolerance || Math.Abs(normalizedDiff - 2 * Math.PI) < tolerance;
         }
 
@@ -55,7 +53,7 @@ namespace UnitTests.LightCalculation
             var connections = SMatrix3_3MMICalculator.GetConnections(1550);
             var referenceMatrix = GetReferenceMMIMatrix();
             var json = SMatrix3_3MMICalculator.GetConnectionsJson(connections);
-            var smatrixText = SMatrix3_3MMICalculator.GetSMatrixString(1550);
+            var sMatrixText = SMatrix3_3MMICalculator.GetSMatrixString(1550);
 
             // test if the MMI's complex matrix is matching with the values in the calculated MMI 4x4 Matrix
             for (int row = 0; row < dimensions; row++) // inputs
