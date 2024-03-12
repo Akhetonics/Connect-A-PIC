@@ -16,11 +16,12 @@ namespace ConnectAPIC.Scripts.Helpers
             
             public static Complex CalculateMatrixElement(double s_row, double t_column, int dimensions )
             {
+                
                 double exp;
                 double deltaPhi = 0.0;// 2.0 / 12.0;
                 double basis;
                 double factor;
-                if ((t_column - s_row) % 2 == 4 % 2)
+                if (((int)(t_column - s_row)) % 2 == 0 )
                 {
                     basis = t_column - s_row;
                     factor = (1.0 - (Math.Pow(basis, 2.0) / dimensions));
