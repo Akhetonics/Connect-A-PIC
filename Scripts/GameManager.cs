@@ -144,7 +144,7 @@ namespace ConnectAPic.LayoutWindow
             GridView = GetNode<GridView>(GridViewPath);
             this.CheckForNull(x => GridView);
             Grid = new GridManager(FieldWidth, FieldHeight);
-            LightCalculator = new CAP_Core.LightCalculation.LightCalculationService(Grid.GetAllExternalInputs(), new GridLightCalculator(new SystemMatrixBuilder(Grid), Grid));
+            LightCalculator = new LightCalculationService(Grid, new GridLightCalculator(new SystemMatrixBuilder(Grid), Grid));
             GridViewModel = new GridViewModel(GridView, Grid, Logger, componentFactory, LightCalculator);
             GridView.Initialize(GridViewModel, Logger);
             InitializationLogs.Add(("Initialized GridView and Grid and GridViewModel", false));
