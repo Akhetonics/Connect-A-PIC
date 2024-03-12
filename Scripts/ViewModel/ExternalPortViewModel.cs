@@ -110,15 +110,15 @@ public partial class ExternalPortViewModel : Node, INotifyPropertyChanged
 
         if (Power.X > 0.005)
         {
-            allUsedPowers += $"[color=#FF6666]R: {Power.X:F2}[/color]\n";
+            allUsedPowers += $"[color=#FF4444]R: {Power.X:F2}[/color]\n";
         }
         if (Power.Y > 0.005)
         {
-            allUsedPowers += $"[color=#66FF66]G: {Power.Y:F2}[/color]\n";
+            allUsedPowers += $"[color=#44FF44]G: {Power.Y:F2}[/color]\n";
         }
         if (Power.Z > 0.005)
         {
-            allUsedPowers += $"[color=#6666FF]B: {Power.Z:F2}[/color]";
+            allUsedPowers += $"[color=#4444FF]B: {Power.Z:F2}[/color]";
         }
 
         // Removes the trailing newline character if any colors were added

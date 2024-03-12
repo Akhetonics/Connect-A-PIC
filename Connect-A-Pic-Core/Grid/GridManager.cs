@@ -50,6 +50,8 @@ namespace CAP_Core.Grid
                 };
             GenerateAllTiles();
         }
+
+
         public List<UsedInput> GetUsedExternalInputs()
         {
             List<UsedInput> inputsFound = new();

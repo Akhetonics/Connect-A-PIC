@@ -27,14 +27,6 @@
 script = ExtResource("1_c0scx")
 GridViewPath = NodePath("GridView")
 ToolBoxPath = NodePath("GUILayer/ToolboxControl/MarginContainer/VBoxContainer/ToolBox")
-ExternalOutputTemplate = ExtResource("15_v8bo3")
-ExternalInputRedTemplate = NodePath("Templates/ExternalInputRed")
-ExternalInputGreenTemplate = NodePath("Templates/ExternalInputGreen")
-ExternalInputBlueTemplate = NodePath("Templates/ExternalInputBlue")
-ExternalOutputTemplate = ExtResource("15_v8bo3")
-ExternalInputRedTemplate = NodePath("Templates/ExternalInputRed")
-ExternalInputGreenTemplate = NodePath("Templates/ExternalInputGreen")
-ExternalInputBlueTemplate = NodePath("Templates/ExternalInputBlue")
 InGameConsole = NodePath("GUILayer/InGameConsole")
 
 [node name="ComponentViewFactory" type="Node" parent="."]
@@ -62,19 +54,19 @@ LightOnButton = NodePath("../GUILayer/MenuBar/HBoxContainer/btnShowLightPropagat
 ExternalPortViewTemplate = ExtResource("2_dn85u")
 
 [node name="DragDropProxy" type="Control" parent="GridView"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1200.0
+offset_bottom = 800.0
+mouse_filter = 1
+script = ExtResource("8_h35r3")
+metadata/_edit_use_anchors_ = true
+
 [node name="Control" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
-
-
-[node name="ExternalInputBlue" parent="Templates" node_paths=PackedStringArray("button") instance=ExtResource("12_gwl6a")]
-position = Vector2(48, 227)
-lightOnTexture = ExtResource("15_wh6wu")
-lightOffTexture = ExtResource("14_anfaj")
-lightColor = Color(0, 0, 1, 1)
-button = NodePath("../../GUILayer/MenuBar2/HBoxContainer/btnShowLightPropagation")
 
 [node name="MainCamera" type="Camera2D" parent="."]
 anchor_mode = 0
@@ -86,15 +78,15 @@ script = ExtResource("19_tfkoi")
 
 [node name="GUILayer" type="CanvasLayer" parent="."]
 
-[node name="MenuBar" type="MenuBar" parent="GUILayer"]
-offset_top = -162.5
-offset_right = 284.0
-offset_bottom = 162.5
-size_flags_horizontal = 6
-size_flags_vertical = 6
-ToggleButton = NodePath("../MenuBar2/HBoxContainer/btnHelp")
+[node name="InGameConsole" parent="GUILayer" instance=ExtResource("16_7rcst")]
+visible = false
+anchors_preset = -1
+anchor_top = 0.559
+anchor_right = 0.61
+offset_top = -0.231995
+offset_right = 0.279968
 
-[node name="MenuBar2" type="MenuBar" parent="GUILayer"]
+[node name="MenuBar" type="MenuBar" parent="GUILayer"]
 pivot_offset = Vector2(2.655, 0)
 size_flags_horizontal = 2
 metadata/_edit_use_anchors_ = true
