@@ -79,7 +79,8 @@ namespace ConnectAPIC.Scenes.ExternalPorts
 
         private void SetLight(bool isLightOn)
         {
-            lightContainer.ForEach((PointLight2D x) => x.Enabled = isLightOn);
+            lightContainer.ForEach(x => x.Enabled = isLightOn);
+
             pulsate = isLightOn;
         }
 
@@ -98,18 +99,23 @@ namespace ConnectAPIC.Scenes.ExternalPorts
             }
             else if (e.PropertyName == nameof(ExternalPortViewModel.Power))
             {
-                if (ViewModel.IsInput)
+                if (ViewModel.IsInput){
                     SetLightColor();
+                }
                 else
                     InfoLabel.Text = ViewModel.AllColorsPower();
             }
             else if (e.PropertyName == nameof(ExternalPortViewModel.IsInput))
             {
                 if (ViewModel.IsInput)
+                {
                     SetAsInput();
+                }
                 else
                     SetAsOutput();
             }
         }
     }
 }
+
+

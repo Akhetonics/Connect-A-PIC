@@ -1,0 +1,95 @@
+[gd_scene load_steps=7 format=3 uid="uid://tnmccvafekjl"]
+
+[ext_resource type="Script" path="res://Scenes/RightClickMenu/RightClickMenu.cs" id="1_egxol"]
+[ext_resource type="Texture2D" uid="uid://bseakecs4865n" path="res://Scenes/RightClickMenu/Body.png" id="2_0xr5l"]
+[ext_resource type="Texture2D" uid="uid://cxa7n5a2grbq6" path="res://Scenes/RightClickMenu/TopBar.png" id="3_it7mt"]
+[ext_resource type="Texture2D" uid="uid://do8y035em52gm" path="res://Scenes/RightClickMenu/ExitButton.png" id="4_mrron"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xc2v1"]
+size = Vector2(161, 14)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_00a0n"]
+size = Vector2(161, 14)
+
+[node name="RightClickMenu" type="CharacterBody2D"]
+script = ExtResource("1_egxol")
+
+[node name="Window" type="Control" parent="."]
+texture_filter = 1
+layout_mode = 3
+anchors_preset = 0
+offset_right = 174.0
+offset_bottom = 211.0
+mouse_filter = 1
+
+[node name="Control2" type="Control" parent="Window"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+mouse_filter = 1
+
+[node name="Body" type="NinePatchRect" parent="Window/Control2"]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = 0.0663507
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+texture = ExtResource("2_0xr5l")
+region_rect = Rect2(0, 0, 128, 128)
+patch_margin_left = 3
+patch_margin_right = 3
+patch_margin_bottom = 20
+metadata/_edit_use_anchors_ = true
+
+[node name="Control" type="Control" parent="Window"]
+custom_minimum_size = Vector2(10, 0)
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 0.0663507
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+mouse_filter = 1
+metadata/_edit_use_anchors_ = true
+
+[node name="Header" type="NinePatchRect" parent="Window/Control"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+texture = ExtResource("3_it7mt")
+region_rect = Rect2(0, 0, 128, 32)
+patch_margin_left = 4
+patch_margin_top = 9
+
+[node name="TextureButton" type="TextureButton" parent="Window/Control"]
+layout_mode = 0
+offset_left = 159.0
+offset_right = 174.0
+offset_bottom = 15.0
+mouse_filter = 1
+texture_normal = ExtResource("4_mrron")
+ignore_texture_size = true
+stretch_mode = 4
+
+[node name="Area2D" type="Area2D" parent="."]
+disable_mode = 2
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(80.5, 7)
+shape = SubResource("RectangleShape2D_xc2v1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
+position = Vector2(80.5, 7)
+shape = SubResource("RectangleShape2D_00a0n")
