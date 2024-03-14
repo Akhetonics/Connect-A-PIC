@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://duapw8umf7gnn"]
+[gd_scene load_steps=10 format=3 uid="uid://duapw8umf7gnn"]
 
 [ext_resource type="Script" path="res://Scripts/View/ExternalPortViews/ExternalPortView.cs" id="1_k7enb"]
 [ext_resource type="Texture2D" uid="uid://btiixf0ktgtmi" path="res://Scenes/ExternalPorts/ExternalInput.png" id="2_hbsyq"]
 [ext_resource type="Texture2D" uid="uid://by3bymn4ejijy" path="res://Scenes/ExternalPorts/ExternalOutput.png" id="3_0hsmo"]
 [ext_resource type="Texture2D" uid="uid://ccp8jo3jul08s" path="res://Scenes/ExternalPorts/ArrowLight.png" id="3_7qx73"]
 [ext_resource type="Texture2D" uid="uid://d1ufvamoo7a4b" path="res://Scenes/ExternalPorts/centerLight.png" id="4_08arr"]
+[ext_resource type="Theme" uid="uid://b2f4xgnx0xy5e" path="res://Scenes/Assets/Themes/MainTheme.tres" id="6_o1h0x"]
 
 [sub_resource type="Gradient" id="Gradient_sj78c"]
 offsets = PackedFloat32Array(0, 0.085, 0.745)
@@ -14,6 +15,9 @@ colors = PackedColorArray(1, 1, 1, 1, 0.817521, 0.817521, 0.817521, 1, 0, 0, 0, 
 gradient = SubResource("Gradient_sj78c")
 fill = 1
 fill_from = Vector2(0.5, 0.5)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_6unpb"]
+size = Vector2(102, 62)
 
 [node name="ExternalInput" type="Node2D"]
 script = ExtResource("1_k7enb")
@@ -58,12 +62,18 @@ offset_left = -144.0
 offset_right = 1296.0
 offset_bottom = 640.0
 scale = Vector2(0.1, 0.1)
-theme_override_colors/font_shadow_color = Color(0, 0, 0, 1)
-theme_override_constants/shadow_offset_x = 3
-theme_override_constants/shadow_offset_y = 3
-theme_override_constants/shadow_outline_size = 25
-theme_override_font_sizes/normal_font_size = 150
+mouse_filter = 1
+theme = ExtResource("6_o1h0x")
 bbcode_enabled = true
 fit_content = true
 scroll_active = false
 tab_size = 3
+
+[node name="RightClickDetector" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightClickDetector"]
+position = Vector2(-51, 31)
+shape = SubResource("RectangleShape2D_6unpb")
+
+[connection signal="mouse_entered" from="RightClickDetector" to="." method="OnMouseEnteredRightClickArea"]
+[connection signal="mouse_exited" from="RightClickDetector" to="." method="OnMouseExitedRightClickArea"]
