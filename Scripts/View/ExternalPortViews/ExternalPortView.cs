@@ -13,6 +13,7 @@ namespace ConnectAPIC.Scenes.ExternalPorts
         [Export] public Texture2D InputTexture { set; get; }
         [Export] public Texture2D OutputTexture { set; get; }
 
+        public event EventHandler RightClicked;
 
         public ExternalPortViewModel ViewModel { get; set; }
 
@@ -23,7 +24,7 @@ namespace ConnectAPIC.Scenes.ExternalPorts
         float pulseValue = 0;
         float minPulseEnergy = 0.8f;
         float maxPulseEnergy = 1.2f;
-
+        bool mouseInRightClickArea = false;
 
         public void Initialize(ExternalPortViewModel viewModel)
         {
@@ -38,6 +39,17 @@ namespace ConnectAPIC.Scenes.ExternalPorts
             InfoLabel = GetChild<RichTextLabel>(2);
 
             ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+        }
+
+        public override void _Input(InputEvent @event)
+        {
+            if (@event is InputEventMouseButton mouseButton
+                && mouseButton.Pressed
+                && mouseButton.ButtonIndex == MouseButton.Right
+                && mouseInRightClickArea)
+            {
+                RightClicked.Invoke(this, EventArgs.Empty);
+            }
         }
 
         public override void _Process(double delta)
@@ -115,6 +127,20 @@ namespace ConnectAPIC.Scenes.ExternalPorts
                     SetAsOutput();
             }
         }
+
+
+        private void OnMouseEnteredRightClickArea()
+        {
+            mouseInRightClickArea = true;
+        }
+
+
+        private void OnMouseExitedRightClickArea()
+        {
+            mouseInRightClickArea = false;
+        }
+
+
     }
 }
 

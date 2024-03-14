@@ -1,0 +1,13 @@
+[gd_resource type="Theme" format=3 uid="uid://b2f4xgnx0xy5e"]
+
+[resource]
+Label/colors/font_shadow_color = Color(0, 0, 0, 1)
+Label/constants/shadow_offset_x = 3
+Label/constants/shadow_offset_y = 3
+Label/constants/shadow_outline_size = 25
+Label/font_sizes/font_size = 150
+RichTextLabel/colors/font_shadow_color = Color(0, 0, 0, 1)
+RichTextLabel/constants/shadow_offset_x = 3
+RichTextLabel/constants/shadow_offset_y = 3
+RichTextLabel/constants/shadow_outline_size = 25
+RichTextLabel/font_sizes/normal_font_size = 150
