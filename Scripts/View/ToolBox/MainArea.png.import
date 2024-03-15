@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bpf4xfrmslfao"
-path="res://.godot/imported/CollapseButtonToggledOn.png-e804b1130dd810b5b25852fbd7b59a84.ctex"
+uid="uid://bajwjlht5s7mj"
+path="res://.godot/imported/MainArea.png-31c332f88dde8b62f8cb3ad6f2829281.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Scenes/ToolBox/CollapseButtonToggledOn.png"
-dest_files=["res://.godot/imported/CollapseButtonToggledOn.png-e804b1130dd810b5b25852fbd7b59a84.ctex"]
+source_file="res://Scripts/View/ToolBox/MainArea.png"
+dest_files=["res://.godot/imported/MainArea.png-31c332f88dde8b62f8cb3ad6f2829281.ctex"]
 
 [params]
 

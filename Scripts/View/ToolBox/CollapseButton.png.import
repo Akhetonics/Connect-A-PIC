@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cwxymtqs0hclu"
-path="res://.godot/imported/CollapseButton.png-5aa874efb38430f3b4c37fdb72634245.ctex"
+path="res://.godot/imported/CollapseButton.png-a48eedc39c1ead9ee0532edd82937f84.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Scenes/ToolBox/CollapseButton.png"
-dest_files=["res://.godot/imported/CollapseButton.png-5aa874efb38430f3b4c37fdb72634245.ctex"]
+source_file="res://Scripts/View/ToolBox/CollapseButton.png"
+dest_files=["res://.godot/imported/CollapseButton.png-a48eedc39c1ead9ee0532edd82937f84.ctex"]
 
 [params]
 

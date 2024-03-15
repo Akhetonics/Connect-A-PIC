@@ -23,6 +23,7 @@
     <Compile Remove="libraries\**" />
     <Compile Remove="PDK\**" />
     <Compile Remove="Scenes\Components\**" />
+    <Compile Remove="Scenes\ToolBox\**" />
     <Compile Remove="Scripts\View\ExternalPortViews\**" />
     <Compile Remove="Scripts\LightCalculation\**" />
     <Compile Remove="Tests\**" />
@@ -32,6 +33,7 @@
     <EmbeddedResource Remove="libraries\**" />
     <EmbeddedResource Remove="PDK\**" />
     <EmbeddedResource Remove="Scenes\Components\**" />
+    <EmbeddedResource Remove="Scenes\ToolBox\**" />
     <EmbeddedResource Remove="Scripts\View\ExternalPortViews\**" />
     <EmbeddedResource Remove="Scripts\LightCalculation\**" />
     <EmbeddedResource Remove="Tests\**" />
@@ -79,7 +81,6 @@
     <None Include="Scenes\Main.tscn" />
     <None Include="Scenes\NotificationBox.tscn" />
     <None Include="Scenes\StartMenu.tscn" />
-    <None Include="Scenes\ToolBox\Tool_box.tscn" />
     <ProjectReference Include="CAP-DataAccess\CAP-DataAccess.csproj" />
     <ProjectReference Include="CAP_Contracts\CAP_Contracts.csproj" />
     <ProjectReference Include="Connect-A-Pic-Core\CAP-Core.csproj" />

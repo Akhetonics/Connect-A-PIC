@@ -11,17 +11,17 @@
 [ext_resource type="Script" path="res://Scripts/View/DragDropProxy.cs" id="8_h35r3"]
 [ext_resource type="Script" path="res://Scripts/View/StandardDialogs/NotificationManager.cs" id="9_gj54m"]
 [ext_resource type="PackedScene" uid="uid://bscqmaslppyt8" path="res://Scenes/NotificationBox.tscn" id="10_06t00"]
-[ext_resource type="PackedScene" uid="uid://dfrjm1onsjusf" path="res://Scenes/ToolBox/Tool_box.tscn" id="11_cqs2p"]
 [ext_resource type="PackedScene" uid="uid://bd8isg4mddv21" path="res://Scenes/InGameConsole/InGameConsole.tscn" id="16_7rcst"]
 [ext_resource type="Texture2D" uid="uid://djdwbxfnvfvfb" path="res://Scenes/MenuBar/SaveIcon.png" id="17_q4e7w"]
 [ext_resource type="Texture2D" uid="uid://qtdana7kc4y" path="res://Scenes/MenuBar/LoadIcon.png" id="18_17x6l"]
 [ext_resource type="Script" path="res://Scripts/View/GUIControls/MainCamera.cs" id="19_tfkoi"]
+[ext_resource type="Texture2D" uid="uid://cwxymtqs0hclu" path="res://Scripts/View/ToolBox/CollapseButton.png" id="19_wkq3d"]
+[ext_resource type="Texture2D" uid="uid://bpf4xfrmslfao" path="res://Scripts/View/ToolBox/CollapseButtonToggledOn.png" id="20_8i2ba"]
+[ext_resource type="PackedScene" uid="uid://dfrjm1onsjusf" path="res://Scripts/View/ToolBox/Tool_box.tscn" id="21_cjovy"]
 [ext_resource type="PackedScene" uid="uid://cpu4bmee8crlg" path="res://Scenes/PopUpWindow/PopUpWindow.tscn" id="21_u0shi"]
 [ext_resource type="PackedScene" uid="uid://cfnwmdequraf3" path="res://Scenes/ExternalPortContainer/PortsContainer.tscn" id="22_75h2p"]
 [ext_resource type="Texture2D" uid="uid://dnku8c3qddqif" path="res://Scenes/MenuBar/HelpIcon.png" id="23_oxlnq"]
-[ext_resource type="Texture2D" uid="uid://cwxymtqs0hclu" path="res://Scenes/ToolBox/CollapseButton.png" id="24_uravt"]
 [ext_resource type="Script" path="res://Scripts/View/GUIControls/ToolBoxCollapseControl.cs" id="25_35kfa"]
-[ext_resource type="Texture2D" uid="uid://bpf4xfrmslfao" path="res://Scenes/ToolBox/CollapseButtonToggledOn.png" id="27_6q7aj"]
 
 [node name="GameManager" type="Node" node_paths=PackedStringArray("InGameConsole")]
 script = ExtResource("1_c0scx")
@@ -170,10 +170,10 @@ layout_mode = 2
 size_flags_horizontal = 8
 focus_mode = 0
 toggle_mode = true
-texture_normal = ExtResource("24_uravt")
-texture_pressed = ExtResource("27_6q7aj")
+texture_normal = ExtResource("19_wkq3d")
+texture_pressed = ExtResource("20_8i2ba")
 
-[node name="ToolBox" parent="GUILayer/ToolboxControl/MarginContainer/VBoxContainer" instance=ExtResource("11_cqs2p")]
+[node name="ToolBox" parent="GUILayer/ToolboxControl/MarginContainer/VBoxContainer" instance=ExtResource("21_cjovy")]
 texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 8

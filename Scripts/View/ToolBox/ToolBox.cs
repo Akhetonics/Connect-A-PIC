@@ -2,7 +2,9 @@ using CAP_Contracts.Logger;
 using Chickensoft.AutoInject;
 using ConnectAPic.LayoutWindow;
 using ConnectAPIC.LayoutWindow.View;
+using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.Scripts.Helpers;
+using ConnectAPIC.Scripts.ViewModel;
 using Godot;
 using SuperNodes.Types;
 using System;
@@ -15,6 +17,7 @@ namespace ConnectAPIC.Scenes.ToolBox
         public override partial void _Notification(int what);
         [Dependency] public ComponentViewFactory ComponentViewFactory => DependOn<ComponentViewFactory>();
         [Dependency] public ILogger Logger => DependOn<ILogger>();
+        [Dependency] public GridViewModel GridViewModel => DependOn<GridViewModel>();
         [Export] public GridContainer gridContainer;
         public override void _Ready()
         {
@@ -31,6 +34,12 @@ namespace ConnectAPIC.Scenes.ToolBox
             {
                 Logger.PrintErr("ComponentViewFactory cannot be null");
                 return;
+            }
+            ToolViewModel toolViewModel = GridViewModel.ToolViewModel;
+            // create draw-brushes for all components
+            foreach( var tool in toolViewModel.Tools)
+            {
+
             }
             var allComponentTypesNRs = ComponentViewFactory.GetAllComponentIDs();
             foreach (int typeNumber in allComponentTypesNRs)
@@ -51,6 +60,10 @@ namespace ConnectAPIC.Scenes.ToolBox
                 rect.AddChild(componentInstance);
                 gridContainer.AddChild(rect);
             }
+
+            // create select tool for selection/move/rotate/groupDelete
+
+            // create power Meter tool for creating power meter Windows
         }
     }
 }

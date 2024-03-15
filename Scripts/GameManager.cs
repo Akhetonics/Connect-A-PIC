@@ -20,6 +20,7 @@ using System.Reflection;
 using CAP_Core.Grid;
 using CAP_Core.LightCalculation;
 using ConnectAPIC.Scenes.ExternalPorts;
+using ConnectAPIC.Scripts.ViewModel;
 
 namespace ConnectAPic.LayoutWindow
 {
@@ -145,7 +146,7 @@ namespace ConnectAPic.LayoutWindow
             this.CheckForNull(x => GridView);
             Grid = new GridManager(FieldWidth, FieldHeight);
             LightCalculator = new LightCalculationService(Grid, new GridLightCalculator(new SystemMatrixBuilder(Grid), Grid));
-            GridViewModel = new GridViewModel(GridView, Grid, Logger, componentFactory, LightCalculator);
+            GridViewModel = new GridViewModel( Grid, Logger, componentFactory, LightCalculator);
             GridView.Initialize(GridViewModel, Logger);
             InitializationLogs.Add(("Initialized GridView and Grid and GridViewModel", false));
         }

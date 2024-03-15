@@ -1,4 +1,4 @@
-﻿using CAP_Core.ExternalPorts;
+using CAP_Core.ExternalPorts;
 using Chickensoft.GoDotLog;
 using Chickensoft.GoDotTest;
 using ConnectAPIC.LayoutWindow.View;
@@ -46,7 +46,7 @@ namespace ConnectAPIC.test.src
             RedLaser = (firstLaserInput as ExternalInput).LaserType;
             await MyGameManager.GridViewModel.CreateComponentCommand.ExecuteAsync(new CreateComponentArgs(tunableDirectionalCouplerNR, 0, firstInputTileY, DiscreteRotation.R0));
             // create a curve at the position of one of the standardInputs and rotate it by 90 degrees and then start light distribution
-            TunableDirectionalCoupler = MyGameManager.GridViewModel.GridComponentViews[0, firstInputTileY];
+            TunableDirectionalCoupler = MyGameManager.GridView.GridComponentViews[0, firstInputTileY];
             var usedPorts = MyGameManager.Grid.GetUsedExternalInputs();
         }
 
@@ -61,7 +61,7 @@ namespace ConnectAPIC.test.src
             var nonLinearConnections = component.WaveLengthToSMatrixMap[RedLaser.WaveLengthInNm].NonLinearConnections;
             var lightIntensity = 1.0;
             MyGameManager.GridViewModel.Grid.IsLightOn = true;
-            await MyGameManager.GridViewModel.ShowLightPropagation();
+            await MyGameManager.GridView.ShowLightPropagation();
             var lightGloballyOn = await CheckShaderValuesOnRightPinsAsync();
             mainSlider.Value.ShouldBe(0.5);
             lightGloballyOn.OutRightUp.X.ShouldBe((float)(mainSlider.Value * lightIntensity), 0.01);

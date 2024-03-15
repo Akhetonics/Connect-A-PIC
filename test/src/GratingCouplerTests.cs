@@ -34,7 +34,7 @@ namespace ConnectAPIC.test.src
             var firstInputTileY = firstLaserInput.TilePositionY;
 
             await MyGameManager.GridViewModel.CreateComponentCommand.ExecuteAsync(new CreateComponentArgs(gratingComponentNr, 0, firstInputTileY, DiscreteRotation.R0));
-            GratingCoupler = MyGameManager.GridViewModel.GridComponentViews[0, firstInputTileY];
+            GratingCoupler = MyGameManager.GridView.GridComponentViews[0, firstInputTileY];
 
         }
         [Test]
@@ -50,7 +50,7 @@ namespace ConnectAPIC.test.src
             };
             GratingCoupler.ShouldNotBeNull("the grating coupler should have been loaded successfully but it didn't");
             GratingCoupler.ViewModel.DisplayLightVector(lightAtPins);
-            await MyGameManager.GridViewModel.ShowLightPropagation();
+            await MyGameManager.GridView.ShowLightPropagation();
             await TestScene.GetTree().NextFrame(10);
             var inflowShaderParam = (Vector4)(GratingCoupler.OverlayManager.AnimationSlots[0].BaseOverlaySprite.Material as ShaderMaterial).GetShaderParameter(ShaderParameterNames.LightInFlow + 1);
             inflowShaderParam.X.ShouldBe(1, "because we have set the light input to be 1 for red laser ");

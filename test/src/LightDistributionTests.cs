@@ -62,9 +62,9 @@ namespace ConnectAPIC.test.src
             await MyGameManager.GridViewModel.CreateComponentCommand.ExecuteAsync(new CreateComponentArgs(straightComponentNr, 1, secondInputTileY, DiscreteRotation.R0));
             await MyGameManager.GridViewModel.CreateComponentCommand.ExecuteAsync(new CreateComponentArgs(curveComponentNr, 0, firstInputTileY, DiscreteRotation.R270));
             // create a curve at the position of one of the standardInputs and rotate it by 90 degrees and then start light distribution
-            RotatedCurve = MyGameManager.GridViewModel.GridComponentViews[0, firstInputTileY];
-            StraightLine = MyGameManager.GridViewModel.GridComponentViews[0, secondInputTileY];
-            SecondStraightLine = MyGameManager.GridViewModel.GridComponentViews[1, secondInputTileY];
+            RotatedCurve = MyGameManager.GridView.GridComponentViews[0, firstInputTileY];
+            StraightLine = MyGameManager.GridView.GridComponentViews[0, secondInputTileY];
+            SecondStraightLine = MyGameManager.GridView.GridComponentViews[1, secondInputTileY];
             var usedPorts = MyGameManager.Grid.GetUsedExternalInputs();
 
             // Assert if loading has worked properly
@@ -81,7 +81,7 @@ namespace ConnectAPIC.test.src
                 new (0, 0, outflowSide, RedLaser, 0, 1),
             };
             RotatedCurve.ViewModel.DisplayLightVector(lightAtPins);
-            await MyGameManager.GridViewModel.ShowLightPropagation() ;
+            await MyGameManager.GridView.ShowLightPropagation() ;
             await TestScene.GetTree().NextFrame(10);
             RotatedCurve.OverlayManager.AnimationSlots[0].Rotation.ShouldBe(RotatedCurve.ViewModel.RotationCC, "AnimationSlot should rotate according to the rotation of the component");
             RotatedCurve.OverlayManager.AnimationSlots[1].Rotation.ShouldBe(RotatedCurve.ViewModel.RotationCC, "AnimationSlot should rotate according to the rotation of the component");
@@ -104,9 +104,9 @@ namespace ConnectAPIC.test.src
             SecondStraightLine.HideLightVector();
             SecondStraightLine.ViewModel.DisplayLightVector(lightAtPins);
             var lightLocallyOn = await GetInOutLightValueLeft();
-            await MyGameManager.GridViewModel.HideLightPropagation();
+            await MyGameManager.GridView.HideLightPropagation();
             var lightGloballyOff = await GetInOutLightValueLeft();
-            await MyGameManager.GridViewModel.ShowLightPropagation();
+            await MyGameManager.GridView.ShowLightPropagation();
             var lightGloballyOn= await GetInOutLightValueLeft();
             SecondStraightLine.HideLightVector();
             var lightLocallyOff= await GetInOutLightValueLeft();

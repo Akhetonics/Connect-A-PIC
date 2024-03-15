@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://dfrjm1onsjusf"]
 
-[ext_resource type="Script" path="res://Scenes/ToolBox/ToolBox.cs" id="1_j3t3x"]
-[ext_resource type="TileSet" uid="uid://bjnfm72lxqg6y" path="res://Scenes/ToolBox/Tool_box .tres" id="2_nopfo"]
+[ext_resource type="Script" path="res://Scripts/View/ToolBox/ToolBox.cs" id="1_j3t3x"]
+[ext_resource type="TileSet" uid="uid://bjnfm72lxqg6y" path="res://Scripts/View/ToolBox/Tool_box .tres" id="2_nopfo"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_m8cqf"]
 bg_color = Color(1, 1, 1, 0)
