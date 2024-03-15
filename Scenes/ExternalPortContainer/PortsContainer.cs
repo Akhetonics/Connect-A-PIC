@@ -38,7 +38,6 @@ public partial class PortsContainer : Node2D
                 tmpView = Views.Find((view) => port.TilePositionY == view.ViewModel.TilePositionY);
                 Views.Remove(tmpView);
                 tmpView.RightClicked -= View_RightClicked;
-                tmpView.ViewModel.QueueFree();
                 tmpView.QueueFree();
             }
             foreach (ExternalPort port in e.NewItems)

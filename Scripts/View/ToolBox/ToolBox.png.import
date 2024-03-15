@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bajwjlht5s7mj"
-path="res://.godot/imported/MainArea.png-3bb8d82daaf6e9f57e7e501075d2e4c2.ctex"
+uid="uid://cqhhff6jbuuau"
+path="res://.godot/imported/ToolBox.png-a30a8669e6b5cec54633bce3a3ddee31.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Scenes/ToolBox/MainArea.png"
-dest_files=["res://.godot/imported/MainArea.png-3bb8d82daaf6e9f57e7e501075d2e4c2.ctex"]
+source_file="res://Scripts/View/ToolBox/ToolBox.png"
+dest_files=["res://.godot/imported/ToolBox.png-a30a8669e6b5cec54633bce3a3ddee31.ctex"]
 
 [params]
 

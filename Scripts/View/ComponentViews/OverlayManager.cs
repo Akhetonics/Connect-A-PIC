@@ -36,7 +36,7 @@ namespace ConnectAPIC.Scripts.View.ComponentViews
             WidthInTiles = widthInTiles;
             HeightInTiles = heightInTiles;
             LightOverlayShader = new ShaderMaterial();
-            LightOverlayShader.Shader = ResourceLoader.Load("res://Scenes/Components/LightOverlayShaded.tres").Duplicate() as Shader;
+            LightOverlayShader.Shader = ResourceLoader.Load("res://Scripts/View/ComponentViews/LightOverlayShaded.tres").Duplicate() as Shader;
             AnimationSlotRawData = animationSlotOverlays;
             FindAndCreateLightOverlays(); // first create the overlays, then use them to create the animationSlots
             AnimationSlots = ConvertSlotOverlayDataToAnimationSlots(animationSlotOverlays);

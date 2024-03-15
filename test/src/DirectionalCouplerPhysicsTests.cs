@@ -63,14 +63,14 @@ namespace ConnectAPIC.test.src
             await MyGameManager.GridViewModel.CreateComponentCommand.ExecuteAsync(new CreateComponentArgs(directionalCouplerNr, 7, firstInputTileY, DiscreteRotation.R0));
             await MyGameManager.GridViewModel.CreateComponentCommand.ExecuteAsync(new CreateComponentArgs(directionalCouplerNr, 9, firstInputTileY, DiscreteRotation.R0));
             await MyGameManager.GridViewModel.CreateComponentCommand.ExecuteAsync(new CreateComponentArgs(directionalCouplerNr, 11, firstInputTileY, DiscreteRotation.R0));
-            DirectionalCouplerLightSwitching = MyGameManager.GridViewModel.GridComponentViews[3, firstInputTileY];
+            DirectionalCouplerLightSwitching = MyGameManager.GridView.GridComponentViews[3, firstInputTileY];
             // set all slides to 0.75 for testing power loss
             for( int x = 5; x < 12; x++)
             {
                 var component = MyGameManager.Grid.GetComponentAt(x, firstInputTileY);
                 component.GetSlider(0).Value = 0.75;
             }
-            DirectionalCouplerPowerPreserving = MyGameManager.GridViewModel.GridComponentViews[11, firstInputTileY];
+            DirectionalCouplerPowerPreserving = MyGameManager.GridView.GridComponentViews[11, firstInputTileY];
 
             var usedPorts = MyGameManager.Grid.GetUsedExternalInputs();
         }
@@ -84,7 +84,7 @@ namespace ConnectAPIC.test.src
             var compModel = MyGameManager.Grid.GetComponentAt(DirectionalCouplerLightSwitching.ViewModel.GridX, DirectionalCouplerLightSwitching.ViewModel.GridY);
             var innerConnections = compModel.WaveLengthToSMatrixMap[RedLaser.WaveLengthInNm].GetNonNullValues();
             // then test the light distribution
-            await MyGameManager.GridViewModel.ShowLightPropagation();
+            await MyGameManager.GridView.ShowLightPropagation();
             var lightGloballyOnUp = await GetLightOnRightDownSide(DirectionalCouplerLightSwitching , new Vector2I(1,0) , 3);
             var lightGloballyOnDown = await GetLightOnRightDownSide(DirectionalCouplerLightSwitching, new Vector2I(1,1) , 4);
 
@@ -100,7 +100,7 @@ namespace ConnectAPIC.test.src
             var compModel = MyGameManager.Grid.GetComponentAt(DirectionalCouplerPowerPreserving.ViewModel.GridX, DirectionalCouplerLightSwitching.ViewModel.GridY);
             var innerConnections = compModel.WaveLengthToSMatrixMap[RedLaser.WaveLengthInNm].GetNonNullValues();
             // then test the light distribution
-            await MyGameManager.GridViewModel.ShowLightPropagation();
+            await MyGameManager.GridView.ShowLightPropagation();
             var lightGloballyOnUp = await GetLightOnRightDownSide(DirectionalCouplerPowerPreserving, new Vector2I(1, 0), 3);
             var lightGloballyOnDown = await GetLightOnRightDownSide(DirectionalCouplerPowerPreserving, new Vector2I(1, 1), 4);
 

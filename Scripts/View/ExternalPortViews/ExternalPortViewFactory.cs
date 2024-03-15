@@ -9,7 +9,7 @@ using Godot;
 
 namespace ConnectAPic.LayoutWindow
 {
-    public partial class ExternalPortViewFactory
+    public class ExternalPortViewFactory
     {
         public PortsContainer PortsContainer{ get; set; }
         public GridManager Grid {  get; set; }
@@ -34,15 +34,15 @@ namespace ConnectAPic.LayoutWindow
     
                 if (input.LaserType == LaserType.Red)
                 {
-                    portViewModel.Power = new Vector3(1, 0, 0);
+                    portViewModel.Power = new (1, 0, 0);
                 }
                 else if (input.LaserType == LaserType.Green)
                 {
-                    portViewModel.Power = new Vector3(0, 1, 0);
+                    portViewModel.Power = new (0, 1, 0);
                 }
                 else
                 {
-                    portViewModel.Power = new Vector3(0, 0, 1);
+                    portViewModel.Power = new (0, 0, 1);
                 }
             }
             else
