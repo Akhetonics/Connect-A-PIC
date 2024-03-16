@@ -49,7 +49,7 @@ public partial class SliderSection : ISection
         return this;
     }
 
-    public override void _Ready()
+	public override void _Ready()
 	{
         Slider = GetNode<HSlider>("%Slider");
         timer = GetNode<Timer>("%Timer");
@@ -60,7 +60,7 @@ public partial class SliderSection : ISection
             {
                 OnPropertyChanged(this, new PropertyChangedEventArgs(Slider.Value.ToString()));
                 prevValue = Slider.Value;
-            }
+	}
 
             if (sliding) timer.Start(SliderUpdateInterval);
         };
@@ -72,11 +72,11 @@ public partial class SliderSection : ISection
             timer.Start(SliderUpdateInterval);
         };
         Slider.DragEnded += (bool valueChanged) =>
-        {
+	{
             sliding = false;
             timer.Stop();
             OnPropertyChanged(this, new PropertyChangedEventArgs(Slider.Value.ToString()));
         };
-    }
+	}
 
 }

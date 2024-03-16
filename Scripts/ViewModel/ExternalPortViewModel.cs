@@ -72,40 +72,40 @@ namespace ConnectAPIC.Scripts.ViewModel
                 }
             };
 
-            lightCalculator.LightCalculationChanged += (object sender, LightCalculationChangeEventArgs e) =>
+        lightCalculator.LightCalculationChanged += (object sender, LightCalculationChangeEventArgs e) =>
+        {
+            if (IsInput) return;
+            var touchingComponent = grid.ComponentMover.GetComponentAt(0, TilePositionY);
+            if (touchingComponent == null)
             {
-                if (IsInput) return;
-                var touchingComponent = grid.ComponentMover.GetComponentAt(0, TilePositionY);
-                if (touchingComponent == null)
-                {
-                    ResetPowers();
-                    return;
-                };
-                var offsetY = TilePositionY - touchingComponent.GridYMainTile;
-                var touchingPin = touchingComponent.PinIdLeftOut(0, offsetY);
-                if (touchingPin == null)
-                {
-                    ResetPowers();
-                    return;
-                };
-                var fieldOut = e.LightFieldVector[(Guid)touchingPin].Magnitude;
-                var power = _power;
-                if (e.LaserInUse.Color == LightColor.Red)
-                {
-                    // floats should be sufficient for this value
-                    power.X = (float)(fieldOut * fieldOut);
-                }
-                else if (e.LaserInUse.Color == LightColor.Green)
-                {
-                    power.Y = (float)(fieldOut * fieldOut);
-                }
-                else
-                {
-                    power.Z = (float)(fieldOut * fieldOut);
-                }
-                Power = power;
+                ResetPowers();
+                return;
             };
-        }
+            var offsetY = TilePositionY - touchingComponent.GridYMainTile;
+            var touchingPin = touchingComponent.PinIdLeftOut(0, offsetY);
+            if (touchingPin == null)
+            {
+                ResetPowers();
+                return;
+            };
+            var fieldOut = e.LightFieldVector[(Guid)touchingPin].Magnitude;
+            var power = _power;
+            if (e.LaserInUse.Color == LightColor.Red)
+            {
+                // floats should be sufficient for this value
+                power.X = (float)(fieldOut * fieldOut);
+            }
+            else if (e.LaserInUse.Color == LightColor.Green)
+            {
+                power.Y = (float)(fieldOut * fieldOut);
+            }
+            else
+            {
+                power.Z = (float)(fieldOut * fieldOut);
+            }
+            Power = power;
+        };
+    }
 
 
         public string AllColorsPower()

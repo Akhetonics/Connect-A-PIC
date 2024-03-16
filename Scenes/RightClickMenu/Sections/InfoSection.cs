@@ -1,14 +1,15 @@
 using Godot;
 using System;
-using System.Collections.Generic;
 
 public partial class InfoSection : ISection
 {
-    public InfoSection Initialize(String title, String value)
-    {
-        Title = title;
-        Value = value;
-        return this;
-    }
+	// Called when the node enters the scene tree for the first time.
+	public override void _Ready()
+	{
+	}
 
+	// Called every frame. 'delta' is the elapsed time since the previous frame.
+	public override void _Process(double delta)
+	{
+	}
 }
