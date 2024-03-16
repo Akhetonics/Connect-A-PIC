@@ -1,9 +1,19 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 public partial class RightClickMenu : CharacterBody2D
 {
+    [Export] public PackedScene ToggleSectionTemplate { get; set; }
+    [Export] public PackedScene OnOffSectionTemplate { get; set; }
+    [Export] public PackedScene SliderSectionTemplate { get; set; }
+    [Export] public PackedScene InfoSectionTemplate { get; set; }
+
+    VBoxContainer sectionContainer { get; set; }
+
+
+    //dragging
     bool dragging;
     bool mouseIn = false;
     Vector2 direction;
@@ -15,22 +25,24 @@ public partial class RightClickMenu : CharacterBody2D
 
     public override void _Ready()
     {
+        sectionContainer = GetNode<VBoxContainer>("%SectionContainer");
+
+        //dragging
         area = GetChild<Area2D>(1);
         area.MouseShapeEntered += (long shapeIdx) =>
         {
             mouseIn = true;
             Debug.Print("mouse entered");
         };
-
         area.MouseShapeExited += (long shapeIdx) => {
             mouseIn = false;
             Debug.Print("mouse exited");
         };
     }
 
-
-    public override void _UnhandledInput(InputEvent @event)
+    public override void _Input(InputEvent @event)
     {
+        //dragging
         if (@event is InputEventMouseButton mouseButton) {
             if (mouseButton.IsPressed() && mouseIn) {
                 draggingDistance = Position.DistanceTo(GetViewport().GetMousePosition());
@@ -49,9 +61,9 @@ public partial class RightClickMenu : CharacterBody2D
         }
     }
 
-
     public override void _PhysicsProcess(double delta)
     {
+        
         if (dragging)
         {
             Velocity = (newPosition - Position) * (new Vector2(draggingSpeed, draggingSpeed));
@@ -60,13 +72,19 @@ public partial class RightClickMenu : CharacterBody2D
     }
 
 
+    public RightClickMenu AddToggleSection()
+    {
+        = ToggleSectionTemplate.Instantiate();
+
+        return this;
+    }
+
+
     private void MouseEnteredInDragArea()
     {
         mouseIn = true;
         Debug.Print("mouse entered");
     }
-
-
     private void MouseExitedDragArea()
     {
         mouseIn = false;

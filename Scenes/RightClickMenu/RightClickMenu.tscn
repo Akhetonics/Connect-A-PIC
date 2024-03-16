@@ -1,24 +1,13 @@
-[gd_scene load_steps=10 format=3 uid="uid://tnmccvafekjl"]
+[gd_scene load_steps=11 format=3 uid="uid://tnmccvafekjl"]
 
 [ext_resource type="Script" path="res://Scenes/RightClickMenu/RightClickMenu.cs" id="1_egxol"]
 [ext_resource type="Texture2D" uid="uid://bseakecs4865n" path="res://Scenes/RightClickMenu/Body.png" id="2_0xr5l"]
 [ext_resource type="Texture2D" uid="uid://cxa7n5a2grbq6" path="res://Scenes/RightClickMenu/TopBar.png" id="3_it7mt"]
 [ext_resource type="Texture2D" uid="uid://do8y035em52gm" path="res://Scenes/RightClickMenu/ExitButton.png" id="4_mrron"]
-[ext_resource type="Theme" uid="uid://b2f4xgnx0xy5e" path="res://Scenes/Assets/Themes/MainTheme.tres" id="5_fel5w"]
-[ext_resource type="Texture2D" uid="uid://q76vpqkoamcu" path="res://Scenes/RightClickMenu/SectionTextureOff.png" id="6_rd3o7"]
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tyuhw"]
-bg_color = Color(0.733333, 0.580392, 0, 1)
-border_width_left = 2
-border_width_top = 2
-border_width_right = 2
-border_width_bottom = 2
-border_color = Color(0.380392, 0.329412, 0, 1)
-corner_radius_top_left = 2
-corner_radius_top_right = 2
-corner_radius_bottom_right = 2
-corner_radius_bottom_left = 2
-anti_aliasing = false
+[ext_resource type="PackedScene" uid="uid://bp4qgaqaejw5m" path="res://Scenes/RightClickMenu/Sections/toggle_section.tscn" id="5_188g3"]
+[ext_resource type="PackedScene" uid="uid://qnt4xdsn4i7n" path="res://Scenes/RightClickMenu/Sections/on_off_section.tscn" id="6_3i7pt"]
+[ext_resource type="PackedScene" uid="uid://cbnwjaf2rjctr" path="res://Scenes/RightClickMenu/Sections/slider_section.tscn" id="7_8k116"]
+[ext_resource type="PackedScene" uid="uid://bibqhya7kmikv" path="res://Scenes/RightClickMenu/Sections/info_section.tscn" id="8_lc8nx"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xc2v1"]
 size = Vector2(211, 25)
@@ -28,7 +17,10 @@ size = Vector2(174, 18)
 
 [node name="RightClickMenu" type="CharacterBody2D"]
 script = ExtResource("1_egxol")
-metadata/_edit_vertical_guides_ = [231.0]
+ToggleSectionTemplate = ExtResource("5_188g3")
+OnOffSectionTemplate = ExtResource("6_3i7pt")
+SliderSectionTemplate = ExtResource("7_8k116")
+InfoSectionTemplate = ExtResource("8_lc8nx")
 
 [node name="Window" type="Control" parent="."]
 texture_filter = 1
@@ -114,218 +106,21 @@ grow_vertical = 2
 theme_override_constants/separation = 0
 metadata/_edit_use_anchors_ = true
 
-[node name="ToggleSection" type="Control" parent="Window/BodyContainer/SectionContainer"]
-custom_minimum_size = Vector2(0, 40)
+[node name="ToggleSection" parent="Window/BodyContainer/SectionContainer" instance=ExtResource("5_188g3")]
+visible = false
 layout_mode = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Window/BodyContainer/SectionContainer/ToggleSection"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 0
-
-[node name="Title" type="Control" parent="Window/BodyContainer/SectionContainer/ToggleSection/VBoxContainer"]
-custom_minimum_size = Vector2(0, 20)
+[node name="OnOffSection" parent="Window/BodyContainer/SectionContainer" instance=ExtResource("6_3i7pt")]
+visible = false
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Window/BodyContainer/SectionContainer/ToggleSection/VBoxContainer/Title"]
-layout_mode = 1
-offset_right = 415.0
-offset_bottom = 205.0
-scale = Vector2(0.1, 0.1)
-theme_override_constants/margin_left = 60
-theme_override_constants/margin_top = 0
-
-[node name="Title" type="Label" parent="Window/BodyContainer/SectionContainer/ToggleSection/VBoxContainer/Title/MarginContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
-theme = ExtResource("5_fel5w")
-text = "Toggle Section:"
-
-[node name="Body" type="Control" parent="Window/BodyContainer/SectionContainer/ToggleSection/VBoxContainer"]
-custom_minimum_size = Vector2(0, 20)
+[node name="ScrollSection" parent="Window/BodyContainer/SectionContainer" instance=ExtResource("7_8k116")]
+visible = false
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="Window/BodyContainer/SectionContainer/ToggleSection/VBoxContainer/Body"]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -35.0
-offset_top = -4.90995
-offset_bottom = 25.09
-grow_horizontal = 0
-theme_override_constants/margin_top = 7
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 7
-
-[node name="Button" type="Button" parent="Window/BodyContainer/SectionContainer/ToggleSection/VBoxContainer/Body/MarginContainer"]
+[node name="InfoSection" parent="Window/BodyContainer/SectionContainer" instance=ExtResource("8_lc8nx")]
+visible = false
 layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_tyuhw")
-
-[node name="Title" type="Label" parent="Window/BodyContainer/SectionContainer/ToggleSection/VBoxContainer/Body"]
-layout_mode = 2
-offset_left = 6.0
-offset_top = -1.90995
-offset_right = 1526.0
-offset_bottom = 203.09
-scale = Vector2(0.1, 0.1)
-theme = ExtResource("5_fel5w")
-theme_override_font_sizes/font_size = 0
-text = "Value"
-
-[node name="OnOffSection" type="Control" parent="Window/BodyContainer/SectionContainer"]
-custom_minimum_size = Vector2(0, 40)
-layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Window/BodyContainer/SectionContainer/OnOffSection"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 0
-
-[node name="Title" type="Control" parent="Window/BodyContainer/SectionContainer/OnOffSection/VBoxContainer"]
-custom_minimum_size = Vector2(0, 20)
-layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="Window/BodyContainer/SectionContainer/OnOffSection/VBoxContainer/Title"]
-layout_mode = 1
-offset_right = 415.0
-offset_bottom = 205.0
-scale = Vector2(0.1, 0.1)
-theme_override_constants/margin_left = 60
-theme_override_constants/margin_top = 0
-
-[node name="Title" type="Label" parent="Window/BodyContainer/SectionContainer/OnOffSection/VBoxContainer/Title/MarginContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
-theme = ExtResource("5_fel5w")
-text = "On/Off Section:"
-
-[node name="Body" type="Control" parent="Window/BodyContainer/SectionContainer/OnOffSection/VBoxContainer"]
-custom_minimum_size = Vector2(0, 20)
-layout_mode = 2
-
-[node name="Title" type="Label" parent="Window/BodyContainer/SectionContainer/OnOffSection/VBoxContainer/Body"]
-layout_mode = 2
-offset_left = 35.0
-offset_top = -0.819916
-offset_right = 1555.0
-offset_bottom = 204.18
-scale = Vector2(0.1, 0.1)
-theme = ExtResource("5_fel5w")
-theme_override_font_sizes/font_size = 0
-text = "Off"
-
-[node name="MarginContainer" type="MarginContainer" parent="Window/BodyContainer/SectionContainer/OnOffSection/VBoxContainer/Body"]
-layout_mode = 1
-anchors_preset = 1
-anchor_left = 1.0
-anchor_right = 1.0
-offset_left = -35.0
-offset_top = -3.90996
-offset_bottom = 26.09
-grow_horizontal = 0
-theme_override_constants/margin_top = 7
-theme_override_constants/margin_right = 5
-theme_override_constants/margin_bottom = 7
-
-[node name="Button" type="Button" parent="Window/BodyContainer/SectionContainer/OnOffSection/VBoxContainer/Body/MarginContainer"]
-layout_mode = 2
-theme_override_styles/normal = SubResource("StyleBoxFlat_tyuhw")
-
-[node name="TextureRect" type="TextureRect" parent="Window/BodyContainer/SectionContainer/OnOffSection/VBoxContainer/Body"]
-layout_mode = 0
-offset_left = 12.0
-offset_top = 2.18008
-offset_right = 28.0
-offset_bottom = 18.1801
-texture = ExtResource("6_rd3o7")
-expand_mode = 1
-
-[node name="ScrollSection" type="Control" parent="Window/BodyContainer/SectionContainer"]
-custom_minimum_size = Vector2(0, 50)
-layout_mode = 2
-
-[node name="VBoxContainer" type="VBoxContainer" parent="Window/BodyContainer/SectionContainer/ScrollSection"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/separation = 0
-
-[node name="Title" type="Control" parent="Window/BodyContainer/SectionContainer/ScrollSection/VBoxContainer"]
-custom_minimum_size = Vector2(0, 20)
-layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="Window/BodyContainer/SectionContainer/ScrollSection/VBoxContainer/Title"]
-layout_mode = 1
-offset_right = 415.0
-offset_bottom = 205.0
-scale = Vector2(0.1, 0.1)
-theme_override_constants/margin_left = 60
-theme_override_constants/margin_top = 0
-
-[node name="Title" type="Label" parent="Window/BodyContainer/SectionContainer/ScrollSection/VBoxContainer/Title/MarginContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
-theme = ExtResource("5_fel5w")
-text = "Scroll Bar Section:"
-
-[node name="Body" type="Control" parent="Window/BodyContainer/SectionContainer/ScrollSection/VBoxContainer"]
-custom_minimum_size = Vector2(0, 30)
-layout_mode = 2
-
-[node name="Title" type="Label" parent="Window/BodyContainer/SectionContainer/ScrollSection/VBoxContainer/Body"]
-layout_mode = 2
-offset_left = 6.0
-offset_top = -3.90996
-offset_right = 1706.0
-offset_bottom = 201.09
-scale = Vector2(0.1, 0.1)
-theme = ExtResource("5_fel5w")
-text = "Value"
-
-[node name="HScrollBar" type="HScrollBar" parent="Window/BodyContainer/SectionContainer/ScrollSection/VBoxContainer/Body"]
-layout_mode = 0
-offset_left = 6.0
-offset_top = 17.09
-offset_right = 231.0
-offset_bottom = 25.09
-
-[node name="InfoSection" type="Control" parent="Window/BodyContainer/SectionContainer"]
-custom_minimum_size = Vector2(0, 20)
-layout_mode = 2
-
-[node name="Title" type="Control" parent="Window/BodyContainer/SectionContainer/InfoSection"]
-custom_minimum_size = Vector2(0, 20)
-layout_mode = 2
-anchors_preset = 0
-offset_right = 237.0
-offset_bottom = 20.0
-
-[node name="MarginContainer" type="MarginContainer" parent="Window/BodyContainer/SectionContainer/InfoSection/Title"]
-layout_mode = 1
-offset_right = 2310.0
-offset_bottom = 205.0
-scale = Vector2(0.1, 0.1)
-theme_override_constants/margin_left = 60
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 60
-
-[node name="Title" type="Label" parent="Window/BodyContainer/SectionContainer/InfoSection/Title/MarginContainer"]
-layout_mode = 2
-size_flags_horizontal = 0
-theme = ExtResource("5_fel5w")
-text = "Title: Value"
 
 [node name="Area2D" type="Area2D" parent="."]
 disable_mode = 2

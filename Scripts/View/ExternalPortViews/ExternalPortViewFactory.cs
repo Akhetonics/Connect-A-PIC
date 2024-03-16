@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System;
 using Godot;
+using ConnectAPIC.Scripts.ViewModel;
 
 namespace ConnectAPic.LayoutWindow
 {

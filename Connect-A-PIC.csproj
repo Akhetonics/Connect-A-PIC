@@ -90,6 +90,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Scenes\ExternalPorts\" />
+    <Folder Include="Scenes\RightClickMenu\Sections\" />
   </ItemGroup>
   <PropertyGroup>
     <DefaultItemExcludes Condition="'$(Configuration)' == 'ExportRelease'">
