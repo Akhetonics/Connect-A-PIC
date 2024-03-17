@@ -8,6 +8,7 @@ custom_minimum_size = Vector2(0, 20)
 layout_mode = 3
 anchors_preset = 0
 script = ExtResource("1_jjdpd")
+metadata/_edit_vertical_guides_ = [237.0]
 
 [node name="Title" type="Control" parent="."]
 custom_minimum_size = Vector2(0, 20)
@@ -18,7 +19,7 @@ offset_bottom = 20.0
 
 [node name="MarginContainer" type="MarginContainer" parent="Title"]
 layout_mode = 1
-offset_right = 2310.0
+offset_right = 2370.0
 offset_bottom = 205.0
 scale = Vector2(0.1, 0.1)
 theme_override_constants/margin_left = 60
@@ -26,7 +27,23 @@ theme_override_constants/margin_top = 0
 theme_override_constants/margin_right = 60
 
 [node name="Title" type="Label" parent="Title/MarginContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
 theme = ExtResource("1_m86ur")
-text = "Title: Value"
+text = "Title"
+
+[node name="MarginContainer2" type="MarginContainer" parent="Title"]
+offset_right = 2367.0
+offset_bottom = 205.0
+scale = Vector2(0.1, 0.1)
+theme_override_constants/margin_left = 60
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_right = 60
+
+[node name="Value" type="Label" parent="Title/MarginContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("1_m86ur")
+text = "Value"
+horizontal_alignment = 2
