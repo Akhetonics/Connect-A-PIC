@@ -17,17 +17,30 @@ public partial class ToggleSection : ISection
         }
     }
 
-    public void Initialize(List<String> toggleValues, String title, String value = "")
+    public ToggleSection Initialize(List<String> toggleValues, String title, Vector3 value)
+    {
+        String strValue = "";
+        if (value.X > 0.005) strValue = "Red";
+        else if (value.Y > 0.005) strValue = "Green";
+        else if (value.Z > 0.005) strValue = "Blue";
+
+        return Initialize(toggleValues, title, strValue);
+    }
+
+
+    public ToggleSection Initialize(List<String> toggleValues, String title, String value = "")
     {
         Title = title;
         Value = value;
 
-        if (toggleValues == null) return;
+        if (toggleValues == null) return this;
         this.toggleValues = toggleValues;
 
-        if (Value.Equals(""))
-            Value = toggleValues[0];
+        if (Value.Equals("")) Value = toggleValues[0];
+
+        return this;
     }
+
 
     public void CycleToNextValue(){
         toggleIndex++;

@@ -7,13 +7,15 @@ public abstract partial class ISection : Node, INotifyPropertyChanged
     //To notify if some property of section changed (like if button is pressed to toggle)
     public event PropertyChangedEventHandler PropertyChanged;
 
-    public String Title { get => Title;
+    public String Title {
+        get => Title;
         set {
             Title = value;
             titleLabel.Text = value;
         }
     }
-    public String Value { get => Value;
+    public String Value {
+        get => Value;
         set {
             Value = value;
             titleLabel.Text = value;
