@@ -4,7 +4,6 @@ using System.ComponentModel;
 
 public abstract partial class ISection : Node, INotifyPropertyChanged
 {
-	// Called when the node enters the scene tree for the first time.
     //To notify if some property of section changed (like if button is pressed to toggle)
     public event PropertyChangedEventHandler PropertyChanged;
 
@@ -34,7 +33,7 @@ public abstract partial class ISection : Node, INotifyPropertyChanged
 
     protected void OnPropertyChanged(object sender, PropertyChangedEventArgs e) {
         PropertyChanged?.Invoke(sender, e);
-	}
+    }
 
 
 }

@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://qnt4xdsn4i7n"]
+[gd_scene load_steps=6 format=3 uid="uid://qnt4xdsn4i7n"]
 
 [ext_resource type="Script" path="res://Scenes/RightClickMenu/Sections/OnOffSection.cs" id="1_ga2fa"]
 [ext_resource type="Theme" uid="uid://b2f4xgnx0xy5e" path="res://Scenes/Assets/Themes/MainTheme.tres" id="1_la5xe"]
@@ -56,7 +56,8 @@ text = "On/Off Section:"
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 
-[node name="Title" type="Label" parent="VBoxContainer/Body"]
+[node name="Value" type="Label" parent="VBoxContainer/Body"]
+unique_name_in_owner = true
 layout_mode = 2
 offset_left = 35.0
 offset_top = -0.819916
@@ -84,13 +85,24 @@ theme_override_constants/margin_bottom = 7
 layout_mode = 2
 theme_override_styles/normal = SubResource("StyleBoxFlat_tyuhw")
 
-[node name="TextureRect" type="TextureRect" parent="VBoxContainer/Body"]
+[node name="OffIcon" type="TextureRect" parent="VBoxContainer/Body"]
+texture_filter = 1
+offset_left = 12.0
+offset_top = 2.0
+offset_right = 28.0
+offset_bottom = 18.0
+texture = ExtResource("2_wdkb7")
+expand_mode = 1
+
+[node name="OnIcon" type="TextureRect" parent="VBoxContainer/Body"]
+unique_name_in_owner = true
+texture_filter = 1
 layout_mode = 0
 offset_left = 12.0
-offset_top = 2.18008
+offset_top = 2.0
 offset_right = 28.0
-offset_bottom = 18.1801
-texture = ExtResource("2_wdkb7")
+offset_bottom = 18.0
+texture = ExtResource("4_kxk4i")
 expand_mode = 1
 
 [connection signal="pressed" from="VBoxContainer/Body/MarginContainer/Button" to="." method="OnToggleButtonPressed"]

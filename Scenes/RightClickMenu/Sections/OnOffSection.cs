@@ -6,8 +6,20 @@ using System.Reflection.Metadata.Ecma335;
 
 public partial class OnOffSection : ISection
 {
-	// Called when the node enters the scene tree for the first time.
-	public override void _Ready()
+    public bool IsOn
+    {
+        get => IsOn;
+        set
+        {
+            IsOn = value;
+            onTexture.Visible = value;
+            Value = value ? "On" : "Off";
+        }
+    }
+
+    private TextureRect onTexture;
+
+    public override void _Ready()
 	{
         onTexture = GetNode<TextureRect>("%OnIcon");
 	}
