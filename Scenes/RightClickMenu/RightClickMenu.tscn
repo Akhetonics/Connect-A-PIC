@@ -25,9 +25,12 @@ InfoSectionTemplate = ExtResource("8_lc8nx")
 [node name="Window" type="Control" parent="."]
 texture_filter = 1
 layout_mode = 3
-anchors_preset = 0
-offset_right = 237.0
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -237.0
 offset_bottom = 292.0
+grow_horizontal = 0
 mouse_filter = 1
 
 [node name="WindowHeader" type="Control" parent="Window"]
@@ -115,16 +118,18 @@ visible = false
 layout_mode = 2
 
 [node name="ScrollSection" parent="Window/BodyContainer/SectionContainer" instance=ExtResource("7_8k116")]
+visible = false
 layout_mode = 2
 
 [node name="InfoSection" parent="Window/BodyContainer/SectionContainer" instance=ExtResource("8_lc8nx")]
+visible = false
 layout_mode = 2
 
 [node name="Area2D" type="Area2D" parent="."]
 disable_mode = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
-position = Vector2(105.5, 12.5)
+position = Vector2(-132, 12)
 shape = SubResource("RectangleShape2D_xc2v1")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]

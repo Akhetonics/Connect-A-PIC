@@ -5,7 +5,7 @@ using System.Diagnostics;
 
 public partial class SliderSection : ISection
 {
-    private HSlider slider;
+    public HSlider Slider { get; private set; }
     private Timer timer;
     public float MinValue
     {
@@ -13,7 +13,7 @@ public partial class SliderSection : ISection
         set
         {
             MinValue = value;
-            slider.MinValue = value;
+            Slider.MinValue = value;
         }
     }
     public float MaxValue
@@ -22,7 +22,7 @@ public partial class SliderSection : ISection
         set
         {
             MaxValue = value;
-            slider.MaxValue = value;
+            Slider.MaxValue = value;
         }
     }
 
@@ -34,33 +34,49 @@ public partial class SliderSection : ISection
     bool sliding;
     double prevValue;
 
-	public override void _Ready()
+    public SliderSection Initialize(String title, Vector3 power, float minValue = 0, float maxValue = 1, float sliderUpdateInterval = 0.1f)
+    {
+        Title = title;
+        Slider.Value = power.X + power.Y + power.Z; //power values should add up to max 1
+        Value = Slider.Value.ToString();
+        return this;
+    }
+
+    public SliderSection Initialize(String title, float minValue = 0, float maxValue = 1, float sliderUpdateInterval = 0.1f)
+    {
+        Title = title;
+        Slider.Value = MinValue;
+        return this;
+    }
+
+    public override void _Ready()
 	{
-        slider = GetNode<HSlider>("%Slider");
+        Slider = GetNode<HSlider>("%Slider");
         timer = GetNode<Timer>("%Timer");
 
         timer.Timeout += () =>
         {
-            if (prevValue != slider.Value)
+            if (prevValue != Slider.Value)
             {
-                OnPropertyChanged(this, new PropertyChangedEventArgs(slider.Value.ToString()));
-                prevValue = slider.Value;
+                OnPropertyChanged(this, new PropertyChangedEventArgs(Slider.Value.ToString()));
+                prevValue = Slider.Value;
             }
 
             if (sliding) timer.Start(SliderUpdateInterval);
         };
 
-        slider.DragStarted += () =>
+        Slider.DragStarted += () =>
         {
-            prevValue = slider.Value;
+            prevValue = Slider.Value;
             sliding = true;
             timer.Start(SliderUpdateInterval);
         };
-        slider.DragEnded += (bool valueChanged) =>
+        Slider.DragEnded += (bool valueChanged) =>
         {
             sliding = false;
             timer.Stop();
-            OnPropertyChanged(this, new PropertyChangedEventArgs(slider.Value.ToString()));
+            OnPropertyChanged(this, new PropertyChangedEventArgs(Slider.Value.ToString()));
         };
     }
+
 }
