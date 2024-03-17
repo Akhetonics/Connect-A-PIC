@@ -118,9 +118,11 @@ visible = false
 layout_mode = 2
 
 [node name="ScrollSection" parent="Window/BodyContainer/SectionContainer" instance=ExtResource("7_8k116")]
+visible = false
 layout_mode = 2
 
 [node name="InfoSection" parent="Window/BodyContainer/SectionContainer" instance=ExtResource("8_lc8nx")]
+visible = false
 layout_mode = 2
 
 [node name="Area2D" type="Area2D" parent="."]
