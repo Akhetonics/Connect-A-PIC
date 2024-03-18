@@ -30,7 +30,7 @@ namespace ConnectAPIC.LayoutWindow.View
         [Export] private Texture2D LightOffTexture;
         [Export] private Button LightOnButton;
 
-        private GridViewModel ViewModel;
+        public GridViewModel ViewModel;
         public ComponentView[,] GridComponentViews { get; private set; }
         public const string GridSaveFileExtensionPatterns = "*.pic";
 
@@ -53,6 +53,8 @@ namespace ConnectAPIC.LayoutWindow.View
             DragDropProxy.OnCanDropData += _CanDropData;
             DragDropProxy.OnDropData += _DropData;
             DragDropProxy.Initialize(viewModel.Width, viewModel.Height);
+            DragDropProxy.InputReceived += (object sender, InputEvent e) => {
+            };
             viewModel.PropertyChanged += async (object sender, System.ComponentModel.PropertyChangedEventArgs e) =>
             {
                 switch (e.PropertyName)
@@ -83,6 +85,7 @@ namespace ConnectAPIC.LayoutWindow.View
             this.GridComponentViews = new ComponentView[viewModel.Width, viewModel.Height];
             CreateEmptyField();
         }
+
         public void CreateEmptyField()
         {
             foreach (var componentView in GridComponentViews)

@@ -41,16 +41,17 @@ namespace ConnectAPIC.Scripts.ViewModel
         public ToolViewModel(GridManager grid)
         {
             Grid = grid;
+
         }
 
         public void SetCurrentTool(ITool tool)
         {
             if (CurrentTool != null)
             {
-                CurrentTool.Exit();
+                CurrentTool.Free();
             }
             CurrentTool = tool;
-            CurrentTool.Initialize(this);
+            CurrentTool.Activate(this);
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "")
