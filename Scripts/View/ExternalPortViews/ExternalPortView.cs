@@ -3,6 +3,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using ConnectAPIC.Scenes.RightClickMenu;
 
 
 namespace ConnectAPIC.Scenes.ExternalPorts
@@ -14,6 +15,9 @@ namespace ConnectAPIC.Scenes.ExternalPorts
         [Export] public Texture2D OutputTexture { set; get; }
 
         public event EventHandler RightClicked;
+
+        //TODO: this is a sketchy part storing view in another view :/ needs to be discussed
+        public ControlMenu menu;
 
         public ExternalPortViewModel ViewModel { get; set; }
 
@@ -48,6 +52,7 @@ namespace ConnectAPIC.Scenes.ExternalPorts
                 && mouseButton.ButtonIndex == MouseButton.Right
                 && mouseInRightClickArea)
             {
+                Debug.Print("Right clicked");
                 RightClicked.Invoke(this, EventArgs.Empty);
             }
         }

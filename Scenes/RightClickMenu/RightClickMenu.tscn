@@ -1,13 +1,13 @@
 [gd_scene load_steps=11 format=3 uid="uid://tnmccvafekjl"]
 
-[ext_resource type="Script" path="res://Scenes/RightClickMenu/RightClickMenu.cs" id="1_egxol"]
+[ext_resource type="Script" path="res://Scenes/RightClickMenu/ControlMenu.cs" id="1_oiml5"]
 [ext_resource type="Texture2D" uid="uid://bseakecs4865n" path="res://Scenes/RightClickMenu/Body.png" id="2_0xr5l"]
+[ext_resource type="PackedScene" uid="uid://bp4qgaqaejw5m" path="res://Scenes/RightClickMenu/Sections/toggle_section.tscn" id="2_txrt5"]
 [ext_resource type="Texture2D" uid="uid://cxa7n5a2grbq6" path="res://Scenes/RightClickMenu/TopBar.png" id="3_it7mt"]
+[ext_resource type="PackedScene" uid="uid://qnt4xdsn4i7n" path="res://Scenes/RightClickMenu/Sections/on_off_section.tscn" id="3_vhf8x"]
 [ext_resource type="Texture2D" uid="uid://do8y035em52gm" path="res://Scenes/RightClickMenu/ExitButton.png" id="4_mrron"]
-[ext_resource type="PackedScene" uid="uid://bp4qgaqaejw5m" path="res://Scenes/RightClickMenu/Sections/toggle_section.tscn" id="5_188g3"]
-[ext_resource type="PackedScene" uid="uid://qnt4xdsn4i7n" path="res://Scenes/RightClickMenu/Sections/on_off_section.tscn" id="6_3i7pt"]
-[ext_resource type="PackedScene" uid="uid://cbnwjaf2rjctr" path="res://Scenes/RightClickMenu/Sections/slider_section.tscn" id="7_8k116"]
-[ext_resource type="PackedScene" uid="uid://bibqhya7kmikv" path="res://Scenes/RightClickMenu/Sections/info_section.tscn" id="8_lc8nx"]
+[ext_resource type="PackedScene" uid="uid://cbnwjaf2rjctr" path="res://Scenes/RightClickMenu/Sections/slider_section.tscn" id="4_r0x8u"]
+[ext_resource type="PackedScene" uid="uid://bibqhya7kmikv" path="res://Scenes/RightClickMenu/Sections/info_section.tscn" id="5_xuleo"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_xc2v1"]
 size = Vector2(211, 25)
@@ -16,11 +16,11 @@ size = Vector2(211, 25)
 size = Vector2(174, 18)
 
 [node name="RightClickMenu" type="CharacterBody2D"]
-script = ExtResource("1_egxol")
-ToggleSectionTemplate = ExtResource("5_188g3")
-OnOffSectionTemplate = ExtResource("6_3i7pt")
-SliderSectionTemplate = ExtResource("7_8k116")
-InfoSectionTemplate = ExtResource("8_lc8nx")
+script = ExtResource("1_oiml5")
+ToggleSectionTemplate = ExtResource("2_txrt5")
+OnOffSectionTemplate = ExtResource("3_vhf8x")
+SliderSectionTemplate = ExtResource("4_r0x8u")
+InfoSectionTemplate = ExtResource("5_xuleo")
 
 [node name="Window" type="Control" parent="."]
 texture_filter = 1
@@ -108,22 +108,6 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
 metadata/_edit_use_anchors_ = true
-
-[node name="ToggleSection" parent="Window/BodyContainer/SectionContainer" instance=ExtResource("5_188g3")]
-visible = false
-layout_mode = 2
-
-[node name="OnOffSection" parent="Window/BodyContainer/SectionContainer" instance=ExtResource("6_3i7pt")]
-visible = false
-layout_mode = 2
-
-[node name="ScrollSection" parent="Window/BodyContainer/SectionContainer" instance=ExtResource("7_8k116")]
-visible = false
-layout_mode = 2
-
-[node name="InfoSection" parent="Window/BodyContainer/SectionContainer" instance=ExtResource("8_lc8nx")]
-visible = false
-layout_mode = 2
 
 [node name="Area2D" type="Area2D" parent="."]
 disable_mode = 2

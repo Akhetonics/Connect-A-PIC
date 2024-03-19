@@ -87,6 +87,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_tyuhw")
 
 [node name="OffIcon" type="TextureRect" parent="VBoxContainer/Body"]
 texture_filter = 1
+layout_mode = 0
 offset_left = 12.0
 offset_top = 2.0
 offset_right = 28.0

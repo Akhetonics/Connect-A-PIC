@@ -4,10 +4,11 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.CodeDom;
+using System.Linq;
 
 namespace ConnectAPIC.Scenes.RightClickMenu
 {
-    public partial class RightClickMenu : CharacterBody2D
+    public partial class ControlMenu : CharacterBody2D
     {
         [Export] public PackedScene ToggleSectionTemplate { get; set; }
         [Export] public PackedScene OnOffSectionTemplate { get; set; }
@@ -83,6 +84,20 @@ namespace ConnectAPIC.Scenes.RightClickMenu
             T section = packedSection.Instantiate<T>();
             sectionContainer.AddChild(section);
             return section;
+        }
+
+        public T RemoveSection<T>() where T : ISection
+        {
+            foreach (Node node in sectionContainer.GetChildren())
+            {
+                ISection item = node as ISection;
+                if (item != null && item.GetType() == typeof(T))
+                {
+                    sectionContainer.RemoveChild(node);
+                    return (T)item;
+                }
+            }
+            return null;
         }
 
         private PackedScene GetSectionTemplate<T>() where T : ISection
