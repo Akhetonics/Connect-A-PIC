@@ -1,5 +1,6 @@
 using CAP_Contracts.Logger;
 using Chickensoft.AutoInject;
+using ConnectAPic.LayoutWindow;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.Scripts.ViewModel;
 using Godot;
@@ -20,7 +21,12 @@ namespace ConnectAPIC.Scripts.View.ToolBox
         [Dependency] public ILogger Logger => DependOn<ILogger>();
         public Guid ID { get; protected set; } = Guid.NewGuid();
         public bool IsActive { get; set; }
+        public GridView GridView { get; }
 
+        protected ToolBase(GridView gridView)
+        {
+            GridView = gridView;
+        }
         protected virtual void Activate() { }
         protected virtual void FreeTool() { }
         public void ActivateTool()
@@ -41,9 +47,12 @@ namespace ConnectAPIC.Scripts.View.ToolBox
             return Guid.Parse(metaGuid);
         }
 
-        public void OnResolved()
+        protected Vector2I GetMouseGridPosition()
         {
-            Logger.Print("Hallo");
+            var mousePos = GridView.DragDropProxy.GetLocalMousePosition();
+            var tileSize = (GameManager.TilePixelSize);
+            Vector2I gridPosition = new(((int)((mousePos.X) / tileSize)), ((int)((mousePos.Y) / tileSize)));
+            return gridPosition;
         }
     }
 }

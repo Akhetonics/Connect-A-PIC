@@ -22,6 +22,9 @@ namespace ConnectAPIC.Scenes.ToolBox
         [Dependency] public ILogger Logger => DependOn<ILogger>();
         [Dependency] public ToolViewModel ToolViewModel => DependOn<ToolViewModel>();
         [Dependency] public GridView GridView => DependOn<GridView>();
+
+        public SelectionTool MySelectionTool { get; private set; }
+
         [Export] public GridContainer gridContainer;
         public override void _Ready()
         {
@@ -92,10 +95,10 @@ namespace ConnectAPIC.Scenes.ToolBox
             // create power Meter tool for creating power meter Windows
         }
 
-        private static void CreateSelectionTool(List<IToolPreviewing> tools)
+        private void CreateSelectionTool(List<IToolPreviewing> tools)
         {
-            var selectionTool = new SelectionTool();
-            tools.Add(selectionTool);
+            MySelectionTool = new SelectionTool(GridView);
+            tools.Add(MySelectionTool);
         }
 
         private void CreateAllComponentBrushes(List<IToolPreviewing> tools)
@@ -130,5 +133,17 @@ namespace ConnectAPIC.Scenes.ToolBox
             }
         }
 
+        public override void _Input(InputEvent @event)
+        {
+            if(@event is InputEventKey eventKey)
+            {
+                // fall back to selection tool if esc is pressed
+                if(eventKey.Pressed && eventKey.Keycode == Key.Escape && ToolViewModel.CurrentTool != MySelectionTool)
+                {
+                    ToolViewModel.SetCurrentTool(MySelectionTool);
+                    GetViewport().SetInputAsHandled();
+                }
+            }
+        }
     }
 }

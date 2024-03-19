@@ -21,22 +21,23 @@ using static Godot.Control;
 
 namespace ConnectAPIC.Scripts.View.ToolBox
 {
-    public partial class ComponentBrush : ToolBase , IToolPreviewing
+    public partial class ComponentBrush : ToolBase, IToolPreviewing
     {
         public ComponentViewFactory ComponentViewFactory;
-        public GridView GridView { get; }
         public GridViewModel GridViewModel { get; }
         public float TileBorderSize { get; }
         public int ComponentTypeNr { get; }
         public TemplateTileView MousePreview { get; private set; }
         public ComponentView MousePreviewComponent { get; private set; }
         public DiscreteRotation StandardRotation { get; set; } = DiscreteRotation.R0;
-        public ComponentBrush(ComponentViewFactory componentViewFactory,GridView gridView, float tileBorderSize, int componentTypeNr)
+        public bool LeftMouseButtonPressed { get; private set; }
+        public bool MiddleMouseButtonPressed { get; private set; }
+
+        public ComponentBrush(ComponentViewFactory componentViewFactory, GridView gridView, float tileBorderSize, int componentTypeNr) : base(gridView)
         {
             if (componentViewFactory == null) Logger.PrintErr(nameof(componentViewFactory) + " did not get provided into constructor");
             if (gridView == null) Logger.PrintErr(nameof(gridView) + " did not get provided into constructor");
             ComponentViewFactory = componentViewFactory;
-            GridView = gridView;
             GridViewModel = GridView.ViewModel;
             TileBorderSize = tileBorderSize;
             ComponentTypeNr = componentTypeNr;
@@ -75,13 +76,6 @@ namespace ConnectAPIC.Scripts.View.ToolBox
             }
         }
 
-        private Vector2I GetMouseGridPosition()
-        {
-            var mousePos = GridView.DragDropProxy.GetLocalMousePosition();
-            var tileSize = (GameManager.TilePixelSize);
-            Vector2I gridPosition = new(((int)((mousePos.X) / tileSize)), ((int)((mousePos.Y)/ tileSize)) );
-            return gridPosition;
-        }
         private Vector2 CalculatePreviewPosition()
         {
             var tileSize = (GameManager.TilePixelSize);
@@ -99,7 +93,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
 
         // creates the smaller icon-preview for the toolbox
         public TemplateTileView CreateIcon()
-        {   
+        {
             var toolTilePixelSize = GameManager.TilePixelSize - TileBorderSize;
             var componentInstance = ComponentViewFactory.CreateComponentView(ComponentTypeNr);
             componentInstance.CustomMinimumSize = new Vector2(toolTilePixelSize, toolTilePixelSize);
@@ -126,23 +120,57 @@ namespace ConnectAPIC.Scripts.View.ToolBox
             return preview;
         }
 
-        public override void _UnhandledInput (InputEvent @event)
+        public override void _UnhandledInput(InputEvent @event)
         {
             if (IsActive == false) return;
-            if (@event is InputEventMouseButton mouseButtonEvent && mouseButtonEvent.Pressed)
+            if (@event is InputEventMouseButton mouseButtonEvent)
             {
                 Vector2I gridPosition = GetMouseGridPosition();
-                if ( mouseButtonEvent.ButtonIndex == MouseButton.Left)
+                if (mouseButtonEvent.ButtonIndex == MouseButton.Left)
                 {
-                    var createCommandParams = new CreateComponentArgs(ComponentTypeNr, gridPosition.X, gridPosition.Y, StandardRotation);
-                    if (GridViewModel.CreateComponentCommand.CanExecute(createCommandParams))
-                        GridViewModel.CreateComponentCommand.ExecuteAsync(createCommandParams);
-                } else if (mouseButtonEvent.ButtonIndex == MouseButton.Right)
+                    LeftMouseButtonPressed = mouseButtonEvent.Pressed;
+                    if (mouseButtonEvent.Pressed == true)
+                    {
+                        var createCommandParams = new CreateComponentArgs(ComponentTypeNr, gridPosition.X, gridPosition.Y, StandardRotation);
+                        if (GridViewModel.CreateComponentCommand.CanExecute(createCommandParams))
+                        {
+                            GridViewModel.CreateComponentCommand.ExecuteAsync(createCommandParams).Wait();
+                        }
+                    }
+                }
+                else if (mouseButtonEvent.ButtonIndex == MouseButton.Right && mouseButtonEvent.Pressed)
                 {
                     StandardRotation++;
                     MousePreviewComponent.RotationDegrees = StandardRotation.ToDegreesClockwise();
-                } else if (mouseButtonEvent.ButtonIndex == MouseButton.Middle)
+                }
+                else if (mouseButtonEvent.ButtonIndex == MouseButton.Middle )
                 {
+                    MiddleMouseButtonPressed = mouseButtonEvent.Pressed;
+                    if (mouseButtonEvent.Pressed)
+                    {
+                        var delParams = new DeleteComponentArgs(gridPosition.X, gridPosition.Y);
+                        if (GridViewModel.DeleteComponentCommand.CanExecute(delParams))
+                        {
+                            GridViewModel.DeleteComponentCommand.ExecuteAsync(delParams).Wait();
+                        }
+                    }
+                }
+            }
+
+            // enabling mouse drag drawing
+            else if (@event is InputEventMouseMotion mouseMotionEvent )
+            {
+                Vector2I gridPosition = GetMouseGridPosition();
+                if (LeftMouseButtonPressed)
+                {   
+                    var createCommandParams = new CreateComponentArgs(ComponentTypeNr, gridPosition.X, gridPosition.Y, StandardRotation);
+                    if (GridViewModel.CreateComponentCommand.CanExecute(createCommandParams))
+                    {
+                        GridViewModel.CreateComponentCommand.ExecuteAsync(createCommandParams).Wait();
+                    }
+                } else if (MiddleMouseButtonPressed)
+                {
+                    // enabling mouse drag deleting of components
                     var delParams = new DeleteComponentArgs(gridPosition.X, gridPosition.Y);
                     if (GridViewModel.DeleteComponentCommand.CanExecute(delParams))
                     {
