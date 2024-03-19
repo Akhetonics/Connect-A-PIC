@@ -22,7 +22,7 @@ namespace ConnectAPIC.LayoutWindow.View
         public void ShowMessage(string message, bool isError)
         {
             messageLabel.Text = message;
-            
+
             if (isError)
             {
                 AddThemeStyleboxOverride("panel", RedStyle);
@@ -30,7 +30,7 @@ namespace ConnectAPIC.LayoutWindow.View
             {
                 AddThemeStyleboxOverride("panel", GreenStyle);
             }
-            
+
             Visible = true;
             tween.TweenProperty(this, "modulate:a", 0.9f, 0.25f);
             tween.TweenProperty(this, "modulate:a", 1, 1.25f);

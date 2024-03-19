@@ -33,10 +33,6 @@ InGameConsole = NodePath("GUILayer/InGameConsole")
 script = ExtResource("2_7hjmy")
 ComponentBaseScriptPath = ExtResource("3_celc4")
 
-[node name="NotificationManager" type="Node" parent="."]
-script = ExtResource("9_gj54m")
-NotificationBoxScene = ExtResource("10_06t00")
-
 [node name="GridView" type="TileMap" parent="." node_paths=PackedStringArray("DragDropProxy", "ComponentViewFactory", "LightOnButton")]
 texture_filter = 1
 position = Vector2(155.395, 42.7)
@@ -193,6 +189,10 @@ offset_bottom = 162.5
 size_flags_horizontal = 6
 size_flags_vertical = 6
 ToggleButton = NodePath("../MenuBar/HBoxContainer/btnHelp")
+
+[node name="NotificationManager" type="Node" parent="GUILayer"]
+script = ExtResource("9_gj54m")
+NotificationBoxScene = ExtResource("10_06t00")
 
 [connection signal="pressed" from="GUILayer/MenuBar/HBoxContainer/btnSave" to="GridView" method="_on_btn_save_pressed"]
 [connection signal="pressed" from="GUILayer/MenuBar/HBoxContainer/btnLoad" to="GridView" method="_on_btn_load_pressed"]

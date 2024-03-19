@@ -34,7 +34,7 @@ namespace ConnectAPIC.LayoutWindow.View
             var yOffset = currentlyShownNotifications.Count * notificationBox.Size.Y;
             notificationBox.Position = new Vector2( notificationBox.Position.X, notificationBox.Position.Y - yOffset);
             currentlyShownNotifications.Add(notificationBox);
-            GetTree().Root.AddChild(notificationBox);
+            this.AddChild(notificationBox);
             notificationBox.ShowMessage(message, isError);
         }
 
