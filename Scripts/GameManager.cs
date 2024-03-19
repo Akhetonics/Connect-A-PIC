@@ -52,7 +52,7 @@ namespace ConnectAPic.LayoutWindow
         [Export] public int FieldHeight { get; set; } = 12;
         [Export] public GameConsole InGameConsole { get; set; }
         private PCKLoader PCKLoader { get; set; }
-        public static int TilePixelSize { get; private set; } = 62; // the tile size includeing the border
+        public static int TilePixelSize { get; private set; } = 62; // the tile size including the border
         public static int TileBorderLeftDown { get; private set; } = 2;
         public GridView GridView { get; set; }
         public PortsContainer PortsContainer { get; set; }

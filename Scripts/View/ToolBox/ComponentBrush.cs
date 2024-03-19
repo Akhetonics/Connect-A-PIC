@@ -21,7 +21,7 @@ using static Godot.Control;
 
 namespace ConnectAPIC.Scripts.View.ToolBox
 {
-    public partial class ComponentBrush : ToolBase , IToolPreviewable
+    public partial class ComponentBrush : ToolBase , IToolPreviewing
     {
         public ComponentViewFactory ComponentViewFactory;
         public GridView GridView { get; }

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ConnectAPIC.Scripts.View.ToolBox
 {
-    public partial class SelectionTool : ToolBase, IToolPreviewable
+    public partial class SelectionTool : ToolBase, IToolPreviewing
     {
         public TemplateTileView CreateIcon()
         {

@@ -16,7 +16,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
         public void DeactivateTool();
         public Guid ID { get; }
     }
-    public interface IToolPreviewable: ITool
+    public interface IToolPreviewing: ITool
     {
         public TemplateTileView CreateIcon();
     }

@@ -23,14 +23,12 @@ namespace ConnectAPIC.Scripts.View.ToolBox
 
         protected virtual void Activate() { }
         protected virtual void FreeTool() { }
-        // Template-Methode für Activate
         public void ActivateTool()
         {
             IsActive = true;
             Activate();
         }
 
-        // Template-Methode für FreeTool
         public void DeactivateTool()
         {
             IsActive = false;

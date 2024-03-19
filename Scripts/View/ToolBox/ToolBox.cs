@@ -80,7 +80,7 @@ namespace ConnectAPIC.Scenes.ToolBox
         {
             try
             {
-                List<IToolPreviewable> tools = new();
+                List<IToolPreviewing> tools = new();
                 CreateSelectionTool(tools);
                 CreateAllComponentBrushes(tools);
                 MakeToolIconsClickable(tools);
@@ -92,26 +92,26 @@ namespace ConnectAPIC.Scenes.ToolBox
             // create power Meter tool for creating power meter Windows
         }
 
-        private static void CreateSelectionTool(List<IToolPreviewable> tools)
+        private static void CreateSelectionTool(List<IToolPreviewing> tools)
         {
             var selectionTool = new SelectionTool();
             tools.Add(selectionTool);
         }
 
-        private void CreateAllComponentBrushes(List<IToolPreviewable> tools)
+        private void CreateAllComponentBrushes(List<IToolPreviewing> tools)
         {
             var allComponentTypesNRs = ComponentViewFactory.GetAllComponentIDs();
             foreach (int componentTypeNr in allComponentTypesNRs)
             {
                 var borderSize = gridContainer.GetThemeConstant("h_separation");
-                IToolPreviewable brush = new ComponentBrush(ComponentViewFactory, GridView, borderSize, componentTypeNr);
+                IToolPreviewing brush = new ComponentBrush(ComponentViewFactory, GridView, borderSize, componentTypeNr);
                 tools.Add(brush);
             }
         }
 
-        private void MakeToolIconsClickable(List<IToolPreviewable> tools)
+        private void MakeToolIconsClickable(List<IToolPreviewing> tools)
         {
-            foreach (IToolPreviewable tool in tools)
+            foreach (IToolPreviewing tool in tools)
             {
                 ToolViewModel.Tools.Add(tool);
                 var rect = tool.CreateIcon();
