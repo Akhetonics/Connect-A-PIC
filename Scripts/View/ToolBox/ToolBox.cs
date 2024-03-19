@@ -127,7 +127,6 @@ namespace ConnectAPIC.Scenes.ToolBox
                     {
                         Logger.PrintErr(""+ex);
                     }
-                    
                 };
                 gridContainer.AddChild(rect);
             }

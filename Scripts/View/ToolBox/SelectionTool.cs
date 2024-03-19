@@ -13,6 +13,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
 {
     public partial class SelectionTool : ToolBase, IToolPreviewing
     {
+
         public TemplateTileView CreateIcon()
         {
             TemplateTileView preview = new();
@@ -30,62 +31,13 @@ namespace ConnectAPIC.Scripts.View.ToolBox
             base._Process(delta);
             if (IsActive)
             {
-                
+                // draw the rectangle and implement selection groups
             }
         }
 
         public override void _UnhandledInput(InputEvent @event)
         {
-            if (IsActive == false) return;
-            if (@event is InputEventMouseButton mouseButtonEvent)
-            {
-                Vector2I gridPosition = GetMouseGridPosition();
-              
-                if (mouseButtonEvent.ButtonIndex == MouseButton.Right && mouseButtonEvent.Pressed)
-                {
-                    //StandardRotation++;
-                    //MousePreviewComponent.RotationDegrees = StandardRotation.ToDegreesClockwise();
-                }
-                else if (mouseButtonEvent.ButtonIndex == MouseButton.Middle)
-                {
-                    //MiddleMouseButtonPressed = mouseButtonEvent.Pressed;
-                    //if (mouseButtonEvent.Pressed)
-                    //{
-                    //    var delParams = new DeleteComponentArgs(gridPosition.X, gridPosition.Y);
-                    //    if (GridViewModel.DeleteComponentCommand.CanExecute(delParams))
-                    //    {
-                    //        GridViewModel.DeleteComponentCommand.ExecuteAsync(delParams).Wait();
-                    //    }
-                    //}
-                }
-            }
-
-            // enabling mouse drag drawing
-            else if (@event is InputEventMouseMotion mouseMotionEvent)
-            {
-                Vector2I gridPosition = GetMouseGridPosition();
-                //if (LeftMouseButtonPressed)
-                //{
-                //    var createCommandParams = new CreateComponentArgs(ComponentTypeNr, gridPosition.X, gridPosition.Y, StandardRotation);
-                //    if (GridViewModel.CreateComponentCommand.CanExecute(createCommandParams))
-                //    {
-                //        GridViewModel.CreateComponentCommand.ExecuteAsync(createCommandParams).Wait();
-                //    }
-                //}
-                //else if (MiddleMouseButtonPressed)
-                //{
-                //    // enabling mouse drag deleting of components
-                //    var delParams = new DeleteComponentArgs(gridPosition.X, gridPosition.Y);
-                //    if (GridViewModel.DeleteComponentCommand.CanExecute(delParams))
-                //    {
-                //        GridViewModel.DeleteComponentCommand.ExecuteAsync(delParams).Wait();
-                //    }
-                //}
-
-            }
-
-
+            HandleMiddleMouseDeleteDrawing(@event);
         }
-
     }
 }

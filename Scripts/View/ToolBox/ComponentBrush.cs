@@ -24,27 +24,23 @@ namespace ConnectAPIC.Scripts.View.ToolBox
     public partial class ComponentBrush : ToolBase, IToolPreviewing
     {
         public ComponentViewFactory ComponentViewFactory;
-        public GridViewModel GridViewModel { get; }
         public float TileBorderSize { get; }
         public int ComponentTypeNr { get; }
         public TemplateTileView MousePreview { get; private set; }
         public ComponentView MousePreviewComponent { get; private set; }
         public DiscreteRotation StandardRotation { get; set; } = DiscreteRotation.R0;
         public bool LeftMouseButtonPressed { get; private set; }
-        public bool MiddleMouseButtonPressed { get; private set; }
 
         public ComponentBrush(ComponentViewFactory componentViewFactory, GridView gridView, float tileBorderSize, int componentTypeNr) : base(gridView)
         {
             if (componentViewFactory == null) Logger.PrintErr(nameof(componentViewFactory) + " did not get provided into constructor");
             if (gridView == null) Logger.PrintErr(nameof(gridView) + " did not get provided into constructor");
             ComponentViewFactory = componentViewFactory;
-            GridViewModel = GridView.ViewModel;
             TileBorderSize = tileBorderSize;
             ComponentTypeNr = componentTypeNr;
             MousePreviewComponent = ComponentViewFactory.CreateComponentView(ComponentTypeNr);
             MousePreview = CreatePreview(MousePreviewComponent);
             GridView.AddChild(MousePreview);
-            GridView.DragDropProxy.AddChild(this);
             MousePreview.Hide();
         }
 
@@ -143,22 +139,10 @@ namespace ConnectAPIC.Scripts.View.ToolBox
                     StandardRotation++;
                     MousePreviewComponent.RotationDegrees = StandardRotation.ToDegreesClockwise();
                 }
-                else if (mouseButtonEvent.ButtonIndex == MouseButton.Middle )
-                {
-                    MiddleMouseButtonPressed = mouseButtonEvent.Pressed;
-                    if (mouseButtonEvent.Pressed)
-                    {
-                        var delParams = new DeleteComponentArgs(gridPosition.X, gridPosition.Y);
-                        if (GridViewModel.DeleteComponentCommand.CanExecute(delParams))
-                        {
-                            GridViewModel.DeleteComponentCommand.ExecuteAsync(delParams).Wait();
-                        }
-                    }
-                }
             }
 
             // enabling mouse drag drawing
-            else if (@event is InputEventMouseMotion mouseMotionEvent )
+            else if (@event is InputEventMouseMotion )
             {
                 Vector2I gridPosition = GetMouseGridPosition();
                 if (LeftMouseButtonPressed)
@@ -168,16 +152,10 @@ namespace ConnectAPIC.Scripts.View.ToolBox
                     {
                         GridViewModel.CreateComponentCommand.ExecuteAsync(createCommandParams).Wait();
                     }
-                } else if (MiddleMouseButtonPressed)
-                {
-                    // enabling mouse drag deleting of components
-                    var delParams = new DeleteComponentArgs(gridPosition.X, gridPosition.Y);
-                    if (GridViewModel.DeleteComponentCommand.CanExecute(delParams))
-                    {
-                        GridViewModel.DeleteComponentCommand.ExecuteAsync(delParams).Wait();
-                    }
                 }
             }
+            HandleMiddleMouseDeleteDrawing(@event);
         }
+
     }
 }
