@@ -34,6 +34,7 @@ theme = ExtResource("1_m86ur")
 text = "Title"
 
 [node name="MarginContainer2" type="MarginContainer" parent="Title"]
+layout_mode = 0
 offset_right = 2367.0
 offset_bottom = 205.0
 scale = Vector2(0.1, 0.1)
