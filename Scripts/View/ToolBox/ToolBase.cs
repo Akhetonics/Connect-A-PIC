@@ -13,35 +13,39 @@ using System.Threading.Tasks;
 namespace ConnectAPIC.Scripts.View.ToolBox
 {
     [SuperNode(typeof(Dependent))]
-    public partial class ToolBase : Node2D, ITool
+    public abstract partial class ToolBase : Node2D, ITool
     {
         public override partial void _Notification(int what);
-        protected const string ToolIDMetaName = "ToolID";
+        public const string ToolIDMetaName = "ToolID";
         [Dependency] public ILogger Logger => DependOn<ILogger>();
-        protected Guid ID { get; set; }
+        public Guid ID { get; protected set; } = Guid.NewGuid();
+        public bool IsActive { get; set; }
 
-        public ToolBase()
+        protected virtual void Activate() { }
+        protected virtual void FreeTool() { }
+        // Template-Methode für Activate
+        public void ActivateTool()
         {
-            ID = Guid.NewGuid();
-        }
-        public void Activate(ToolViewModel toolManager)
-        {
-            throw new NotImplementedException();
+            IsActive = true;
+            Activate();
         }
 
-        public void Update()
+        // Template-Methode für FreeTool
+        public void DeactivateTool()
         {
-            throw new NotImplementedException();
+            IsActive = false;
+            FreeTool();
         }
 
         public static Guid GetToolIDFromPreview(Node preview)
         {
-            var metaGuid = (string)preview.GetMeta(ToolIDMetaName);
+            var metaGuid = (string)preview.GetMeta(ToolIDMetaName) ?? "";
             return Guid.Parse(metaGuid);
         }
-        public Guid GetID()
+
+        public void OnResolved()
         {
-            return ID;
+            Logger.Print("Hallo");
         }
     }
 }

@@ -17,6 +17,7 @@ using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using CAP_Core.Components;
 using CAP_Core.Helpers;
+using static Godot.Control;
 
 namespace ConnectAPIC.Scripts.View.ToolBox
 {
@@ -27,12 +28,13 @@ namespace ConnectAPIC.Scripts.View.ToolBox
         public GridViewModel GridViewModel { get; }
         public float TileBorderSize { get; }
         public int ComponentTypeNr { get; }
-        private bool isActive { get; set; }
         public TemplateTileView MousePreview { get; private set; }
         public ComponentView MousePreviewComponent { get; private set; }
         public DiscreteRotation StandardRotation { get; set; } = DiscreteRotation.R0;
-        public ComponentBrush(ComponentViewFactory componentViewFactory,GridView gridView, float tileBorderSize, int componentTypeNr) : base()
+        public ComponentBrush(ComponentViewFactory componentViewFactory,GridView gridView, float tileBorderSize, int componentTypeNr)
         {
+            if (componentViewFactory == null) Logger.PrintErr(nameof(componentViewFactory) + " did not get provided into constructor");
+            if (gridView == null) Logger.PrintErr(nameof(gridView) + " did not get provided into constructor");
             ComponentViewFactory = componentViewFactory;
             GridView = gridView;
             GridViewModel = GridView.ViewModel;
@@ -43,20 +45,17 @@ namespace ConnectAPIC.Scripts.View.ToolBox
             GridView.AddChild(MousePreview);
             GridView.DragDropProxy.AddChild(this);
             MousePreview.Hide();
-            isActive = false;
         }
 
-        public new void Activate(ToolViewModel toolManager)
+        protected override void Activate()
         {
             // create the preview-tile that will be displayed at the mouse cursor
             MousePreview.Show();
-            isActive = true;
         }
 
         public override void _Process(double delta)
         {
-            base._Process(delta);
-            if (isActive)
+            if (IsActive)
             {
                 // display the preview of the tile at the current mouse position - green if it could be placed and red if not.
                 // if button is clicked, create a new element there
@@ -91,11 +90,11 @@ namespace ConnectAPIC.Scripts.View.ToolBox
             return position;
         }
 
-        public new void Free()
+        protected override void FreeTool()
         {
             // free the mouse-cursor-preview reticle
             MousePreview.Hide();
-            isActive = false;
+            IsActive = false;
         }
 
         // creates the smaller icon-preview for the toolbox
@@ -113,6 +112,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
             componentInstance.Scale /= biggestScaleFactor;
             TemplateTileView previewIcon = CreatePreview(componentInstance);
             previewIcon.CustomMinimumSize = new Vector2(toolTilePixelSize, toolTilePixelSize);
+            previewIcon.MouseFilter = MouseFilterEnum.Stop;
             return previewIcon;
         }
 
@@ -121,18 +121,19 @@ namespace ConnectAPIC.Scripts.View.ToolBox
         {
             TemplateTileView preview = new();
             preview.AddChild(componentInstance);
+            preview.MouseFilter = Control.MouseFilterEnum.Ignore;
             preview.SetMeta(ToolIDMetaName, ID.ToString());
             return preview;
         }
 
-        public override void _Input(InputEvent @event)
+        public override void _UnhandledInput (InputEvent @event)
         {
-            if (isActive == false) return;
+            if (IsActive == false) return;
             if (@event is InputEventMouseButton mouseButtonEvent && mouseButtonEvent.Pressed)
             {
+                Vector2I gridPosition = GetMouseGridPosition();
                 if ( mouseButtonEvent.ButtonIndex == MouseButton.Left)
                 {
-                    Vector2I gridPosition = GetMouseGridPosition();
                     var createCommandParams = new CreateComponentArgs(ComponentTypeNr, gridPosition.X, gridPosition.Y, StandardRotation);
                     if (GridViewModel.CreateComponentCommand.CanExecute(createCommandParams))
                         GridViewModel.CreateComponentCommand.ExecuteAsync(createCommandParams);
@@ -140,6 +141,13 @@ namespace ConnectAPIC.Scripts.View.ToolBox
                 {
                     StandardRotation++;
                     MousePreviewComponent.RotationDegrees = StandardRotation.ToDegreesClockwise();
+                } else if (mouseButtonEvent.ButtonIndex == MouseButton.Middle)
+                {
+                    var delParams = new DeleteComponentArgs(gridPosition.X, gridPosition.Y);
+                    if (GridViewModel.DeleteComponentCommand.CanExecute(delParams))
+                    {
+                        GridViewModel.DeleteComponentCommand.ExecuteAsync(delParams).Wait();
+                    }
                 }
             }
         }

@@ -19,7 +19,6 @@ namespace ConnectAPIC.LayoutWindow.View
         public override void _Ready()
         {
             base._Ready();
-            this.MouseFilter = MouseFilterEnum.Stop;
         }
         public override void _DropData(Vector2 position, Variant data)
         { // you cannot drop something on a template tile

@@ -50,8 +50,20 @@ namespace ConnectAPIC.Scenes.ToolBox
             var children = gridContainer.GetChildren().Cast<TextureRect>();
             foreach (var item in children)
             {
-                var toolID = ComponentBrush.GetToolIDFromPreview(item);
-                var tool = ToolViewModel.Tools.Single(t => t.GetID() == toolID);
+                Guid toolID;
+                try
+                {
+                    toolID = ComponentBrush.GetToolIDFromPreview(item);
+                } catch (FormatException formEx)
+                {
+                    Logger.PrintErr($"Guid was not properly stored in Meta: {item.GetMeta(ToolBase.ToolIDMetaName)}");
+                    continue;
+                }
+                var tool = ToolViewModel.Tools.SingleOrDefault(t => t.ID == toolID);
+                if (tool == null)
+                {
+                    Logger.PrintErr($"Tool not found in ToolViewModel - Guid is not registered: ID: {toolID} Item: {item}");
+                }
                 // modulate the current tool green and all the others white again
                 if (tool == ToolViewModel.CurrentTool)
                 {
@@ -66,10 +78,17 @@ namespace ConnectAPIC.Scenes.ToolBox
 
         public void SetAvailableTools()
         {
-            List<IToolPreviewable> tools = new();
-            CreateAllComponentBrushes(tools);
-            CreateSelectionTool(tools);
-            MakeToolIconsClickable(tools);
+            try
+            {
+                List<IToolPreviewable> tools = new();
+                CreateSelectionTool(tools);
+                CreateAllComponentBrushes(tools);
+                MakeToolIconsClickable(tools);
+            } catch (Exception ex)
+            {
+                Logger.PrintErr(ex.ToString());
+            }
+            
             // create power Meter tool for creating power meter Windows
         }
 
@@ -98,7 +117,14 @@ namespace ConnectAPIC.Scenes.ToolBox
                 var rect = tool.CreateIcon();
                 rect.Clicked += (sender, e) =>
                 {
-                    ToolViewModel.SetCurrentTool(tool);
+                    try
+                    {
+                        ToolViewModel.SetCurrentTool(tool);
+                    } catch (Exception ex)
+                    {
+                        Logger.PrintErr(""+ex);
+                    }
+                    
                 };
                 gridContainer.AddChild(rect);
             }

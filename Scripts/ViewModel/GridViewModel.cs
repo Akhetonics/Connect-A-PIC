@@ -22,6 +22,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         public ICommand SaveGridCommand { get; internal set; }
         public ICommand LoadGridCommand { get; internal set; }
         public ICommand MoveSliderCommand { get; internal set; }
+        public ICommand DeleteComponentCommand { get; internal set; }
         public delegate void ComponentCreatedEventHandler(Component component, int gridX, int gridY);
         public event ComponentCreatedEventHandler ComponentCreated;
         public event ComponentCreatedEventHandler ComponentRemoved;
@@ -53,6 +54,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             MoveSliderCommand = new MoveSliderCommand(grid);
             ExportToNazcaCommand = new ExportNazcaCommand(new NazcaExporter(), grid, new DataAccessorGodot());
             SwitchOnLightCommand = new SwitchOnLightCommand(grid);
+            DeleteComponentCommand = new DeleteComponentCommand(grid);
 
             this.Grid.OnComponentPlacedOnTile += Grid_OnComponentPlacedOnTile;
             this.Grid.OnComponentRemoved += (Component component, int x , int y ) => ComponentRemoved?.Invoke(component, x, y);

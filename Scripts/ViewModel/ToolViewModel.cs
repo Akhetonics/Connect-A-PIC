@@ -48,10 +48,10 @@ namespace ConnectAPIC.Scripts.ViewModel
         {
             if (CurrentTool != null)
             {
-                CurrentTool.Free();
+                CurrentTool.DeactivateTool();
             }
             CurrentTool = tool;
-            CurrentTool.Activate(this);
+            CurrentTool.ActivateTool();
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "")
