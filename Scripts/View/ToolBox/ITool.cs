@@ -1,4 +1,5 @@
 using CAP_Core.Grid;
+using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.Scripts.ViewModel;
 using Godot;
 using System;
@@ -11,9 +12,12 @@ namespace ConnectAPIC.Scripts.View.ToolBox
 {
     public interface ITool
     {
-        public void Update();
-        public void Initialize(ToolViewModel toolManager);
-        public void Exit();
-        public TextureRect GetPreview();
+        public void ActivateTool();
+        public void DeactivateTool();
+        public Guid ID { get; }
+    }
+    public interface IToolPreviewing: ITool
+    {
+        public TemplateTileView CreateIcon();
     }
 }

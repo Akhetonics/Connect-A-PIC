@@ -30,6 +30,7 @@ namespace ConnectAPIC.LayoutWindow.View
 {
     public partial class ComponentView : TextureRect 
     {
+        private const float DragThreshold = 5.0f;
         public int WidthInTiles { get; set; }
         public int HeightInTiles { get; set; }
         private Node2D RotationArea { get; set; } // the part of the component that rotates
@@ -45,6 +46,7 @@ namespace ConnectAPIC.LayoutWindow.View
         private new float Rotation { get => RotationArea.Rotation; set => RotationArea.Rotation = value; }
         public SliderManager SliderManager { get; }
         public OverlayManager OverlayManager { get; set; }
+        public Vector2 InitialClickPosition { get; private set; }
 
         public ComponentView()
         {
@@ -116,20 +118,37 @@ namespace ConnectAPIC.LayoutWindow.View
                 }
                 if (mouseEvent.ButtonIndex == MouseButton.Middle && mouseEvent.Pressed)
                 {
-                    ViewModel.DeleteComponentCommand?.ExecuteAsync(new DeleteComponentArgs(ViewModel.GridX, ViewModel.GridY)).RunSynchronously();
+                    ViewModel.DeleteComponentCommand?.ExecuteAsync(new DeleteComponentArgs(ViewModel.GridX, ViewModel.GridY)).Wait();
                 }
-                if (mouseEvent.ButtonIndex == MouseButton.Right && mouseEvent.Pressed)
+                if (mouseEvent.ButtonIndex == MouseButton.Right)
                 {
-                    var args = new RotateComponentArgs(ViewModel.GridX, ViewModel.GridY);
-                    if (ViewModel.RotateComponentCommand?.CanExecute(args) == true)
+                    if (mouseEvent.Pressed)
                     {
-                        ViewModel.RotateComponentCommand?.ExecuteAsync(args).RunSynchronously();
+                        InitialClickPosition = mouseEvent.GlobalPosition;
                     }
                     else
                     {
-                        // Error Animation
+                        float dragDistance = InitialClickPosition.DistanceTo(mouseEvent.GlobalPosition);
+                        if (dragDistance <= DragThreshold)
+                        {
+                            TryRotateComponent();
+                        }
                     }
+
                 }
+            }
+        }
+
+        private void TryRotateComponent()
+        {
+            var args = new RotateComponentArgs(ViewModel.GridX, ViewModel.GridY);
+            if (ViewModel.RotateComponentCommand?.CanExecute(args) == true)
+            {
+                ViewModel.RotateComponentCommand?.ExecuteAsync(args).Wait();
+            }
+            else
+            {
+                // Error Animation
             }
         }
 

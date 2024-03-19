@@ -4,10 +4,13 @@ using ConnectAPic.LayoutWindow;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.Scripts.Helpers;
+using ConnectAPIC.Scripts.View.ToolBox;
 using ConnectAPIC.Scripts.ViewModel;
 using Godot;
 using SuperNodes.Types;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace ConnectAPIC.Scenes.ToolBox
 {
@@ -17,7 +20,11 @@ namespace ConnectAPIC.Scenes.ToolBox
         public override partial void _Notification(int what);
         [Dependency] public ComponentViewFactory ComponentViewFactory => DependOn<ComponentViewFactory>();
         [Dependency] public ILogger Logger => DependOn<ILogger>();
-        [Dependency] public GridViewModel GridViewModel => DependOn<GridViewModel>();
+        [Dependency] public ToolViewModel ToolViewModel => DependOn<ToolViewModel>();
+        [Dependency] public GridView GridView => DependOn<GridView>();
+
+        public SelectionTool MySelectionTool { get; private set; }
+
         [Export] public GridContainer gridContainer;
         public override void _Ready()
         {
@@ -25,45 +32,117 @@ namespace ConnectAPIC.Scenes.ToolBox
         }
         public void OnResolved()
         {
+            if (ComponentViewFactory == null) Logger.PrintErr("ComponentViewFactory cannot be null");
+
             SetAvailableTools();
-            Logger?.Log(CAP_Contracts.Logger.LogLevel.Debug, "Initialized ToolBox");
+            Logger?.Log(LogLevel.Debug, "Initialized ToolBox");
+            ToolViewModel.PropertyChanged += (object sender, System.ComponentModel.PropertyChangedEventArgs e) => {
+                switch (e.PropertyName)
+                {
+                    case nameof(ToolViewModel.CurrentTool):
+                        PaintCurrentToolGreen();
+                        break;
+                }
+            };
         }
+
+        private void PaintCurrentToolGreen()
+        {
+            // paint the preview tile green of the tool that has been set to the current tool
+            // paint all the others back to normal
+            var children = gridContainer.GetChildren().Cast<TextureRect>();
+            foreach (var item in children)
+            {
+                Guid toolID;
+                try
+                {
+                    toolID = ComponentBrush.GetToolIDFromPreview(item);
+                } catch (FormatException formEx)
+                {
+                    Logger.PrintErr($"Guid was not properly stored in Meta: {item.GetMeta(ToolBase.ToolIDMetaName)}");
+                    continue;
+                }
+                var tool = ToolViewModel.Tools.SingleOrDefault(t => t.ID == toolID);
+                if (tool == null)
+                {
+                    Logger.PrintErr($"Tool not found in ToolViewModel - Guid is not registered: ID: {toolID} Item: {item}");
+                }
+                // modulate the current tool green and all the others white again
+                if (tool == ToolViewModel.CurrentTool)
+                {
+                    item.Modulate = new Color(0, 1, 0);
+                }
+                else
+                {
+                    item.Modulate = new Color(1, 1, 1);
+                }
+            }
+        }
+
         public void SetAvailableTools()
         {
-            if (ComponentViewFactory == null)
+            try
             {
-                Logger.PrintErr("ComponentViewFactory cannot be null");
-                return;
+                List<IToolPreviewing> tools = new();
+                CreateSelectionTool(tools);
+                CreateAllComponentBrushes(tools);
+                MakeToolIconsClickable(tools);
+            } catch (Exception ex)
+            {
+                Logger.PrintErr(ex.ToString());
             }
-            ToolViewModel toolViewModel = GridViewModel.ToolViewModel;
-            // create draw-brushes for all components
-            foreach( var tool in toolViewModel.Tools)
-            {
+            
+            // create power Meter tool for creating power meter Windows
+        }
 
-            }
+        private void CreateSelectionTool(List<IToolPreviewing> tools)
+        {
+            MySelectionTool = new SelectionTool(GridView);
+            tools.Add(MySelectionTool);
+        }
+
+        private void CreateAllComponentBrushes(List<IToolPreviewing> tools)
+        {
             var allComponentTypesNRs = ComponentViewFactory.GetAllComponentIDs();
-            foreach (int typeNumber in allComponentTypesNRs)
+            foreach (int componentTypeNr in allComponentTypesNRs)
             {
                 var borderSize = gridContainer.GetThemeConstant("h_separation");
-                var toolTilePixelSize = GameManager.TilePixelSize - borderSize;
-                var componentInstance = ComponentViewFactory.CreateComponentView(typeNumber);
-                componentInstance.CustomMinimumSize = new Vector2(toolTilePixelSize, toolTilePixelSize);
-                var componentSizeCorrection = componentInstance.GetBiggestSize() / toolTilePixelSize;
-                var biggestScaleFactor = Math.Max(componentSizeCorrection.X, componentSizeCorrection.Y);
-                if (biggestScaleFactor <= 0)
+                IToolPreviewing brush = new ComponentBrush(ComponentViewFactory, GridView, borderSize, componentTypeNr);
+                tools.Add(brush);
+            }
+        }
+
+        private void MakeToolIconsClickable(List<IToolPreviewing> tools)
+        {
+            foreach (IToolPreviewing tool in tools)
+            {
+                ToolViewModel.Tools.Add(tool);
+                var rect = tool.CreateIcon();
+                rect.Clicked += (sender, e) =>
                 {
-                    Logger.PrintErr("biggestScaleFactor is too small, the toolbox cannot scale this component properly of Component NR: " + typeNumber);
-                }
-                componentInstance.Scale /= biggestScaleFactor;
-                TemplateTileView rect = new();
-                rect.CustomMinimumSize = new Vector2(toolTilePixelSize, toolTilePixelSize);
-                rect.AddChild(componentInstance);
+                    try
+                    {
+                        ToolViewModel.SetCurrentTool(tool);
+                    } catch (Exception ex)
+                    {
+                        Logger.PrintErr(""+ex);
+                    }
+                };
                 gridContainer.AddChild(rect);
             }
+        }
 
-            // create select tool for selection/move/rotate/groupDelete
-
-            // create power Meter tool for creating power meter Windows
+        public override void _Input(InputEvent @event)
+        {
+            if(@event is InputEventKey eventKey)
+            {
+                // fall back to selection tool if esc is pressed
+                if(eventKey.Pressed && eventKey.Keycode == Key.Escape && ToolViewModel.CurrentTool != MySelectionTool)
+                {
+                    ToolViewModel.SetCurrentTool(MySelectionTool);
+                    GetViewport().SetInputAsHandled();
+                }
+            }
         }
     }
 }

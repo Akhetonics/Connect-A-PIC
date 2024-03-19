@@ -10,6 +10,7 @@ public partial class DragDropProxy : Control
     public delegate Variant GetDragData(Vector2 position);
     public delegate bool CanDropData(Vector2 position, Variant data);
     public delegate void DropData(Vector2 position, Variant data);
+    public event EventHandler<InputEvent> InputReceived;
     public event GetDragData OnGetDragData;
     public event CanDropData OnCanDropData;
     public event DropData OnDropData;
@@ -81,5 +82,11 @@ public partial class DragDropProxy : Control
         {
             DragPreview = null;
         }
+    }
+
+    public override void _Input(InputEvent @event)
+    {
+        base._Input(@event);
+        InputReceived?.Invoke(this, @event);
     }
 }

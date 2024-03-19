@@ -27,7 +27,7 @@ namespace ConnectAPic.LayoutWindow
     [SuperNode(typeof(Provider))]
     public partial class GameManager : Node,
         IProvide<ToolBox>, IProvide<ILogger>, IProvide<GridView>, IProvide<GridManager>, IProvide<GridViewModel>, IProvide<GameManager>,
-        IProvide<GameConsole>, IProvide<System.Version>, IProvide<ComponentViewFactory>, IProvide<LightCalculationService>
+        IProvide<GameConsole>, IProvide<System.Version>, IProvide<ComponentViewFactory>, IProvide<LightCalculationService>, IProvide<ToolViewModel>
     {
         #region Dependency Injection
         public override partial void _Notification(int what);
@@ -36,6 +36,7 @@ namespace ConnectAPic.LayoutWindow
         GridView IProvide<GridView>.Value() => GridView;
         GridManager IProvide<GridManager>.Value() => Grid;
         GridViewModel IProvide<GridViewModel>.Value() => GridViewModel;
+        ToolViewModel IProvide<ToolViewModel>.Value() => GridViewModel.ToolViewModel;
         GameManager IProvide<GameManager>.Value() => this;
         GameConsole IProvide<GameConsole>.Value() => InGameConsole;
         ComponentViewFactory IProvide<ComponentViewFactory>.Value() => GridView.ComponentViewFactory;
@@ -51,7 +52,7 @@ namespace ConnectAPic.LayoutWindow
         [Export] public int FieldHeight { get; set; } = 12;
         [Export] public GameConsole InGameConsole { get; set; }
         private PCKLoader PCKLoader { get; set; }
-        public static int TilePixelSize { get; private set; } = 62;
+        public static int TilePixelSize { get; private set; } = 62; // the tile size including the border
         public static int TileBorderLeftDown { get; private set; } = 2;
         public GridView GridView { get; set; }
         public PortsContainer PortsContainer { get; set; }
