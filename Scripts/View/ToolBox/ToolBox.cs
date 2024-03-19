@@ -45,7 +45,7 @@ namespace ConnectAPIC.Scenes.ToolBox
 
         private void PaintCurrentToolGreen()
         {
-            // paint the previewtile green of the tool that has been set to the current tool
+            // paint the preview tile green of the tool that has been set to the current tool
             // paint all the others back to normal
             var children = gridContainer.GetChildren().Cast<TextureRect>();
             foreach (var item in children)
