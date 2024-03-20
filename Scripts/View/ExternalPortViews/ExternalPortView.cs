@@ -52,7 +52,6 @@ namespace ConnectAPIC.Scenes.ExternalPorts
                 && mouseButton.ButtonIndex == MouseButton.Right
                 && mouseInRightClickArea)
             {
-                Debug.Print("Right clicked");
                 RightClicked.Invoke(this, EventArgs.Empty);
             }
         }

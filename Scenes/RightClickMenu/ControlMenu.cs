@@ -27,6 +27,7 @@ namespace ConnectAPIC.Scenes.RightClickMenu
 
         Area2D area;
 
+
         public override void _Ready()
         {
             sectionContainer = GetNode<VBoxContainer>("%SectionContainer");
@@ -36,12 +37,10 @@ namespace ConnectAPIC.Scenes.RightClickMenu
             area.MouseShapeEntered += (long shapeIdx) =>
             {
                 mouseIn = true;
-                Debug.Print("mouse entered");
             };
             area.MouseShapeExited += (long shapeIdx) =>
             {
                 mouseIn = false;
-                Debug.Print("mouse exited");
             };
         }
         public override void _Input(InputEvent @event)
@@ -54,7 +53,7 @@ namespace ConnectAPIC.Scenes.RightClickMenu
                     draggingDistance = Position.DistanceTo(GetViewport().GetMousePosition());
                     direction = (GetViewport().GetMousePosition() - Position).Normalized();
                     dragging = true;
-                    newPosition = GetViewport().GetMousePosition() - Position - draggingDistance * direction;
+                    newPosition = GetViewport().GetMousePosition() - draggingDistance * direction;
                 }
                 else
                 {
@@ -63,12 +62,11 @@ namespace ConnectAPIC.Scenes.RightClickMenu
             }
             else if (@event is InputEventMouseMotion mouseMotion && dragging)
             {
-                newPosition = GetViewport().GetMousePosition() - Position - draggingDistance * direction;
+                newPosition = GetViewport().GetMousePosition() - draggingDistance * direction;
             }
         }
         public override void _PhysicsProcess(double delta)
         {
-
             if (dragging)
             {
                 Velocity = (newPosition - Position) * (new Vector2(draggingSpeed, draggingSpeed));
@@ -85,7 +83,6 @@ namespace ConnectAPIC.Scenes.RightClickMenu
             sectionContainer.AddChild(section);
             return section;
         }
-
         public T RemoveSection<T>() where T : ISection
         {
             foreach (Node node in sectionContainer.GetChildren())
@@ -99,7 +96,6 @@ namespace ConnectAPIC.Scenes.RightClickMenu
             }
             return null;
         }
-
         private PackedScene GetSectionTemplate<T>() where T : ISection
         {
             if (typeof(T) == typeof(SliderSection))
@@ -116,12 +112,17 @@ namespace ConnectAPIC.Scenes.RightClickMenu
         private void MouseEnteredInDragArea()
         {
             mouseIn = true;
+            Debug.Print("mouse entered");
         }
         private void MouseExitedDragArea()
         {
             mouseIn = false;
+            Debug.Print("mouse exited");
+        }
+
+        private void OnCloseButtonPressed()
+        {
+            this.Visible = false;
         }
     }
 }
-
-

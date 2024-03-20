@@ -7,21 +7,23 @@ public partial class SliderSection : ISection
 {
     public HSlider Slider { get; private set; }
     private Timer timer;
+    private float _minValue;
+    private float _maxValue;
     public float MinValue
     {
-        get => MinValue;
+        get => _minValue;
         set
         {
-            MinValue = value;
+            _minValue = value;
             Slider.MinValue = value;
         }
     }
     public float MaxValue
     {
-        get => MaxValue;
+        get => _maxValue;
         set
         {
-            MaxValue = value;
+            _maxValue = value;
             Slider.MaxValue = value;
         }
     }
@@ -38,7 +40,8 @@ public partial class SliderSection : ISection
     {
         Title = title;
         Slider.Value = power.X + power.Y + power.Z; //power values should add up to max 1
-        Value = Slider.Value.ToString();
+        if (IsNodeReady())
+            Value = Slider.Value.ToString();
         return this;
     }
 
@@ -53,7 +56,7 @@ public partial class SliderSection : ISection
 	{
         Slider = GetNode<HSlider>("%Slider");
         timer = GetNode<Timer>("%Timer");
-
+        
         timer.Timeout += () =>
         {
             if (prevValue != Slider.Value)
@@ -77,6 +80,11 @@ public partial class SliderSection : ISection
             timer.Stop();
             OnPropertyChanged(this, new PropertyChangedEventArgs(Slider.Value.ToString()));
         };
+
+        base._Ready();
     }
 
+    public void SetSliderValue(double value) {
+        Value = value.ToString("0.00");
+    }
 }
