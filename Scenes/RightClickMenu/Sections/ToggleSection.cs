@@ -7,13 +7,15 @@ public partial class ToggleSection : ISection
 {
 
     private List<String> toggleValues;
+
+    private int _toggleIndex;
     private int toggleIndex
     {
-        get => toggleIndex;
+        get => _toggleIndex;
         set
         {
-            toggleIndex = value%toggleValues.Count;
-            Value = toggleValues[toggleIndex];
+            _toggleIndex = value%toggleValues.Count;
+            Value = toggleValues[_toggleIndex];
         }
     }
 
@@ -33,28 +35,29 @@ public partial class ToggleSection : ISection
         Title = title;
         Value = value;
 
-        if (toggleValues == null) return this;
         this.toggleValues = toggleValues;
 
-        if (Value.Equals("")) Value = toggleValues[0];
+        if (Value.Equals("") && toggleValues != null) Value = toggleValues[0];
 
         return this;
     }
 
-
-    public void CycleToNextValue(){
-        toggleIndex++;
+    public void CycleToNextValue()
+    {
+        if (toggleValues != null)
+            toggleIndex++;
     }
 
     public String GetNextToggleValue()
     {
+        if (toggleValues == null) return null;
         return toggleValues[(toggleIndex + 1) % toggleValues.Count];
     }
 
     private void OnToggleButtonPressed()
 	{
         // We send that we intedn to toggle to next value
-        OnPropertyChanged(this, new PropertyChangedEventArgs(GetNextToggleValue()));
+        OnPropertyChanged(this, new PropertyChangedEventArgs("Cycle"));
     }
 }
 

@@ -16,6 +16,8 @@ size = Vector2(211, 25)
 size = Vector2(174, 18)
 
 [node name="RightClickMenu" type="CharacterBody2D"]
+light_mask = 0
+collision_mask = 0
 script = ExtResource("1_oiml5")
 ToggleSectionTemplate = ExtResource("2_txrt5")
 OnOffSectionTemplate = ExtResource("3_vhf8x")
@@ -23,6 +25,7 @@ SliderSectionTemplate = ExtResource("4_r0x8u")
 InfoSectionTemplate = ExtResource("5_xuleo")
 
 [node name="Window" type="Control" parent="."]
+light_mask = 0
 texture_filter = 1
 layout_mode = 3
 anchors_preset = 1
@@ -32,8 +35,10 @@ offset_left = -237.0
 offset_bottom = 292.0
 grow_horizontal = 0
 mouse_filter = 1
+metadata/_edit_use_anchors_ = true
 
 [node name="WindowHeader" type="Control" parent="Window"]
+light_mask = 0
 custom_minimum_size = Vector2(10, 0)
 layout_mode = 2
 anchors_preset = 0
@@ -46,6 +51,7 @@ mouse_filter = 1
 metadata/_edit_use_anchors_ = true
 
 [node name="Header" type="NinePatchRect" parent="Window/WindowHeader"]
+light_mask = 0
 layout_mode = 1
 anchors_preset = -1
 anchor_right = 1.0
@@ -70,6 +76,7 @@ mouse_filter = 1
 texture_normal = ExtResource("4_mrron")
 ignore_texture_size = true
 stretch_mode = 4
+metadata/_edit_use_anchors_ = true
 
 [node name="BodyContainer" type="Control" parent="Window"]
 layout_mode = 2
@@ -111,8 +118,10 @@ metadata/_edit_use_anchors_ = true
 
 [node name="Area2D" type="Area2D" parent="."]
 disable_mode = 2
+collision_mask = 0
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+light_mask = 0
 position = Vector2(-132, 12)
 shape = SubResource("RectangleShape2D_xc2v1")
 
@@ -120,3 +129,7 @@ shape = SubResource("RectangleShape2D_xc2v1")
 visible = false
 position = Vector2(87, 9)
 shape = SubResource("RectangleShape2D_00a0n")
+
+[connection signal="pressed" from="Window/WindowHeader/TextureButton" to="." method="OnCloseButtonPressed"]
+[connection signal="mouse_entered" from="Area2D" to="." method="MouseEnteredInDragArea"]
+[connection signal="mouse_exited" from="Area2D" to="." method="MouseExitedDragArea"]

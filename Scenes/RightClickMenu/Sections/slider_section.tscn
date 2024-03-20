@@ -7,6 +7,7 @@
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 3
 anchors_preset = 0
+mouse_filter = 1
 script = ExtResource("1_dehg3")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
@@ -21,6 +22,7 @@ theme_override_constants/separation = 0
 [node name="Title" type="Control" parent="VBoxContainer"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
+mouse_filter = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Title"]
 layout_mode = 1
@@ -34,12 +36,14 @@ theme_override_constants/margin_top = 0
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
+mouse_filter = 1
 theme = ExtResource("1_4u8fb")
 text = "Slider Section:"
 
 [node name="Body" type="Control" parent="VBoxContainer"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
+mouse_filter = 1
 
 [node name="Value" type="Label" parent="VBoxContainer/Body"]
 unique_name_in_owner = true
@@ -49,6 +53,7 @@ offset_top = -3.90996
 offset_right = 1706.0
 offset_bottom = 201.09
 scale = Vector2(0.1, 0.1)
+mouse_filter = 1
 theme = ExtResource("1_4u8fb")
 text = "Value"
 
@@ -59,6 +64,7 @@ offset_left = 4.0
 offset_top = 13.0
 offset_right = 231.0
 offset_bottom = 29.0
+mouse_filter = 1
 max_value = 1.0
 step = 0.01
 

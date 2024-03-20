@@ -67,7 +67,6 @@ public partial class PortsContainer : Node2D
 
     private void View_RightClicked(object sender, EventArgs e)
     {
-        Debug.Print("Right click recieved");
         ExternalPortView view = sender as ExternalPortView;
         if (view == null) return;
 
@@ -80,8 +79,11 @@ public partial class PortsContainer : Node2D
             return;
         }
 
-        if (view.ViewModel.IsInput)
-            view.menu = ConstructInputMenu(view);
+        if (view.ViewModel.IsInput){
+            view.menu = RightClickMenu.Instantiate<ControlMenu>();
+            //menu can only be constructed after its ready
+            view.menu.Ready += () => ConstructInputMenu(view, view.menu);
+        }
         else
             view.menu = ConstructOutputMenu(view);
         
@@ -89,9 +91,13 @@ public partial class PortsContainer : Node2D
         this.AddChild(view.menu);
     }
 
-    private ControlMenu ConstructInputMenu(ExternalPortView portView){
+    private void Menu_Ready()
+    {
+        throw new NotImplementedException();
+    }
+
+    private void ConstructInputMenu(ExternalPortView portView, ControlMenu menu){
         ExternalPortViewModel portViewModel = portView.ViewModel;
-        ControlMenu menu = RightClickMenu.Instantiate<ControlMenu>();
 
         //Port mode toggle (Input/Output Switch)
         ToggleSection ioToggle = menu.AddSection<ToggleSection>()
@@ -116,8 +122,6 @@ public partial class PortsContainer : Node2D
         //Place menu next to portView
         //TODO: test this out properly
         menu.Position = portView.Position + new Vector2(50, 0);
-
-        return menu;
     }
     private void DestructInputMenu(ControlMenu menu, ExternalPortView portView){
         //Port mode toggle (Input/Output Switch)
@@ -226,6 +230,6 @@ public partial class PortsContainer : Node2D
 
         //TODO: remove this after commands
         SliderSection slider = (SliderSection)sender;
-        slider.Value = slider.Slider.Value.ToString();
+        slider.SetSliderValue(slider.Slider.Value);
     }
 }

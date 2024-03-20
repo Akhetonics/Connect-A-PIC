@@ -2,18 +2,22 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Management;
 using System.Reflection.Metadata.Ecma335;
 
 public partial class OnOffSection : ISection
 {
+    private bool _isOn;
+    private bool ready = false;
     public bool IsOn
     {
-        get => IsOn;
+        get => _isOn;
         set
         {
-            IsOn = value;
-            onTexture.Visible = value;
+            _isOn = value;
             Value = value ? "On" : "Off";
+            if (ready)
+                onTexture.Visible = value;
         }
     }
 
@@ -29,7 +33,9 @@ public partial class OnOffSection : ISection
     public override void _Ready()
 	{
         onTexture = GetNode<TextureRect>("%OnIcon");
-	}
+        ready = true;
+        base._Ready();
+    }
 
 	// Called every frame. 'delta' is the elapsed time since the previous frame.
 	public override void _Process(double delta)

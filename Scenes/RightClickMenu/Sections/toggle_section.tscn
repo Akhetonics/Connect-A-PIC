@@ -20,6 +20,7 @@ anti_aliasing = false
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 3
 anchors_preset = 0
+mouse_filter = 1
 script = ExtResource("1_4kw7h")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
@@ -34,6 +35,7 @@ theme_override_constants/separation = 0
 [node name="Title" type="Control" parent="VBoxContainer"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
+mouse_filter = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Title"]
 layout_mode = 1
@@ -47,12 +49,14 @@ theme_override_constants/margin_top = 0
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
+mouse_filter = 1
 theme = ExtResource("1_xnkx4")
 text = "Toggle Section:"
 
 [node name="Body" type="Control" parent="VBoxContainer"]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
+mouse_filter = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Body"]
 layout_mode = 1
@@ -69,6 +73,7 @@ theme_override_constants/margin_bottom = 7
 
 [node name="Button" type="Button" parent="VBoxContainer/Body/MarginContainer"]
 layout_mode = 2
+mouse_filter = 1
 theme_override_styles/normal = SubResource("StyleBoxFlat_tyuhw")
 
 [node name="Value" type="Label" parent="VBoxContainer/Body"]
@@ -79,6 +84,7 @@ offset_top = -1.90995
 offset_right = 1526.0
 offset_bottom = 203.09
 scale = Vector2(0.1, 0.1)
+mouse_filter = 1
 theme = ExtResource("1_xnkx4")
 theme_override_font_sizes/font_size = 0
 text = "Value"
