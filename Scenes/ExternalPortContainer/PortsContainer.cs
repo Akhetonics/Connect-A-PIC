@@ -85,7 +85,10 @@ public partial class PortsContainer : Node2D
             view.menu.Ready += () => ConstructInputMenu(view, view.menu);
         }
         else
-            view.menu = ConstructOutputMenu(view);
+        {
+            view.menu = RightClickMenu.Instantiate<ControlMenu>();
+            view.menu.Ready += () => ConstructOutputMenu(view, view.menu);
+        }
         
         view.menu.Visible = true;
         this.AddChild(view.menu);
@@ -146,9 +149,8 @@ public partial class PortsContainer : Node2D
 
         menu.QueueFree();
     }
-    private ControlMenu ConstructOutputMenu(ExternalPortView portView) {
+    private void ConstructOutputMenu(ExternalPortView portView, ControlMenu menu) {
         ExternalPortViewModel portViewModel = portView.ViewModel;
-        ControlMenu menu = RightClickMenu.Instantiate<ControlMenu>();
 
         //Port mode toggle (Input/Output Switch)
         ToggleSection ioToggle = menu.AddSection<ToggleSection>()
@@ -186,8 +188,6 @@ public partial class PortsContainer : Node2D
         //Place menu next to portView
         //TODO: test this out properly
         menu.Position = portView.Position + new Vector2(50, 0);
-
-        return menu;
     }
     private void DestructOutputMenu(ControlMenu menu) {
         ToggleSection ioToggle = menu.RemoveSection<ToggleSection>();
