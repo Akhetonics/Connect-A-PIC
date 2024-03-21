@@ -12,6 +12,7 @@ using CAP_Core.LightCalculation;
 using ConnectAPIC.Scenes.RightClickMenu;
 using System.ComponentModel;
 using ConnectAPIC.Scripts.ViewModel;
+using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 
 
 [SuperNode(typeof(Dependent))]
@@ -27,6 +28,10 @@ public partial class PortsContainer : Node2D
 
     public ExternalPortViewFactory PortViewFactory { get; set; }
     public List<ExternalPortView> Views { get; set; } = new();
+
+    //Commands
+    //TODO: this is temporary solution, needs to be removed after implementing command handling
+    private SwitchOnLightCommand switchOnLightCommand;
 
 
     public void OnResolved()
@@ -62,6 +67,11 @@ public partial class PortsContainer : Node2D
 
         foreach (ExternalPortView view in Views) {
             view.RightClicked += View_RightClicked;
+        }
+
+        //TODO: again temporary solution before command handling
+        if (Views.Count > 0) {
+            switchOnLightCommand = new SwitchOnLightCommand(Views[0].ViewModel.Grid);
         }
     }
 
@@ -111,6 +121,7 @@ public partial class PortsContainer : Node2D
         OnOffSection onOff = menu.AddSection<OnOffSection>()
             .Initialize("Switch input light", portViewModel.IsLightOn);
         onOff.PropertyChanged += InputOnOffToggleHandler;
+        portView.ViewModel.PropertyChanged += onOff.ToggleSubscription;
 
         //Color switching toggle
         ToggleSection colorToggle = menu.AddSection<ToggleSection>()
@@ -149,6 +160,7 @@ public partial class PortsContainer : Node2D
 
         menu.QueueFree();
     }
+
     private void ConstructOutputMenu(ExternalPortView portView, ControlMenu menu) {
         ExternalPortViewModel portViewModel = portView.ViewModel;
 
@@ -163,6 +175,7 @@ public partial class PortsContainer : Node2D
         //TODO: figure out how to do this using non anonymus functions(could do it with defining functions here and storing them globally)
         /*portViewModel.PropertyChanged += (object sender, PropertyChangedEventArgs e) =>
         {
+            {
             if (e.PropertyName == nameof(ExternalPortViewModel.IsLightOn)
              || e.PropertyName == nameof(ExternalPortViewModel.Power))
             {
@@ -203,6 +216,7 @@ public partial class PortsContainer : Node2D
         menu.QueueFree();
     }
 
+
     private void InputOutputToggleHandler(object sender, PropertyChangedEventArgs e)
     {
             //TODO: invoke a command which will change port from input to output
@@ -212,11 +226,7 @@ public partial class PortsContainer : Node2D
     }
     private void InputOnOffToggleHandler(object sender, PropertyChangedEventArgs e)
     {
-        //TODO: command which will switch on/off ports
-
-        //TODO: remove this after implementing command
-        OnOffSection onOff = (OnOffSection)sender;
-        onOff.IsOn = !onOff.IsOn;
+        switchOnLightCommand.ExecuteAsync(!(sender as OnOffSection).IsOn).Wait();
     }
     private void InputColorToggleHandler(object sender, PropertyChangedEventArgs e){
         //TODO: invoke a command which will change port color

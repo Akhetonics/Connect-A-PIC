@@ -1,3 +1,4 @@
+using ConnectAPIC.Scripts.ViewModel;
 using Godot;
 using System;
 using System.Collections.Generic;
@@ -37,9 +38,16 @@ public partial class OnOffSection : ISection
         base._Ready();
     }
 
-	// Called every frame. 'delta' is the elapsed time since the previous frame.
-	public override void _Process(double delta)
-	{
+    public void ToggleSubscription(object sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(ExternalPortViewModel.IsLightOn))
+        {
+            IsOn = (sender as ExternalPortViewModel).IsLightOn;
+        }
+    }
+
+    private void OnToggleButtonPressed()
+    {
         OnPropertyChanged(this, new PropertyChangedEventArgs(IsOn ? "Off" : "On"));
 	}
 }
