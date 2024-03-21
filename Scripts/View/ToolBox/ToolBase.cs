@@ -31,7 +31,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
         {
             GridView = gridView;
             GridViewModel = GridView.ViewModel;
-            GridView.DragDropProxy.AddChild(this);
+            GridView.AddChild(this);
         }
         protected virtual void Activate() { }
         protected virtual void FreeTool() { }
@@ -53,14 +53,12 @@ namespace ConnectAPIC.Scripts.View.ToolBox
             return Guid.Parse(metaGuid);
         }
 
-        protected Vector2I GetMouseGridPosition()
+        protected Vector2I GetMouseGridPosition() => GetGridPosition(GridView.DragDropProxy.GetLocalMousePosition());
+        protected static Vector2I GetGridPosition(Vector2 position)
         {
-            var mousePos = GridView.DragDropProxy.GetLocalMousePosition();
             var tileSize = (GameManager.TilePixelSize);
-            Vector2I gridPosition = new(((int)((mousePos.X) / tileSize)), ((int)((mousePos.Y) / tileSize)));
-            return gridPosition;
+            return new Vector2I (((int)((position.X) / tileSize)), ((int)((position.Y) / tileSize)));
         }
-
         protected void HandleMiddleMouseDeleteDrawing(InputEvent @event)
         {
             if (IsActive == false) return;

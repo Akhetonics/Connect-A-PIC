@@ -2,6 +2,7 @@ using CAP_Core;
 using ConnectAPic.LayoutWindow;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
+using ConnectAPIC.Scripts.View.ToolBox;
 using Godot;
 using System;
 
@@ -24,6 +25,7 @@ public partial class DragDropProxy : Control
     public override Variant _GetDragData(Vector2 position)
     {
         if (OnGetDragData == null) return default;
+        if (SelectionTool.IsEditSelectionKeyPressed()) return default;
         return OnGetDragData(position);
     }
     public override bool _CanDropData(Vector2 position, Variant data)

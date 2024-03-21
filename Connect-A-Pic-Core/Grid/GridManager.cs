@@ -29,6 +29,7 @@ namespace CAP_Core.Grid
             }
         }
         public Tile[,] Tiles { get; private set; }
+        public ObservableCollection<Component> SelectedComponents { get; set; }
         public int Width { get; private set; }
         public int Height { get; private set; }
         public const int MinHeight = 10;

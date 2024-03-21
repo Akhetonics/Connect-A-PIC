@@ -33,9 +33,7 @@ namespace ConnectAPIC.Scenes.ToolBox
         public void OnResolved()
         {
             if (ComponentViewFactory == null) Logger.PrintErr("ComponentViewFactory cannot be null");
-
-            SetAvailableTools();
-            Logger?.Log(LogLevel.Debug, "Initialized ToolBox");
+            
             ToolViewModel.PropertyChanged += (object sender, System.ComponentModel.PropertyChangedEventArgs e) => {
                 switch (e.PropertyName)
                 {
@@ -44,6 +42,9 @@ namespace ConnectAPIC.Scenes.ToolBox
                         break;
                 }
             };
+
+            SetAvailableTools();
+            Logger?.Log(LogLevel.Debug, "Initialized ToolBox");
         }
 
         private void PaintCurrentToolGreen()
@@ -87,6 +88,7 @@ namespace ConnectAPIC.Scenes.ToolBox
                 CreateSelectionTool(tools);
                 CreateAllComponentBrushes(tools);
                 MakeToolIconsClickable(tools);
+                ToolViewModel.SetCurrentTool(MySelectionTool);
             } catch (Exception ex)
             {
                 Logger.PrintErr(ex.ToString());

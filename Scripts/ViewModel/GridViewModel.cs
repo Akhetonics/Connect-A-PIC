@@ -10,6 +10,7 @@ using ConnectAPIC.Scripts.View.ComponentFactory;
 using ConnectAPIC.Scripts.ViewModel;
 using ConnectAPIC.Scripts.ViewModel.Commands;
 using System.Runtime.CompilerServices;
+using static ConnectAPIC.Scripts.View.ToolBox.SelectionTool;
 
 namespace ConnectAPIC.LayoutWindow.ViewModel
 {
@@ -23,6 +24,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         public ICommand LoadGridCommand { get; internal set; }
         public ICommand MoveSliderCommand { get; internal set; }
         public ICommand DeleteComponentCommand { get; internal set; }
+        public SelectionGroupManager SelectionGroupManager;
         public delegate void ComponentCreatedEventHandler(Component component, int gridX, int gridY);
         public event ComponentCreatedEventHandler ComponentCreated;
         public event ComponentCreatedEventHandler ComponentRemoved;
@@ -55,6 +57,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             ExportToNazcaCommand = new ExportNazcaCommand(new NazcaExporter(), grid, new DataAccessorGodot());
             SwitchOnLightCommand = new SwitchOnLightCommand(grid);
             DeleteComponentCommand = new DeleteComponentCommand(grid);
+            SelectionGroupManager = new(this);
 
             this.Grid.OnComponentPlacedOnTile += Grid_OnComponentPlacedOnTile;
             this.Grid.OnComponentRemoved += (Component component, int x , int y ) => ComponentRemoved?.Invoke(component, x, y);
