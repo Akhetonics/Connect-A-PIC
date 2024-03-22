@@ -9,6 +9,7 @@ using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scripts.View.ComponentFactory;
 using ConnectAPIC.Scripts.ViewModel;
 using ConnectAPIC.Scripts.ViewModel.Commands;
+using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
 using static ConnectAPIC.Scripts.View.ToolBox.SelectionTool;
 
@@ -41,9 +42,11 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             get => isLightOn;
             set { isLightOn = value; OnPropertyChanged(); }
         }
+        public LightManager LightManager { get; private set; }
+
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
-        public GridViewModel( GridManager grid, ILogger logger, ComponentFactory componentModelFactory, LightCalculationService lightCalculator)
+        public GridViewModel( GridManager grid, ILogger logger, ComponentFactory componentModelFactory, LightCalculationService lightCalculator , LightManager lightManager)
         {
             this.Grid = grid;
             LightCalculator = lightCalculator;
@@ -55,13 +58,14 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             LoadGridCommand = new LoadGridCommand(grid, new FileDataAccessor(), componentModelFactory, this);
             MoveSliderCommand = new MoveSliderCommand(grid);
             ExportToNazcaCommand = new ExportNazcaCommand(new NazcaExporter(), grid, new DataAccessorGodot());
-            SwitchOnLightCommand = new SwitchOnLightCommand(grid);
+            SwitchOnLightCommand = new SwitchOnLightCommand(LightManager);
             DeleteComponentCommand = new DeleteComponentCommand(grid);
-            SelectionGroupManager = new(this);
+            SelectionGroupManager = new(this, new SelectionManager(grid));
 
             this.Grid.OnComponentPlacedOnTile += Grid_OnComponentPlacedOnTile;
             this.Grid.OnComponentRemoved += (Component component, int x , int y ) => ComponentRemoved?.Invoke(component, x, y);
-            this.Grid.OnLightSwitched += (object sender, bool e) => IsLightOn = e;
+            this.LightManager = lightManager;
+            this.LightManager.OnLightSwitched += (object sender, bool e) => IsLightOn = e;
             this.ToolViewModel = new ToolViewModel(grid);
         }
 

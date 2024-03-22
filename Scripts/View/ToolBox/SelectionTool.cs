@@ -1,7 +1,8 @@
-using CAP_Core.Components;
+using CAP_Core;
 using CAP_Core.Grid;
 using CAP_Core.Helpers;
 using Castle.Components.DictionaryAdapter.Xml;
+using Castle.Core.Logging;
 using ConnectAPic.LayoutWindow;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel;
@@ -11,9 +12,7 @@ using ConnectAPIC.Scripts.ViewModel.Commands;
 using Godot;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics.Eventing.Reader;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using YamlDotNet.Serialization;
@@ -39,8 +38,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
             return preview;
         }
         public SelectionTool(GridView gridView) : base(gridView)
-        {
-        }
+        { }
         public override void _Process(double delta)
         {
             base._Process(delta);
@@ -50,131 +48,22 @@ namespace ConnectAPIC.Scripts.View.ToolBox
             }
         }
 
-        public class AddToSelectionGroupCommmand : ICommand
-        {
-            public AddToSelectionGroupCommmand(GridManager grid)
-            {
-                Grid = grid;
-            }
-
-            public GridManager Grid { get; }
-
-            public bool CanExecute(object parameter)
-            {
-                return parameter is AddToSelectionGroupParams;
-            }
-
-            public Task ExecuteAsync(object parameter)
-            {
-                if (CanExecute(parameter) == false) return Task.CompletedTask;
-                throw new NotImplementedException();
-            }
-        }
-        public class AddToSelectionGroupParams
-        {
-            List<IntVector> SelectedComponentsPositions = new ();
-            public AddToSelectionGroupParams(List<IntVector> selectedComponentsPositions)
-            {
-                SelectedComponentsPositions = selectedComponentsPositions;
-            }
-        }
-        
-        public class BoxSelectComponentsCommand : ICommand
-        {
-            public BoxSelectComponentsCommand(GridManager grid)
-            {
-                Grid = grid;
-            }
-
-            public GridManager Grid { get; }
-
-            public bool CanExecute(object parameter)
-            {
-                return parameter is BoxSelectComponentsParams;
-            }
-
-            public Task ExecuteAsync(object parameter)
-            {
-                if (CanExecute(parameter) == false) return Task.CompletedTask;
-                // select all components in box
-                if(parameter is BoxSelectComponentsParams box)
-                {
-                    // define start and end to count from low to high in case the box is upside down
-                    var startX = Math.Max(box.GridStart.X, box.GridEnd.X);
-                    var stopX = Math.Min(box.GridStart.X, box.GridEnd.X);
-                    var startY = Math.Max(box.GridStart.Y, box.GridEnd.Y);
-                    var stopY = Math.Min(box.GridStart.Y, box.GridEnd.Y);
-
-                    // collect all new Components inside the box
-                    var newSelection = new HashSet<Component>();
-                    for (int x = startX; x <= stopX; x++)
-                    {
-                        for(int y = startY; y <= stopY; y++)
-                        {
-                            var newComponent = Grid.GetComponentAt(x, y);
-                            if (newComponent != null)
-                            {
-                                newSelection.Add(newComponent);
-                            }
-                        }
-                    }
-
-                    // AppendBehavior.CreateNew -> fill list with new items and remove old items
-                    var currentSelection = new HashSet<Component>(Grid.SelectedComponents);
-                    foreach (var component in currentSelection)
-                    {
-                        if (!newSelection.Contains(component))
-                        {
-                            Grid.SelectedComponents.Remove(component);
-                        }
-                    }
-                    // add remaining new selected components
-                    foreach(var newComponent in newSelection)
-                    {
-                        if (!currentSelection.Contains(newComponent))
-                        {
-                            Grid.SelectedComponents.Add(newComponent);
-                        }
-                    }
-
-                }
-                return Task.CompletedTask;
-            }
-        }
-        public enum AppendBehaviors
-        {
-            CreateNew,
-            Append,
-            Remove
-        }
-        public class BoxSelectComponentsParams
-        {
-            public BoxSelectComponentsParams(IntVector gridStart , IntVector gridEnd , AppendBehaviors appendBehaviour)
-            {
-                GridStart = gridStart;
-                GridEnd = gridEnd;
-                AppendBehaviour = appendBehaviour;
-            }
-
-            public IntVector GridStart { get; }
-            public IntVector GridEnd { get; }
-            public AppendBehaviors AppendBehaviour { get; }
-        }
-
-        public class SelectionGroupManager
-        {
-            public SelectionGroupManager(GridViewModel viewModel)
-            {
-                ViewModel = viewModel;
-                AddToSelectionGroupCommand = new AddToSelectionGroupCommmand(viewModel.Grid);
-                BoxSelectComponentsCommand = new BoxSelectComponentsCommand(viewModel.Grid);
-            }
-
-            public GridViewModel ViewModel { get; }
-            public AddToSelectionGroupCommmand AddToSelectionGroupCommand { get; private set; }
-            public BoxSelectComponentsCommand BoxSelectComponentsCommand { get; private set; }
-        }
         public override void _Input(InputEvent @event)
+        {
+            if (IsActive == false) return;
+            // display the blue selection box
+            // has to be input because the toolbox handles the MouseMotion somehow so that it will never be in unhandledinput..
+            else if (@event is InputEventMouseMotion)
+            {
+                if (IsSelectionBoxActive)
+                {
+                    SelectionEndMousePos = GridView.DragDropProxy.GetLocalMousePosition();
+                    SelectionRect = new Rect2(SelectionStartMousePos, SelectionEndMousePos - SelectionStartMousePos);
+                    QueueRedraw();
+                }
+            }
+        }
+        public override void _UnhandledInput(InputEvent @event)
         {
             if (IsActive == false) return;
             HandleMiddleMouseDeleteDrawing(@event);
@@ -189,6 +78,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
                     
                     if (mouseButtonEvent.Pressed)
                     {
+                        SelectionStartMousePos = GridView.DragDropProxy.GetLocalMousePosition();
                         bool isInGrid = GridViewModel.Grid.IsInGrid(gridPosition.X, gridPosition.Y);
                         bool isColliding = GridViewModel.Grid.IsColliding(gridPosition.X, gridPosition.Y, 1, 1);
                         if (isInGrid == true && isColliding && SelectionTool.IsEditSelectionKeyPressed() == false)
@@ -196,11 +86,11 @@ namespace ConnectAPIC.Scripts.View.ToolBox
                             return;
                         }
                         IsSelectionBoxActive = true;
-                        SelectionStartMousePos = GridView.DragDropProxy.GetLocalMousePosition();
                     }
                     else // Left Mouse Button was released
                     {
                         IsSelectionBoxActive = false;
+                        SelectionEndMousePos = GridView.DragDropProxy.GetLocalMousePosition();
                         // add all items in box to selection group
                         var gridStart = GetGridPosition(SelectionStartMousePos).ToIntVector();
                         var gridEnd   = GetGridPosition(SelectionEndMousePos).ToIntVector();
@@ -214,21 +104,12 @@ namespace ConnectAPIC.Scripts.View.ToolBox
                             AppendBehavior = AppendBehaviors.Remove;
                         }
                         var parameter = new BoxSelectComponentsParams(gridStart, gridEnd, AppendBehavior);
+                        Logger.Print("start x: "+ gridStart.X + " Y: " + gridStart.Y + " >> To: X: " + gridEnd.X + " Y: " + gridEnd.Y);
                         if (GridViewModel.SelectionGroupManager.BoxSelectComponentsCommand.CanExecute(parameter))
                         {
                             GridViewModel.SelectionGroupManager.BoxSelectComponentsCommand.ExecuteAsync(parameter).Wait();
                         }
                     }
-                }
-            }
-            // display the blue selection box
-            else if (@event is InputEventMouseMotion)
-            {
-                if (IsSelectionBoxActive)
-                {
-                    SelectionEndMousePos = GridView.DragDropProxy.GetLocalMousePosition();
-                    SelectionRect = new Rect2(SelectionStartMousePos, SelectionEndMousePos - SelectionStartMousePos);
-                    QueueRedraw();
                 }
             }
 
@@ -247,6 +128,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
                 }
             }
         }
+
         public static bool IsEditSelectionKeyPressed()
         {
             return Input.IsKeyPressed(Key.Shift) || Input.IsKeyPressed(Key.Ctrl) || Input.IsKeyPressed(Key.Alt);

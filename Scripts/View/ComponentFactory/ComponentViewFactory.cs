@@ -1,4 +1,5 @@
 using CAP_Contracts.Logger;
+using CAP_Core.Grid;
 using CAP_DataAccess.Components.ComponentDraftMapper.DTOs;
 using ConnectAPic.LayoutWindow;
 using ConnectAPIC.Scripts.View.ComponentFactory;

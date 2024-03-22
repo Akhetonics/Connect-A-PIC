@@ -42,11 +42,10 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
         {
             if (!CanExecute(parameter)) return;
             var loadParams = (LoadGridParameters)parameter;
-            var lightStatus = ViewModel.Grid.IsLightOn;
-            ViewModel.Grid.IsLightOn = false;
+            var lightStatus = ViewModel.LightManager.IsLightOn;
+            ViewModel.LightManager.IsLightOn = false;
             await gridPersistenceManager.LoadAsync(loadParams.Path, ComponentFactory);
-            ViewModel.Grid.IsLightOn = lightStatus;
-            
+            ViewModel.LightManager.IsLightOn = lightStatus;
         }
     }
 

@@ -27,7 +27,8 @@ namespace ConnectAPic.LayoutWindow
     [SuperNode(typeof(Provider))]
     public partial class GameManager : Node,
         IProvide<ToolBox>, IProvide<ILogger>, IProvide<GridView>, IProvide<GridManager>, IProvide<GridViewModel>, IProvide<GameManager>,
-        IProvide<GameConsole>, IProvide<System.Version>, IProvide<ComponentViewFactory>, IProvide<LightCalculationService>, IProvide<ToolViewModel>
+        IProvide<GameConsole>, IProvide<System.Version>, IProvide<ComponentViewFactory>, IProvide<LightCalculationService>, IProvide<ToolViewModel>,
+        IProvide<LightManager>
     {
         #region Dependency Injection
         public override partial void _Notification(int what);
@@ -35,6 +36,7 @@ namespace ConnectAPic.LayoutWindow
         ILogger IProvide<ILogger>.Value() => Logger;
         GridView IProvide<GridView>.Value() => GridView;
         GridManager IProvide<GridManager>.Value() => Grid;
+        LightManager IProvide<LightManager>.Value() => MyLightManager;
         GridViewModel IProvide<GridViewModel>.Value() => GridViewModel;
         ToolViewModel IProvide<ToolViewModel>.Value() => GridViewModel.ToolViewModel;
         GameManager IProvide<GameManager>.Value() => this;
@@ -58,6 +60,7 @@ namespace ConnectAPic.LayoutWindow
         public PortsContainer PortsContainer { get; set; }
         public static System.Version Version => Assembly.GetExecutingAssembly().GetName().Version; // Get the version from the assembly
         public GridManager Grid { get; set; }
+        public LightManager MyLightManager { get; private set; }
         public LightCalculationService LightCalculator { get; private set; }
         public ILogger Logger { get; set; }
         private LogSaver LogSaver { get; set; }
@@ -146,8 +149,9 @@ namespace ConnectAPic.LayoutWindow
             GridView = GetNode<GridView>(GridViewPath);
             this.CheckForNull(x => GridView);
             Grid = new GridManager(FieldWidth, FieldHeight);
-            LightCalculator = new LightCalculationService(Grid, new GridLightCalculator(new SystemMatrixBuilder(Grid), Grid));
-            GridViewModel = new GridViewModel( Grid, Logger, componentFactory, LightCalculator);
+            MyLightManager = new LightManager();
+            LightCalculator = new LightCalculationService(Grid, MyLightManager, new GridLightCalculator(new SystemMatrixBuilder(Grid), Grid));
+            GridViewModel = new GridViewModel( Grid, Logger, componentFactory, LightCalculator, MyLightManager);
             GridView.Initialize(GridViewModel, Logger);
             InitializationLogs.Add(("Initialized GridView and Grid and GridViewModel", false));
         }

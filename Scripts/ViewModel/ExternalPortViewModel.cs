@@ -51,14 +51,14 @@ public class ExternalPortViewModel : INotifyPropertyChanged
 
     public event PropertyChangedEventHandler PropertyChanged;
 
-    public ExternalPortViewModel(GridManager grid, int tilePositionY, LightCalculationService lightCalculator)
+    public ExternalPortViewModel(GridManager grid, LightManager lightManager, int tilePositionY, LightCalculationService lightCalculator)
     {
         LightCalculator = lightCalculator;
         TilePositionY = tilePositionY;
         Power = Vector3.Zero;
         Grid = grid;
 
-        Grid.OnLightSwitched += (object sender, bool e) =>
+        lightManager.OnLightSwitched += (object sender, bool e) =>
         {
             IsLightOn = e;
             if (!IsLightOn && !IsInput)

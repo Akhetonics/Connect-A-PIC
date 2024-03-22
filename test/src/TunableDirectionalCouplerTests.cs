@@ -60,7 +60,7 @@ namespace ConnectAPIC.test.src
             var mainSlider = component.GetAllSliders().First();
             var nonLinearConnections = component.WaveLengthToSMatrixMap[RedLaser.WaveLengthInNm].NonLinearConnections;
             var lightIntensity = 1.0;
-            MyGameManager.GridViewModel.Grid.IsLightOn = true;
+            MyGameManager.GridViewModel.LightManager.IsLightOn = true;
             await MyGameManager.GridView.ShowLightPropagation();
             var lightGloballyOn = await CheckShaderValuesOnRightPinsAsync();
             mainSlider.Value.ShouldBe(0.5);

@@ -70,7 +70,7 @@ namespace ConnectAPIC.test.src
                 FieldDownRight.Magnitude.ShouldBe(Math.Sqrt(lightPower / 3), 0.00001);
             };
 
-            MyGameManager.GridViewModel.Grid.IsLightOn = true;
+            MyGameManager.GridViewModel.LightManager.IsLightOn = true;
             await MyGameManager.GridView.ShowLightPropagation();
             
         }
@@ -80,7 +80,7 @@ namespace ConnectAPIC.test.src
         {
             var component = MyGameManager.Grid.GetComponentAt(MMI3x3.ViewModel.GridX, MMI3x3.ViewModel.GridY);
             var lightPower = (float) MyGameManager.Grid.GetUsedExternalInputs().FirstOrDefault(i => i.Input.LaserType == LaserType.Red).Input.InFlowPower.Magnitude;
-            MyGameManager.GridViewModel.Grid.IsLightOn = true;
+            MyGameManager.GridViewModel.LightManager.IsLightOn = true;
             await MyGameManager.GridView.ShowLightPropagation();
             await TestScene.GetTree().NextFrame(2); // wait some frames to let the shader be applied
             var redSlots = MMI3x3.OverlayManager.AnimationSlots.Where(slot => slot.MatchingLaser.WaveLengthInNm == RedLaser.WaveLengthInNm).ToList();
