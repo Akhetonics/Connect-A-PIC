@@ -1,7 +1,9 @@
+using ConnectAPIC.Scripts.ViewModel;
 using Godot;
 using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using YamlDotNet.Core.Tokens;
 
 public partial class SliderSection : ISection
 {
@@ -82,6 +84,16 @@ public partial class SliderSection : ISection
         };
 
         base._Ready();
+    }
+
+    //TODO: can add own arguments for sections to make them more flexible
+    public void ValueChangeSubscription(object sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(ExternalPortViewModel.Power))
+        {
+            float new_value = (sender as ExternalPortViewModel).Power.Length();
+            Value = new_value.ToString("0.00");
+        }
     }
 
     public void SetSliderValue(double value) {

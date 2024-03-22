@@ -13,6 +13,7 @@ using ConnectAPIC.Scenes.RightClickMenu;
 using System.ComponentModel;
 using ConnectAPIC.Scripts.ViewModel;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
+using ConnectAPIC.Scripts.ViewModel.Commands;
 
 
 [SuperNode(typeof(Dependent))]
@@ -32,6 +33,7 @@ public partial class PortsContainer : Node2D
     //Commands
     //TODO: this is temporary solution, needs to be removed after implementing command handling
     private SwitchOnLightCommand switchOnLightCommand;
+    private InputPowerAdjustCommand inputPowerAdjustCommand;
 
 
     public void OnResolved()
@@ -43,6 +45,7 @@ public partial class PortsContainer : Node2D
             ExternalPortView tmpView;
             foreach (ExternalPort port in e.OldItems)
             {
+                //TODO: refactor this: instead of removing and re-adding ports just update them
                 tmpView = Views.Find((view) => port.TilePositionY == view.ViewModel.TilePositionY);
                 Views.Remove(tmpView);
 
@@ -73,6 +76,7 @@ public partial class PortsContainer : Node2D
         if (Views.Count > 0) {
             switchOnLightCommand = new SwitchOnLightCommand(Views[0].ViewModel.Grid);
         }
+        inputPowerAdjustCommand = new InputPowerAdjustCommand(GridManager);
     }
 
     private void View_RightClicked(object sender, EventArgs e)
@@ -104,23 +108,28 @@ public partial class PortsContainer : Node2D
         this.AddChild(view.menu);
     }
 
-    private void Menu_Ready()
+    private void ConstructInputMenu(ExternalPortView portView, ControlMenu menu)
     {
-        throw new NotImplementedException();
-    }
-
-    private void ConstructInputMenu(ExternalPortView portView, ControlMenu menu){
         ExternalPortViewModel portViewModel = portView.ViewModel;
 
         //Port mode toggle (Input/Output Switch)
         ToggleSection ioToggle = menu.AddSection<ToggleSection>()
             .Initialize(new List<String>{ "Input", "Output" }, "Toggle port mode", "Input");
-        ioToggle.PropertyChanged += InputOutputToggleHandler;
+        ioToggle.PropertyChangeHandler = (object sender, PropertyChangedEventArgs e) =>
+        {
+            //TODO: invoke a command which will change port from input to output
+
+            //TODO: remove this, command should do it probably (or maybe listen to port viewModel and do it from there?)
+            ((ToggleSection)sender).CycleToNextValue();
+        };
+        ioToggle.PropertyChanged += ioToggle.PropertyChangeHandler;
 
         //On/Off toggle
         OnOffSection onOff = menu.AddSection<OnOffSection>()
             .Initialize("Switch input light", portViewModel.IsLightOn);
-        onOff.PropertyChanged += InputOnOffToggleHandler;
+        onOff.PropertyChangeHandler = (object sender, PropertyChangedEventArgs e) =>
+            switchOnLightCommand.ExecuteAsync(!(sender as OnOffSection).IsOn).Wait();
+        onOff.PropertyChanged += onOff.PropertyChangeHandler;
         portView.ViewModel.PropertyChanged += onOff.ToggleSubscription;
 
         //Color switching toggle
@@ -131,31 +140,37 @@ public partial class PortsContainer : Node2D
         //Slider section
         SliderSection slider = menu.AddSection<SliderSection>()
             .Initialize("Light power", portViewModel.Power);
-        slider.PropertyChanged += InputPowerSliderHandler;
+        slider.PropertyChangeHandler = (sender, e) =>
+            inputPowerAdjustCommand.ExecuteAsync(new InputPowerAdjustArgs(portViewModel.TilePositionY, slider.Slider.Value));
+        slider.PropertyChanged += slider.PropertyChangeHandler;
+        portView.ViewModel.PropertyChanged += slider.ValueChangeSubscription;
 
         //Place menu next to portView
         //TODO: test this out properly
         menu.Position = portView.Position + new Vector2(50, 0);
     }
-    private void DestructInputMenu(ControlMenu menu, ExternalPortView portView){
+    private void DestructInputMenu(ControlMenu menu, ExternalPortView portView)
+    {
         //Port mode toggle (Input/Output Switch)
         ToggleSection ioToggle = menu.RemoveSection<ToggleSection>();
-        ioToggle.PropertyChanged -= InputOutputToggleHandler;
+        ioToggle.PropertyChanged -= ioToggle.PropertyChangeHandler;
         ioToggle.QueueFree();
 
         //On/Off toggle
         OnOffSection onOff = menu.RemoveSection<OnOffSection>();
-        onOff.PropertyChanged -= InputOnOffToggleHandler;
+        onOff.PropertyChanged -= onOff.PropertyChangeHandler;
+        portView.ViewModel.PropertyChanged -= onOff.ToggleSubscription;
         onOff.QueueFree();
 
         //Color switching toggle
         ToggleSection colorToggle = menu.RemoveSection<ToggleSection>();
-        colorToggle.PropertyChanged -= InputColorToggleHandler;
+        colorToggle.PropertyChanged -= colorToggle.PropertyChangeHandler;
         colorToggle.QueueFree();
 
         //Slider section
         SliderSection slider = menu.RemoveSection<SliderSection>();
-        slider.PropertyChanged -= InputPowerSliderHandler;
+        slider.PropertyChanged -= slider.PropertyChangeHandler;
+        portView.ViewModel.PropertyChanged -= slider.ValueChangeSubscription;
         slider.QueueFree();
 
         menu.QueueFree();
@@ -167,7 +182,15 @@ public partial class PortsContainer : Node2D
         //Port mode toggle (Input/Output Switch)
         ToggleSection ioToggle = menu.AddSection<ToggleSection>()
             .Initialize(new List<String> { "Input", "Output" }, "Toggle port mode", "Input");
-        ioToggle.PropertyChanged += InputOutputToggleHandler;
+        ioToggle.PropertyChangeHandler = (object sender, PropertyChangedEventArgs e) =>
+        {
+            //TODO: invoke a command which will change port from input to output
+
+            //TODO: remove this, command should do it probably (or maybe listen to port viewModel and do it from there?)
+            ((ToggleSection)sender).CycleToNextValue();
+        };
+        ioToggle.PropertyChanged += ioToggle.PropertyChangeHandler;
+
         //Color infos
         InfoSection colorInfo = menu.AddSection<InfoSection>()
             .Initialize("Colors (R,G,B)", portViewModel.Power.ToString());
@@ -204,7 +227,7 @@ public partial class PortsContainer : Node2D
     }
     private void DestructOutputMenu(ControlMenu menu) {
         ToggleSection ioToggle = menu.RemoveSection<ToggleSection>();
-        ioToggle.PropertyChanged -= InputOutputToggleHandler;
+        ioToggle.PropertyChanged -= ioToggle.PropertyChangeHandler;
         ioToggle.QueueFree();
 
         InfoSection colorInfo = menu.RemoveSection<InfoSection>();
@@ -216,17 +239,8 @@ public partial class PortsContainer : Node2D
         menu.QueueFree();
     }
 
-
-    private void InputOutputToggleHandler(object sender, PropertyChangedEventArgs e)
-    {
-            //TODO: invoke a command which will change port from input to output
-
-            //TODO: remove this, command should do it probably (or maybe listen to port viewModel and do it from there?)
-            ((ToggleSection)sender).CycleToNextValue();
-    }
     private void InputOnOffToggleHandler(object sender, PropertyChangedEventArgs e)
     {
-        switchOnLightCommand.ExecuteAsync(!(sender as OnOffSection).IsOn).Wait();
     }
     private void InputColorToggleHandler(object sender, PropertyChangedEventArgs e){
         //TODO: invoke a command which will change port color
@@ -234,7 +248,8 @@ public partial class PortsContainer : Node2D
         //TODO: remove this later
         ((ToggleSection)sender).CycleToNextValue();
     }
-    private void InputPowerSliderHandler(object sender, PropertyChangedEventArgs e){
+    private void InputPowerSliderHandler(object sender, PropertyChangedEventArgs e)
+    {
         //TODO: property change here means Value of slider updated so update stengh of light
         //TODO: also update value of slider
 
@@ -242,4 +257,5 @@ public partial class PortsContainer : Node2D
         SliderSection slider = (SliderSection)sender;
         slider.SetSliderValue(slider.Slider.Value);
     }
+
 }

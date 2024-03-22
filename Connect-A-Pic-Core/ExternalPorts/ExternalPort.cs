@@ -1,4 +1,4 @@
-﻿namespace CAP_Core.ExternalPorts
+namespace CAP_Core.ExternalPorts
 {
     public abstract class ExternalPort
     {
