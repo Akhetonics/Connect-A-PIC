@@ -27,6 +27,8 @@ public abstract partial class ISection : Node, INotifyPropertyChanged
         }
     }
 
+    public PropertyChangedEventHandler PropertyChangeHandler { get; set; }
+
     private Label titleLabel;
     private Label valueLabel;
 
