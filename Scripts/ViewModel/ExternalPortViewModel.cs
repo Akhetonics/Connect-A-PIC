@@ -42,16 +42,35 @@ namespace ConnectAPIC.Scripts.ViewModel
             }
         }
 
+        private string _color;
+        public string Color {
+            get => _color;
+            set
+            {
+                _color = value;
+                OnPropertyChanged();
+            }
+        }
+
         private Vector3 _power;
         public Vector3 Power
         {
             get => _power;
             set
             {
+                if (Color != "red" && _power.X < 0.005 && value.X > 0.005)
+                    Color = "red";
+                else if (Color != "green" && _power.Y < 0.005 && value.Y > 0.005)
+                    Color = "green";
+                else if (Color != "blue" && _power.Z < 0.005 && value.Z > 0.005)
+                    Color = "blue";
+
                 _power = value;
                 OnPropertyChanged();
-            }
+            } 
         }
+
+       
 
         public event PropertyChangedEventHandler PropertyChanged;
 
