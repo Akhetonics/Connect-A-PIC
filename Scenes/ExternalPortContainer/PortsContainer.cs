@@ -35,7 +35,7 @@ public partial class PortsContainer : Node2D
     private SwitchOnLightCommand switchOnLightCommand;
     private InputPowerAdjustCommand inputPowerAdjustCommand;
     private InputColorChangeCommand inputColorChangeCommand;
-
+    private InputOutputChangeCommand inputOutputChangeCommand;
     public void OnResolved()
     {
         PortViewFactory = new ExternalPortViewFactory(this, GridManager, LightCalculator, LightManager);
@@ -85,6 +85,7 @@ public partial class PortsContainer : Node2D
         }
         inputPowerAdjustCommand = new InputPowerAdjustCommand(GridManager);
         inputColorChangeCommand = new InputColorChangeCommand(GridManager);
+        inputOutputChangeCommand = new InputOutputChangeCommand(GridManager);
     }
 
     private void View_RightClicked(object sender, EventArgs e)
@@ -125,10 +126,7 @@ public partial class PortsContainer : Node2D
             .Initialize(new List<String>{ "Input", "Output" }, "Toggle port mode", "Input");
         ioToggle.PropertyChangeHandler = (object sender, PropertyChangedEventArgs e) =>
         {
-            //TODO: invoke a command which will change port from input to output
-
-            //TODO: remove this, command should do it probably (or maybe listen to port viewModel and do it from there?)
-            ((ToggleSection)sender).CycleToNextValue();
+            inputOutputChangeCommand.ExecuteAsync(portView.ViewModel.TilePositionY).Wait();
         };
         ioToggle.PropertyChanged += ioToggle.PropertyChangeHandler;
 

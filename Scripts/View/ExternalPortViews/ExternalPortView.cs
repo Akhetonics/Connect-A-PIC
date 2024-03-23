@@ -67,6 +67,7 @@ namespace ConnectAPIC.Scenes.ExternalPorts
         public void SetAsOutput()
         {
             currentTexture.Texture = OutputTexture;
+            InfoLabel.Text = ViewModel.AllColorsPower();
             SetLight(false);
         }
 
