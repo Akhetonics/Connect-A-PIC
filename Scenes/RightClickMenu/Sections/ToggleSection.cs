@@ -1,3 +1,4 @@
+using ConnectAPIC.Scripts.ViewModel;
 using Godot;
 using System;
 using System.Collections.Generic;
@@ -37,9 +38,30 @@ public partial class ToggleSection : ISection
 
         this.toggleValues = toggleValues;
 
-        if (Value.Equals("") && toggleValues != null) Value = toggleValues[0];
+        if (toggleValues != null) {
+            if (Value.Equals(""))
+                Value = toggleValues[0]; //toggle index is 0 by default
+            else
+                toggleIndex = toggleValues.IndexOf(Value);
+        }
 
         return this;
+    }
+
+    //TODO: can add own arguments for sections to make them more flexible
+    public void ToggleValueSubscription(object sender, PropertyChangedEventArgs e)
+    {
+        if (e.PropertyName == nameof(ExternalPortViewModel.Color))
+        {
+            CycleToNextValue();
+        }
+    }
+
+    public void CycleSubscriber(object parameter)
+    {
+        if (parameter is not bool) return;
+
+        if ((bool)parameter) CycleToNextValue();
     }
 
     public void CycleToNextValue()
@@ -59,6 +81,7 @@ public partial class ToggleSection : ISection
         // We send that we intedn to toggle to next value
         OnPropertyChanged(this, new PropertyChangedEventArgs("Cycle"));
     }
+
 }
 
 

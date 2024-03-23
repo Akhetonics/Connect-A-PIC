@@ -34,7 +34,7 @@ public partial class PortsContainer : Node2D
     //TODO: this is temporary solution, needs to be removed after implementing command handling
     private SwitchOnLightCommand switchOnLightCommand;
     private InputPowerAdjustCommand inputPowerAdjustCommand;
-
+    private InputColorChangeCommand inputColorChangeCommand;
 
     public void OnResolved()
     {
@@ -43,26 +43,33 @@ public partial class PortsContainer : Node2D
         GridManager.ExternalPortManager.ExternalPorts.CollectionChanged += (object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) =>
         {
             ExternalPortView tmpView;
-            foreach (ExternalPort port in e.OldItems)
-            {
-                //TODO: refactor this: instead of removing and re-adding ports just update them
-                tmpView = Views.Find((view) => port.TilePositionY == view.ViewModel.TilePositionY);
-                Views.Remove(tmpView);
-
-                if (tmpView.menu != null)
-                    if (tmpView.ViewModel.IsInput)
-                        DestructInputMenu(tmpView.menu, tmpView);
-                    else
-                        DestructOutputMenu(tmpView.menu);
-
-                tmpView.RightClicked -= View_RightClicked;
-                tmpView.QueueFree();
-            }
+            //only change will input/output or power (not suited for other changes)
             foreach (ExternalPort port in e.NewItems)
             {
-                tmpView = PortViewFactory?.InitializeExternalPortView(port);
-                tmpView.RightClicked += View_RightClicked;
-                Views.Add(tmpView);
+                tmpView = Views.Find((view) => port.TilePositionY == view.ViewModel.TilePositionY);
+
+                if (tmpView == null)
+                {
+                    tmpView = PortViewFactory?.InitializeExternalPortView(port);
+                    tmpView.RightClicked += View_RightClicked;
+                    Views.Add(tmpView);
+                    continue;
+                }
+
+                if (port is ExternalOutput)
+                {
+                    tmpView.ViewModel.IsInput = false;
+                    continue;
+                }
+
+                ExternalInput input = port as ExternalInput;
+                float inflowPower = (float)input.InFlowPower.Real;
+                if (input.LaserType == LaserType.Red)
+                    tmpView.ViewModel.Power = new Vector3(inflowPower, 0, 0);
+                else if (input.LaserType == LaserType.Green)
+                    tmpView.ViewModel.Power = new Vector3(0, inflowPower, 0);
+                else
+                    tmpView.ViewModel.Power = new Vector3(0, 0, inflowPower);
             }
         };
 
@@ -77,6 +84,7 @@ public partial class PortsContainer : Node2D
             switchOnLightCommand = new SwitchOnLightCommand(Views[0].ViewModel.Grid);
         }
         inputPowerAdjustCommand = new InputPowerAdjustCommand(GridManager);
+        inputColorChangeCommand = new InputColorChangeCommand(GridManager);
     }
 
     private void View_RightClicked(object sender, EventArgs e)
@@ -135,13 +143,18 @@ public partial class PortsContainer : Node2D
         //Color switching toggle
         ToggleSection colorToggle = menu.AddSection<ToggleSection>()
             .Initialize(new List<String> { "Red", "Green", "Blue" }, "Toggle port color", portViewModel.Power);
-        colorToggle.PropertyChanged += InputColorToggleHandler;
+        colorToggle.PropertyChangeHandler = (object sender, PropertyChangedEventArgs e) =>
+        {
+            inputColorChangeCommand.ExecuteAsync(new InputColorChangeArgs(portViewModel.TilePositionY, colorToggle.GetNextToggleValue())).Wait();
+        };
+        colorToggle.PropertyChanged += colorToggle.PropertyChangeHandler;
+        portView.ViewModel.PropertyChanged += colorToggle.ToggleValueSubscription;
 
         //Slider section
         SliderSection slider = menu.AddSection<SliderSection>()
             .Initialize("Light power", portViewModel.Power);
         slider.PropertyChangeHandler = (sender, e) =>
-            inputPowerAdjustCommand.ExecuteAsync(new InputPowerAdjustArgs(portViewModel.TilePositionY, slider.Slider.Value));
+            inputPowerAdjustCommand.ExecuteAsync(new InputPowerAdjustArgs(portViewModel.TilePositionY, slider.Slider.Value)).Wait();
         slider.PropertyChanged += slider.PropertyChangeHandler;
         portView.ViewModel.PropertyChanged += slider.ValueChangeSubscription;
 
@@ -239,23 +252,11 @@ public partial class PortsContainer : Node2D
         menu.QueueFree();
     }
 
-    private void InputOnOffToggleHandler(object sender, PropertyChangedEventArgs e)
-    {
-    }
     private void InputColorToggleHandler(object sender, PropertyChangedEventArgs e){
         //TODO: invoke a command which will change port color
 
         //TODO: remove this later
         ((ToggleSection)sender).CycleToNextValue();
-    }
-    private void InputPowerSliderHandler(object sender, PropertyChangedEventArgs e)
-    {
-        //TODO: property change here means Value of slider updated so update stengh of light
-        //TODO: also update value of slider
-
-        //TODO: remove this after commands
-        SliderSection slider = (SliderSection)sender;
-        slider.SetSliderValue(slider.Slider.Value);
     }
 
 }
