@@ -1,6 +1,8 @@
 using CAP_Core.Grid;
+using CAP_Core.Helpers;
 using ConnectAPIC.Scripts.ViewModel.Commands;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
@@ -15,31 +17,26 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
         {
             this.grid = grid;
         }
-        public bool CanExecute(object parameter)
-        {
-            if (parameter is DeleteComponentArgs deleteParameters
-                && grid.GetComponentAt(deleteParameters.gridX, deleteParameters.gridY) != null)
-                return true;
-            return false;
-        }
+        public bool CanExecute(object parameter) => parameter is DeleteComponentArgs;
 
         public Task ExecuteAsync(object parameter)
         {
-            if (!CanExecute(parameter)) return default;
+            if (!CanExecute(parameter)) return Task.CompletedTask;
             var deleteParameters = (DeleteComponentArgs)parameter;
-            grid.UnregisterComponentAt(deleteParameters.gridX, deleteParameters.gridY);
+            foreach (IntVector deletePosition in deleteParameters.DeletePositions)
+            {
+                grid.UnregisterComponentAt(deletePosition.X, deletePosition.Y);
+            }
             return Task.CompletedTask;
         }
     }
     public class DeleteComponentArgs
     {
-        public readonly int gridX;
-        public readonly int gridY;
-
-        public DeleteComponentArgs(int gridX, int gridY)
+        public DeleteComponentArgs(List<IntVector> deletePositions )
         {
-            this.gridX = gridX;
-            this.gridY = gridY;
+            DeletePositions = deletePositions;
         }
+
+        public List<IntVector> DeletePositions { get; }
     }
 }

@@ -140,7 +140,7 @@ namespace ConnectAPIC.LayoutWindow.View
                 }
                 if (mouseEvent.ButtonIndex == MouseButton.Middle && mouseEvent.Pressed)
                 {
-                    ViewModel.DeleteComponentCommand?.ExecuteAsync(new DeleteComponentArgs(ViewModel.GridX, ViewModel.GridY)).Wait();
+                    ViewModel.DeleteComponentCommand?.ExecuteAsync(new DeleteComponentArgs(new() { new IntVector(ViewModel.GridX, ViewModel.GridY) })).Wait();
                 }
                 if (mouseEvent.ButtonIndex == MouseButton.Right)
                 {
@@ -192,6 +192,7 @@ namespace ConnectAPIC.LayoutWindow.View
 
         public override void _ExitTree()
         {
+            this.GridViewModel.SelectionGroupManager.SelectedComponents.CollectionChanged -= SelectedComponents_CollectionChanged;
             ViewModel.TreeExited();
             base._ExitTree();
         }

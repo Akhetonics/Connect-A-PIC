@@ -13,6 +13,7 @@ using Godot;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics.Eventing.Reader;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using YamlDotNet.Serialization;
@@ -39,6 +40,36 @@ namespace ConnectAPIC.Scripts.View.ToolBox
         }
         public SelectionTool(GridView gridView) : base(gridView)
         { }
+
+        protected override void FreeTool()
+        {
+            UnselectAll();
+        }
+
+        private void UnselectAll()
+        {
+            var parameterSelect = new BoxSelectComponentsArgs(new IntVector(0, 0), new IntVector(0, 0), AppendBehaviors.CreateNew);
+            var parameterRemove = new BoxSelectComponentsArgs(new IntVector(0, 0), new IntVector(0, 0), AppendBehaviors.Remove);
+            SelectItems(parameterSelect);
+            SelectItems(parameterRemove);
+        }
+
+        private void SelectItems(BoxSelectComponentsArgs parameter)
+        {
+            if (GridViewModel.SelectionGroupManager.BoxSelectComponentsCommand.CanExecute(parameter))
+            {
+                GridViewModel.SelectionGroupManager.BoxSelectComponentsCommand.ExecuteAsync(parameter).Wait();
+            }
+        }
+        private void DeleteItems()
+        {
+            var parameter = new DeleteComponentArgs(GridViewModel.SelectionGroupManager.SelectedComponents.ToList());
+            if (GridViewModel.DeleteComponentCommand.CanExecute(parameter))
+            {
+                GridViewModel.DeleteComponentCommand.ExecuteAsync(parameter).Wait();
+            }
+        }
+
         public override void _Process(double delta)
         {
             base._Process(delta);
@@ -63,6 +94,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
                 }
             }
         }
+
         public override void _UnhandledInput(InputEvent @event)
         {
             if (IsActive == false) return;
@@ -103,12 +135,8 @@ namespace ConnectAPIC.Scripts.View.ToolBox
                         {
                             AppendBehavior = AppendBehaviors.Remove;
                         }
-                        var parameter = new BoxSelectComponentsParams(gridStart, gridEnd, AppendBehavior);
-                        Logger.Print("start x: "+ gridStart.X + " Y: " + gridStart.Y + " >> To: X: " + gridEnd.X + " Y: " + gridEnd.Y);
-                        if (GridViewModel.SelectionGroupManager.BoxSelectComponentsCommand.CanExecute(parameter))
-                        {
-                            GridViewModel.SelectionGroupManager.BoxSelectComponentsCommand.ExecuteAsync(parameter).Wait();
-                        }
+                        var parameter = new BoxSelectComponentsArgs(gridStart, gridEnd, AppendBehavior);
+                        SelectItems(parameter);
                     }
                 }
             }
@@ -120,6 +148,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
                 {
                     case Key.Delete:
                         // delete all elements in SelectionGroup with a special groupDelete command -> or by modifying the command so it accepts groups.
+                        DeleteItems();
                         break;
                     case Key.Escape:
                         IsSelectionBoxActive = false;

@@ -1,4 +1,5 @@
 using CAP_Contracts.Logger;
+using CAP_Core.Helpers;
 using Chickensoft.AutoInject;
 using ConnectAPic.LayoutWindow;
 using ConnectAPIC.LayoutWindow.View;
@@ -70,7 +71,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
                     MiddleMouseButtonPressed = mouseButtonEvent.Pressed;
                     if (mouseButtonEvent.Pressed)
                     {
-                        var delParams = new DeleteComponentArgs(gridPosition.X, gridPosition.Y);
+                        var delParams = new DeleteComponentArgs(new() { new IntVector(gridPosition.X, gridPosition.Y) });
                         if (GridViewModel.DeleteComponentCommand.CanExecute(delParams))
                         {
                             GridViewModel.DeleteComponentCommand.ExecuteAsync(delParams).Wait();
@@ -85,7 +86,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
                 if (MiddleMouseButtonPressed)
                 {
                     // enabling mouse drag deleting of components
-                    var delParams = new DeleteComponentArgs(gridPosition.X, gridPosition.Y);
+                    var delParams = new DeleteComponentArgs(new() { new IntVector(gridPosition.X, gridPosition.Y) });
                     if (GridViewModel.DeleteComponentCommand.CanExecute(delParams))
                     {
                         GridViewModel.DeleteComponentCommand.ExecuteAsync(delParams).Wait();

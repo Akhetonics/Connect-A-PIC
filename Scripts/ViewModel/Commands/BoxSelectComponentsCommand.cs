@@ -24,14 +24,14 @@ namespace ConnectAPIC.Scripts.View.ToolBox
 
         public bool CanExecute(object parameter)
         {
-            return parameter is BoxSelectComponentsParams;
+            return parameter is BoxSelectComponentsArgs;
         }
 
         public Task ExecuteAsync(object parameter)
         {
             if (CanExecute(parameter) == false) return Task.CompletedTask;
             // select all components in box
-            if (parameter is BoxSelectComponentsParams box)
+            if (parameter is BoxSelectComponentsArgs box)
             {
                 // define start and end to count from low to high in case the box is upside down
                 var startX = Math.Min(box.GridStart.X, box.GridEnd.X);
@@ -120,9 +120,9 @@ namespace ConnectAPIC.Scripts.View.ToolBox
             }
         }
     }
-    public class BoxSelectComponentsParams
+    public class BoxSelectComponentsArgs
     {
-        public BoxSelectComponentsParams(IntVector gridStart, IntVector gridEnd, AppendBehaviors appendBehaviour)
+        public BoxSelectComponentsArgs(IntVector gridStart, IntVector gridEnd, AppendBehaviors appendBehaviour)
         {
             GridStart = gridStart;
             GridEnd = gridEnd;

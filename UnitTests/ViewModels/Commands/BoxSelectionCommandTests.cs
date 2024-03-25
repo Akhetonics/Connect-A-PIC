@@ -33,7 +33,7 @@ namespace ConnectAPIC.test.ViewModels.Commands
             var selectionManager = new SelectionManager(gridManager);
             var command = new BoxSelectComponentsCommand(gridManager, selectionManager);
             selectionManager.Selections.Add( new IntVector(7,8));
-            var parameters = new BoxSelectComponentsParams(new IntVector(0, 0), new IntVector(4, 4), appendBehavior);
+            var parameters = new BoxSelectComponentsArgs(new IntVector(0, 0), new IntVector(4, 4), appendBehavior);
 
             await command.ExecuteAsync(parameters);
 
