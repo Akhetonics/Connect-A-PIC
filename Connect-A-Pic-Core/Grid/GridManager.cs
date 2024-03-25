@@ -192,38 +192,19 @@ namespace CAP_Core.Grid
         }
         public void UnregisterComponentAt(int x, int y)
         {
-            Component? item = GetComponentAt(x, y);
-            if (item == null) return;
-            x = item.GridXMainTile;
-            y = item.GridYMainTile;
-            for (int i = 0; i < item.WidthInTiles; i++)
+            Component? component = GetComponentAt(x, y);
+            if (component == null) return;
+            x = component.GridXMainTile;
+            y = component.GridYMainTile;
+            for (int i = 0; i < component.WidthInTiles; i++)
             {
-                for (int j = 0; j < item.HeightInTiles; j++)
+                for (int j = 0; j < component.HeightInTiles; j++)
                 {
                     Tiles[x + i, y + j].Component = null;
                 }
             }
-            OnComponentRemoved?.Invoke(item, x, y);
-            item.ClearGridData();
-        }
-        public bool MoveComponent(int x, int y, int sourceX, int sourceY)
-        {
-            Component? component = GetComponentAt(sourceX, sourceY);
-            if (component == null) return false;
-            int oldMainGridX = component.GridXMainTile;
-            int oldMainGridY = component.GridYMainTile;
-            UnregisterComponentAt(component.GridXMainTile, component.GridYMainTile); // to avoid blocking itself from moving only one tile into its own subTiles
-            try
-            {
-                PlaceComponent(x, y, component);
-                OnComponentMoved?.Invoke(component, x, y);
-                return true;
-            }
-            catch (ComponentCannotBePlacedException)
-            {
-                PlaceComponent(oldMainGridX, oldMainGridY, component);
-            }
-            return false;
+            OnComponentRemoved?.Invoke(component, x, y);
+            component.ClearGridData();
         }
 
         public List<ParentAndChildTile> GetConnectedNeighborsOfComponent(Component component)

@@ -5,6 +5,7 @@ using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scripts.View.ToolBox;
 using Godot;
 using System;
+using System.Collections.Generic;
 
 public partial class DragDropProxy : Control
 {
@@ -12,9 +13,9 @@ public partial class DragDropProxy : Control
     public delegate bool CanDropData(Vector2 position, Variant data);
     public delegate void DropData(Vector2 position, Variant data);
     public event EventHandler<InputEvent> InputReceived;
-    public event GetDragData OnGetDragData;
-    public event CanDropData OnCanDropData;
-    public event DropData OnDropData;
+    public GetDragData OnGetDragData;
+    public CanDropData OnCanDropData;
+    public DropData OnDropData;
     private Control DragPreview { get; set; }
 
     public void Initialize(int widthInTiles, int heightInTiles)

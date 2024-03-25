@@ -3,6 +3,7 @@ using CAP_Core;
 using CAP_Core.Components;
 using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.ExternalPorts;
+using CAP_Core.Helpers;
 using CAP_Core.LightCalculation;
 using ConnectAPic.LayoutWindow;
 using ConnectAPIC.LayoutWindow.ViewModel;
@@ -49,9 +50,9 @@ namespace ConnectAPIC.LayoutWindow.View
         {
             this.ViewModel = viewModel;
             this.Logger = logger;
-            DragDropProxy.OnGetDragData += _GetDragData;
-            DragDropProxy.OnCanDropData += _CanDropData;
-            DragDropProxy.OnDropData += _DropData;
+            DragDropProxy.OnGetDragData = _GetDragData;
+            DragDropProxy.OnCanDropData = _CanDropData;
+            DragDropProxy.OnDropData = _DropData;
             DragDropProxy.Initialize(viewModel.Width, viewModel.Height);
             DragDropProxy.InputReceived += (object sender, InputEvent e) => {
             };
@@ -227,17 +228,19 @@ namespace ConnectAPIC.LayoutWindow.View
         }
         public bool _CanDropData(Godot.Vector2 position, Variant data)
         {
-            if (data.Obj is ComponentView component)
+            if (data.Obj is Godot.Collections.Array<ComponentView> components )
             {
-                int gridX = (int)position.X / GameManager.TilePixelSize;
-                int gridY = (int)position.Y / GameManager.TilePixelSize;
-                Component model = null;
-                if (component.ViewModel.IsPlacedInGrid)
+                bool canDropData = true;
+                foreach (var component in components)
                 {
-                    model = ViewModel.Grid.GetComponentAt(component.ViewModel.GridX, component.ViewModel.GridY, component.WidthInTiles, component.HeightInTiles);
+                    int gridX = (int)position.X / GameManager.TilePixelSize;
+                    int gridY = (int)position.Y / GameManager.TilePixelSize;
+                    // all of the elements should be in the grid, but it does not matter if another component gets overridden.
+                    if (!ViewModel.Grid.IsInGrid (gridX, gridY, component.WidthInTiles, component.HeightInTiles))
+                    {
+                        canDropData = false;
+                    }
                 }
-                bool canDropData = !ViewModel.Grid.IsColliding(gridX, gridY, component.WidthInTiles, component.HeightInTiles, model);
-
                 return canDropData;
             }
 
@@ -245,16 +248,17 @@ namespace ConnectAPIC.LayoutWindow.View
         }
         public void _DropData(Godot.Vector2 atPosition, Variant data)
         {
-            Vector2I GridXY = LocalToMap(atPosition);
-            if (data.Obj is ComponentView componentView)
+            var TargetGridXY = LocalToMap(atPosition).ToIntVector();
+            if (data.Obj is Godot.Collections.Array<ComponentView> componentViews)
             {
-                if (!componentView.ViewModel.IsPlacedInGrid)
+                List<(IntVector Source, IntVector Target)> translations = new();
+                foreach( var componentView in componentViews)
                 {
-                    ViewModel.CreateComponentCommand.ExecuteAsync(new CreateComponentArgs(componentView.ViewModel.TypeNumber, GridXY.X, GridXY.Y, (DiscreteRotation)(componentView.RotationDegrees / 90)));
-                }
-                else
-                {
-                    ViewModel.MoveComponentCommand.ExecuteAsync(new MoveComponentArgs(componentView.ViewModel.GridX, componentView.ViewModel.GridY, GridXY.X, GridXY.Y));
+                    var source = ((Vector2I)componentView.Position).ToIntVector();
+                    translations.Add((source, TargetGridXY));
+                    var args = new MoveComponentArgs(translations);
+                    ViewModel.MoveComponentCommand.ExecuteAsync(args);
+                    //ViewModel.MoveComponentCommand.ExecuteAsync(new MoveComponentArgs(componentView.ViewModel.GridX, componentView.ViewModel.GridY, GridXY.X, GridXY.Y));
                 }
             }
         }
@@ -283,7 +287,19 @@ namespace ConnectAPIC.LayoutWindow.View
         public Variant _GetDragData(Godot.Vector2 position)
         {
             Vector2I GridXY = LocalToMap(position);
-            return GridComponentViews[GridXY.X, GridXY.Y];
+            var selections = ViewModel.SelectionGroupManager.SelectionManager.Selections;
+            Godot.Collections.Array<ComponentView> components = new ();
+            if (selections.Count != 0) {
+                foreach(var selection in selections)
+                {
+                    if (GridComponentViews[selection.X, selection.Y] == null)
+                        continue;
+                    components.Add(GridComponentViews[selection.X , selection.Y]);
+                }
+            }
+            components.Add( GridComponentViews[GridXY.X, GridXY.Y]);
+
+            return components;
         }
     }
 }
