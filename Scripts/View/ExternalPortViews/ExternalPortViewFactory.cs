@@ -28,7 +28,7 @@ namespace ConnectAPic.LayoutWindow
         public ExternalPortView InitializeExternalPortView(ExternalPort externalPort)
         {
             ExternalPortView portView = PortsContainer.ExternalPortViewTemplate.Instantiate<ExternalPortView>();
-            ExternalPortViewModel portViewModel = new ExternalPortViewModel(Grid, LightManager, externalPort.TilePositionY, LightCalculator);
+            ExternalPortViewModel portViewModel = new ExternalPortViewModel(Grid, externalPort, LightCalculator);
 
             portView.Initialize(portViewModel);
 

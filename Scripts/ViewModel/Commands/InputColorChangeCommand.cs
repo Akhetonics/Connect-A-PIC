@@ -24,16 +24,8 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
         {
             InputColorChangeArgs inputParams = parameter as InputColorChangeArgs;
             if (inputParams == null || inputParams.LaserColor == null) return false;
-            
-            bool found = false;
-            foreach (var item in Grid.ExternalPorts)
-                if (item.TilePositionY == inputParams.PortPositionY)
-                {
-                    found = (item is ExternalInput);
-                    break;
-                }
 
-            return found;
+            return Grid.ExternalPorts.Contains(inputParams.Port);
         }
 
         public async Task ExecuteAsync(object parameter)
@@ -41,27 +33,20 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
             if (!CanExecute(parameter)) return;
 
             InputColorChangeArgs args = parameter as InputColorChangeArgs;
-            ExternalInput input = null;
 
-            foreach (var item in Grid.ExternalPorts)
-                if (item.TilePositionY == args.PortPositionY) { input = (ExternalInput)item; break; }
+            args.Port.LaserType = args.LaserColor;
 
-            if (input == null) return;
-
-            //TODO: this is kinda hacky way of doing it, needs to be discussed
-            int i = Grid.ExternalPorts.IndexOf(input);
-            input.LaserType = args.LaserColor;
-            Grid.ExternalPorts[i] = input;
-
-            //TODO: light calculator to recalculate light
+            //easy way to recalculate light
+            Grid.IsLightOn = !Grid.IsLightOn;
+            Grid.IsLightOn = !Grid.IsLightOn;
         }
     }
 
     public class InputColorChangeArgs
     {
-        public InputColorChangeArgs(int portPositionY, String colorString)
+        public InputColorChangeArgs(ExternalInput port, String colorString)
         {
-            PortPositionY = portPositionY;
+            Port = port;
             switch (colorString.ToLower()) {
                 case "red": LaserColor = LaserType.Red; break;
                 case "green": LaserColor = LaserType.Green; break;
@@ -69,13 +54,13 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
             }
         }
 
-        public InputColorChangeArgs(int portPositionY, LaserType laserColor)
+        public InputColorChangeArgs(ExternalInput port, LaserType laserColor)
         {
-            PortPositionY = portPositionY;
+            Port = port;
             LaserColor = laserColor;
         }
 
-        public int PortPositionY { get; }
+        public ExternalInput Port { get; }
         public LaserType LaserColor { get; }
     }
 }

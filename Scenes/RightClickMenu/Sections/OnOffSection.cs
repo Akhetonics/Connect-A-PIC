@@ -24,11 +24,10 @@ public partial class OnOffSection : ISection
 
     private TextureRect onTexture;
 
-    public OnOffSection Initialize(String title, bool value)
+    public void Initialize(String title, bool value)
     {
         Title = title;
         IsOn = value;
-        return this;
     }
 
     public override void _Ready()

@@ -32,10 +32,10 @@ public partial class PortsContainer : Node2D
 
     //Commands
     //TODO: this is temporary solution, needs to be removed after implementing command handling
-    private SwitchOnLightCommand switchOnLightCommand;
-    private InputPowerAdjustCommand inputPowerAdjustCommand;
-    private InputColorChangeCommand inputColorChangeCommand;
-    private InputOutputChangeCommand inputOutputChangeCommand;
+    private static SwitchOnLightCommand switchOnLightCommand;
+    private static InputPowerAdjustCommand inputPowerAdjustCommand;
+    private static InputColorChangeCommand inputColorChangeCommand;
+    private static InputOutputChangeCommand inputOutputChangeCommand;
     public void OnResolved()
     {
         PortViewFactory = new ExternalPortViewFactory(this, GridManager, LightCalculator, LightManager);
@@ -46,7 +46,7 @@ public partial class PortsContainer : Node2D
             //only change will input/output or power (not suited for other changes)
             foreach (ExternalPort port in e.NewItems)
             {
-                tmpView = Views.Find((view) => port.TilePositionY == view.ViewModel.TilePositionY);
+                /*tmpView = Views.Find((view) => port.TilePositionY == view.ViewModel.TilePositionY);
 
                 if (tmpView == null)
                 {
@@ -55,21 +55,27 @@ public partial class PortsContainer : Node2D
                     Views.Add(tmpView);
                     continue;
                 }
+                bool was_input = tmpView.ViewModel.IsInput;
 
                 if (port is ExternalOutput)
                 {
                     tmpView.ViewModel.IsInput = false;
+
+                    if (was_input) ReconstructMenu(tmpView, was_input);
+
                     continue;
                 }
 
                 ExternalInput input = port as ExternalInput;
+                tmpView.ViewModel.IsInput = true;
+                if (!was_input) ReconstructMenu(tmpView, was_input);
                 float inflowPower = (float)input.InFlowPower.Real;
                 if (input.LaserType == LaserType.Red)
                     tmpView.ViewModel.Power = new Vector3(inflowPower, 0, 0);
                 else if (input.LaserType == LaserType.Green)
                     tmpView.ViewModel.Power = new Vector3(0, inflowPower, 0);
                 else
-                    tmpView.ViewModel.Power = new Vector3(0, 0, inflowPower);
+                    tmpView.ViewModel.Power = new Vector3(0, 0, inflowPower);*/
             }
         };
 
@@ -88,9 +94,28 @@ public partial class PortsContainer : Node2D
         inputOutputChangeCommand = new InputOutputChangeCommand(GridManager);
     }
 
+    private void ReconstructMenu(ExternalPortView view, bool is_input)
+    {
+        if (is_input) DestructInputMenu(view);
+        else DestructOutputMenu(view);
+        Vector2 oldPosition = view.menu.Position;
+        view.menu = null;
+        ConstructMenu(view, oldPosition);
+    }
+
     private void View_RightClicked(object sender, EventArgs e)
     {
         ExternalPortView view = sender as ExternalPortView;
+        ConstructMenu(view);
+    }
+
+    private void ConstructMenu(ExternalPortView view)
+    {
+        ConstructMenu(view, view.Position);
+    }
+
+    private void ConstructMenu(ExternalPortView view, Vector2 position)
+    {
         if (view == null) return;
 
         //if menu already constructed
@@ -98,70 +123,67 @@ public partial class PortsContainer : Node2D
         {
             view.menu.Visible = true;
             //TODO: adjust this
-            view.menu.Position = view.Position;
+            view.menu.Position = position;
             return;
         }
 
-        if (view.ViewModel.IsInput){
+        if (view.ViewModel.IsInput)
+        {
             view.menu = RightClickMenu.Instantiate<ControlMenu>();
             //menu can only be constructed after its ready
-            view.menu.Ready += () => ConstructInputMenu(view, view.menu);
+            view.menu.Ready += () => ConstructInputMenu(view);
         }
         else
         {
             view.menu = RightClickMenu.Instantiate<ControlMenu>();
-            view.menu.Ready += () => ConstructOutputMenu(view, view.menu);
+            view.menu.Ready += () => ConstructOutputMenu(view);
         }
-        
+
         view.menu.Visible = true;
         this.AddChild(view.menu);
+        view.menu.Position = position;
     }
 
-    private void ConstructInputMenu(ExternalPortView portView, ControlMenu menu)
+    private static void ConstructInputMenu(ExternalPortView portView)
     {
+        ControlMenu menu = portView.menu;
         ExternalPortViewModel portViewModel = portView.ViewModel;
 
         //Port mode toggle (Input/Output Switch)
-        ToggleSection ioToggle = menu.AddSection<ToggleSection>()
-            .Initialize(new List<String>{ "Input", "Output" }, "Toggle port mode", "Input");
+        ToggleSection ioToggle = menu.AddSection<ToggleSection>();
+        ioToggle.Initialize(new List<String>{ "Input", "Output" }, "Toggle port mode", "Input");
         ioToggle.PropertyChangeHandler = (object sender, PropertyChangedEventArgs e) =>
-        {
-            inputOutputChangeCommand.ExecuteAsync(portView.ViewModel.TilePositionY).Wait();
-        };
+            inputOutputChangeCommand.ExecuteAsync(portView.ViewModel).Wait();
         ioToggle.PropertyChanged += ioToggle.PropertyChangeHandler;
 
         //On/Off toggle
-        OnOffSection onOff = menu.AddSection<OnOffSection>()
-            .Initialize("Switch input light", portViewModel.IsLightOn);
+        OnOffSection onOff = menu.AddSection<OnOffSection>();
+        onOff.Initialize("Switch input light", portViewModel.IsLightOn);
         onOff.PropertyChangeHandler = (object sender, PropertyChangedEventArgs e) =>
             switchOnLightCommand.ExecuteAsync(!(sender as OnOffSection).IsOn).Wait();
         onOff.PropertyChanged += onOff.PropertyChangeHandler;
         portView.ViewModel.PropertyChanged += onOff.ToggleSubscription;
 
         //Color switching toggle
-        ToggleSection colorToggle = menu.AddSection<ToggleSection>()
-            .Initialize(new List<String> { "Red", "Green", "Blue" }, "Toggle port color", portViewModel.Power);
+        ToggleSection colorToggle = menu.AddSection<ToggleSection>();
+        colorToggle.Initialize(new List<String> { "Red", "Green", "Blue" }, "Toggle port color", portViewModel.Power);
         colorToggle.PropertyChangeHandler = (object sender, PropertyChangedEventArgs e) =>
-        {
-            inputColorChangeCommand.ExecuteAsync(new InputColorChangeArgs(portViewModel.TilePositionY, colorToggle.GetNextToggleValue())).Wait();
-        };
+            inputColorChangeCommand.ExecuteAsync(new InputColorChangeArgs(portViewModel.PortModel as ExternalInput, colorToggle.GetNextToggleValue())).Wait();
         colorToggle.PropertyChanged += colorToggle.PropertyChangeHandler;
         portView.ViewModel.PropertyChanged += colorToggle.ToggleValueSubscription;
 
         //Slider section
-        SliderSection slider = menu.AddSection<SliderSection>()
-            .Initialize("Light power", portViewModel.Power);
+        SliderSection slider = menu.AddSection<SliderSection>();
+        slider.Initialize("Light power", portViewModel.Power);
         slider.PropertyChangeHandler = (sender, e) =>
-            inputPowerAdjustCommand.ExecuteAsync(new InputPowerAdjustArgs(portViewModel.TilePositionY, slider.Slider.Value)).Wait();
+            inputPowerAdjustCommand.ExecuteAsync(new InputPowerAdjustArgs(portViewModel.PortModel, slider.Slider.Value)).Wait();
         slider.PropertyChanged += slider.PropertyChangeHandler;
         portView.ViewModel.PropertyChanged += slider.ValueChangeSubscription;
-
-        //Place menu next to portView
-        //TODO: test this out properly
-        menu.Position = portView.Position + new Vector2(50, 0);
     }
-    private void DestructInputMenu(ControlMenu menu, ExternalPortView portView)
+    private static void DestructInputMenu(ExternalPortView portView)
     {
+        ControlMenu menu = portView.menu;
+
         //Port mode toggle (Input/Output Switch)
         ToggleSection ioToggle = menu.RemoveSection<ToggleSection>();
         ioToggle.PropertyChanged -= ioToggle.PropertyChangeHandler;
@@ -186,25 +208,21 @@ public partial class PortsContainer : Node2D
 
         menu.QueueFree();
     }
-
-    private void ConstructOutputMenu(ExternalPortView portView, ControlMenu menu) {
+    private static void ConstructOutputMenu(ExternalPortView portView)
+    {
+        ControlMenu menu = portView.menu;
         ExternalPortViewModel portViewModel = portView.ViewModel;
 
         //Port mode toggle (Input/Output Switch)
-        ToggleSection ioToggle = menu.AddSection<ToggleSection>()
-            .Initialize(new List<String> { "Input", "Output" }, "Toggle port mode", "Input");
+        ToggleSection ioToggle = menu.AddSection<ToggleSection>();
+        ioToggle.Initialize(new List<String> { "Input", "Output" }, "Toggle port mode", "Input");
         ioToggle.PropertyChangeHandler = (object sender, PropertyChangedEventArgs e) =>
-        {
-            //TODO: invoke a command which will change port from input to output
-
-            //TODO: remove this, command should do it probably (or maybe listen to port viewModel and do it from there?)
-            ((ToggleSection)sender).CycleToNextValue();
-        };
+            inputOutputChangeCommand.ExecuteAsync(portView.ViewModel.TilePositionY).Wait();
         ioToggle.PropertyChanged += ioToggle.PropertyChangeHandler;
 
         //Color infos
-        InfoSection colorInfo = menu.AddSection<InfoSection>()
-            .Initialize("Colors (R,G,B)", portViewModel.Power.ToString());
+        InfoSection colorInfo = menu.AddSection<InfoSection>();
+        colorInfo.Initialize("Colors (R,G,B)", portViewModel.Power.ToString());
 
         //TODO: figure out how to do this using non anonymus functions(could do it with defining functions here and storing them globally)
         /*portViewModel.PropertyChanged += (object sender, PropertyChangedEventArgs e) =>
@@ -218,8 +236,8 @@ public partial class PortsContainer : Node2D
         };*/
 
         //Phase shift infos
-        InfoSection phaseInfo = menu.AddSection<InfoSection>()
-            .Initialize("Phase shift (R,G,B)", "(N/A, N/A, N/A)");
+        InfoSection phaseInfo = menu.AddSection<InfoSection>();
+        phaseInfo.Initialize("Phase shift (R,G,B)", "(N/A, N/A, N/A)");
 
         //TODO: figure out how to do this using non anonymus functions
         /*portViewModel.PropertyChanged += (object sender, PropertyChangedEventArgs e) =>
@@ -231,12 +249,10 @@ public partial class PortsContainer : Node2D
                 colorInfo.Value = "(N/A, N/A, N/A)";
             }
         };*/
-
-        //Place menu next to portView
-        //TODO: test this out properly
-        menu.Position = portView.Position + new Vector2(50, 0);
     }
-    private void DestructOutputMenu(ControlMenu menu) {
+    private static void DestructOutputMenu(ExternalPortView portView)
+    {
+        ControlMenu menu = portView.menu;
         ToggleSection ioToggle = menu.RemoveSection<ToggleSection>();
         ioToggle.PropertyChanged -= ioToggle.PropertyChangeHandler;
         ioToggle.QueueFree();
@@ -248,13 +264,6 @@ public partial class PortsContainer : Node2D
         colorInfo.QueueFree();
 
         menu.QueueFree();
-    }
-
-    private void InputColorToggleHandler(object sender, PropertyChangedEventArgs e){
-        //TODO: invoke a command which will change port color
-
-        //TODO: remove this later
-        ((ToggleSection)sender).CycleToNextValue();
     }
 
 }

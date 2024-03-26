@@ -22,37 +22,31 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
 
         public bool CanExecute(object parameter)
         {
-            if (parameter is not int) return false;
-            
-            foreach (var item in Grid.ExternalPorts)
-                if (item.TilePositionY == (int)parameter)
-                    return true;
-            return false;
+            ExternalPortViewModel ViewModel = parameter as ExternalPortViewModel;
+            if (ViewModel == null) return false;
+
+            return Grid.ExternalPorts.Contains(ViewModel.PortModel);
         }
 
         public async Task ExecuteAsync(object parameter)
         {
             if (!CanExecute(parameter)) return;
+            ExternalPortViewModel ViewModel = parameter as ExternalPortViewModel;
 
-            int portPositionY = (int)parameter;
-            ExternalPort input = null;
+            ExternalPort newPort;
+            ExternalPort port = ViewModel.PortModel;
+            int index = Grid.ExternalPorts.IndexOf(port);
 
-            foreach (var item in Grid.ExternalPorts)
-                if (item.TilePositionY == portPositionY) { input = item; break; }
-
-            if (input == null) return;
-            int indexOfPort = Grid.ExternalPorts.IndexOf(input);
-
-            if (input is ExternalInput)
-            {
-                Grid.ExternalPorts[indexOfPort] =
-                    new ExternalOutput(input.PinName, input.TilePositionY);
-            }
+            if (port is ExternalInput)
+                newPort = new ExternalOutput(port.PinName, port.TilePositionY);
             else
-            {
-                Grid.ExternalPorts[indexOfPort] =
-                    new ExternalInput(input.PinName, LaserType.Red, input.TilePositionY, 1);
-            }
+                newPort = new ExternalInput(port.PinName, LaserType.Red, port.TilePositionY, 1);
+
+            ViewModel.PortModel = newPort;
+            Grid.ExternalPorts[index] = newPort;
+
+            Grid.IsLightOn = !Grid.IsLightOn;
+            Grid.IsLightOn = !Grid.IsLightOn;
         }
     }
 }

@@ -17,6 +17,28 @@ namespace ConnectAPIC.Scripts.ViewModel
     {
         public GridManager Grid { get; }
         public LightCalculationService LightCalculator { get; }
+        private ExternalPort _portModel;
+        public ExternalPort PortModel
+        {
+            get => _portModel;
+            set
+            {
+                if (_portModel != null)
+                    _portModel.PropertyChanged -= Model_PropertyChanged;
+                _portModel = value;
+                _portModel.PropertyChanged += Model_PropertyChanged;
+
+                IsInput = (value is ExternalInput);
+
+                ExternalInput tmp = (value as ExternalInput);
+                if (tmp != null)
+                {
+                    ResetInputPowerAndColorUsingLazerType(tmp.LaserType, tmp.InFlowPower.Real);
+                }
+
+                OnPropertyChanged();
+            }
+        }
 
         public int TilePositionY { get; private set; } = -1;
 
@@ -42,8 +64,8 @@ namespace ConnectAPIC.Scripts.ViewModel
             }
         }
 
-        private string _color;
-        public string Color {
+        private LightColor _color;
+        public LightColor Color {
             get => _color;
             set
             {
@@ -58,13 +80,6 @@ namespace ConnectAPIC.Scripts.ViewModel
             get => _power;
             set
             {
-                if (Color != "red" && _power.X < 0.005 && value.X > 0.005)
-                    Color = "red";
-                else if (Color != "green" && _power.Y < 0.005 && value.Y > 0.005)
-                    Color = "green";
-                else if (Color != "blue" && _power.Z < 0.005 && value.Z > 0.005)
-                    Color = "blue";
-
                 _power = value;
                 OnPropertyChanged();
             } 
@@ -74,10 +89,10 @@ namespace ConnectAPIC.Scripts.ViewModel
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public ExternalPortViewModel(GridManager grid, int tilePositionY, LightCalculationService lightCalculator)
+        public ExternalPortViewModel(GridManager grid, ExternalPort externalPort, LightCalculationService lightCalculator)
         {
             LightCalculator = lightCalculator;
-            TilePositionY = tilePositionY;
+            PortModel = externalPort;
             Power = Vector3.Zero;
             Grid = grid;
 
@@ -91,40 +106,10 @@ namespace ConnectAPIC.Scripts.ViewModel
                 }
             };
 
-        lightCalculator.LightCalculationChanged += (object sender, LightCalculationChangeEventArgs e) =>
-        {
-            if (IsInput) return;
-            var touchingComponent = grid.ComponentMover.GetComponentAt(0, TilePositionY);
-            if (touchingComponent == null)
-            {
-                ResetPowers();
-                return;
-            };
-            var offsetY = TilePositionY - touchingComponent.GridYMainTile;
-            var touchingPin = touchingComponent.PinIdLeftOut(0, offsetY);
-            if (touchingPin == null)
-            {
-                ResetPowers();
-                return;
-            };
-            var fieldOut = e.LightFieldVector[(Guid)touchingPin].Magnitude;
-            var power = _power;
-            if (e.LaserInUse.Color == LightColor.Red)
-            {
-                // floats should be sufficient for this value
-                power.X = (float)(fieldOut * fieldOut);
-            }
-            else if (e.LaserInUse.Color == LightColor.Green)
-            {
-                power.Y = (float)(fieldOut * fieldOut);
-            }
-            else
-            {
-                power.Z = (float)(fieldOut * fieldOut);
-            }
-            Power = power;
-        };
-    }
+            lightCalculator.LightCalculationChanged += ResetPowerMeterDisplay;
+        }
+
+
 
 
         public string AllColorsPower()
@@ -152,9 +137,74 @@ namespace ConnectAPIC.Scripts.ViewModel
             Power = Vector3.Zero;
         }
 
+        private void ResetPowerMeterDisplay(object sender, LightCalculationChangeEventArgs e)
+        {
+            if (IsInput) return;
+            var touchingComponent = Grid.ComponentMover.GetComponentAt(0, PortModel.TilePositionY);
+            if (touchingComponent == null)
+            {
+                ResetPowers();
+                return;
+            };
+            var offsetY = PortModel.TilePositionY - touchingComponent.GridYMainTile;
+            var touchingPin = touchingComponent.PinIdLeftOut(0, offsetY);
+            if (touchingPin == null)
+            {
+                ResetPowers();
+                return;
+            };
+            var fieldOut = e.LightFieldVector[(Guid)touchingPin].Magnitude;
+
+            UpdateInputPowerAndColorUsingLazerType(e.LaserInUse, (float)(fieldOut * fieldOut));
+        }
+
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        private void Model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            //only external inputs gives away meaningfull property change signals
+            ExternalInput inputPort = PortModel as ExternalInput;
+            if (inputPort == null) return;
+
+            if (e.PropertyName == nameof(ExternalInput.LaserType)
+             || e.PropertyName == nameof(ExternalInput.InFlowPower))
+            {
+                var inputPower = inputPort.InFlowPower.Real;
+                ResetInputPowerAndColorUsingLazerType(inputPort.LaserType, inputPower);
+            }
+        }
+
+        private void UpdateInputPowerAndColorUsingLazerType(LaserType laserType, double inputPower)
+        {
+            SetPowerAndColorUsingLazerType(laserType, inputPower, Power);
+        }
+
+        private void ResetInputPowerAndColorUsingLazerType(LaserType laserType, double inputPower)
+        {
+            SetPowerAndColorUsingLazerType(laserType, inputPower, Vector3.Zero);
+        }
+
+        private void SetPowerAndColorUsingLazerType(LaserType laserType, double inputPower, Vector3 startValue)
+        {
+            var power = startValue;
+            if (laserType == LaserType.Red)
+            {
+                power.X = (float)inputPower;
+                Color = LightColor.Red;
+            }
+            else if (laserType == LaserType.Green)
+            {
+                power.Y = (float)inputPower;
+                Color = LightColor.Green;
+            }
+            else
+            {
+                power.Z = (float)inputPower;
+                Color = LightColor.Blue;
+            }
+            Power = power;
         }
     }
 }

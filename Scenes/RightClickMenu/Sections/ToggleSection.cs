@@ -20,18 +20,18 @@ public partial class ToggleSection : ISection
         }
     }
 
-    public ToggleSection Initialize(List<String> toggleValues, String title, Vector3 value)
+    public void Initialize(List<String> toggleValues, String title, Vector3 value)
     {
         String strValue = "";
         if (value.X > 0.005) strValue = "Red";
         else if (value.Y > 0.005) strValue = "Green";
         else if (value.Z > 0.005) strValue = "Blue";
 
-        return Initialize(toggleValues, title, strValue);
+        Initialize(toggleValues, title, strValue);
     }
 
 
-    public ToggleSection Initialize(List<String> toggleValues, String title, String value = "")
+    public void Initialize(List<String> toggleValues, String title, String value = "")
     {
         Title = title;
         Value = value;
@@ -44,8 +44,6 @@ public partial class ToggleSection : ISection
             else
                 toggleIndex = toggleValues.IndexOf(Value);
         }
-
-        return this;
     }
 
     //TODO: can add own arguments for sections to make them more flexible
