@@ -10,7 +10,7 @@ namespace CAP_Core.Grid
 {
     public class SelectionManager
     {
-        public ObservableCollection<IntVector> Selections { get; set; } = new();
+        public UniqueObservableCollection<IntVector> Selections { get; set; } = new();
         public SelectionManager(GridManager grid)
         {
             grid.OnComponentRemoved += (Components.Component component, int x, int y) =>

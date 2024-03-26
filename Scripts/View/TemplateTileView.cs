@@ -24,21 +24,6 @@ namespace ConnectAPIC.LayoutWindow.View
         { // you cannot drop something on a template tile
         }
 
-        //public override Variant _GetDragData(Vector2 position)
-        //{
-        //    if (GetChild(0) is ComponentView template)
-        //    {
-        //        var newComponent = ComponentViewFactory.CreateComponentView(template.ViewModel.TypeNumber);
-        //        return newComponent;
-        //    }
-        //    else
-        //    {
-        //        var exceptionText = "child of _GetDragData() is not of type ComponentView even though it should be";
-        //        Logger.PrintErr(exceptionText);
-        //        throw new DataMisalignedException(exceptionText);
-        //    }
-        //}
-
         public override void _GuiInput(InputEvent inputEvent)
         {
             if( inputEvent is InputEventMouseButton mouseButtonEvent)

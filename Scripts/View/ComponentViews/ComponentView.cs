@@ -46,26 +46,24 @@ namespace ConnectAPIC.LayoutWindow.View
         private void SelectedComponents_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             // Check this component was added
-            if (e.Action == NotifyCollectionChangedAction.Add)
+            if (e.Action == NotifyCollectionChangedAction.Add || e.Action==NotifyCollectionChangedAction.Replace)
             {
-                foreach (IntVector itemPos in e.NewItems)
+                if (e.NewItems.Contains(new IntVector(ViewModel.GridX, ViewModel.GridY)))
                 {
-                    if(itemPos.X == ViewModel.GridX && itemPos.Y == ViewModel.GridY)
-                    {
-                        Modulate = new Godot.Color(0, 1, 0);
-                    }
+                    Modulate = new Godot.Color(0, 1, 0);
                 }
             }
             // Check if items were removed
-            if (e.Action == NotifyCollectionChangedAction.Remove)
+            if (e.Action == NotifyCollectionChangedAction.Remove || e.Action == NotifyCollectionChangedAction.Replace)
             {
-                foreach (IntVector item in e.OldItems)
+                if (e.OldItems.Contains(new IntVector(ViewModel.GridX, ViewModel.GridY)))
                 {
-                    if (item.X == ViewModel.GridX && item.Y == ViewModel.GridY)
-                    {
-                        Modulate = new Godot.Color(1, 1, 1);
-                    }
+                    Modulate = new Godot.Color(1, 1, 1);
                 }
+            }
+            if (e.Action == NotifyCollectionChangedAction.Reset)
+            {
+                Modulate = new Godot.Color(1, 1, 1);
             }
 
         }

@@ -20,7 +20,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
             public GridViewModel ViewModel { get; }
             public SelectionManager SelectionManager { get; }
 
-            public ObservableCollection<IntVector> SelectedComponents => SelectionManager.Selections;
+            public UniqueObservableCollection<IntVector> SelectedComponents => SelectionManager.Selections;
             public BoxSelectComponentsCommand BoxSelectComponentsCommand { get; private set; }
         }
     }

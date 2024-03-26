@@ -55,14 +55,15 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             this.LightManager = lightManager;
             this.LightManager.OnLightSwitched += (object sender, bool e) => IsLightOn = e;
             CreateComponentCommand = new CreateComponentCommand(grid, componentModelFactory);
-            MoveComponentCommand = new MoveComponentCommand(grid);
+            SelectionGroupManager = new(this, new SelectionManager(grid));
+            MoveComponentCommand = new MoveComponentCommand(grid, SelectionGroupManager.SelectionManager);
             SaveGridCommand = new SaveGridCommand(grid, new FileDataAccessor());
             LoadGridCommand = new LoadGridCommand(grid, new FileDataAccessor(), componentModelFactory, this);
             MoveSliderCommand = new MoveSliderCommand(grid);
             ExportToNazcaCommand = new ExportNazcaCommand(new NazcaExporter(), grid, new DataAccessorGodot());
             SwitchOnLightCommand = new SwitchOnLightCommand(lightManager);
             DeleteComponentCommand = new DeleteComponentCommand(grid);
-            SelectionGroupManager = new(this, new SelectionManager(grid));
+            
 
             this.Grid.OnComponentPlacedOnTile += Grid_OnComponentPlacedOnTile;
             this.Grid.OnComponentRemoved += (Component component, int x , int y ) => ComponentRemoved?.Invoke(component, x, y);

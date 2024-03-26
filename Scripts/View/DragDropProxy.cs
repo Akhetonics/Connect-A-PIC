@@ -27,16 +27,18 @@ public partial class DragDropProxy : Control
     {
         if (OnGetDragData == null) return default;
         if (SelectionTool.IsEditSelectionKeyPressed()) return default;
-        return OnGetDragData(position);
+        var data = OnGetDragData(position);
+        if (data.Obj is Godot.Collections.Array array && array.Count == 0) return default;
+        return data;
     }
     public override bool _CanDropData(Vector2 position, Variant data)
     {
         if (OnCanDropData == null) return default;
         var canDropData = OnCanDropData(position, data);
-        if(data.As<Control>() != null)
-        {
-            ShowComponentDragPreview(position, data.As<Control>(), canDropData);
-        }
+        //if(data.As<Control>() != null)
+        //{
+        //    ShowComponentDragPreview(position, data.As<Control>(), canDropData);
+        //}
         return canDropData;
     }
     public override void _DropData(Vector2 atPosition, Variant data)

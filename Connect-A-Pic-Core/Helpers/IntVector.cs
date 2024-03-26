@@ -1,10 +1,10 @@
-﻿
+
 using CAP_Contracts;
 using CAP_Core.Tiles;
 
 namespace CAP_Core.Helpers
 {
-    public class IntVector
+    public class IntVector : IEquatable<IntVector>
     {
         public int X { get; private set; }
         public int Y { get; private set; }
@@ -52,6 +52,20 @@ namespace CAP_Core.Helpers
             throw new ArgumentException("vector does not match any rectangleSide");
         }
 
+        public override bool Equals(object? obj)
+        {
+            return Equals(obj as IntVector);
+        }
+
+        public bool Equals(IntVector? other)
+        {
+            return other != null && X == other.X && Y == other.Y;
+        }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(X, Y);
+        }
 
 
     }

@@ -1,3 +1,4 @@
+using Antlr4.Runtime.Misc;
 using CAP_Contracts.Logger;
 using CAP_Core;
 using CAP_Core.Components;
@@ -12,10 +13,12 @@ using ConnectAPIC.Scripts.Helpers;
 using ConnectAPIC.Scripts.View.ComponentViews;
 using ConnectAPIC.Scripts.ViewModel.Commands;
 using Godot;
+using Godot.NativeInterop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -36,6 +39,7 @@ namespace ConnectAPIC.LayoutWindow.View
         public const string GridSaveFileExtensionPatterns = "*.pic";
 
         public ILogger Logger { get; private set; }
+        public Vector2I StartGridXY { get; private set; }
 
         public override void _Ready()
         {
@@ -228,38 +232,44 @@ namespace ConnectAPIC.LayoutWindow.View
         }
         public bool _CanDropData(Godot.Vector2 position, Variant data)
         {
-            if (data.Obj is Godot.Collections.Array<ComponentView> components )
+            if (data.Obj is Godot.Collections.Array componentPositionsVariant)
             {
                 bool canDropData = true;
-                foreach (var component in components)
+                var deltaGridXY = (LocalToMap(position) - StartGridXY).ToIntVector();
+                foreach (var componentPositionVariant in componentPositionsVariant)
                 {
-                    int gridX = (int)position.X / GameManager.TilePixelSize;
-                    int gridY = (int)position.Y / GameManager.TilePixelSize;
+                    if (componentPositionVariant.VariantType != Variant.Type.Vector2I) continue;
+                    var componentPosition = (Vector2I) componentPositionVariant;
+                    var componentView = GridComponentViews[componentPosition.X, componentPosition.Y];
+                    if(componentView == null)
+                        continue;
                     // all of the elements should be in the grid, but it does not matter if another component gets overridden.
-                    if (!ViewModel.Grid.IsInGrid (gridX, gridY, component.WidthInTiles, component.HeightInTiles))
+                    if (!ViewModel.Grid.IsInGrid (componentPosition.X + deltaGridXY.X, componentPosition.Y + deltaGridXY.Y, componentView.WidthInTiles, componentView.HeightInTiles))
                     {
                         canDropData = false;
                     }
                 }
                 return canDropData;
+            } else
+            {
+                return false;
             }
-
-            return false;
         }
         public void _DropData(Godot.Vector2 atPosition, Variant data)
         {
-            var TargetGridXY = LocalToMap(atPosition).ToIntVector();
-            if (data.Obj is Godot.Collections.Array<ComponentView> componentViews)
+            var deltaGridXY = (LocalToMap(atPosition) - StartGridXY).ToIntVector();
+            if (data.Obj is Godot.Collections.Array componentPositionsVariant)
             {
                 List<(IntVector Source, IntVector Target)> translations = new();
-                foreach( var componentView in componentViews)
+                foreach( var componentPositionVariant in componentPositionsVariant)
                 {
-                    var source = ((Vector2I)componentView.Position).ToIntVector();
-                    translations.Add((source, TargetGridXY));
-                    var args = new MoveComponentArgs(translations);
-                    ViewModel.MoveComponentCommand.ExecuteAsync(args);
-                    //ViewModel.MoveComponentCommand.ExecuteAsync(new MoveComponentArgs(componentView.ViewModel.GridX, componentView.ViewModel.GridY, GridXY.X, GridXY.Y));
+                    if (componentPositionVariant.VariantType != Variant.Type.Vector2I) continue;
+                    var componentPosition = (Vector2I)componentPositionVariant;
+                    var source = (componentPosition).ToIntVector();
+                    translations.Add((source, source + deltaGridXY));
                 }
+                var args = new MoveComponentArgs(translations);
+                ViewModel.MoveComponentCommand.ExecuteAsync(args);
             }
         }
         public async Task ShowLightPropagation() =>
@@ -286,20 +296,31 @@ namespace ConnectAPIC.LayoutWindow.View
         }
         public Variant _GetDragData(Godot.Vector2 position)
         {
-            Vector2I GridXY = LocalToMap(position);
-            var selections = ViewModel.SelectionGroupManager.SelectionManager.Selections;
-            Godot.Collections.Array<ComponentView> components = new ();
-            if (selections.Count != 0) {
-                foreach(var selection in selections)
+            StartGridXY = LocalToMap(position);
+            var selectionMgr = ViewModel.SelectionGroupManager.SelectionManager;
+            var selections = selectionMgr.Selections;
+            // check if the selected item underneath the cursor is part of the selection group
+            // if yes, then all is fine, move the group.
+            // if no, then deselect thegroup and select the item
+            // if there is no item underneath, then deselect the group.
+            var cursorComponent = GridComponentViews[StartGridXY.X, StartGridXY.Y];
+            var componentLocations = new Godot.Collections.Array<Vector2I>();
+            if (cursorComponent == null) return componentLocations;
+            var cursorComponentPos = new Vector2I(cursorComponent.ViewModel.GridX, cursorComponent.ViewModel.GridY);
+            var isComponentInSelection = selectionMgr.Selections.Contains(cursorComponentPos.ToIntVector());
+            if (isComponentInSelection)
+            {
+                foreach (var selection in selections)
                 {
-                    if (GridComponentViews[selection.X, selection.Y] == null)
-                        continue;
-                    components.Add(GridComponentViews[selection.X , selection.Y]);
+                    componentLocations.Add(new Vector2I(selection.X, selection.Y));
                 }
             }
-            components.Add( GridComponentViews[GridXY.X, GridXY.Y]);
-
-            return components;
+            else
+            {
+                componentLocations.Add(cursorComponentPos);
+            }
+            
+            return componentLocations;
         }
     }
 }

@@ -110,7 +110,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
                     
                     if (mouseButtonEvent.Pressed)
                     {
-                        SelectionStartMousePos = GridView.DragDropProxy.GetLocalMousePosition();
+                        SelectionStartMousePos = GridView.GetLocalMousePosition();
                         bool isInGrid = GridViewModel.Grid.IsInGrid(gridPosition.X, gridPosition.Y);
                         bool isColliding = GridViewModel.Grid.IsColliding(gridPosition.X, gridPosition.Y, 1, 1);
                         if (isInGrid == true && isColliding && SelectionTool.IsEditSelectionKeyPressed() == false)
@@ -122,7 +122,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
                     else // Left Mouse Button was released
                     {
                         IsSelectionBoxActive = false;
-                        SelectionEndMousePos = GridView.DragDropProxy.GetLocalMousePosition();
+                        SelectionEndMousePos = GridView.GetLocalMousePosition();
                         // add all items in box to selection group
                         var gridStart = GetGridPosition(SelectionStartMousePos).ToIntVector();
                         var gridEnd   = GetGridPosition(SelectionEndMousePos).ToIntVector();

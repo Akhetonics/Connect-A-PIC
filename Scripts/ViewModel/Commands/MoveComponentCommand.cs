@@ -16,11 +16,14 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
     {
         private readonly GridManager grid;
 
+        public SelectionManager SelectionManager { get; }
+
         public event EventHandler CanExecuteChanged;
 
-        public MoveComponentCommand(GridManager grid)
+        public MoveComponentCommand(GridManager grid, SelectionManager selectionManager)
         {
             this.grid = grid;
+            SelectionManager = selectionManager;
         }
         public bool CanExecute(object parameter)
         {
@@ -63,7 +66,17 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             var componentAndTargets = CollectMoveInfo((MoveComponentArgs)parameter);
             UnregisterSourceAndTargetAreas(componentAndTargets);
             PlaceComponentsInTargets(componentAndTargets);
+            SelectMovedComponents(componentAndTargets);
             return Task.CompletedTask;
+        }
+
+        private void SelectMovedComponents(HashSet<(Component component, IntVector Target)> componentAndTargets)
+        {
+            SelectionManager.Selections.Clear();
+            foreach (var componentAndTarget in componentAndTargets)
+            {
+                SelectionManager.Selections.Add(new IntVector(componentAndTarget.component.GridXMainTile, componentAndTarget.component.GridYMainTile));
+            }
         }
 
         private void PlaceComponentsInTargets(HashSet<(Component component, IntVector Target)> componentAndTargets)
