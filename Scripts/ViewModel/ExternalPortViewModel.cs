@@ -15,8 +15,12 @@ namespace ConnectAPIC.Scripts.ViewModel
 {
     public class ExternalPortViewModel : INotifyPropertyChanged
     {
+        public event EventHandler RightClicked;
+        public void InvokeRightClicked() => RightClicked.Invoke(this, EventArgs.Empty);
+
         public GridManager Grid { get; }
         public LightCalculationService LightCalculator { get; }
+
         private ExternalPort _portModel;
         public ExternalPort PortModel
         {
@@ -40,7 +44,11 @@ namespace ConnectAPIC.Scripts.ViewModel
             }
         }
 
-        public int TilePositionY { get; private set; } = -1;
+        public int TilePositionY
+        {
+            get;
+            private set;
+        } = -1;
 
         private bool _isInput;
         public bool IsInput
@@ -64,8 +72,8 @@ namespace ConnectAPIC.Scripts.ViewModel
             }
         }
 
-        private LightColor _color;
-        public LightColor Color {
+        private LaserType _color;
+        public LaserType Color {
             get => _color;
             set
             {
@@ -192,18 +200,16 @@ namespace ConnectAPIC.Scripts.ViewModel
             if (laserType == LaserType.Red)
             {
                 power.X = (float)inputPower;
-                Color = LightColor.Red;
             }
             else if (laserType == LaserType.Green)
             {
                 power.Y = (float)inputPower;
-                Color = LightColor.Green;
             }
             else
             {
                 power.Z = (float)inputPower;
-                Color = LightColor.Blue;
             }
+            Color = laserType;
             Power = power;
         }
     }

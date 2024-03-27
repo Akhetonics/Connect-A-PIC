@@ -1,0 +1,193 @@
+[gd_scene load_steps=10 format=3 uid="uid://cwgo8pwc6hd73"]
+
+[ext_resource type="Script" path="res://Scenes/RightClickMenu/SimpleControlMenu.cs" id="1_52xip"]
+[ext_resource type="Texture2D" uid="uid://bnhwsteqou1xj" path="res://Scenes/RightClickMenu/ExternalOutputIcon.png" id="4_bggqw"]
+[ext_resource type="PackedScene" uid="uid://cbnwjaf2rjctr" path="res://Scenes/RightClickMenu/Sections/slider_section.tscn" id="4_lktol"]
+[ext_resource type="ButtonGroup" uid="uid://cxi5vciu5p82o" path="res://Scenes/RightClickMenu/InputModeSelectionButtonGroup.tres" id="4_p1asi"]
+[ext_resource type="PackedScene" uid="uid://bibqhya7kmikv" path="res://Scenes/RightClickMenu/Sections/info_section.tscn" id="5_50guf"]
+[ext_resource type="Texture2D" uid="uid://bseakecs4865n" path="res://Scenes/RightClickMenu/Body.png" id="8_7xmtp"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ko678"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.8, 0.8, 0.8, 0)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_vhgit"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.8, 0.8, 0.8, 0)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_liije"]
+content_margin_left = 4.0
+content_margin_top = 4.0
+content_margin_right = 4.0
+content_margin_bottom = 4.0
+bg_color = Color(0.6, 0.6, 0.6, 0)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.8, 0.8, 0.8, 0)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+anti_aliasing = false
+
+[node name="Window" type="Control"]
+light_mask = 0
+texture_filter = 1
+layout_mode = 3
+anchors_preset = 0
+offset_right = 200.0
+offset_bottom = 100.0
+mouse_filter = 1
+script = ExtResource("1_52xip")
+ButtonGroup = ExtResource("4_p1asi")
+
+[node name="Body" type="NinePatchRect" parent="."]
+modulate = Color(1, 1, 1, 0.784314)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 1
+texture = ExtResource("8_7xmtp")
+region_rect = Rect2(0, 0, 128, 128)
+patch_margin_left = 3
+patch_margin_right = 3
+patch_margin_bottom = 20
+
+[node name="SectionContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 7
+
+[node name="HBoxContainer" type="HBoxContainer" parent="SectionContainer"]
+layout_mode = 2
+theme_override_constants/separation = 5
+alignment = 1
+
+[node name="Red" type="Button" parent="SectionContainer/HBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 0.588235)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_pressed_color = Color(1, 1, 1, 0.705882)
+theme_override_styles/normal = SubResource("StyleBoxFlat_ko678")
+theme_override_styles/hover = SubResource("StyleBoxFlat_vhgit")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_liije")
+toggle_mode = true
+button_group = ExtResource("4_p1asi")
+icon = ExtResource("4_bggqw")
+
+[node name="Green" type="Button" parent="SectionContainer/HBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 0.588235)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_pressed_color = Color(1, 1, 1, 0.705882)
+theme_override_styles/normal = SubResource("StyleBoxFlat_ko678")
+theme_override_styles/hover = SubResource("StyleBoxFlat_vhgit")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_liije")
+toggle_mode = true
+button_group = ExtResource("4_p1asi")
+icon = ExtResource("4_bggqw")
+
+[node name="Blue" type="Button" parent="SectionContainer/HBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 0.588235)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_pressed_color = Color(1, 1, 1, 0.705882)
+theme_override_styles/normal = SubResource("StyleBoxFlat_ko678")
+theme_override_styles/hover = SubResource("StyleBoxFlat_vhgit")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_liije")
+toggle_mode = true
+button_group = ExtResource("4_p1asi")
+icon = ExtResource("4_bggqw")
+
+[node name="Input" type="Button" parent="SectionContainer/HBoxContainer"]
+layout_mode = 2
+focus_mode = 0
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 0.588235)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_pressed_color = Color(1, 1, 1, 0.705882)
+theme_override_styles/normal = SubResource("StyleBoxFlat_ko678")
+theme_override_styles/hover = SubResource("StyleBoxFlat_vhgit")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_liije")
+toggle_mode = true
+button_group = ExtResource("4_p1asi")
+icon = ExtResource("4_bggqw")
+
+[node name="OutputMenu" type="Control" parent="SectionContainer"]
+unique_name_in_owner = true
+visible = false
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="Power" parent="SectionContainer/OutputMenu" instance=ExtResource("5_50guf")]
+layout_mode = 2
+offset_right = 200.0
+offset_bottom = 20.0
+metadata/_edit_vertical_guides_ = [237.0]
+
+[node name="PhaseShift" parent="SectionContainer/OutputMenu" instance=ExtResource("5_50guf")]
+layout_mode = 2
+offset_top = 20.0
+offset_right = 200.0
+offset_bottom = 40.0
+metadata/_edit_vertical_guides_ = [237.0]
+
+[node name="InputMenu" type="Control" parent="SectionContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+mouse_filter = 1
+
+[node name="SliderSection" parent="SectionContainer/InputMenu" instance=ExtResource("4_lktol")]
+layout_mode = 1
+anchors_preset = -1
+anchor_top = -0.125
+anchor_right = 1.0
+anchor_bottom = 1.125
+offset_top = 5.0
+offset_bottom = -5.0
+grow_horizontal = 2
+grow_vertical = 2
+metadata/_edit_use_anchors_ = true

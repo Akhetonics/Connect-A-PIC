@@ -9,19 +9,19 @@ layout_mode = 3
 anchors_preset = 0
 mouse_filter = 1
 script = ExtResource("1_jjdpd")
-metadata/_edit_vertical_guides_ = [237.0]
+metadata/_edit_vertical_guides_ = [200.0]
 
 [node name="Title" type="Control" parent="."]
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 2
 anchors_preset = 0
-offset_right = 237.0
+offset_right = 200.0
 offset_bottom = 20.0
 mouse_filter = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="Title"]
 layout_mode = 1
-offset_right = 2370.0
+offset_right = 2000.0
 offset_bottom = 205.0
 scale = Vector2(0.1, 0.1)
 theme_override_constants/margin_left = 60
@@ -38,7 +38,7 @@ text = "Title"
 
 [node name="MarginContainer2" type="MarginContainer" parent="Title"]
 layout_mode = 0
-offset_right = 2367.0
+offset_right = 2000.0
 offset_bottom = 205.0
 scale = Vector2(0.1, 0.1)
 theme_override_constants/margin_left = 60

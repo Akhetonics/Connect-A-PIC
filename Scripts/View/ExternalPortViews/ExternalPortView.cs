@@ -14,11 +14,6 @@ namespace ConnectAPIC.Scenes.ExternalPorts
         [Export] public Texture2D InputTexture { set; get; }
         [Export] public Texture2D OutputTexture { set; get; }
 
-        public event EventHandler RightClicked;
-
-        //TODO: this is a sketchy part storing view in another view :/ needs to be discussed
-        public ControlMenu menu;
-
         public ExternalPortViewModel ViewModel { get; set; }
 
         List<PointLight2D> lightContainer;
@@ -52,7 +47,7 @@ namespace ConnectAPIC.Scenes.ExternalPorts
                 && mouseButton.ButtonIndex == MouseButton.Right
                 && mouseInRightClickArea)
             {
-                RightClicked.Invoke(this, EventArgs.Empty);
+                ViewModel.InvokeRightClicked();
             }
         }
 
@@ -133,19 +128,15 @@ namespace ConnectAPIC.Scenes.ExternalPorts
             }
         }
 
-
         private void OnMouseEnteredRightClickArea()
         {
             mouseInRightClickArea = true;
         }
 
-
         private void OnMouseExitedRightClickArea()
         {
             mouseInRightClickArea = false;
         }
-
-
     }
 }
 
