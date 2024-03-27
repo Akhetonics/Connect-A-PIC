@@ -9,13 +9,13 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 {
     public class DeleteComponentCommand :ICommand
     {
-        private readonly GridManager grid;
+        private readonly GridManager Grid;
 
         public event EventHandler CanExecuteChanged;
         
         public DeleteComponentCommand(GridManager grid)
         {
-            this.grid = grid;
+            this.Grid = grid;
         }
         public bool CanExecute(object parameter) => parameter is DeleteComponentArgs;
 
@@ -25,7 +25,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             var deleteParameters = (DeleteComponentArgs)parameter;
             foreach (IntVector deletePosition in deleteParameters.DeletePositions)
             {
-                grid.UnregisterComponentAt(deletePosition.X, deletePosition.Y);
+                Grid.ComponentMover.UnregisterComponentAt(deletePosition.X, deletePosition.Y);
             }
             return Task.CompletedTask;
         }

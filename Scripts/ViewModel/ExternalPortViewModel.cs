@@ -71,7 +71,7 @@ public class ExternalPortViewModel : INotifyPropertyChanged
         lightCalculator.LightCalculationChanged += (object sender, LightCalculationChangeEventArgs e) =>
         {
             if (IsInput) return;
-            var touchingComponent = grid.GetComponentAt(0, TilePositionY);
+            var touchingComponent = Grid.ComponentMover.GetComponentAt(0, TilePositionY);
             if (touchingComponent == null)
             {
                 ResetPowers();

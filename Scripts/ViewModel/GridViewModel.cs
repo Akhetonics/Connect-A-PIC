@@ -29,8 +29,8 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         public delegate void ComponentCreatedEventHandler(Component component, int gridX, int gridY);
         public event ComponentCreatedEventHandler ComponentCreated;
         public event ComponentCreatedEventHandler ComponentRemoved;
-        public int Width => Grid.Width;
-        public int Height => Grid.Height;
+        public int Width => Grid.TileManager.Width;
+        public int Height => Grid.TileManager.Height;
         public GridManager Grid { get; set; }
         public ILogger Logger { get; }
         public ComponentFactory ComponentModelFactory { get; }
@@ -65,8 +65,8 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             DeleteComponentCommand = new DeleteComponentCommand(grid);
             
 
-            this.Grid.OnComponentPlacedOnTile += Grid_OnComponentPlacedOnTile;
-            this.Grid.OnComponentRemoved += (Component component, int x , int y ) => ComponentRemoved?.Invoke(component, x, y);
+            this.Grid.ComponentMover.OnComponentPlacedOnTile += Grid_OnComponentPlacedOnTile;
+            this.Grid.ComponentMover.OnComponentRemoved += (Component component, int x , int y ) => ComponentRemoved?.Invoke(component, x, y);
             this.ToolViewModel = new ToolViewModel(grid);
         }
 

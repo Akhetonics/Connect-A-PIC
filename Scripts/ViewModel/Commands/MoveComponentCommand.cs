@@ -33,7 +33,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
                 // verify that all components would be inside of grid after moving
                 var moveInfoData = CollectMoveInfo(args);
                 // verify that no two components would overlap at TargetArea
-                bool[,] isBlockedHere = new bool [grid.Width, grid.Height];
+                bool[,] isBlockedHere = new bool [grid.TileManager.Width, grid.TileManager.Height];
                 foreach (var moveInfo in moveInfoData)
                 {
                     for(int x = 0; x < moveInfo.component.WidthInTiles; x++)
@@ -83,7 +83,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
         {
             foreach (var compAndTarget in componentAndTargets)
             {
-                grid.PlaceComponent(compAndTarget.Target.X, compAndTarget.Target.Y, compAndTarget.component);
+                grid.ComponentMover.PlaceComponent(compAndTarget.Target.X, compAndTarget.Target.Y, compAndTarget.component);
             }
         }
 
@@ -92,8 +92,8 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             HashSet<(Component component, IntVector Target)> comps = new();
             foreach (var displacement in args.Displacements)
             {
-                var comp = grid.GetComponentAt(displacement.Source.X, displacement.Source.Y);
-                if (grid.IsInGrid(displacement.Target.X, displacement.Target.Y, comp.WidthInTiles, comp.HeightInTiles) == false)
+                var comp = grid.ComponentMover.GetComponentAt(displacement.Source.X, displacement.Source.Y);
+                if (grid.TileManager.IsInGrid(displacement.Target.X, displacement.Target.Y, comp.WidthInTiles, comp.HeightInTiles) == false)
                     throw new TargetOutOfGridException($"Target + ComponentDimensions cannot be outside the grid target: X:{displacement.Target.X}_Y:{displacement.Target.Y}");
                 comps.Add((comp, displacement.Target));
             }
@@ -106,7 +106,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             foreach (var componentAndTarget in componentAndTargets)
             {
                 Component comp = componentAndTarget.component;
-                grid.UnregisterComponentAt(comp.GridXMainTile, comp.GridYMainTile);
+                grid.ComponentMover.UnregisterComponentAt(comp.GridXMainTile, comp.GridYMainTile);
 
                 // clear target landing area
                 for (int x = 0; x < comp.WidthInTiles; x++)
@@ -115,8 +115,8 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
                     {
                         var targetX = x + componentAndTarget.Target.X;
                         var targetY = y + componentAndTarget.Target.Y;
-                        if (grid.IsInGrid(targetX, targetY) == false) continue;
-                        grid.UnregisterComponentAt(targetX, targetY);
+                        if (grid.TileManager.IsInGrid(targetX, targetY) == false) continue;
+                        grid.ComponentMover.UnregisterComponentAt(targetX, targetY);
                     }
                 }
             }

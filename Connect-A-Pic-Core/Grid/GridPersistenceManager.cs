@@ -1,4 +1,4 @@
-﻿using CAP_Contracts;
+using CAP_Contracts;
 using CAP_Core.Components;
 using CAP_Core.Components.Creation;
 using CAP_Core.Tiles;
@@ -25,12 +25,12 @@ namespace CAP_Core.Grid
         public async Task<bool> SaveAsync(string path)
         {
             List<GridComponentData> gridData = new();
-            for (int x = 0; x < MyGrid.Tiles.GetLength(0); x++)
+            for (int x = 0; x < MyGrid.TileManager.Tiles.GetLength(0); x++)
             {
-                for (int y = 0; y < MyGrid.Tiles.GetLength(1); y++)
+                for (int y = 0; y < MyGrid.TileManager.Tiles.GetLength(1); y++)
                 {
-                    if (MyGrid.Tiles[x, y]?.Component == null) continue;
-                    var component = MyGrid.Tiles[x, y].Component;
+                    if (MyGrid.TileManager.Tiles[x, y]?.Component == null) continue;
+                    var component = MyGrid.TileManager.Tiles[x, y].Component;
                     if (x != component.GridXMainTile || y != component.GridYMainTile) continue;
 
                     gridData.Add(new GridComponentData()
@@ -50,14 +50,14 @@ namespace CAP_Core.Grid
         {
             var json = DataAccessor.ReadAsText(path);
             var gridData = JsonSerializer.Deserialize<List<GridComponentData>>(json);
-            MyGrid.DeleteAllComponents();
+            MyGrid.ComponentMover.DeleteAllComponents();
 
             foreach (var data in gridData)
             {
                 var component = componentFactory.CreateComponentByIdentifier(data.Identifier);
                 component.Rotation90CounterClock = (DiscreteRotation)data.Rotation;
                 LoadSliders(data, component);
-                MyGrid.PlaceComponent(data.X, data.Y, component);
+                MyGrid.ComponentMover.PlaceComponent(data.X, data.Y, component);
             }
         }
 

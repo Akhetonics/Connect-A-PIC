@@ -27,7 +27,7 @@ namespace CAP_Core.LightCalculation
         {
             SystemSMatrix = SystemMatrixBuilder.GetSystemSMatrix(LaserWaveLengthInNm);
             var stepCount = SystemSMatrix.PinReference.Count() * 2;
-            var usedInputs = Grid.GetUsedExternalInputs()
+            var usedInputs = Grid.ExternalPortManager.GetUsedExternalInputs()
                                  .Where(i => i.Input.LaserType.WaveLengthInNm == LaserWaveLengthInNm)
                                  .ToList();
             var inputVector = UsedInputConverter.ToVectorOfFields(usedInputs, SystemSMatrix);

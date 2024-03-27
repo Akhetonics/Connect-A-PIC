@@ -51,8 +51,8 @@ namespace ConnectAPIC.test.src
             int curveComponentNr = MyGameManager.GridView.ComponentViewFactory.PackedComponentCache.Single(c => c.Value.Draft.Identifier == "Bend").Key;
             int straightComponentNr = MyGameManager.GridView.ComponentViewFactory.PackedComponentCache.Single(c => c.Value.Draft.Identifier == "Straight").Key;
             // instantiate tool at position attached to laserInput
-            var firstLaserInput = MyGameManager.Grid.ExternalPorts[0];
-            var secondLaserInput = MyGameManager.Grid.ExternalPorts[1];
+            var firstLaserInput = MyGameManager.Grid.ExternalPortManager.ExternalPorts[0];
+            var secondLaserInput = MyGameManager.Grid.ExternalPortManager.ExternalPorts[1];
             var firstInputTileY = firstLaserInput.TilePositionY;
             var secondInputTileY = secondLaserInput.TilePositionY;
             RedLaser = (firstLaserInput as ExternalInput).LaserType;
@@ -65,7 +65,7 @@ namespace ConnectAPIC.test.src
             RotatedCurve = MyGameManager.GridView.GridComponentViews[0, firstInputTileY];
             StraightLine = MyGameManager.GridView.GridComponentViews[0, secondInputTileY];
             SecondStraightLine = MyGameManager.GridView.GridComponentViews[1, secondInputTileY];
-            var usedPorts = MyGameManager.Grid.GetUsedExternalInputs();
+            var usedPorts = MyGameManager.Grid.ExternalPortManager.GetUsedExternalInputs();
 
             // Assert if loading has worked properly
             usedPorts.Count.ShouldBe(2);
@@ -98,7 +98,7 @@ namespace ConnectAPIC.test.src
 
             // act
             // first test if the connectionWeights are proper
-            var compModel = MyGameManager.Grid.GetComponentAt(SecondStraightLine.ViewModel.GridX, SecondStraightLine.ViewModel.GridY);
+            var compModel = MyGameManager.Grid.ComponentMover.GetComponentAt(SecondStraightLine.ViewModel.GridX, SecondStraightLine.ViewModel.GridY);
             var innerConnections = compModel.WaveLengthToSMatrixMap[GreenLaser.WaveLengthInNm].GetNonNullValues();
             // then test the light distribution
             SecondStraightLine.HideLightVector();

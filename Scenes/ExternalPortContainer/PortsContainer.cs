@@ -31,7 +31,7 @@ public partial class PortsContainer : Node2D
     {
         PortViewFactory = new ExternalPortViewFactory(this, GridManager, LightCalculator, LightManager);
 
-        GridManager.ExternalPorts.CollectionChanged += (object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) =>
+        GridManager.ExternalPortManager.ExternalPorts.CollectionChanged += (object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) =>
         {
             ExternalPortView tmpView;
             foreach (ExternalPort port in e.OldItems)
@@ -49,7 +49,7 @@ public partial class PortsContainer : Node2D
             }
         };
 
-        Views = PortViewFactory?.InitializeExternalPortViewList(GridManager.ExternalPorts);
+        Views = PortViewFactory?.InitializeExternalPortViewList(GridManager.ExternalPortManager.ExternalPorts);
 
         foreach (ExternalPortView view in Views) {
             view.RightClicked += View_RightClicked;

@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnitTests.Grid;
 
 namespace UnitTests.LightCalculation
 {
@@ -17,12 +18,12 @@ namespace UnitTests.LightCalculation
         [Fact]
         public void SystemMatrixBuildingTest()
         {
-            GridManager grid = new GridManager(40, 40);
+            GridManager grid = GridHelpers.InitializeGridWithComponents(40, 40);
             var component = TestComponentFactory.CreateComponent(TestComponentFactory.MMI3x3);
             component.HeightInTiles.ShouldBe(3);
 
-            var RedLaserYPos = grid.GetAllExternalInputs().FirstOrDefault(i => i.LaserType == LaserType.Red).TilePositionY;
-            grid.PlaceComponent(0, RedLaserYPos, component);
+            var RedLaserYPos = grid.ExternalPortManager.GetAllExternalInputs().FirstOrDefault(i => i.LaserType == LaserType.Red).TilePositionY;
+            grid.ComponentMover.PlaceComponent(0, RedLaserYPos, component);
 
             // create systemMatrix of this two components
             SystemMatrixBuilder builder = new SystemMatrixBuilder(grid);

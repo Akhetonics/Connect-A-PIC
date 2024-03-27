@@ -61,7 +61,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
                 MousePreview.SetPosition(PreviewIconPosition);
                 int compWidth = ComponentViewFactory.GetComponentDimensions(ComponentTypeNr).X;
                 int compHeight = ComponentViewFactory.GetComponentDimensions(ComponentTypeNr).Y;
-                if (GridViewModel.Grid.IsColliding(MouseGridPos.X, MouseGridPos.Y, compWidth, compHeight))
+                if (GridViewModel.Grid.ComponentMover.IsColliding(MouseGridPos.X, MouseGridPos.Y, compWidth, compHeight))
                 {
                     MousePreview.Modulate = new Color(1, 0, 0);
                 }

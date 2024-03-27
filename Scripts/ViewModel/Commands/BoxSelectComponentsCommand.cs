@@ -67,7 +67,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
             {
                 for (int y = startY; y <= stopY; y++)
                 {
-                    var newComponent = Grid.GetComponentAt(x, y);
+                    var newComponent = Grid.ComponentMover.GetComponentAt(x, y);
                     if (newComponent != null)
                     {
                         componentsInBox.Add(new IntVector(newComponent.GridXMainTile, newComponent.GridYMainTile));

@@ -43,7 +43,7 @@ namespace ConnectAPIC.test.src
             int MMI3x3NR = MyGameManager.GridView.ComponentViewFactory.PackedComponentCache.Single(c => c.Value.Draft.Identifier == "MMI3x3").Key;
 
             // instantiate tool at position attached to laserInput
-            var firstLaserInput = MyGameManager.Grid.ExternalPorts[0];
+            var firstLaserInput = MyGameManager.Grid.ExternalPortManager.ExternalPorts[0];
             var firstInputTileY = firstLaserInput.TilePositionY;
             RedLaser = (firstLaserInput as ExternalInput).LaserType;
             await MyGameManager.GridViewModel.CreateComponentCommand.ExecuteAsync(new CreateComponentArgs(MMI3x3NR, 0, firstInputTileY, DiscreteRotation.R0));
@@ -54,8 +54,8 @@ namespace ConnectAPIC.test.src
         [Test]
         public async Task TestMMI3x3LightFields()
         {
-            var component = MyGameManager.Grid.GetComponentAt(MMI3x3.ViewModel.GridX, MMI3x3.ViewModel.GridY);
-            var lightPower = (float)MyGameManager.Grid.GetUsedExternalInputs().FirstOrDefault(i => i.Input.LaserType == LaserType.Red).Input.InFlowPower.Magnitude;
+            var component = MyGameManager.Grid.ComponentMover.GetComponentAt(MMI3x3.ViewModel.GridX, MMI3x3.ViewModel.GridY);
+            var lightPower = (float)MyGameManager.Grid.ExternalPortManager.GetUsedExternalInputs().FirstOrDefault(i => i.Input.LaserType == LaserType.Red).Input.InFlowPower.Magnitude;
             MyGameManager.GridViewModel.LightCalculator.LightCalculationChanged += (object sender, CAP_Core.LightCalculation.LightCalculationChangeEventArgs e) =>
             {
                 var PinUpRight = (Guid)component.PinIdRightOut(2, 0);
@@ -78,8 +78,8 @@ namespace ConnectAPIC.test.src
         [Test]
         public async Task TestMMI3x3ShaderValues()
         {
-            var component = MyGameManager.Grid.GetComponentAt(MMI3x3.ViewModel.GridX, MMI3x3.ViewModel.GridY);
-            var lightPower = (float) MyGameManager.Grid.GetUsedExternalInputs().FirstOrDefault(i => i.Input.LaserType == LaserType.Red).Input.InFlowPower.Magnitude;
+            var component = MyGameManager.Grid.ComponentMover.GetComponentAt(MMI3x3.ViewModel.GridX, MMI3x3.ViewModel.GridY);
+            var lightPower = (float) MyGameManager.Grid.ExternalPortManager.GetUsedExternalInputs().FirstOrDefault(i => i.Input.LaserType == LaserType.Red).Input.InFlowPower.Magnitude;
             MyGameManager.GridViewModel.LightManager.IsLightOn = true;
             await MyGameManager.GridView.ShowLightPropagation();
             await TestScene.GetTree().NextFrame(2); // wait some frames to let the shader be applied

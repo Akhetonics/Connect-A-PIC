@@ -1,27 +1,19 @@
 using CAP_Core.Grid;
 using CAP_Core.Helpers;
 using ConnectAPIC.Scripts.View.ToolBox;
+using Moq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using UnitTests;
+using UnitTests.Grid;
 
 namespace ConnectAPIC.test.ViewModels.Commands
 {
     public class BoxSelectionCommandTests
     {
-        private static GridManager InitializeGridWithComponents()
-        {
-            var grid = new GridManager(10, 10);
-            
-            grid.PlaceComponent(1, 1, TestComponentFactory.CreateComponent(TestComponentFactory.StraightWGJson));
-            grid.PlaceComponent(2, 2, TestComponentFactory.CreateComponent(TestComponentFactory.StraightWGJson));
-            grid.PlaceComponent(3, 3, TestComponentFactory.CreateComponent(TestComponentFactory.DirectionalCouplerJSON));
-            return grid;
-        }
-
         [Theory]
         [InlineData(AppendBehaviors.CreateNew)]
         [InlineData(AppendBehaviors.Append)]
@@ -29,7 +21,7 @@ namespace ConnectAPIC.test.ViewModels.Commands
         public async Task BoxSelectComponentsCommand_AppendBehaviors_Test(AppendBehaviors appendBehavior)
         {
             // Initialisierung
-            var gridManager = InitializeGridWithComponents();
+            var gridManager = GridHelpers.InitializeGridWithComponents();
             var selectionManager = new SelectionManager(gridManager);
             var command = new BoxSelectComponentsCommand(gridManager, selectionManager);
             selectionManager.Selections.Add( new IntVector(7,8));

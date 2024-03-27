@@ -7,13 +7,13 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 {
     public class RotateComponentCommand : ICommand
     {
-        private readonly GridManager grid;
+        private readonly GridManager Grid;
 
         public event EventHandler CanExecuteChanged;
 
         public RotateComponentCommand(GridManager grid)
         {
-            this.grid = grid;
+            this.Grid = grid;
         }
         public bool CanExecute(object parameter)
         {
@@ -22,7 +22,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
         }
         private bool CanRotateComponentBy90(int GridX, int GridY)
         {
-            var component = grid.GetComponentAt(GridX, GridY);
+            var component = Grid.ComponentMover.GetComponentAt(GridX, GridY);
             if (component == null) return false;
             int widthAfterRotation = component.HeightInTiles;
             int heightAfterRotation = component.WidthInTiles;
@@ -30,7 +30,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             {
                 for (int j = 0; j < heightAfterRotation; j++)
                 {
-                    var componentAtTile = grid.GetComponentAt(GridX + i, GridY + j);
+                    var componentAtTile = Grid.ComponentMover.GetComponentAt(GridX + i, GridY + j);
                     if (componentAtTile != component && componentAtTile != null)
                         return false;
                 }
@@ -41,7 +41,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
         {
             if (!CanExecute(parameter)) return default;
             var args = (RotateComponentArgs)parameter;
-            grid.RotateComponentBy90CounterClockwise(args.GridX, args.GridY);
+            Grid.ComponentRotator.RotateComponentBy90CounterClockwise(args.GridX, args.GridY);
             return Task.CompletedTask;
         }
     }

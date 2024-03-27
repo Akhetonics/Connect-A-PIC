@@ -39,13 +39,13 @@ namespace CAP_Core.CodeExporter
 
         private void AddComponentsConnectedToStandardInputs(StringBuilder NazcaCode)
         {
-            foreach (ExternalPort port in grid.ExternalPorts)
+            foreach (ExternalPort port in grid.ExternalPortManager.ExternalPorts)
             {
                 if (port is not ExternalInput input) continue;
                 var x = 0;
                 var y = input.TilePositionY;
-                if (!grid.IsInGrid(x, y, 1, 1)) continue;
-                var firstConnectedTile = grid.Tiles[x, y];
+                if (!grid.TileManager.IsInGrid(x, y, 1, 1)) continue;
+                var firstConnectedTile = grid.TileManager.Tiles[x, y];
                 if (firstConnectedTile.Component == null) continue;
                 if (firstConnectedTile.GetPinAt(RectSide.Left)?.MatterType != MatterType.Light) continue;
                 if (AlreadyProcessedComponents.Contains(firstConnectedTile.Component)) continue;
@@ -56,14 +56,14 @@ namespace CAP_Core.CodeExporter
         private void AddOrphans(StringBuilder NazcaCode)
         {
             // go through rest of components, start with one that is not being added to the NazcaCode yet
-            for (int x = 0; x < grid.Width; x++)
+            for (int x = 0; x < grid.TileManager.Width; x++)
             {
-                for (int y = 0; y < grid.Height; y++)
+                for (int y = 0; y < grid.TileManager.Height; y++)
                 {
-                    var comp = grid.Tiles[x, y].Component;
+                    var comp = grid.TileManager.Tiles[x, y].Component;
                     if (comp == null) continue;
                     if (AlreadyProcessedComponents.Contains(comp)) continue;
-                    StartConnectingAtTile(NazcaCode, grid.Tiles[x, y]);
+                    StartConnectingAtTile(NazcaCode, grid.TileManager.Tiles[x, y]);
                 }
             }
         }
@@ -77,7 +77,7 @@ namespace CAP_Core.CodeExporter
 
         private void ExportAllNeighbors(StringBuilder NazcaCode, Tile currentTile)
         {
-            List<ParentAndChildTile> neighbors = grid.GetConnectedNeighborsOfComponent(currentTile.Component);
+            List<ParentAndChildTile> neighbors = grid.ComponentRelationshipManager.GetConnectedNeighborsOfComponent(currentTile.Component);
             if (neighbors != null)
             {
                 foreach (ParentAndChildTile neighbor in neighbors)
@@ -90,7 +90,7 @@ namespace CAP_Core.CodeExporter
 
         private List<ParentAndChildTile> GetUnComputedNeighbors(Tile currentTile)
         {
-            var neighbors = grid.GetConnectedNeighborsOfComponent(currentTile.Component);
+            var neighbors = grid.ComponentRelationshipManager.GetConnectedNeighborsOfComponent(currentTile.Component);
             return neighbors.Where(n => !AlreadyProcessedComponents.Contains(n.Child.Component)).ToList();
         }
 

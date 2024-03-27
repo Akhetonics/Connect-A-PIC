@@ -129,7 +129,7 @@ namespace ConnectAPIC.LayoutWindow.View
         }
         private void AssignLightFieldsToComponentViews(Dictionary<Guid, Complex> lightFieldVector, LaserType laserType)
         {
-            foreach (var componentModel in ViewModel.Grid.GetAllComponents())
+            foreach (var componentModel in ViewModel.Grid.TileManager.GetAllComponents())
             {
                 var componentView = GridComponentViews[componentModel.GridXMainTile, componentModel.GridYMainTile];
                 if (componentView == null) return;
@@ -244,7 +244,7 @@ namespace ConnectAPIC.LayoutWindow.View
                     if(componentView == null)
                         continue;
                     // all of the elements should be in the grid, but it does not matter if another component gets overridden.
-                    if (!ViewModel.Grid.IsInGrid (componentPosition.X + deltaGridXY.X, componentPosition.Y + deltaGridXY.Y, componentView.WidthInTiles, componentView.HeightInTiles))
+                    if (!ViewModel.Grid.TileManager.IsInGrid (componentPosition.X + deltaGridXY.X, componentPosition.Y + deltaGridXY.Y, componentView.WidthInTiles, componentView.HeightInTiles))
                     {
                         canDropData = false;
                     }

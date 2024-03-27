@@ -26,10 +26,10 @@ namespace CAP_Core.LightCalculation
 
         public LightCalculationService(GridManager grid, LightManager lightManager, ILightCalculator gridSMatrixAnalyzer)
         {
-            LightInputs = grid.GetAllExternalInputs();
+            LightInputs = grid.ExternalPortManager.GetAllExternalInputs();
 
-            grid.ExternalPorts.CollectionChanged += async (object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) => {
-                LightInputs = grid.GetAllExternalInputs();
+            grid.ExternalPortManager.ExternalPorts.CollectionChanged += async (object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) => {
+                LightInputs = grid.ExternalPortManager.GetAllExternalInputs();
                 if (lightManager.IsLightOn)
                 {
                     await ShowLightPropagationAsync();
