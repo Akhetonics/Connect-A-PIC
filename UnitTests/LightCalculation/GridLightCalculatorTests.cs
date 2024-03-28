@@ -18,7 +18,7 @@ namespace UnitTests.LightCalculation
         [Fact]
         public async Task MMILightCalculationTest ()
         {
-            GridManager grid = GridHelpers.InitializeGridWithComponents(40,40);
+            var grid = new GridManager(40,40);
             var component = TestComponentFactory.CreateComponent(TestComponentFactory.MMI3x3);
             component.HeightInTiles.ShouldBe(3);
             // make all external Ports red so we have three red inputLasers

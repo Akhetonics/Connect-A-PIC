@@ -36,7 +36,7 @@ namespace UnitTests.LightCalculation
             var straight = TestComponentFactory.CreateComponent(TestComponentFactory.StraightWGJson);
             var directionalCoupler = TestComponentFactory.CreateComponent(TestComponentFactory.DirectionalCouplerJSON);
             var directionalCoupler2 = TestComponentFactory.CreateComponent(TestComponentFactory.DirectionalCouplerJSON);
-            var grid = GridHelpers.InitializeGridWithComponents(20,10);
+            var grid = new GridManager(20, 10);
             var redPortY = grid.ExternalPortManager.ExternalPorts[0].TilePositionY;
             grid.ComponentMover.PlaceComponent(0, redPortY, straight);
             grid.ComponentMover.PlaceComponent(1, redPortY, directionalCoupler);
@@ -102,7 +102,7 @@ namespace UnitTests.LightCalculation
             var secondStraight = TestComponentFactory.CreateStraightWaveGuide();
 
             rotatedStraight.RotateBy90CounterClockwise();
-            var grid = GridHelpers.InitializeGridWithComponents(20, 10);
+            var grid = new GridManager(20, 10);
             var inputPort = grid.ExternalPortManager.ExternalPorts[0];
             grid.ComponentMover.PlaceComponent(0, inputPort.TilePositionY, straight);
             grid.ComponentMover.PlaceComponent(1, inputPort.TilePositionY, directionalCoupler);

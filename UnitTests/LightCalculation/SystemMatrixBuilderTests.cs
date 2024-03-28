@@ -18,7 +18,7 @@ namespace UnitTests.LightCalculation
         [Fact]
         public void SystemMatrixBuildingTest()
         {
-            GridManager grid = GridHelpers.InitializeGridWithComponents(40, 40);
+            var grid = new GridManager(40, 40);
             var component = TestComponentFactory.CreateComponent(TestComponentFactory.MMI3x3);
             component.HeightInTiles.ShouldBe(3);
 

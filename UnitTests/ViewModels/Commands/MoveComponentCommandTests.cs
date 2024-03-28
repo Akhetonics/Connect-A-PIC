@@ -17,7 +17,7 @@ namespace UnitTests.ViewModels.Commands
 
         public MoveComponentCommandTests()
         {
-            gridManagerMock = new Mock<GridManager>();
+            gridManagerMock = new Mock<GridManager>(24,12);
             selectionManagerMock = new Mock<SelectionManager>(gridManagerMock.Object);
             command = new MoveComponentCommand(gridManagerMock.Object, selectionManagerMock.Object);
         }

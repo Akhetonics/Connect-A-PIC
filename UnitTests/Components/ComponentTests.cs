@@ -118,7 +118,7 @@ namespace UnitTests
         [Fact]
         public void TestSecondComponentHasDifferentPinIDs()
         {
-            var grid = GridHelpers.InitializeGridWithComponents(10, 10);
+            var grid = new GridManager(10,10);
             var componentOld = TestComponentFactory.CreateDirectionalCoupler();
             var component = componentOld.Clone() as Component;
             var component2 = componentOld.Clone() as Component;

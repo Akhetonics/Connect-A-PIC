@@ -41,7 +41,7 @@ namespace UnitTests.Grid
         public async Task SaveAndLoadGridManager()
         {
             // prepare
-            GridManager grid = GridHelpers.InitializeGridWithComponents();
+            var grid = new GridManager(24,12);
 
             ComponentFactory componentFactory = InitializeComponentFactory();
             GridPersistenceManager gridPersistenceManager = new(grid, new FileDataAccessor());

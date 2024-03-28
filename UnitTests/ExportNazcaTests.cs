@@ -13,7 +13,7 @@ namespace UnitTests
         [Fact]
         public void NazcaCompilerTest()
         {
-            GridManager grid = GridHelpers.InitializeGridWithComponents(24, 12);
+            var grid = new GridManager(24,12);
             var inputs = grid.ExternalPortManager.GetAllExternalInputs();
             int inputHeight = inputs.FirstOrDefault()?.TilePositionY ?? throw new Exception("there is no StandardInput defined");
             var firstComponent = TestComponentFactory.CreateDirectionalCoupler();
@@ -43,7 +43,7 @@ namespace UnitTests
         [Fact]
         public void GetConnectedNeighborsTest()
         {
-            GridManager grid = GridHelpers.InitializeGridWithComponents(24,12);
+            var grid = new GridManager(24,12);
             var inputs = grid.ExternalPortManager.GetAllExternalInputs();
             var firstInput = inputs.FirstOrDefault();
             if (firstInput == null) throw new Exception("Inputs not found, they seem not to be declared in the grid. Please do that now");

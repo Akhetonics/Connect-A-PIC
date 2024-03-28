@@ -21,6 +21,14 @@ namespace CAP_Core.Grid
             ComponentRotator = componentRotator;
             ComponentRelationshipManager = componentRelationshipManager;
         }
+        public GridManager (int width , int height)
+        {
+            TileManager = new TileManager(width, height);
+            ComponentMover = new ComponentMover(TileManager);
+            ExternalPortManager = new ExternalPortManager(TileManager);
+            ComponentRotator = new ComponentRotator(TileManager,ComponentMover);
+            ComponentRelationshipManager = new ComponentRelationshipManager(TileManager);
+        }
 
     }
 }
