@@ -3,6 +3,7 @@ using CAP_Core.Components;
 using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.Grid;
 using CAP_Core.Helpers;
+using Castle.Components.DictionaryAdapter.Xml;
 using ConnectAPIC.Scripts.ViewModel.Commands;
 using System;
 using System.Collections.Generic;
@@ -28,35 +29,56 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
         public bool CanExecute(object parameter)
         {
             if (parameter is not MoveComponentArgs args) return false;
-            try
+            if (VerifyAllInGrid(args) == false) return false;
+            var componentAndTargets = CollectMoveInfo(args); // CollectMoveInfo would throw if a target would be outside of the grid
+            if (VerifyIsComponentsTargetsUniqueness(componentAndTargets)== false) return false;
+            if (VerifySingleComponentIsTargetFree(args) == false) return false; // If we drag only 1 single Element, it should not override exising components
+            return true;
+        }
+
+        private bool VerifySingleComponentIsTargetFree(MoveComponentArgs args)
+        {
+            if (args.Transitions.Count == 1)
             {
-                // verify that all components would be inside of grid after moving
-                var moveInfoData = CollectMoveInfo(args);
-                // verify that no two components would overlap at TargetArea
-                bool[,] isBlockedHere = new bool [grid.TileManager.Width, grid.TileManager.Height];
-                foreach (var moveInfo in moveInfoData)
+                var source = args.Transitions.First().Source;
+                var target = args.Transitions.First().Target;
+                var componentSource = grid.ComponentMover.GetComponentAt(source.X, source.Y);
+                if(grid.ComponentMover.IsColliding(target.X, target.Y, componentSource.WidthInTiles, componentSource.HeightInTiles, componentSource))
                 {
-                    for(int x = 0; x < moveInfo.component.WidthInTiles; x++)
+                    return false;
+                }
+            }
+            return true;
+        }
+        private bool VerifyAllInGrid (MoveComponentArgs args)
+        {
+            foreach (var displacement in args.Transitions)
+            {
+                var component = grid.ComponentMover.GetComponentAt(displacement.Source.X , displacement.Source.Y);
+                if (component == null) return false;
+                if ( grid.TileManager.IsInGrid(displacement.Source.X, displacement.Source.Y, component.WidthInTiles, component.HeightInTiles) == false) return false;
+                if ( grid.TileManager.IsInGrid(displacement.Target.X, displacement.Target.Y, component.WidthInTiles, component.HeightInTiles) == false) return false;
+            }
+            return true;
+        }
+        private bool VerifyIsComponentsTargetsUniqueness(HashSet<(Component component, IntVector Target)> componentAndTargets)
+        {
+            bool[,] isBlockedHere = new bool[grid.TileManager.Width, grid.TileManager.Height];
+            foreach (var moveInfo in componentAndTargets)
+            {
+                for (int x = 0; x < moveInfo.component.WidthInTiles; x++)
+                {
+                    for (int y = 0; y < moveInfo.component.HeightInTiles; y++)
                     {
-                        for ( int y = 0; y < moveInfo.component.HeightInTiles; y++)
+                        int gridX = x + moveInfo.Target.X;
+                        int gridY = y + moveInfo.Target.Y;
+                        if (isBlockedHere[gridX, gridY] == true)
                         {
-                            int gridX = x + moveInfo.Target.X;
-                            int gridY = y + moveInfo.Target.Y;
-                            if (isBlockedHere[gridX, gridY] == true)
-                            {
-                                throw new TargetOverlappingException($"Two components targeted the same area. X:{moveInfo.Target.X} Y:{moveInfo.Target.Y}");
-                            }
-                            isBlockedHere[gridX, gridY] = true;
+                            return false;
                         }
+                        isBlockedHere[gridX, gridY] = true;
                     }
                 }
-            } catch (TargetOutOfGridException)
-            {
-                return false;
-            }
-            catch (TargetOverlappingException)
-            {
-                return false;
             }
             return true;
         }
@@ -90,11 +112,9 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
         private HashSet<(Component component, IntVector Target)> CollectMoveInfo(MoveComponentArgs args)
         {
             HashSet<(Component component, IntVector Target)> comps = new();
-            foreach (var displacement in args.Displacements)
+            foreach (var displacement in args.Transitions)
             {
                 var comp = grid.ComponentMover.GetComponentAt(displacement.Source.X, displacement.Source.Y);
-                if (grid.TileManager.IsInGrid(displacement.Target.X, displacement.Target.Y, comp.WidthInTiles, comp.HeightInTiles) == false)
-                    throw new TargetOutOfGridException($"Target + ComponentDimensions cannot be outside the grid target: X:{displacement.Target.X}_Y:{displacement.Target.Y}");
                 comps.Add((comp, displacement.Target));
             }
 
@@ -143,13 +163,14 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
         public TargetOverlappingException(string Msg) : base(Msg)
         { }
     }
+    
     public class MoveComponentArgs
     {
-        public MoveComponentArgs( List<(IntVector Source , IntVector Target)> displacements)
+        public MoveComponentArgs( List<(IntVector Source , IntVector Target)> transitions)
         {
-            Displacements = displacements;
+            Transitions = transitions;
         }
 
-        public List<(IntVector Source, IntVector Target)> Displacements { get; }
+        public List<(IntVector Source, IntVector Target)> Transitions { get; }
     }
 }
