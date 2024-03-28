@@ -85,6 +85,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 
         public Task ExecuteAsync(object parameter)
         {
+            if(CanExecute(parameter) == false) return Task.CompletedTask;
             var componentAndTargets = CollectMoveInfo((MoveComponentArgs)parameter);
             UnregisterSourceAndTargetAreas(componentAndTargets);
             PlaceComponentsInTargets(componentAndTargets);

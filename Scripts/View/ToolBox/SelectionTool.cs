@@ -1,23 +1,11 @@
-using CAP_Core;
-using CAP_Core.Grid;
 using CAP_Core.Helpers;
-using Castle.Components.DictionaryAdapter.Xml;
-using Castle.Core.Logging;
 using ConnectAPic.LayoutWindow;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scripts.Helpers;
-using ConnectAPIC.Scripts.ViewModel.Commands;
 using Godot;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using YamlDotNet.Serialization;
-using static Godot.CameraFeed;
 
 namespace ConnectAPIC.Scripts.View.ToolBox
 {

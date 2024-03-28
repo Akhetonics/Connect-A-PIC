@@ -54,7 +54,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
             return Guid.Parse(metaGuid);
         }
 
-        protected Vector2I GetMouseGridPosition() => GetGridPosition(GridView.DragDropProxy.GetLocalMousePosition());
+        protected Vector2I GetMouseGridPosition() => GetGridPosition(GridView.GetLocalMousePosition());
         protected static Vector2I GetGridPosition(Vector2 position)
         {
             var tileSize = (GameManager.TilePixelSize);

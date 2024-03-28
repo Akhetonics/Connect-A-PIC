@@ -13,10 +13,9 @@ public partial class DragDropProxy : Control
     public delegate bool CanDropData(Vector2 position, Variant data);
     public delegate void DropData(Vector2 position, Variant data);
     public event EventHandler<InputEvent> InputReceived;
-    public GetDragData OnGetDragData;
-    public CanDropData OnCanDropData;
-    public DropData OnDropData;
-    private Control DragPreview { get; set; }
+    public GetDragData OnGetDragData { get; set; }
+    public CanDropData OnCanDropData { get; set; }
+    public DropData OnDropData { get; set; }
 
     public void Initialize(int widthInTiles, int heightInTiles)
     {
@@ -35,60 +34,14 @@ public partial class DragDropProxy : Control
     {
         if (OnCanDropData == null) return default;
         var canDropData = OnCanDropData(position, data);
-        //if(data.As<Control>() != null)
-        //{
-        //    ShowComponentDragPreview(position, data.As<Control>(), canDropData);
-        //}
         return canDropData;
     }
     public override void _DropData(Vector2 atPosition, Variant data)
     {
         if (OnDropData == null) return;
-        DragPreview = null;
         OnDropData(atPosition, data);
     }
-    public void ShowComponentDragPreview(Godot.Vector2 position, Control data, bool canDropData = true)
-    {
-        if (data == null) return;
-        CheckIfDragWasReset();
-        if (DragPreview == null && data is ComponentView originalComponent)
-        {
-            DragPreview = originalComponent.Duplicate();
-            DragPreview.Visible = false;
-        }
-        else
-        {
-            DragPreview.Visible = true;
-        }
-
-        if (canDropData)
-        {
-            DragPreview.Modulate = new Color(0, 1, 0, 0.5f);
-        }
-        else
-        {
-            DragPreview.Modulate = new Color(1, 0, 0, 0.5f);
-        }
-        DragPreview.Position = position + this.GlobalPosition ;
-        SetDragPreview(DragPreview);
-    }
-
-    private void CheckIfDragWasReset()
-    {
-        if (DragPreview == null) return;
-        try
-        {
-            if (DragPreview.IsQueuedForDeletion())
-            {
-                DragPreview = null;
-            }
-        }
-        catch
-        {
-            DragPreview = null;
-        }
-    }
-
+    
     public override void _Input(InputEvent @event)
     {
         base._Input(@event);

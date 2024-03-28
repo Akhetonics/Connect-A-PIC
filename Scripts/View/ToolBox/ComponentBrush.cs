@@ -1,18 +1,8 @@
-using CAP_Core;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPic.LayoutWindow;
-using ConnectAPIC.Scripts.ViewModel;
 using Godot;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ConnectAPIC.Scripts.Helpers;
-using Chickensoft.AutoInject;
-using SuperNodes.Types;
-using CAP_Contracts.Logger;
-using System.Xml.Linq;
 using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using CAP_Core.Components;
@@ -30,6 +20,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
         public ComponentView MousePreviewComponent { get; private set; }
         public DiscreteRotation StandardRotation { get; set; } = DiscreteRotation.R0;
         public bool LeftMouseButtonPressed { get; private set; }
+        public Vector2 RightMouseClickedPosition { get; private set; }
 
         public ComponentBrush(ComponentViewFactory componentViewFactory, GridView gridView, float tileBorderSize, int componentTypeNr) : base(gridView)
         {
@@ -134,10 +125,20 @@ namespace ConnectAPIC.Scripts.View.ToolBox
                         }
                     }
                 }
-                else if (mouseButtonEvent.ButtonIndex == MouseButton.Right && mouseButtonEvent.Pressed)
+                else if (mouseButtonEvent.ButtonIndex == MouseButton.Right )
                 {
-                    StandardRotation++;
-                    MousePreviewComponent.RotationDegrees = StandardRotation.ToDegreesClockwise();
+                    if (mouseButtonEvent.Pressed == true)
+                    {
+                        RightMouseClickedPosition = mouseButtonEvent.Position;
+                    } else
+                    {
+                        var MouseRightDelta = (RightMouseClickedPosition - mouseButtonEvent.Position).Length();
+                        if (MouseRightDelta < 10) // cancel preview turning by moving the mouse -> user might just be scrolling the mainGrid
+                        {
+                            StandardRotation++;
+                            MousePreviewComponent.RotationDegrees = StandardRotation.ToDegreesClockwise();
+                        }
+                    }
                 }
             }
 

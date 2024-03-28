@@ -1,9 +1,8 @@
 using Antlr4.Runtime.Misc;
 using CAP_Contracts.Logger;
-using CAP_Core;
 using CAP_Core.Components;
-using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.ExternalPorts;
+using CAP_Core.Grid;
 using CAP_Core.Helpers;
 using CAP_Core.LightCalculation;
 using ConnectAPic.LayoutWindow;
@@ -13,13 +12,11 @@ using ConnectAPIC.Scripts.Helpers;
 using ConnectAPIC.Scripts.View.ComponentViews;
 using ConnectAPIC.Scripts.ViewModel.Commands;
 using Godot;
-using Godot.NativeInterop;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Reflection.Metadata.Ecma335;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace ConnectAPIC.LayoutWindow.View
@@ -59,6 +56,16 @@ namespace ConnectAPIC.LayoutWindow.View
             DragDropProxy.OnDropData = _DropData;
             DragDropProxy.Initialize(viewModel.Width, viewModel.Height);
             DragDropProxy.InputReceived += (object sender, InputEvent e) => {
+                if(e is InputEventMouseButton eventMouseButton)
+                {
+                    if(eventMouseButton.ButtonIndex == MouseButton.Left)
+                    {
+                        if(eventMouseButton.Pressed == false)
+                        {
+                            ClearDragPreview();
+                        }
+                    }
+                }
             };
             viewModel.PropertyChanged += async (object sender, System.ComponentModel.PropertyChangedEventArgs e) =>
             {
@@ -232,45 +239,118 @@ namespace ConnectAPIC.LayoutWindow.View
         }
         public bool _CanDropData(Godot.Vector2 position, Variant data)
         {
-            if (data.Obj is Godot.Collections.Array componentPositionsVariant)
+            bool canDropData = false;
+            var deltaGridXY = (LocalToMap(position) - StartGridXY).ToIntVector();
+            var args = ConvertGodotListToMoveComponentArgs(data, deltaGridXY);
+            if (args != null)
             {
-                bool canDropData = true;
-                var deltaGridXY = (LocalToMap(position) - StartGridXY).ToIntVector();
-                foreach (var componentPositionVariant in componentPositionsVariant)
-                {
-                    if (componentPositionVariant.VariantType != Variant.Type.Vector2I) continue;
-                    var componentPosition = (Vector2I) componentPositionVariant;
-                    var componentView = GridComponentViews[componentPosition.X, componentPosition.Y];
-                    if(componentView == null)
-                        continue;
-                    // all of the elements should be in the grid, but it does not matter if another component gets overridden.
-                    if (!ViewModel.Grid.TileManager.IsInGrid (componentPosition.X + deltaGridXY.X, componentPosition.Y + deltaGridXY.Y, componentView.WidthInTiles, componentView.HeightInTiles))
-                    {
-                        canDropData = false;
-                    }
-                }
-                return canDropData;
-            } else
-            {
-                return false;
+                canDropData = ViewModel.MoveComponentCommand.CanExecute(args);
             }
+
+            if (canDropData == true && data.Obj is Godot.Collections.Array transitions)
+            {
+                ShowComponentDragPreview(position, transitions, canDropData);
+            }
+            
+            if (canDropData == false)
+            {
+                ClearDragPreview();
+            }
+            return canDropData;
         }
         public void _DropData(Godot.Vector2 atPosition, Variant data)
         {
             var deltaGridXY = (LocalToMap(atPosition) - StartGridXY).ToIntVector();
+            var args = ConvertGodotListToMoveComponentArgs(data, deltaGridXY);
+            if (args != null)
+            {
+                ViewModel.MoveComponentCommand.ExecuteAsync(args).Wait();
+            }
+            ClearDragPreview();
+        }
+
+        private static MoveComponentArgs ConvertGodotListToMoveComponentArgs(Variant data, IntVector deltaGridXY)
+        {
             if (data.Obj is Godot.Collections.Array componentPositionsVariant)
             {
                 List<(IntVector Source, IntVector Target)> translations = new();
-                foreach( var componentPositionVariant in componentPositionsVariant)
+                foreach (var componentPositionVariant in componentPositionsVariant)
                 {
                     if (componentPositionVariant.VariantType != Variant.Type.Vector2I) continue;
                     var componentPosition = (Vector2I)componentPositionVariant;
                     var source = (componentPosition).ToIntVector();
                     translations.Add((source, source + deltaGridXY));
                 }
-                var args = new MoveComponentArgs(translations);
-                ViewModel.MoveComponentCommand.ExecuteAsync(args);
+                return new MoveComponentArgs(translations);
             }
+            return null;
+        }
+
+        public void ShowComponentDragPreview(Godot.Vector2 position, Godot.Collections.Array transitions, bool canDropData )
+        {
+
+            var deltaGridXY = (LocalToMap(position) - StartGridXY);
+            Color previewColor = canDropData ? new Color(0.5f, 1, 0.5f) : new Color(1, 0, 0); // Light green for valid, red for invalid.
+            Logger.Print("candropData: " + canDropData);
+            foreach (Variant componentPositionVariant in transitions)
+            {
+                if (componentPositionVariant.VariantType != Variant.Type.Vector2I) continue;
+                var componentGridPosition = (Vector2I)componentPositionVariant;
+                var targetGridPosition = componentGridPosition + deltaGridXY;
+
+                // Assuming CreatePreviewComponent is a method that creates a visual representation of the component.
+                CreateOrUpdatePreviewComponent(componentGridPosition, targetGridPosition, previewColor);
+            }
+        }
+        private Dictionary<Vector2I, ComponentView> previewComponents = new Dictionary<Vector2I, ComponentView>();
+
+        public void CreateOrUpdatePreviewComponent(Vector2I originalGridPosition, Vector2I targetGridPosition, Color color)
+        {
+            ComponentView previewComponent;
+            if (previewComponents.TryGetValue(originalGridPosition, out previewComponent))
+            {
+                // Preview component already exists, update its position and color
+                previewComponent.Position = MapToLocalCorrected(targetGridPosition); // Assuming a method to convert grid position to local position
+                previewComponent.Modulate = color;
+                previewComponent.Show();
+            }
+            else
+            {
+                // Create a new preview component
+                var brush = GridComponentViews[targetGridPosition.X, targetGridPosition.Y];
+                if (brush == null) 
+                    return;
+                previewComponent = brush.Duplicate(); // Or however you instantiate your preview
+                previewComponent.Position = MapToLocalCorrected(targetGridPosition);
+                previewComponent.Modulate = color;
+                previewComponent.MouseFilter = Control.MouseFilterEnum.Ignore;
+                previewComponent.GetChildren();
+                foreach(var child in previewComponent.GetChildren() )
+                {
+                    if(child is Control node){
+                        node.MouseFilter = Control.MouseFilterEnum.Ignore;
+                    }
+                }
+                AddChild(previewComponent); // Add to the scene
+
+                previewComponents[originalGridPosition] = previewComponent;
+            }
+        }
+
+        private Godot.Vector2 MapToLocalCorrected(Vector2I targetGridPosition)
+        {
+            var tileSize = new Godot.Vector2(GameManager.TilePixelSize, GameManager.TilePixelSize);
+            return MapToLocal(targetGridPosition) - 0.5f * tileSize;
+        }
+
+        public void ClearDragPreview()
+        {
+            foreach (var entry in previewComponents)
+            {
+                // Optionally, instead of freeing, you could hide them or reuse them later
+                entry.Value.QueueFree();
+            }
+            previewComponents.Clear();
         }
         public async Task ShowLightPropagation() =>
             await ViewModel.LightCalculator.ShowLightPropagationAsync();
@@ -299,10 +379,6 @@ namespace ConnectAPIC.LayoutWindow.View
             StartGridXY = LocalToMap(position);
             var selectionMgr = ViewModel.SelectionGroupManager.SelectionManager;
             var selections = selectionMgr.Selections;
-            // check if the selected item underneath the cursor is part of the selection group
-            // if yes, then all is fine, move the group.
-            // if no, then deselect thegroup and select the item
-            // if there is no item underneath, then deselect the group.
             var cursorComponent = GridComponentViews[StartGridXY.X, StartGridXY.Y];
             var componentLocations = new Godot.Collections.Array<Vector2I>();
             if (cursorComponent == null) return componentLocations;
@@ -319,7 +395,6 @@ namespace ConnectAPIC.LayoutWindow.View
             {
                 componentLocations.Add(cursorComponentPos);
             }
-            
             return componentLocations;
         }
     }
