@@ -11,7 +11,7 @@
 [ext_resource type="Script" path="res://Scripts/View/DragDropProxy.cs" id="8_h35r3"]
 [ext_resource type="Script" path="res://Scripts/View/StandardDialogs/NotificationManager.cs" id="9_gj54m"]
 [ext_resource type="PackedScene" uid="uid://bscqmaslppyt8" path="res://Scenes/NotificationBox.tscn" id="10_06t00"]
-[ext_resource type="PackedScene" uid="uid://tnmccvafekjl" path="res://Scenes/RightClickMenu/RightClickMenu.tscn" id="13_2f6fn"]
+[ext_resource type="PackedScene" uid="uid://cwgo8pwc6hd73" path="res://Scenes/RightClickMenu/ControlMenu.tscn" id="11_ylcdl"]
 [ext_resource type="PackedScene" uid="uid://bd8isg4mddv21" path="res://Scenes/InGameConsole/InGameConsole.tscn" id="16_7rcst"]
 [ext_resource type="Texture2D" uid="uid://djdwbxfnvfvfb" path="res://Scenes/MenuBar/SaveIcon.png" id="17_q4e7w"]
 [ext_resource type="Texture2D" uid="uid://qtdana7kc4y" path="res://Scenes/MenuBar/LoadIcon.png" id="18_17x6l"]
@@ -58,7 +58,7 @@ metadata/_edit_use_anchors_ = true
 
 [node name="PortContainer" parent="GridView" instance=ExtResource("22_75h2p")]
 ExternalPortViewTemplate = ExtResource("2_dn85u")
-RightClickMenu = ExtResource("13_2f6fn")
+RightClickMenuTemplate = ExtResource("11_ylcdl")
 
 [node name="Control" type="Control" parent="."]
 layout_mode = 3
