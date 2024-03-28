@@ -89,13 +89,19 @@ public partial class SliderSection : ISection
     {
         if (e.PropertyName == nameof(ExternalPortViewModel.Power))
         {
-            float new_value = (sender as ExternalPortViewModel).Power.Length();
-            Value = new_value.ToString("0.00");
-            Slider.Value = new_value;
+            SetSliderValue((sender as ExternalPortViewModel).Power);
         }
     }
 
-    public void SetSliderValue(double value) {
+    public void SetSliderValue(double value)
+    {
         Value = value.ToString("0.00");
+        Slider.Value = value;
+    }
+
+    public void SetSliderValue(Vector3 powerVector)
+    {
+        float value = powerVector.Length();
+        SetSliderValue(value);
     }
 }
