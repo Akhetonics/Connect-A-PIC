@@ -1,11 +1,18 @@
-[gd_scene load_steps=10 format=3 uid="uid://cwgo8pwc6hd73"]
+[gd_scene load_steps=14 format=3 uid="uid://cwgo8pwc6hd73"]
 
 [ext_resource type="Script" path="res://Scenes/RightClickMenu/SimpleControlMenu.cs" id="1_52xip"]
 [ext_resource type="Texture2D" uid="uid://bnhwsteqou1xj" path="res://Scenes/RightClickMenu/ExternalOutputIcon.png" id="4_bggqw"]
+[ext_resource type="Texture2D" uid="uid://1g5psmv4aj8a" path="res://Scenes/RightClickMenu/RedInputIcon.png" id="4_dyqqw"]
 [ext_resource type="PackedScene" uid="uid://cbnwjaf2rjctr" path="res://Scenes/RightClickMenu/Sections/slider_section.tscn" id="4_lktol"]
 [ext_resource type="ButtonGroup" uid="uid://cxi5vciu5p82o" path="res://Scenes/RightClickMenu/InputModeSelectionButtonGroup.tres" id="4_p1asi"]
 [ext_resource type="PackedScene" uid="uid://bibqhya7kmikv" path="res://Scenes/RightClickMenu/Sections/info_section.tscn" id="5_50guf"]
+[ext_resource type="Texture2D" uid="uid://cab2i6pa52wbr" path="res://Scenes/RightClickMenu/GreenInputIcon.png" id="5_aecc8"]
+[ext_resource type="Texture2D" uid="uid://civbgw8ohuxul" path="res://Scenes/RightClickMenu/BlueInputIcon.png" id="6_hkhch"]
 [ext_resource type="Texture2D" uid="uid://bseakecs4865n" path="res://Scenes/RightClickMenu/Body.png" id="8_7xmtp"]
+
+[sub_resource type="Curve" id="Curve_dlfrx"]
+_data = [Vector2(0, 0), 0.0, 3.40635, 0, 0, Vector2(0.996078, 1), 0.0730049, 0.0, 0, 0]
+point_count = 2
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ko678"]
 content_margin_left = 4.0
@@ -67,6 +74,7 @@ size_flags_horizontal = 0
 mouse_filter = 1
 script = ExtResource("1_52xip")
 ButtonGroup = ExtResource("4_p1asi")
+animationCurve = SubResource("Curve_dlfrx")
 
 [node name="ControlMenu" type="Control" parent="."]
 custom_minimum_size = Vector2(200, 100)
@@ -100,11 +108,11 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 7
+theme_override_constants/separation = 0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="ControlMenu/SectionContainer"]
 layout_mode = 2
-theme_override_constants/separation = 5
+theme_override_constants/separation = 2
 alignment = 1
 
 [node name="Red" type="Button" parent="ControlMenu/SectionContainer/HBoxContainer"]
@@ -120,7 +128,8 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_vhgit")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_liije")
 toggle_mode = true
 button_group = ExtResource("4_p1asi")
-icon = ExtResource("4_bggqw")
+icon = ExtResource("4_dyqqw")
+icon_alignment = 1
 
 [node name="Green" type="Button" parent="ControlMenu/SectionContainer/HBoxContainer"]
 layout_mode = 2
@@ -135,7 +144,7 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_vhgit")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_liije")
 toggle_mode = true
 button_group = ExtResource("4_p1asi")
-icon = ExtResource("4_bggqw")
+icon = ExtResource("5_aecc8")
 
 [node name="Blue" type="Button" parent="ControlMenu/SectionContainer/HBoxContainer"]
 layout_mode = 2
@@ -150,7 +159,7 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_vhgit")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_liije")
 toggle_mode = true
 button_group = ExtResource("4_p1asi")
-icon = ExtResource("4_bggqw")
+icon = ExtResource("6_hkhch")
 
 [node name="Input" type="Button" parent="ControlMenu/SectionContainer/HBoxContainer"]
 layout_mode = 2
@@ -169,6 +178,7 @@ icon = ExtResource("4_bggqw")
 
 [node name="OutputMenu" type="Control" parent="ControlMenu/SectionContainer"]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 mouse_filter = 1
@@ -187,14 +197,13 @@ offset_bottom = 40.0
 metadata/_edit_vertical_guides_ = [237.0]
 
 [node name="PointerToPort" type="Line2D" parent="ControlMenu/SectionContainer/OutputMenu"]
-position = Vector2(200, -40)
-points = PackedVector2Array(0, 1, 7, 1, 16, 9)
+position = Vector2(200, -49)
+points = PackedVector2Array(0, 1, 7, 1, 17, 10)
 width = 6.0
 default_color = Color(0.760784, 0.658824, 0.254902, 1)
 
 [node name="InputMenu" type="Control" parent="ControlMenu/SectionContainer"]
 unique_name_in_owner = true
-visible = false
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 mouse_filter = 1
@@ -209,8 +218,8 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="PointerToPort" type="Line2D" parent="ControlMenu/SectionContainer/InputMenu"]
-position = Vector2(200, -40)
-points = PackedVector2Array(0, 1, 11, 1, 29, 15)
+position = Vector2(200, -49)
+points = PackedVector2Array(0, 1, 11, 1, 29, 17)
 width = 6.0
 default_color = Color(0.760784, 0.658824, 0.254902, 1)
 

@@ -4,6 +4,7 @@ using ConnectAPIC.Scenes.ExternalPorts;
 using ConnectAPIC.Scripts.ViewModel;
 using ConnectAPIC.Scripts.ViewModel.Commands;
 using Godot;
+using Shouldly;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -11,10 +12,10 @@ using System.Reflection;
 public partial class SimpleControlMenu : Control
 {
     [Export] public ButtonGroup ButtonGroup { get; set; }
-    //TODO: get curve for smooth animation
-    //[Export] public C Curve { get; set; }
+    [Export] public Curve animationCurve { get; set; }
 
-    public static float X_OFFSET = -120;
+    public static float X_OFFSET = -120;    //Menus offset on X axis
+    public static float TRAVEL_TIME = 0.3f; //Time needed for menu to travel from one port to another
 
     public PortsContainer PortsContainer { get; set; }
 
@@ -26,10 +27,10 @@ public partial class SimpleControlMenu : Control
 
     private Godot.Collections.Array<BaseButton> portModeButtons;
     private ExternalPortViewModel port;
-    private bool mouseOutsideClickArea = false;
-    private float prevOffsetY = -1;
+    private bool mouseOutsideClickArea = true;
+    private bool spawnInstantly = true;
     private float targetOffsetY = -1;
-    private bool inPosition = false;
+    private double time_tracked = 0;
 
     public override void _Input(InputEvent @event) {
         if (@event is InputEventMouseButton mouseButton
@@ -37,6 +38,7 @@ public partial class SimpleControlMenu : Control
                 && mouseButton.ButtonIndex == MouseButton.Left
                 && mouseOutsideClickArea) {
             Visible = false;
+            //spawnInstantly = true;
         }
     }
 
@@ -67,9 +69,15 @@ public partial class SimpleControlMenu : Control
     }
 
     public override void _Process(double delta) {
-        if (Mathf.Abs(Position.Y - targetOffsetY) > 0.05){
-            float yOffset= (float)Mathf.Lerp(Position.Y, targetOffsetY, delta);
+        MoveToTargetOffsetIfNotThere(delta);
+    }
+
+    private void MoveToTargetOffsetIfNotThere(double delta) {
+        if (time_tracked < TRAVEL_TIME) {
+            float step = animationCurve.Sample((float)time_tracked / TRAVEL_TIME);
+            float yOffset = (float)Mathf.Lerp(Position.Y, targetOffsetY, step);
             Position = new Vector2(X_OFFSET, yOffset);
+            time_tracked += delta;
         }
     }
 
@@ -103,7 +111,15 @@ public partial class SimpleControlMenu : Control
 
     public void ConnectToPort(ExternalPortViewModel port)
     {
-        if (this.port != null) DisconnectFromPort();
+        if (this.port == port){
+            this.Visible = true;
+            return;
+        }
+
+        if (this.port != null) {
+            DisconnectFromPort();
+        }
+
         this.port = port;
 
         SetPortModeRadioButton(port);
@@ -112,23 +128,21 @@ public partial class SimpleControlMenu : Control
 
         ConnectToSections(port);
 
-        //TODO: Set appropriate offset on X position
         targetOffsetY = (GameManager.TilePixelSize) * port.PortModel.TilePositionY;
 
-        if (prevOffsetY < 0) {
-            prevOffsetY = targetOffsetY;
-            Position = new Vector2(X_OFFSET, prevOffsetY);
+        if (spawnInstantly) {
+            Position = new Vector2(X_OFFSET, targetOffsetY);
         }
 
+        spawnInstantly = false;
+        time_tracked = 0;
         this.Visible = true;
     }
     public void DisconnectFromPort()
     {
         this.Visible = false;
-
         port.PropertyChanged -= Port_PropertyChanged;
         sliderSection.PropertyChanged -= SliderSection_PropertyChanged;
-        prevOffsetY = Position.Y;
         port = null;
     }
 

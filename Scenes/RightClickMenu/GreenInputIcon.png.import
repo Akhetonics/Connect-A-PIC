@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ds3bi6wq0upnc"
-path="res://.godot/imported/PinButtonOff.png-263bfc96cc95cf5431ec0b2bdfa6dee5.ctex"
+uid="uid://cab2i6pa52wbr"
+path="res://.godot/imported/GreenInputIcon.png-59c0bfae7a4e38d2a48da696275e99d3.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Scenes/RightClickMenu/PinButtonOff.png"
-dest_files=["res://.godot/imported/PinButtonOff.png-263bfc96cc95cf5431ec0b2bdfa6dee5.ctex"]
+source_file="res://Scenes/RightClickMenu/GreenInputIcon.png"
+dest_files=["res://.godot/imported/GreenInputIcon.png-59c0bfae7a4e38d2a48da696275e99d3.ctex"]
 
 [params]
 
