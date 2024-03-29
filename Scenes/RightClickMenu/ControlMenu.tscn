@@ -110,6 +110,7 @@ alignment = 1
 [node name="Red" type="Button" parent="ControlMenu/SectionContainer/HBoxContainer"]
 layout_mode = 2
 focus_mode = 0
+mouse_filter = 1
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 0.588235)
 theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
@@ -124,6 +125,7 @@ icon = ExtResource("4_bggqw")
 [node name="Green" type="Button" parent="ControlMenu/SectionContainer/HBoxContainer"]
 layout_mode = 2
 focus_mode = 0
+mouse_filter = 1
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 0.588235)
 theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
@@ -138,6 +140,7 @@ icon = ExtResource("4_bggqw")
 [node name="Blue" type="Button" parent="ControlMenu/SectionContainer/HBoxContainer"]
 layout_mode = 2
 focus_mode = 0
+mouse_filter = 1
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 0.588235)
 theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
@@ -152,6 +155,7 @@ icon = ExtResource("4_bggqw")
 [node name="Input" type="Button" parent="ControlMenu/SectionContainer/HBoxContainer"]
 layout_mode = 2
 focus_mode = 0
+mouse_filter = 1
 theme_override_colors/icon_normal_color = Color(1, 1, 1, 0.588235)
 theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
 theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
@@ -209,3 +213,6 @@ position = Vector2(200, -40)
 points = PackedVector2Array(0, 1, 11, 1, 29, 15)
 width = 6.0
 default_color = Color(0.760784, 0.658824, 0.254902, 1)
+
+[connection signal="mouse_entered" from="ControlMenu" to="." method="OnMouseEntered"]
+[connection signal="mouse_exited" from="ControlMenu" to="." method="OnMouseExited"]

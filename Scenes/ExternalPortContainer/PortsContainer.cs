@@ -49,7 +49,7 @@ public partial class PortsContainer : Node2D
     {
         foreach (ExternalPortViewModel viewModel in PortViewModels)
         {
-            viewModel.RightClicked += ViewModel_RightClicked;
+            viewModel.Clicked += ViewModel_Clicked;
         }
         ControlMenu = RightClickMenuTemplate.Instantiate<SimpleControlMenu>();
         ControlMenu.SetPortContainer(this);
@@ -67,7 +67,7 @@ public partial class PortsContainer : Node2D
         inputOutputChangeCommand = new InputOutputChangeCommand(Grid);
     }
 
-    private void ViewModel_RightClicked(object sender, EventArgs e)
+    private void ViewModel_Clicked(object sender, EventArgs e)
     {
         ExternalPortViewModel viewModel = sender as ExternalPortViewModel;
         if (viewModel == null) return;

@@ -23,7 +23,7 @@ namespace ConnectAPIC.Scenes.ExternalPorts
         float pulseValue = 0;
         float minPulseEnergy = 0.8f;
         float maxPulseEnergy = 1.2f;
-        bool mouseInRightClickArea = false;
+        bool mouseInClickArea = false;
 
         public void Initialize(ExternalPortViewModel viewModel)
         {
@@ -44,10 +44,10 @@ namespace ConnectAPIC.Scenes.ExternalPorts
         {
             if (@event is InputEventMouseButton mouseButton
                 && mouseButton.Pressed
-                && mouseButton.ButtonIndex == MouseButton.Right
-                && mouseInRightClickArea)
+                && mouseButton.ButtonIndex == MouseButton.Left
+                && mouseInClickArea)
             {
-                ViewModel.InvokeRightClicked();
+                ViewModel.InvokeClicked();
             }
         }
 
@@ -63,6 +63,7 @@ namespace ConnectAPIC.Scenes.ExternalPorts
         {
             currentTexture.Texture = OutputTexture;
             InfoLabel.Text = ViewModel.AllColorsPower();
+            InfoLabel.Visible = true;
             SetLight(false);
         }
 
@@ -70,6 +71,7 @@ namespace ConnectAPIC.Scenes.ExternalPorts
         {
             currentTexture.Texture = InputTexture;
             pulseValue = (float)(new Random().NextDouble() * 10);
+            InfoLabel.Visible = false;
             SetLightColor(alpha);
             SetLight(ViewModel.IsLightOn);
         }
@@ -130,12 +132,12 @@ namespace ConnectAPIC.Scenes.ExternalPorts
 
         private void OnMouseEnteredRightClickArea()
         {
-            mouseInRightClickArea = true;
+            mouseInClickArea = true;
         }
 
         private void OnMouseExitedRightClickArea()
         {
-            mouseInRightClickArea = false;
+            mouseInClickArea = false;
         }
     }
 }

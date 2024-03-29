@@ -11,6 +11,10 @@ using System.Reflection;
 public partial class SimpleControlMenu : Control
 {
     [Export] public ButtonGroup ButtonGroup { get; set; }
+    //TODO: get curve for smooth animation
+    //[Export] public C Curve { get; set; }
+
+    public static float X_OFFSET = -120;
 
     public PortsContainer PortsContainer { get; set; }
 
@@ -20,9 +24,23 @@ public partial class SimpleControlMenu : Control
     private InfoSection powerInfo;
     private InfoSection phaseInfo;
 
-    private ExternalPortViewModel port;
     private Godot.Collections.Array<BaseButton> portModeButtons;
-	public override void _Ready()
+    private ExternalPortViewModel port;
+    private bool mouseOutsideClickArea = false;
+    private float prevOffsetY = -1;
+    private float targetOffsetY = -1;
+    private bool inPosition = false;
+
+    public override void _Input(InputEvent @event) {
+        if (@event is InputEventMouseButton mouseButton
+                && mouseButton.Pressed
+                && mouseButton.ButtonIndex == MouseButton.Left
+                && mouseOutsideClickArea) {
+            Visible = false;
+        }
+    }
+
+    public override void _Ready()
 	{
         InputMenu = GetNode<Control>("%InputMenu");
         sliderSection = InputMenu.GetChild<SliderSection>(0);
@@ -46,6 +64,13 @@ public partial class SimpleControlMenu : Control
 
         //TODO: remove comment when done testing
         this.Visible = false;
+    }
+
+    public override void _Process(double delta) {
+        if (Mathf.Abs(Position.Y - targetOffsetY) > 0.05){
+            float yOffset= (float)Mathf.Lerp(Position.Y, targetOffsetY, delta);
+            Position = new Vector2(X_OFFSET, yOffset);
+        }
     }
 
     private void Button_Pressed(BaseButton button)
@@ -88,7 +113,13 @@ public partial class SimpleControlMenu : Control
         ConnectToSections(port);
 
         //TODO: Set appropriate offset on X position
-        Position = new Vector2(-120, (GameManager.TilePixelSize) * port.PortModel.TilePositionY);
+        targetOffsetY = (GameManager.TilePixelSize) * port.PortModel.TilePositionY;
+
+        if (prevOffsetY < 0) {
+            prevOffsetY = targetOffsetY;
+            Position = new Vector2(X_OFFSET, prevOffsetY);
+        }
+
         this.Visible = true;
     }
     public void DisconnectFromPort()
@@ -97,7 +128,7 @@ public partial class SimpleControlMenu : Control
 
         port.PropertyChanged -= Port_PropertyChanged;
         sliderSection.PropertyChanged -= SliderSection_PropertyChanged;
-
+        prevOffsetY = Position.Y;
         port = null;
     }
 
@@ -156,4 +187,15 @@ public partial class SimpleControlMenu : Control
         if (port.IsInput)
             sliderSection.SetSliderValue(port.Power);
     }
+    private void OnMouseEntered() {
+        mouseOutsideClickArea = false;
+    }
+    private void OnMouseExited() {
+        mouseOutsideClickArea = true;
+    }
 }
+
+
+
+
+
