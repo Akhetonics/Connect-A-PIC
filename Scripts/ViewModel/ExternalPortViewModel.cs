@@ -163,7 +163,7 @@ namespace ConnectAPIC.Scripts.ViewModel
             };
             var fieldOut = e.LightFieldVector[(Guid)touchingPin].Magnitude;
 
-            UpdateInputPowerAndColorUsingLazerType(e.LaserInUse, (float)(fieldOut * fieldOut));
+            UpdateInputPowerAndColorUsingLaserType(e.LaserInUse, (float)(fieldOut * fieldOut));
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "")
@@ -184,17 +184,17 @@ namespace ConnectAPIC.Scripts.ViewModel
             }
         }
 
-        private void UpdateInputPowerAndColorUsingLazerType(LaserType laserType, double inputPower)
+        private void UpdateInputPowerAndColorUsingLaserType(LaserType laserType, double inputPower)
         {
-            SetPowerAndColorUsingLazerType(laserType, inputPower, Power);
+            SetPowerAndColorUsingLaserType(laserType, inputPower, Power);
         }
 
         private void ResetInputPowerAndColorUsingLaserType(LaserType laserType, double inputPower)
         {
-            SetPowerAndColorUsingLazerType(laserType, inputPower, Vector3.Zero);
+            SetPowerAndColorUsingLaserType(laserType, inputPower, Vector3.Zero);
         }
 
-        private void SetPowerAndColorUsingLazerType(LaserType laserType, double inputPower, Vector3 startValue)
+        private void SetPowerAndColorUsingLaserType(LaserType laserType, double inputPower, Vector3 startValue)
         {
             var power = startValue;
             if (laserType == LaserType.Red)
