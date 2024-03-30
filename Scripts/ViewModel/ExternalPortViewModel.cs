@@ -37,7 +37,7 @@ namespace ConnectAPIC.Scripts.ViewModel
                 ExternalInput tmp = (value as ExternalInput);
                 if (tmp != null)
                 {
-                    ResetInputPowerAndColorUsingLazerType(tmp.LaserType, tmp.InFlowPower.Real);
+                    ResetInputPowerAndColorUsingLaserType(tmp.LaserType, tmp.InFlowPower.Real);
                 }
 
                 OnPropertyChanged();
@@ -172,7 +172,7 @@ namespace ConnectAPIC.Scripts.ViewModel
         }
         private void Model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            //only external inputs gives away meaningfull property change signals
+            //only external inputs gives away meaningful property change signals
             ExternalInput inputPort = PortModel as ExternalInput;
             if (inputPort == null) return;
 
@@ -180,7 +180,7 @@ namespace ConnectAPIC.Scripts.ViewModel
              || e.PropertyName == nameof(ExternalInput.InFlowPower))
             {
                 var inputPower = inputPort.InFlowPower.Real;
-                ResetInputPowerAndColorUsingLazerType(inputPort.LaserType, inputPower);
+                ResetInputPowerAndColorUsingLaserType(inputPort.LaserType, inputPower);
             }
         }
 
@@ -189,7 +189,7 @@ namespace ConnectAPIC.Scripts.ViewModel
             SetPowerAndColorUsingLazerType(laserType, inputPower, Power);
         }
 
-        private void ResetInputPowerAndColorUsingLazerType(LaserType laserType, double inputPower)
+        private void ResetInputPowerAndColorUsingLaserType(LaserType laserType, double inputPower)
         {
             SetPowerAndColorUsingLazerType(laserType, inputPower, Vector3.Zero);
         }
