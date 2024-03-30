@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=3 uid="uid://cwgo8pwc6hd73"]
+[gd_scene load_steps=14 format=3 uid="uid://dx13abdux2230"]
 
 [ext_resource type="Script" path="res://Scenes/RightClickMenu/SimpleControlMenu.cs" id="1_52xip"]
 [ext_resource type="Texture2D" uid="uid://bnhwsteqou1xj" path="res://Scenes/RightClickMenu/ExternalOutputIcon.png" id="4_bggqw"]
