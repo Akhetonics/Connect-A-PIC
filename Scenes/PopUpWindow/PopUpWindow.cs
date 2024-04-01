@@ -8,6 +8,8 @@ namespace ConnectAPIC.Scenes.PopUpWindow
     {
         [Export] public Button ToggleButton { get; set; }
 
+        //Godot signal for easier handling from gui
+        [Signal] public delegate void WindowClosedEventHandler();
 
         public override void _Ready()
         {
@@ -23,12 +25,14 @@ namespace ConnectAPIC.Scenes.PopUpWindow
         private void OnToggleButtonPressed(bool toggledOn)
         {
             Visible = toggledOn;
+            if (!Visible) EmitSignal(SignalName.WindowClosed);
         }
 
         private void OnCloseButtonPressed()
         {
             Visible = false;
             ToggleButton.ButtonPressed = false;
+            EmitSignal(SignalName.WindowClosed);
         }
 
     }
