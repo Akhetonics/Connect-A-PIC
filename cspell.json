@@ -27,7 +27,8 @@
     "cspell.json",
     "*.json",
     "*.md",
-    "*.psd"
+    "*.psd",
+    "*.ogv"
   ],
     "words": [
         "Behaviour",
