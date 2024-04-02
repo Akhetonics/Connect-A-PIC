@@ -32,7 +32,7 @@ public partial class DragDropProxy : Control
     }
     public override bool _CanDropData(Vector2 position, Variant data)
     {
-        if (OnCanDropData == null) return default;
+        if (OnCanDropData == null) return false;
         var canDropData = OnCanDropData(position, data);
         return canDropData;
     }

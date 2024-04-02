@@ -24,7 +24,6 @@ namespace ConnectAPIC.LayoutWindow.View
 
     public partial class GridView : TileMap
     {
-
         [Export] public DragDropProxy DragDropProxy;
         [Export] public ComponentViewFactory ComponentViewFactory;
         [Export] public Texture2D LightOnTexture;
@@ -239,24 +238,29 @@ namespace ConnectAPIC.LayoutWindow.View
         }
         public bool _CanDropData(Godot.Vector2 position, Variant data)
         {
-            bool canDropData = false;
-            var deltaGridXY = (LocalToMap(position) - StartGridXY).ToIntVector();
-            var args = ConvertGodotListToMoveComponentArgs(data, deltaGridXY);
-            if (args != null)
+            try
             {
-                canDropData = ViewModel.MoveComponentCommand.CanExecute(args);
-            }
-
-            if (canDropData == true && data.Obj is Godot.Collections.Array transitions)
+                bool canDropData = false;
+                var deltaGridXY = (LocalToMap(position) - StartGridXY).ToIntVector();
+                var args = ConvertGodotListToMoveComponentArgs(data, deltaGridXY);
+                if (args != null)
+                {
+                    canDropData = ViewModel.MoveComponentCommand.CanExecute(args);
+                }
+                if (canDropData == true && data.Obj is Godot.Collections.Array transitions)
+                {
+                    ShowComponentDragPreview(position, transitions, canDropData);
+                }
+                if (canDropData == false)
+                {
+                    ClearDragPreview();
+                }
+                return canDropData;
+            } catch (Exception ex)
             {
-                ShowComponentDragPreview(position, transitions, canDropData);
+                Logger.PrintErr(ex.ToString());
+                return false;
             }
-            
-            if (canDropData == false)
-            {
-                ClearDragPreview();
-            }
-            return canDropData;
         }
         public void _DropData(Godot.Vector2 atPosition, Variant data)
         {
@@ -288,13 +292,14 @@ namespace ConnectAPIC.LayoutWindow.View
 
         public void ShowComponentDragPreview(Godot.Vector2 position, Godot.Collections.Array transitions, bool canDropData )
         {
-
             var deltaGridXY = (LocalToMap(position) - StartGridXY);
             Color previewColor = canDropData ? new Color(0.5f, 1, 0.5f) : new Color(1, 0, 0); // Light green for valid, red for invalid.
-            Logger.Print("candropData: " + canDropData);
             foreach (Variant componentPositionVariant in transitions)
             {
-                if (componentPositionVariant.VariantType != Variant.Type.Vector2I) continue;
+                if (componentPositionVariant.VariantType != Variant.Type.Vector2I)
+                {
+                    continue;
+                }
                 var componentGridPosition = (Vector2I)componentPositionVariant;
                 var targetGridPosition = componentGridPosition + deltaGridXY;
 
@@ -317,7 +322,7 @@ namespace ConnectAPIC.LayoutWindow.View
             else
             {
                 // Create a new preview component
-                var brush = GridComponentViews[targetGridPosition.X, targetGridPosition.Y];
+                var brush = GridComponentViews[originalGridPosition.X, originalGridPosition.Y];
                 if (brush == null) 
                     return;
                 previewComponent = brush.Duplicate(); // Or however you instantiate your preview
@@ -347,7 +352,6 @@ namespace ConnectAPIC.LayoutWindow.View
         {
             foreach (var entry in previewComponents)
             {
-                // Optionally, instead of freeing, you could hide them or reuse them later
                 entry.Value.QueueFree();
             }
             previewComponents.Clear();
