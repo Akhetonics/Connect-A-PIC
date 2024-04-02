@@ -1,11 +1,7 @@
-using Antlr4.Runtime.Misc;
 using CAP_Contracts.Logger;
 using CAP_Core.Components;
 using CAP_Core.ExternalPorts;
-using CAP_Core.Grid;
-using CAP_Core.Helpers;
 using CAP_Core.LightCalculation;
-using ConnectAPic.LayoutWindow;
 using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scripts.Helpers;
@@ -16,7 +12,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 
 namespace ConnectAPIC.LayoutWindow.View

@@ -20,7 +20,7 @@ namespace ConnectAPIC.test.ViewModels.Commands
         [InlineData(AppendBehaviors.Remove)]
         public async Task BoxSelectComponentsCommand_AppendBehaviors_Test(AppendBehaviors appendBehavior)
         {
-            // Initialisierung
+            // Initialization
             var gridManager = GridHelpers.InitializeGridWithComponents();
             var selectionManager = new SelectionManager(gridManager);
             var command = new BoxSelectComponentsCommand(gridManager, selectionManager);
@@ -30,7 +30,7 @@ namespace ConnectAPIC.test.ViewModels.Commands
 
             await command.ExecuteAsync(parameters);
 
-            // Test the Appendbehaviors
+            // Test the AppendBehaviors
             switch (appendBehavior)
             {
                 case AppendBehaviors.CreateNew:
@@ -40,7 +40,7 @@ namespace ConnectAPIC.test.ViewModels.Commands
                     Assert.Equal(4, selectionManager.Selections.Count); // expects that all 3 new and the one that was in the list already are in the list
                     break;
                 case AppendBehaviors.Remove:
-                    Assert.Equal(1, selectionManager.Selections.Count); // expects, that only the one that was initialy in the list remains
+                    Assert.Equal(1, selectionManager.Selections.Count); // expects, that only the one that was initially in the list, remains
                     break;
             }
         }

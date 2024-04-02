@@ -71,7 +71,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
         {
             if (IsActive == false) return;
             // display the blue selection box
-            // has to be input because the toolbox handles the MouseMotion somehow so that it will never be in unhandledinput..
+            // has to be input because the toolbox handles the MouseMotion somehow so that it will never be in unhandled input..
             else if (@event is InputEventMouseMotion)
             {
                 if (IsSelectionBoxActive)

@@ -1,13 +1,9 @@
-using Antlr4.Runtime.Misc;
 using CAP_Core.Components;
-using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.Grid;
 using CAP_Core.Helpers;
-using Castle.Components.DictionaryAdapter.Xml;
 using ConnectAPIC.Scripts.ViewModel.Commands;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -32,7 +28,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             if (VerifyAllInGrid(args) == false) return false;
             var componentAndTargets = CollectMoveInfo(args); // CollectMoveInfo would throw if a target would be outside of the grid
             if (VerifyIsComponentsTargetsUniqueness(componentAndTargets)== false) return false;
-            if (VerifySingleComponentIsTargetFree(args) == false) return false; // If we drag only 1 single Element, it should not override exising components
+            if (VerifySingleComponentIsTargetFree(args) == false) return false; // If we drag only 1 single Element, it should not override existing components
             return true;
         }
 

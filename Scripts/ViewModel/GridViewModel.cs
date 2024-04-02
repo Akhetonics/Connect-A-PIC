@@ -11,6 +11,7 @@ using ConnectAPIC.Scripts.ViewModel;
 using ConnectAPIC.Scripts.ViewModel.Commands;
 using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using static ConnectAPIC.Scripts.View.ToolBox.SelectionTool;
 
 namespace ConnectAPIC.LayoutWindow.ViewModel
