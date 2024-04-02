@@ -93,7 +93,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
                 {
                     // check that there is no component at start point -> otherwise abort..
                     LeftMouseButtonPressed = mouseButtonEvent.Pressed; // release or press the button
-                    // ignore drag when startpoint is ontop of a component
+                    // ignore drag when startPoint is on top of a component
                     Vector2I gridPosition = GetMouseGridPosition();
                     
                     if (mouseButtonEvent.Pressed)
