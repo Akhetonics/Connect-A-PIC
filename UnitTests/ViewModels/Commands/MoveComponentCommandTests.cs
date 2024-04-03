@@ -21,11 +21,12 @@ namespace UnitTests.ViewModels.Commands
         {
             // IExternalPortManager externalPortManager, IComponentRotator componentRotator, IComponentRelationshipManager componentRelationshipManager
             var tileMgr = new TileManager(24, 12);
+            var lightMgr = new LightManager();
             var componentMover = new Mock<IComponentMover>();
             var externalPortMgr = new Mock<IExternalPortManager>();
             var componentRotator = new Mock<IComponentRotator>();
             var componentRelationshipMgr = new Mock<IComponentRelationshipManager>();
-            gridManagerMock = new Mock<GridManager>(tileMgr, componentMover.Object, externalPortMgr.Object,componentRotator.Object,componentRelationshipMgr.Object);
+            gridManagerMock = new Mock<GridManager>(tileMgr, componentMover.Object, externalPortMgr.Object,componentRotator.Object,componentRelationshipMgr.Object, lightMgr);
             selectionManagerMock = new Mock<SelectionManager>(gridManagerMock.Object);
             command = new MoveComponentCommand(gridManagerMock.Object, selectionManagerMock.Object);
 

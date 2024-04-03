@@ -25,7 +25,7 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
             InputColorChangeArgs inputParams = parameter as InputColorChangeArgs;
             if (inputParams == null || inputParams.LaserColor == null) return false;
 
-            return Grid.ExternalPorts.Contains(inputParams.Port);
+            return Grid.ExternalPortManager.ExternalPorts.Contains(inputParams.Port);
         }
 
         public async Task ExecuteAsync(object parameter)
@@ -37,8 +37,8 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
             args.Port.LaserType = args.LaserColor;
 
             //easy way to recalculate light
-            Grid.IsLightOn = !Grid.IsLightOn;
-            Grid.IsLightOn = !Grid.IsLightOn;
+            Grid.LightManager.IsLightOn = !Grid.LightManager.IsLightOn;
+            Grid.LightManager.IsLightOn = !Grid.LightManager.IsLightOn;
         }
     }
 

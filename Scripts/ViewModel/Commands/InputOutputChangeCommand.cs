@@ -25,7 +25,7 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
             ExternalPortViewModel ViewModel = parameter as ExternalPortViewModel;
             if (ViewModel == null) return false;
 
-            return Grid.ExternalPorts.Contains(ViewModel.PortModel);
+            return Grid.ExternalPortManager.ExternalPorts.Contains(ViewModel.PortModel);
         }
 
         public async Task ExecuteAsync(object parameter)
@@ -35,7 +35,7 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
 
             ExternalPort newPort;
             ExternalPort port = ViewModel.PortModel;
-            int index = Grid.ExternalPorts.IndexOf(port);
+            int index = Grid.ExternalPortManager.ExternalPorts.IndexOf(port);
 
             if (port is ExternalInput)
                 newPort = new ExternalOutput(port.PinName, port.TilePositionY);
@@ -43,10 +43,10 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
                 newPort = new ExternalInput(port.PinName, LaserType.Red, port.TilePositionY, 1);
 
             ViewModel.PortModel = newPort;
-            Grid.ExternalPorts[index] = newPort;
+            Grid.ExternalPortManager.ExternalPorts[index] = newPort;
 
-            Grid.IsLightOn = !Grid.IsLightOn;
-            Grid.IsLightOn = !Grid.IsLightOn;
+            Grid.LightManager.IsLightOn = !Grid.LightManager.IsLightOn;
+            Grid.LightManager.IsLightOn = !Grid.LightManager.IsLightOn;
         }
     }
 }

@@ -9,11 +9,12 @@ using CAP_Core.Grid;
 using CAP_Core.ExternalPorts;
 using System.Diagnostics;
 using CAP_Core.LightCalculation;
-using ConnectAPIC.Scenes.RightClickMenu;
 using System.ComponentModel;
 using ConnectAPIC.Scripts.ViewModel;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scripts.ViewModel.Commands;
+using ConnectAPic.LayoutWindow;
+using ConnectAPIC.Scenes.RightClickMenu;
 
 
 
@@ -57,7 +58,7 @@ public partial class PortsContainer : Node2D
     private void InitializePortsAndPortsFactory()
     {
         PortViewFactory = new ExternalPortViewFactory(this, Grid, LightCalculator);
-        PortViewModels = PortViewFactory?.InitializeExternalPortViewList(Grid.ExternalPorts);
+        PortViewModels = PortViewFactory?.InitializeExternalPortViewList(Grid.ExternalPortManager.ExternalPorts);
     }
     private void InitializeCommands()
     {

@@ -12,14 +12,16 @@ namespace CAP_Core.Grid
         public IExternalPortManager ExternalPortManager { get; }
         public IComponentRotator ComponentRotator { get; }
         public IComponentRelationshipManager ComponentRelationshipManager { get; }
+        public LightManager LightManager { get; }
 
-        public GridManager(ITileManager tileManager, IComponentMover componentMover, IExternalPortManager externalPortManager, IComponentRotator componentRotator, IComponentRelationshipManager componentRelationshipManager)
+        public GridManager(ITileManager tileManager, IComponentMover componentMover, IExternalPortManager externalPortManager, IComponentRotator componentRotator, IComponentRelationshipManager componentRelationshipManager, LightManager lightManager)
         {
             TileManager = tileManager;
             ComponentMover = componentMover;
             ExternalPortManager = externalPortManager;
             ComponentRotator = componentRotator;
             ComponentRelationshipManager = componentRelationshipManager;
+            LightManager = lightManager;
         }
         public GridManager (int width , int height)
         {
@@ -28,6 +30,7 @@ namespace CAP_Core.Grid
             ExternalPortManager = new ExternalPortManager(TileManager);
             ComponentRotator = new ComponentRotator(TileManager,ComponentMover);
             ComponentRelationshipManager = new ComponentRelationshipManager(TileManager);
+            LightManager = new LightManager();
         }
 
     }

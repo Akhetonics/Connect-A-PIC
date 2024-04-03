@@ -25,7 +25,7 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
             InputPowerAdjustArgs inputParams = parameter as InputPowerAdjustArgs;
             if (inputParams == null || inputParams.PowerValue < 0 || inputParams.PowerValue > 1) return false;
 
-            return Grid.ExternalPorts.Contains(inputParams.Port) && inputParams.Port is ExternalInput;
+            return Grid.ExternalPortManager.ExternalPorts.Contains(inputParams.Port) && inputParams.Port is ExternalInput;
 
         }
         public async Task ExecuteAsync(object parameter)
@@ -37,8 +37,8 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
 
             input.InFlowPower = args.PowerValue;
 
-            Grid.IsLightOn = !Grid.IsLightOn;
-            Grid.IsLightOn = !Grid.IsLightOn;
+            Grid.LightManager.IsLightOn = !Grid.LightManager.IsLightOn;
+            Grid.LightManager.IsLightOn = !Grid.LightManager.IsLightOn;
         }
         
     }

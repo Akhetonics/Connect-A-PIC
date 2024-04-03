@@ -15,13 +15,11 @@ namespace ConnectAPic.LayoutWindow
         public PortsContainer PortsContainer{ get; set; }
         public GridManager Grid {  get; set; }
         public LightCalculationService LightCalculator { get; set; }
-        public LightManager LightManager { get; }
 
-        public ExternalPortViewFactory(PortsContainer portsContainer, GridManager grid, LightCalculationService lightCalculator, LightManager lightManager)
+        public ExternalPortViewFactory(PortsContainer portsContainer, GridManager grid, LightCalculationService lightCalculator)
         {
             PortsContainer = portsContainer;
             LightCalculator = lightCalculator;
-            LightManager = lightManager;
             Grid = grid;
         }
 

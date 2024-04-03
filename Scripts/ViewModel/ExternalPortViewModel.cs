@@ -111,7 +111,7 @@ namespace ConnectAPIC.Scripts.ViewModel
             Power = Vector3.Zero;
             Grid = grid;
 
-            Grid.OnLightSwitched += (object sender, bool e) =>
+            Grid.LightManager.OnLightSwitched += (object sender, bool e) =>
             {
                 IsLightOn = e;
                 if (!IsLightOn && !IsInput)

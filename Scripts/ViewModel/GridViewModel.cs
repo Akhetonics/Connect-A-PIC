@@ -47,13 +47,13 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
 
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
-        public GridViewModel( GridManager grid, ILogger logger, ComponentFactory componentModelFactory, LightCalculationService lightCalculator , LightManager lightManager)
+        public GridViewModel( GridManager grid, ILogger logger, ComponentFactory componentModelFactory, LightCalculationService lightCalculator )
         {
             this.Grid = grid;
             LightCalculator = lightCalculator;
             Logger = logger;
             this.ComponentModelFactory = componentModelFactory;
-            this.LightManager = lightManager;
+            LightManager = grid.LightManager;
             this.LightManager.OnLightSwitched += (object sender, bool e) => IsLightOn = e;
             CreateComponentCommand = new CreateComponentCommand(grid, componentModelFactory);
             SelectionGroupManager = new(this, new SelectionManager(grid));
@@ -62,7 +62,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             LoadGridCommand = new LoadGridCommand(grid, new FileDataAccessor(), componentModelFactory, this);
             MoveSliderCommand = new MoveSliderCommand(grid);
             ExportToNazcaCommand = new ExportNazcaCommand(new NazcaExporter(), grid, new DataAccessorGodot());
-            SwitchOnLightCommand = new SwitchOnLightCommand(lightManager);
+            SwitchOnLightCommand = new SwitchOnLightCommand(grid.LightManager);
             DeleteComponentCommand = new DeleteComponentCommand(grid);
             
 
