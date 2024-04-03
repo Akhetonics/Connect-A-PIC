@@ -24,13 +24,13 @@ namespace CAP_Core.LightCalculation
 
         private SemaphoreSlim Semaphore = new (1, 1);
 
-        public LightCalculationService(GridManager grid, LightManager lightManager, ILightCalculator gridSMatrixAnalyzer)
+        public LightCalculationService(GridManager grid, ILightCalculator gridSMatrixAnalyzer)
         {
             LightInputs = grid.ExternalPortManager.GetAllExternalInputs();
 
             grid.ExternalPortManager.ExternalPorts.CollectionChanged += async (object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) => {
                 LightInputs = grid.ExternalPortManager.GetAllExternalInputs();
-                if (lightManager.IsLightOn)
+                if (grid.LightManager.IsLightOn)
                 {
                     await ShowLightPropagationAsync();
                 }

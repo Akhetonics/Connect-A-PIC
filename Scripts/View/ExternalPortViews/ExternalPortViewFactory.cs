@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System;
 using Godot;
+using ConnectAPIC.Scripts.ViewModel;
 
 namespace ConnectAPic.LayoutWindow
 {
@@ -14,20 +15,23 @@ namespace ConnectAPic.LayoutWindow
         public PortsContainer PortsContainer{ get; set; }
         public GridManager Grid {  get; set; }
         public LightCalculationService LightCalculator { get; set; }
-        public LightManager LightManager { get; }
 
-        public ExternalPortViewFactory(PortsContainer portsContainer, GridManager grid, LightCalculationService lightCalculator, LightManager lightManager)
+        public ExternalPortViewFactory(PortsContainer portsContainer, GridManager grid, LightCalculationService lightCalculator)
         {
             PortsContainer = portsContainer;
             LightCalculator = lightCalculator;
-            LightManager = lightManager;
             Grid = grid;
         }
 
-        public ExternalPortView InitializeExternalPortView(ExternalPort externalPort)
+        /// <summary>
+        /// Initializes port view and view model corresponding to given external port model
+        /// </summary>
+        /// <param name="externalPort">External port model for which view and view model is created</param>
+        /// <returns>View model for given external port</returns>
+        public ExternalPortViewModel InitializeExternalPortView(ExternalPort externalPort)
         {
             ExternalPortView portView = PortsContainer.ExternalPortViewTemplate.Instantiate<ExternalPortView>();
-            ExternalPortViewModel portViewModel = new ExternalPortViewModel(Grid, LightManager, externalPort.TilePositionY, LightCalculator);
+            ExternalPortViewModel portViewModel = new ExternalPortViewModel(Grid, externalPort, LightCalculator);
 
             portView.Initialize(portViewModel);
 
@@ -56,20 +60,25 @@ namespace ConnectAPic.LayoutWindow
             portView.Visible = true;
             portView.Position = new Vector2(0, (GameManager.TilePixelSize) * externalPort.TilePositionY);
             PortsContainer.AddChild(portView);
-            return portView;
+            return portViewModel;
         }
-    
-        public List<ExternalPortView> InitializeExternalPortViewList(ObservableCollection<ExternalPort> ExternalPorts)
+
+        /// <summary>
+        /// Initializes list of port views and view models corresponding to the input list (ExternalPorts) of port models
+        /// </summary>
+        /// <param name="ExternalPorts">List of external port models</param>
+        /// <returns>List of external port view models each connected to port models from the input list</returns>
+        public List<ExternalPortViewModel> InitializeExternalPortViewList(ObservableCollection<ExternalPort> ExternalPorts)
             {
-                List<ExternalPortView> portViews = new();
+                List<ExternalPortViewModel> portViewModels = new();
                 foreach (var port in ExternalPorts)
                 {
-                    portViews.Add(
+                    portViewModels.Add(
                         InitializeExternalPortView(port)
                         );
                 }
 
-                return portViews;
+                return portViewModels;
             }
     }
 }

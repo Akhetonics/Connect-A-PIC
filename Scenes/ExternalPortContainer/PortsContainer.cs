@@ -9,60 +9,68 @@ using CAP_Core.Grid;
 using CAP_Core.ExternalPorts;
 using System.Diagnostics;
 using CAP_Core.LightCalculation;
+using System.ComponentModel;
+using ConnectAPIC.Scripts.ViewModel;
+using ConnectAPIC.LayoutWindow.ViewModel.Commands;
+using ConnectAPIC.Scripts.ViewModel.Commands;
 using ConnectAPic.LayoutWindow;
+using ConnectAPIC.Scenes.RightClickMenu;
+
+
 
 
 [SuperNode(typeof(Dependent))]
 public partial class PortsContainer : Node2D
 {
     public override partial void _Notification(int what);
-    [Dependency] public GridManager GridManager => DependOn<GridManager>();
-    [Dependency] public LightManager LightManager => DependOn<LightManager>();
+    [Dependency] public GridManager Grid => DependOn<GridManager>();
     [Dependency] public LightCalculationService LightCalculator => DependOn<LightCalculationService>();
 
     [Export] public PackedScene ExternalPortViewTemplate { get; set; }
-    [Export] public PackedScene RightClickMenu {  get; set; }
+    [Export] public PackedScene RightClickMenuTemplate {  get; set; }
 
+    public SimpleControlMenu ControlMenu { get; set; }
     public ExternalPortViewFactory PortViewFactory { get; set; }
-    public List<ExternalPortView> Views { get; set; } = new();
+    public List<ExternalPortViewModel> PortViewModels { get; set; } = new();
 
+    //Commands
+    public static InputPowerAdjustCommand inputPowerAdjustCommand;
+    public static InputColorChangeCommand inputColorChangeCommand;
+    public static InputOutputChangeCommand inputOutputChangeCommand;
 
     public void OnResolved()
     {
-        PortViewFactory = new ExternalPortViewFactory(this, GridManager, LightCalculator, LightManager);
-
-        GridManager.ExternalPortManager.ExternalPorts.CollectionChanged += (object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) =>
-        {
-            ExternalPortView tmpView;
-            foreach (ExternalPort port in e.OldItems)
-            {
-                tmpView = Views.Find((view) => port.TilePositionY == view.ViewModel.TilePositionY);
-                Views.Remove(tmpView);
-                tmpView.RightClicked -= View_RightClicked;
-                tmpView.QueueFree();
-            }
-            foreach (ExternalPort port in e.NewItems)
-            {
-                tmpView = PortViewFactory?.InitializeExternalPortView(port);
-                tmpView.RightClicked += View_RightClicked;
-                Views.Add(tmpView);
-            }
-        };
-
-        Views = PortViewFactory?.InitializeExternalPortViewList(GridManager.ExternalPortManager.ExternalPorts);
-
-        foreach (ExternalPortView view in Views) {
-            view.RightClicked += View_RightClicked;
-        }
+        InitializeCommands();
+        InitializePortsAndPortsFactory();
+        InitializeControlMenuAndConnectToPorts();
     }
 
-    private void View_RightClicked(object sender, EventArgs e)
+    private void InitializeControlMenuAndConnectToPorts()
     {
-        ExternalPortView view = sender as ExternalPortView;
-        if (view == null) return;
+        foreach (ExternalPortViewModel viewModel in PortViewModels)
+        {
+            viewModel.Clicked += ViewModel_Clicked;
+        }
+        ControlMenu = RightClickMenuTemplate.Instantiate<SimpleControlMenu>();
+        ControlMenu.SetPortContainer(this);
+        this.AddChild(ControlMenu);
+    }
+    private void InitializePortsAndPortsFactory()
+    {
+        PortViewFactory = new ExternalPortViewFactory(this, Grid, LightCalculator);
+        PortViewModels = PortViewFactory?.InitializeExternalPortViewList(Grid.ExternalPortManager.ExternalPorts);
+    }
+    private void InitializeCommands()
+    {
+        inputPowerAdjustCommand = new InputPowerAdjustCommand(Grid);
+        inputColorChangeCommand = new InputColorChangeCommand(Grid);
+        inputOutputChangeCommand = new InputOutputChangeCommand(Grid);
+    }
 
-        //TODO: find out if view is input or output
-        //TODO: build right click menu accordingly (if haven't done it already)
-        //TODO: open right click menu on that ports position (with some offset)
+    private void ViewModel_Clicked(object sender, EventArgs e)
+    {
+        ExternalPortViewModel viewModel = sender as ExternalPortViewModel;
+        if (viewModel == null) return;
+        ControlMenu.ConnectToPort(viewModel);
     }
 }

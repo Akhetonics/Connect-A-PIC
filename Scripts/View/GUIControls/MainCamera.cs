@@ -1,4 +1,5 @@
 using Godot;
+using JetBrains.Annotations;
 using System;
 
 public partial class MainCamera : Camera2D
@@ -9,10 +10,12 @@ public partial class MainCamera : Camera2D
     [Export] public float MaxZoomIn { get; set; } = 2.7f;
     [Export] public float PanSensitivity { get; set; } = 1f;
 
+    public bool noZoomingOrMoving = false;
 
     public override void _Input(InputEvent @event)
     {
-        
+        if (noZoomingOrMoving) return;
+
         if(@event is InputEventMouseMotion && Input.IsMouseButtonPressed(MouseButton.Right))
         {
             Position -= ((InputEventMouseMotion)@event).Relative * PanSensitivity / Zoom;
@@ -38,6 +41,7 @@ public partial class MainCamera : Camera2D
     
     
     public void ZoomCamera(int direction){
+        //if (noZoomingOrMoving) return;
         Vector2 previousMousePosition = GetLocalMousePosition();
         
         Zoom += Zoom * ZoomSpeed * direction;
@@ -45,4 +49,12 @@ public partial class MainCamera : Camera2D
         
         Offset += previousMousePosition - GetLocalMousePosition();
     }
+
+    private void OnMouseEnteredTutorialWindow() {
+        noZoomingOrMoving = true;
+    }
+    private void OnMouseExitedTutorialWindow() {
+        noZoomingOrMoving = false;
+    }
 }
+
