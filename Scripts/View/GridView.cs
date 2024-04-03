@@ -1,10 +1,7 @@
 using CAP_Contracts.Logger;
-using CAP_Core;
 using CAP_Core.Components;
-using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.ExternalPorts;
 using CAP_Core.LightCalculation;
-using ConnectAPic.LayoutWindow;
 using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scripts.Helpers;
@@ -15,7 +12,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace ConnectAPIC.LayoutWindow.View
@@ -23,7 +19,6 @@ namespace ConnectAPIC.LayoutWindow.View
 
     public partial class GridView : TileMap
     {
-
         [Export] public DragDropProxy DragDropProxy;
         [Export] public ComponentViewFactory ComponentViewFactory;
         [Export] public Texture2D LightOnTexture;
@@ -49,12 +44,7 @@ namespace ConnectAPIC.LayoutWindow.View
         {
             this.ViewModel = viewModel;
             this.Logger = logger;
-            DragDropProxy.OnGetDragData += _GetDragData;
-            DragDropProxy.OnCanDropData += _CanDropData;
-            DragDropProxy.OnDropData += _DropData;
-            DragDropProxy.Initialize(viewModel.Width, viewModel.Height);
-            DragDropProxy.InputReceived += (object sender, InputEvent e) => {
-            };
+            DragDropProxy.Initialize(this,viewModel, logger);
             viewModel.PropertyChanged += async (object sender, System.ComponentModel.PropertyChangedEventArgs e) =>
             {
                 switch (e.PropertyName)
@@ -124,7 +114,7 @@ namespace ConnectAPIC.LayoutWindow.View
         }
         private void AssignLightFieldsToComponentViews(Dictionary<Guid, Complex> lightFieldVector, LaserType laserType)
         {
-            foreach (var componentModel in ViewModel.Grid.GetAllComponents())
+            foreach (var componentModel in ViewModel.Grid.TileManager.GetAllComponents())
             {
                 var componentView = GridComponentViews[componentModel.GridXMainTile, componentModel.GridYMainTile];
                 if (componentView == null) return;
@@ -225,39 +215,8 @@ namespace ConnectAPIC.LayoutWindow.View
 
             }, GridSaveFileExtensionPatterns);
         }
-        public bool _CanDropData(Godot.Vector2 position, Variant data)
-        {
-            if (data.Obj is ComponentView component)
-            {
-                int gridX = (int)position.X / GameManager.TilePixelSize;
-                int gridY = (int)position.Y / GameManager.TilePixelSize;
-                Component model = null;
-                if (component.ViewModel.IsPlacedInGrid)
-                {
-                    model = ViewModel.Grid.GetComponentAt(component.ViewModel.GridX, component.ViewModel.GridY, component.WidthInTiles, component.HeightInTiles);
-                }
-                bool canDropData = !ViewModel.Grid.IsColliding(gridX, gridY, component.WidthInTiles, component.HeightInTiles, model);
-
-                return canDropData;
-            }
-
-            return false;
-        }
-        public void _DropData(Godot.Vector2 atPosition, Variant data)
-        {
-            Vector2I GridXY = LocalToMap(atPosition);
-            if (data.Obj is ComponentView componentView)
-            {
-                if (!componentView.ViewModel.IsPlacedInGrid)
-                {
-                    ViewModel.CreateComponentCommand.ExecuteAsync(new CreateComponentArgs(componentView.ViewModel.TypeNumber, GridXY.X, GridXY.Y, (DiscreteRotation)(componentView.RotationDegrees / 90)));
-                }
-                else
-                {
-                    ViewModel.MoveComponentCommand.ExecuteAsync(new MoveComponentArgs(componentView.ViewModel.GridX, componentView.ViewModel.GridY, GridXY.X, GridXY.Y));
-                }
-            }
-        }
+        
+        
         public async Task ShowLightPropagation() =>
             await ViewModel.LightCalculator.ShowLightPropagationAsync();
 
@@ -279,11 +238,6 @@ namespace ConnectAPIC.LayoutWindow.View
             {
                 await ShowLightPropagation();
             }
-        }
-        public Variant _GetDragData(Godot.Vector2 position)
-        {
-            Vector2I GridXY = LocalToMap(position);
-            return GridComponentViews[GridXY.X, GridXY.Y];
         }
     }
 }

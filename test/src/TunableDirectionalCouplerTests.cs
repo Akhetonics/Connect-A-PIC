@@ -41,13 +41,13 @@ namespace ConnectAPIC.test.src
             int tunableDirectionalCouplerNR = MyGameManager.GridView.ComponentViewFactory.PackedComponentCache.Single(c => c.Value.Draft.Identifier == "DirectionalCoupler").Key;
 
             // instantiate tool at position attached to laserInput
-            var firstLaserInput = MyGameManager.Grid.ExternalPorts[0];
+            var firstLaserInput = MyGameManager.Grid.ExternalPortManager.ExternalPorts[0];
             var firstInputTileY = firstLaserInput.TilePositionY;
             RedLaser = (firstLaserInput as ExternalInput).LaserType;
             await MyGameManager.GridViewModel.CreateComponentCommand.ExecuteAsync(new CreateComponentArgs(tunableDirectionalCouplerNR, 0, firstInputTileY, DiscreteRotation.R0));
             // create a curve at the position of one of the standardInputs and rotate it by 90 degrees and then start light distribution
             TunableDirectionalCoupler = MyGameManager.GridView.GridComponentViews[0, firstInputTileY];
-            var usedPorts = MyGameManager.Grid.GetUsedExternalInputs();
+            var usedPorts = MyGameManager.Grid.ExternalPortManager.GetUsedExternalInputs();
         }
 
         [Test]
@@ -56,11 +56,11 @@ namespace ConnectAPIC.test.src
             // setup
             // act
             // first test if the connectionWeights are proper
-            var component = MyGameManager.Grid.GetComponentAt(TunableDirectionalCoupler.ViewModel.GridX, TunableDirectionalCoupler.ViewModel.GridY);
+            var component = MyGameManager.Grid.ComponentMover.GetComponentAt(TunableDirectionalCoupler.ViewModel.GridX, TunableDirectionalCoupler.ViewModel.GridY);
             var mainSlider = component.GetAllSliders().First();
             var nonLinearConnections = component.WaveLengthToSMatrixMap[RedLaser.WaveLengthInNm].NonLinearConnections;
             var lightIntensity = 1.0;
-            MyGameManager.GridViewModel.Grid.IsLightOn = true;
+            MyGameManager.GridViewModel.LightManager.IsLightOn = true;
             await MyGameManager.GridView.ShowLightPropagation();
             var lightGloballyOn = await CheckShaderValuesOnRightPinsAsync();
             mainSlider.Value.ShouldBe(0.5);

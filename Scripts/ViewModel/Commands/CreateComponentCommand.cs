@@ -25,7 +25,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             if( parameter is CreateComponentArgs args)
             {
                 var dimensions = ComponentFactory.GetDimensions(args.ComponentTypeNumber);
-                if (GridModel != null && !GridModel.IsColliding(args.GridX, args.GridY, dimensions.X, dimensions.Y))
+                if (GridModel != null && !GridModel.ComponentMover.IsColliding(args.GridX, args.GridY, dimensions.X, dimensions.Y))
                 {
                     return true;
                 }
@@ -39,7 +39,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             var compParams = (CreateComponentArgs)parameter;
             Component component = ComponentFactory.CreateComponent(compParams.ComponentTypeNumber);
             component.Rotation90CounterClock = compParams.Rotation;
-            GridModel.PlaceComponent(compParams.GridX, compParams.GridY, component);
+            GridModel.ComponentMover.PlaceComponent(compParams.GridX, compParams.GridY, component);
             return Task.CompletedTask;
 
         }

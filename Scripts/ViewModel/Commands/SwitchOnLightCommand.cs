@@ -14,13 +14,13 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 
     public class SwitchOnLightCommand : ICommand
     {
+        public LightManager LightManager { get; }
+
         public event EventHandler CanExecuteChanged;
 
-        public GridManager Grid { get; }
-
-        public SwitchOnLightCommand( GridManager grid)
+        public SwitchOnLightCommand( LightManager lightManager)
         {
-            Grid = grid;
+            LightManager = lightManager;
         }
         
         public bool CanExecute(object parameter)
@@ -31,7 +31,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
         public async Task ExecuteAsync(object parameter)
         {
             if (!CanExecute(parameter)) return;
-            Grid.IsLightOn = (bool)parameter;
+            LightManager.IsLightOn = (bool)parameter;
         }
     }
 

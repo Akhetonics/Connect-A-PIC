@@ -10,6 +10,7 @@ using System.Numerics;
 using System.Reflection;
 using System.Resources;
 using CAP_Core.LightCalculation;
+using UnitTests.Grid;
 
 namespace UnitTests
 {

@@ -10,16 +10,16 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
 {
     public class MoveSliderCommand : ICommand
     {
-        public GridManager grid { get; }
+        public GridManager Grid { get; }
         public MoveSliderCommand(GridManager mainGrid)
         {
-            grid = mainGrid;
+            Grid = mainGrid;
         }
 
         public bool CanExecute(object parameter)
         {
             return (parameter is MoveSliderCommandArgs moveParams
-                && grid.GetComponentAt(moveParams.gridX, moveParams.gridY)?.GetAllSliders().SingleOrDefault(s=>s.Number== moveParams.sliderNumber)!= null);
+                && Grid.ComponentMover.GetComponentAt(moveParams.gridX, moveParams.gridY)?.GetAllSliders().SingleOrDefault(s=>s.Number== moveParams.sliderNumber)!= null);
         }
 
         public Task ExecuteAsync(object parameter)
@@ -27,7 +27,7 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
             if (!CanExecute(parameter)) 
                 return Task.CompletedTask;
             var moveParams = (MoveSliderCommandArgs)parameter;
-            var sliderComponent = grid.GetComponentAt(moveParams.gridX, moveParams.gridY);
+            var sliderComponent = Grid.ComponentMover.GetComponentAt(moveParams.gridX, moveParams.gridY);
             sliderComponent.GetSlider(moveParams.sliderNumber).Value = moveParams.newValue;
             // also update the SliderValue in the SMatrix.. this should be cleaned up sooner or later
            

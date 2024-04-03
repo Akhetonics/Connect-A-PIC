@@ -18,19 +18,19 @@ namespace CAP_Core.LightCalculation
         public event EventHandler<LightCalculationChangeEventArgs> LightCalculationChanged;
         private Task? LightCalculationTask;
         private CancellationTokenSource CancelTokenLightCalc { get; set; } = new();
-        public List<ExternalInput> LightInputs { get; private set; } 
+        public List<ExternalInput> LightInputs { get; private set; }
         public ILightCalculator GridSMatrixAnalyzer { get; }
         public SynchronizationContext MainThreadContext { get; }
 
         private SemaphoreSlim Semaphore = new (1, 1);
 
-        public LightCalculationService(GridManager grid, ILightCalculator gridSMatrixAnalyzer)
+        public LightCalculationService(GridManager grid, LightManager lightManager, ILightCalculator gridSMatrixAnalyzer)
         {
-            LightInputs = grid.GetAllExternalInputs();
+            LightInputs = grid.ExternalPortManager.GetAllExternalInputs();
 
-            grid.ExternalPorts.CollectionChanged += async (object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) => {
-                LightInputs = grid.GetAllExternalInputs();
-                if (grid.IsLightOn)
+            grid.ExternalPortManager.ExternalPorts.CollectionChanged += async (object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) => {
+                LightInputs = grid.ExternalPortManager.GetAllExternalInputs();
+                if (lightManager.IsLightOn)
                 {
                     await ShowLightPropagationAsync();
                 }

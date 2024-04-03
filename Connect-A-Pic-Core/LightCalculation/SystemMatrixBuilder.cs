@@ -28,14 +28,14 @@ namespace CAP_Core.LightCalculation
         {
             var interComponentConnections = GetAllConnectionsBetweenComponents();
             var allUsedPinIDs = interComponentConnections.SelectMany(c => new[] { c.Key.Item1, c.Key.Item2 }).Distinct().ToList();
-            Grid.GetUsedExternalInputs().ForEach(input => allUsedPinIDs.Add(input.AttachedComponentPinId)); // Grating coupler has no internal connections and might be only connected to the Laser directly
+            Grid.ExternalPortManager.GetUsedExternalInputs().ForEach(input => allUsedPinIDs.Add(input.AttachedComponentPinId)); // Grating coupler has no internal connections and might be only connected to the Laser directly
             var allConnectionsSMatrix = new SMatrix(allUsedPinIDs, new());
             allConnectionsSMatrix.SetValues(interComponentConnections);
             return allConnectionsSMatrix;
         }
         private List<SMatrix> GetAllComponentsSMatrices(int waveLength)
         {
-            var allComponents = Grid.GetAllComponents();
+            var allComponents = Grid.TileManager.GetAllComponents();
             var allSMatrices = new List<SMatrix>();
             foreach (var component in allComponents)
             {
@@ -52,8 +52,8 @@ namespace CAP_Core.LightCalculation
         }
         private Dictionary<(Guid LightIn, Guid LightOut), Complex> GetAllConnectionsBetweenComponents()
         {
-            int gridWidth = Grid.Tiles.GetLength(0);
-            int gridHeight = Grid.Tiles.GetLength(1);
+            int gridWidth = Grid.TileManager.Tiles.GetLength(0);
+            int gridHeight = Grid.TileManager.Tiles.GetLength(1);
             var InterComponentConnections = new Dictionary<(Guid LightIn, Guid LightOut), Complex>();
 
             for (int x = 0; x < gridWidth; x++)
@@ -72,11 +72,11 @@ namespace CAP_Core.LightCalculation
             foreach (RectSide side in allSides)
             {
                 IntVector offset = side; // transforming the side to a vector that points towards the side
-                if (Grid.Tiles[x, y].Component == null) continue;
-                if (!Grid.IsInGrid(x + offset.X, y + offset.Y)) continue;
-                var foreignTile = Grid.Tiles[x + offset.X, y + offset.Y];
+                if (Grid.TileManager.Tiles[x, y].Component == null) continue;
+                if (!Grid.TileManager.IsInGrid(x + offset.X, y + offset.Y)) continue;
+                var foreignTile = Grid.TileManager.Tiles[x + offset.X, y + offset.Y];
                 if (!IsComponentBorderEdge(x, y, foreignTile)) continue;
-                Pin currentPin = Grid.Tiles[x, y].GetPinAt(side);
+                Pin currentPin = Grid.TileManager.Tiles[x, y].GetPinAt(side);
                 if (currentPin == null) continue;
                 var foreignPinSide = offset * -1;
                 Pin foreignPin = foreignTile.GetPinAt(foreignPinSide);
@@ -89,7 +89,7 @@ namespace CAP_Core.LightCalculation
         private bool IsComponentBorderEdge(int gridX, int gridY, Tile foreignTile)
         {
             if (foreignTile == null) return false;
-            var centeredComponent = Grid.Tiles[gridX, gridY].Component;
+            var centeredComponent = Grid.TileManager.Tiles[gridX, gridY].Component;
             return centeredComponent != foreignTile.Component;
         }
     }

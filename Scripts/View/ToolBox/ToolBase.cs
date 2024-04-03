@@ -1,4 +1,5 @@
 using CAP_Contracts.Logger;
+using CAP_Core.Helpers;
 using Chickensoft.AutoInject;
 using ConnectAPic.LayoutWindow;
 using ConnectAPIC.LayoutWindow.View;
@@ -31,7 +32,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
         {
             GridView = gridView;
             GridViewModel = GridView.ViewModel;
-            GridView.DragDropProxy.AddChild(this);
+            GridView.AddChild(this);
         }
         protected virtual void Activate() { }
         protected virtual void FreeTool() { }
@@ -53,14 +54,12 @@ namespace ConnectAPIC.Scripts.View.ToolBox
             return Guid.Parse(metaGuid);
         }
 
-        protected Vector2I GetMouseGridPosition()
+        protected Vector2I GetMouseGridPosition() => GetGridPosition(GridView.GetLocalMousePosition());
+        protected static Vector2I GetGridPosition(Vector2 position)
         {
-            var mousePos = GridView.DragDropProxy.GetLocalMousePosition();
             var tileSize = (GameManager.TilePixelSize);
-            Vector2I gridPosition = new(((int)((mousePos.X) / tileSize)), ((int)((mousePos.Y) / tileSize)));
-            return gridPosition;
+            return new Vector2I (((int)((position.X) / tileSize)), ((int)((position.Y) / tileSize)));
         }
-
         protected void HandleMiddleMouseDeleteDrawing(InputEvent @event)
         {
             if (IsActive == false) return;
@@ -72,7 +71,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
                     MiddleMouseButtonPressed = mouseButtonEvent.Pressed;
                     if (mouseButtonEvent.Pressed)
                     {
-                        var delParams = new DeleteComponentArgs(gridPosition.X, gridPosition.Y);
+                        var delParams = new DeleteComponentArgs(new() { new IntVector(gridPosition.X, gridPosition.Y) });
                         if (GridViewModel.DeleteComponentCommand.CanExecute(delParams))
                         {
                             GridViewModel.DeleteComponentCommand.ExecuteAsync(delParams).Wait();
@@ -87,7 +86,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
                 if (MiddleMouseButtonPressed)
                 {
                     // enabling mouse drag deleting of components
-                    var delParams = new DeleteComponentArgs(gridPosition.X, gridPosition.Y);
+                    var delParams = new DeleteComponentArgs(new() { new IntVector(gridPosition.X, gridPosition.Y) });
                     if (GridViewModel.DeleteComponentCommand.CanExecute(delParams))
                     {
                         GridViewModel.DeleteComponentCommand.ExecuteAsync(delParams).Wait();

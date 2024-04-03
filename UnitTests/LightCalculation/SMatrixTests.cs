@@ -3,6 +3,7 @@ using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.Grid;
 using CAP_Core.LightCalculation;
 using System.Numerics;
+using UnitTests.Grid;
 
 namespace UnitTests.LightCalculation
 {
@@ -12,9 +13,9 @@ namespace UnitTests.LightCalculation
         public async Task TestDirectionalCoupler()
         {
             var directionalCoupler = TestComponentFactory.CreateDirectionalCoupler();
-            var grid = new GridManager(20, 10);
-            grid.PlaceComponent(0, grid.ExternalPorts[0].TilePositionY, directionalCoupler);
-            var laserType = grid.GetUsedExternalInputs().First().Input.LaserType;
+            var grid = GridHelpers.InitializeGridWithComponents(20, 10);
+            grid.ComponentMover.PlaceComponent(0, grid.ExternalPortManager.ExternalPorts[0].TilePositionY, directionalCoupler);
+            var laserType = grid.ExternalPortManager.GetUsedExternalInputs().First().Input.LaserType;
             var gridSMatrixAnalyzer = new GridLightCalculator(new SystemMatrixBuilder(grid), grid);
             var lightPropagation = await gridSMatrixAnalyzer.CalculateFieldPropagationAsync(new CancellationTokenSource(), laserType.WaveLengthInNm);
 
@@ -36,16 +37,16 @@ namespace UnitTests.LightCalculation
             var directionalCoupler = TestComponentFactory.CreateComponent(TestComponentFactory.DirectionalCouplerJSON);
             var directionalCoupler2 = TestComponentFactory.CreateComponent(TestComponentFactory.DirectionalCouplerJSON);
             var grid = new GridManager(20, 10);
-            var redPortY = grid.ExternalPorts[0].TilePositionY;
-            grid.PlaceComponent(0, redPortY, straight);
-            grid.PlaceComponent(1, redPortY, directionalCoupler);
-            grid.PlaceComponent(3, redPortY, directionalCoupler2);
+            var redPortY = grid.ExternalPortManager.ExternalPorts[0].TilePositionY;
+            grid.ComponentMover.PlaceComponent(0, redPortY, straight);
+            grid.ComponentMover.PlaceComponent(1, redPortY, directionalCoupler);
+            grid.ComponentMover.PlaceComponent(3, redPortY, directionalCoupler2);
             directionalCoupler.GetSlider(0).Value = 0.83;
             var slider = directionalCoupler2.GetSlider(0);
             slider.Value = 0.76;
 
             //act
-            var laserType = grid.GetUsedExternalInputs().First().Input.LaserType;
+            var laserType = grid.ExternalPortManager.GetUsedExternalInputs().First().Input.LaserType;
             var gridSMatrixAnalyzer = new GridLightCalculator(new SystemMatrixBuilder(grid), grid);
             var lightPropagation = await gridSMatrixAnalyzer.CalculateFieldPropagationAsync(new CancellationTokenSource(), laserType.WaveLengthInNm);
 
@@ -102,13 +103,13 @@ namespace UnitTests.LightCalculation
 
             rotatedStraight.RotateBy90CounterClockwise();
             var grid = new GridManager(20, 10);
-            var inputPort = grid.ExternalPorts[0];
-            grid.PlaceComponent(0, inputPort.TilePositionY, straight);
-            grid.PlaceComponent(1, inputPort.TilePositionY, directionalCoupler);
-            grid.PlaceComponent(3, inputPort.TilePositionY, secondStraight);
-            grid.PlaceComponent(0, inputPort.TilePositionY + 1, rotatedStraight);
+            var inputPort = grid.ExternalPortManager.ExternalPorts[0];
+            grid.ComponentMover.PlaceComponent(0, inputPort.TilePositionY, straight);
+            grid.ComponentMover.PlaceComponent(1, inputPort.TilePositionY, directionalCoupler);
+            grid.ComponentMover.PlaceComponent(3, inputPort.TilePositionY, secondStraight);
+            grid.ComponentMover.PlaceComponent(0, inputPort.TilePositionY + 1, rotatedStraight);
 
-            var laserType = grid.GetUsedExternalInputs().First().Input.LaserType;
+            var laserType = grid.ExternalPortManager.GetUsedExternalInputs().First().Input.LaserType;
             var gridSMatrixAnalyzer = new GridLightCalculator(new SystemMatrixBuilder(grid), grid);
             var lightValues = await gridSMatrixAnalyzer.CalculateFieldPropagationAsync(new CancellationTokenSource(), laserType.WaveLengthInNm);
 

@@ -9,7 +9,7 @@ namespace CAP_Core.Tiles
     public class Tile
     {
         private const string PythonFunctionIndention = "        ";
-        public Component Component { get; set; }
+        public Component? Component { get; set; }
         public int GridX { get; private set; }
         public int GridY { get; private set; }
 
@@ -20,6 +20,7 @@ namespace CAP_Core.Tiles
         }
         public string GetComponentCellName()
         {
+            if (Component == null) return "";
             var mainGridX = Component.GridXMainTile;
             var mainGridY = Component.GridYMainTile;
             return $"cell_{mainGridX}_{mainGridY}";

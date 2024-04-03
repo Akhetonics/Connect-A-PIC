@@ -69,7 +69,7 @@ PCK files will be loaded into the Connect-A-PIC toolbox as soon as they are loca
 Each PCK file consists of a folderstructure that has to match exactly the Godot folder structure of the main program which is "Scenes/Components/[ComponentName]/".
 You can see example components in the other Github project ["CAP- Standard Components"](https://github.com/Akhetonics/Connect-A-PIC_StandardComponents)
 ## JSON file
-There is a JSON file that describes the exact behaviour of the component and it resides within the Scenes/Components/[ComponentName] folder.
+There is a JSON file that describes the exact behavior of the component and it resides within the Scenes/Components/[ComponentName] folder.
 It does not matter what the name of this file is as long as there is no other JSON file with the *.JSON extension in that folder.
 just have a look at one of those JSON files there. Keep in mind, that if you want to define a non-linear-connection between two pins in that JSON file, you can only do it only like so:
 ``` JSON

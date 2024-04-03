@@ -9,7 +9,10 @@ using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scripts.View.ComponentFactory;
 using ConnectAPIC.Scripts.ViewModel;
 using ConnectAPIC.Scripts.ViewModel.Commands;
+using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using static ConnectAPIC.Scripts.View.ToolBox.SelectionTool;
 
 namespace ConnectAPIC.LayoutWindow.ViewModel
 {
@@ -23,11 +26,12 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         public ICommand LoadGridCommand { get; internal set; }
         public ICommand MoveSliderCommand { get; internal set; }
         public ICommand DeleteComponentCommand { get; internal set; }
+        public SelectionGroupManager SelectionGroupManager;
         public delegate void ComponentCreatedEventHandler(Component component, int gridX, int gridY);
         public event ComponentCreatedEventHandler ComponentCreated;
         public event ComponentCreatedEventHandler ComponentRemoved;
-        public int Width => Grid.Width;
-        public int Height => Grid.Height;
+        public int Width => Grid.TileManager.Width;
+        public int Height => Grid.TileManager.Height;
         public GridManager Grid { get; set; }
         public ILogger Logger { get; }
         public ComponentFactory ComponentModelFactory { get; }
@@ -39,26 +43,31 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             get => isLightOn;
             set { isLightOn = value; OnPropertyChanged(); }
         }
+        public LightManager LightManager { get; private set; }
+
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
-        public GridViewModel( GridManager grid, ILogger logger, ComponentFactory componentModelFactory, LightCalculationService lightCalculator)
+        public GridViewModel( GridManager grid, ILogger logger, ComponentFactory componentModelFactory, LightCalculationService lightCalculator , LightManager lightManager)
         {
             this.Grid = grid;
             LightCalculator = lightCalculator;
             Logger = logger;
             this.ComponentModelFactory = componentModelFactory;
+            this.LightManager = lightManager;
+            this.LightManager.OnLightSwitched += (object sender, bool e) => IsLightOn = e;
             CreateComponentCommand = new CreateComponentCommand(grid, componentModelFactory);
-            MoveComponentCommand = new MoveComponentCommand(grid);
+            SelectionGroupManager = new(this, new SelectionManager(grid));
+            MoveComponentCommand = new MoveComponentCommand(grid, SelectionGroupManager.SelectionManager);
             SaveGridCommand = new SaveGridCommand(grid, new FileDataAccessor());
             LoadGridCommand = new LoadGridCommand(grid, new FileDataAccessor(), componentModelFactory, this);
             MoveSliderCommand = new MoveSliderCommand(grid);
             ExportToNazcaCommand = new ExportNazcaCommand(new NazcaExporter(), grid, new DataAccessorGodot());
-            SwitchOnLightCommand = new SwitchOnLightCommand(grid);
+            SwitchOnLightCommand = new SwitchOnLightCommand(lightManager);
             DeleteComponentCommand = new DeleteComponentCommand(grid);
+            
 
-            this.Grid.OnComponentPlacedOnTile += Grid_OnComponentPlacedOnTile;
-            this.Grid.OnComponentRemoved += (Component component, int x , int y ) => ComponentRemoved?.Invoke(component, x, y);
-            this.Grid.OnLightSwitched += (object sender, bool e) => IsLightOn = e;
+            this.Grid.ComponentMover.OnComponentPlacedOnTile += Grid_OnComponentPlacedOnTile;
+            this.Grid.ComponentMover.OnComponentRemoved += (Component component, int x , int y ) => ComponentRemoved?.Invoke(component, x, y);
             this.ToolViewModel = new ToolViewModel(grid);
         }
 

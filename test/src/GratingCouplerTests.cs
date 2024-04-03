@@ -30,7 +30,7 @@ namespace ConnectAPIC.test.src
             // find proper tool from component factory
             int gratingComponentNr = MyGameManager.GridView.ComponentViewFactory.PackedComponentCache.Single(c => c.Value.Draft.Identifier == "GratingCoupler").Key;
             // instantiate tool at the height of the laserInput
-            var firstLaserInput = MyGameManager.Grid.ExternalPorts[0];
+            var firstLaserInput = MyGameManager.Grid.ExternalPortManager.ExternalPorts[0];
             var firstInputTileY = firstLaserInput.TilePositionY;
 
             await MyGameManager.GridViewModel.CreateComponentCommand.ExecuteAsync(new CreateComponentArgs(gratingComponentNr, 0, firstInputTileY, DiscreteRotation.R0));

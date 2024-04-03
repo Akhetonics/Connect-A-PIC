@@ -12,6 +12,7 @@ using CAP_Core.Grid;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.ObjectModel;
+using ConnectAPIC.LayoutWindow.ViewModel;
 
 namespace ConnectAPIC.Scripts.ViewModel
 {
@@ -62,7 +63,7 @@ namespace ConnectAPIC.Scripts.ViewModel
         public ComponentViewModel()
         {
         }
-        public void InitializeComponent(int componentTypeNumber, List<SliderViewData> sliderDataSets,  ILogger logger)
+        public void InitializeComponent(int componentTypeNumber, List<SliderViewData> sliderDataSets,  ILogger logger )
         {
             Logger = logger;
             this.TypeNumber = componentTypeNumber;

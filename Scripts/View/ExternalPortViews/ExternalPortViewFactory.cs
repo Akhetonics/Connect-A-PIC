@@ -14,17 +14,20 @@ namespace ConnectAPic.LayoutWindow
         public PortsContainer PortsContainer{ get; set; }
         public GridManager Grid {  get; set; }
         public LightCalculationService LightCalculator { get; set; }
-        public ExternalPortViewFactory(PortsContainer portsContainer, GridManager grid, LightCalculationService lightCalculator)
+        public LightManager LightManager { get; }
+
+        public ExternalPortViewFactory(PortsContainer portsContainer, GridManager grid, LightCalculationService lightCalculator, LightManager lightManager)
         {
             PortsContainer = portsContainer;
             LightCalculator = lightCalculator;
+            LightManager = lightManager;
             Grid = grid;
         }
 
         public ExternalPortView InitializeExternalPortView(ExternalPort externalPort)
         {
             ExternalPortView portView = PortsContainer.ExternalPortViewTemplate.Instantiate<ExternalPortView>();
-            ExternalPortViewModel portViewModel = new ExternalPortViewModel(Grid, externalPort.TilePositionY, LightCalculator);
+            ExternalPortViewModel portViewModel = new ExternalPortViewModel(Grid, LightManager, externalPort.TilePositionY, LightCalculator);
 
             portView.Initialize(portViewModel);
 

@@ -1,4 +1,4 @@
-﻿using CAP_Core;
+using CAP_Core;
 using CAP_Core.Components;
 using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.ExternalPorts;
@@ -6,6 +6,7 @@ using CAP_Core.Grid;
 using CAP_Core.Tiles;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using Newtonsoft.Json;
+using UnitTests.Grid;
 
 namespace UnitTests
 {
@@ -21,10 +22,10 @@ namespace UnitTests
         [Fact]
         public async Task TestComponentRotation()
         {
-            var grid = new GridManager(10, 10);
+            var grid = GridHelpers.InitializeGridWithComponents(10, 10);
             var component = TestComponentFactory.CreateDirectionalCoupler();
-            var portY = grid.ExternalPorts.First().TilePositionY;
-            grid.PlaceComponent(0, portY, component);
+            var portY = grid.ExternalPortManager.ExternalPorts.First().TilePositionY;
+            grid.ComponentMover.PlaceComponent(0, portY, component);
             var PinLeft = component.GetPartAt(0, 0).GetPinAt(RectSide.Left);
             var PinRight = component.GetPartAt(1, 0).GetPinAt(RectSide.Right);
             var PinDownLeft = component.GetPartAt(0, 1).GetPinAt(RectSide.Left);
@@ -33,7 +34,7 @@ namespace UnitTests
             var PartRight = component.GetPartAt(1, 0);
             var PartDownLeft = component.GetPartAt(0, 1);
             var PartDownRight = component.GetPartAt(1, 1);
-            var laserType = grid.GetUsedExternalInputs().First().Input.LaserType;
+            var laserType = grid.ExternalPortManager.GetUsedExternalInputs().First().Input.LaserType;
             // test if I can get the non-Null values
             component.WaveLengthToSMatrixMap[StandardWaveLengths.RedNM].GetNonNullValues();
             var command = new RotateComponentCommand(grid);
@@ -68,13 +69,13 @@ namespace UnitTests
         [Fact]
         public void TestComponentPinIDsInConnectionMatrixAfterCloning()
         {
-            var grid = new GridManager(10, 10);
+            var grid = GridHelpers.InitializeGridWithComponents(10,10);
             var componentOld = TestComponentFactory.CreateDirectionalCoupler();
             // we also test the clone function here - it should be able to properly clone the object
             var component = componentOld.Clone() as Component;
-            var inputLaserY = grid.ExternalPorts[0].TilePositionY;
-            grid.PlaceComponent(0, inputLaserY, component);
-            var inputLaserType = grid.GetUsedExternalInputs().First().Input.LaserType;
+            var inputLaserY = grid.ExternalPortManager.ExternalPorts[0].TilePositionY;
+            grid.ComponentMover.PlaceComponent(0, inputLaserY, component);
+            var inputLaserType = grid.ExternalPortManager.GetUsedExternalInputs().First().Input.LaserType;
 
             // after cloning the connections should have the new PinIDs
             var connections = component.WaveLengthToSMatrixMap[inputLaserType.WaveLengthInNm].GetNonNullValues();
@@ -117,13 +118,13 @@ namespace UnitTests
         [Fact]
         public void TestSecondComponentHasDifferentPinIDs()
         {
-            var grid = new GridManager(10, 10);
+            var grid = new GridManager(10,10);
             var componentOld = TestComponentFactory.CreateDirectionalCoupler();
             var component = componentOld.Clone() as Component;
             var component2 = componentOld.Clone() as Component;
-            var componentY = grid.ExternalPorts.First().TilePositionY;
-            grid.PlaceComponent(0, componentY, component);
-            grid.PlaceComponent(2, componentY, component2);
+            var componentY = grid.ExternalPortManager.ExternalPorts.First().TilePositionY;
+            grid.ComponentMover.PlaceComponent(0, componentY, component);
+            grid.ComponentMover.PlaceComponent(2, componentY, component2);
 
             var allComponentPins = component.GetAllPins();
             var allComponent2Pins = component2.GetAllPins();
