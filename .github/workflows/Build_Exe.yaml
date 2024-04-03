@@ -54,9 +54,13 @@ jobs:
       - name: 🧑‍🔬 Generate .NET Bindings
         run: godot --headless --build-solutions --quit || exit 0
 
-      - name: 🦺 Build Projects
-        run: dotnet build
-
+      - name: Build Windows EXE
+        run: |
+          godot --headless --export-release "Windows Desktop"
+          if [ $? -ne 0 ]; then
+            echo "Build failed with exit code $?"
+            exit 1
+          fi
       # list files in release folder
       - name: List files in Release directory
         run: ls -la $GITHUB_WORKSPACE/Release
