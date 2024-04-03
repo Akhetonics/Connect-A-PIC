@@ -80,7 +80,7 @@ jobs:
     runs-on: windows-latest
     steps:
       - name: Download EXE from artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: Connect-A-PIC-EXE
           path: ./Release
@@ -130,13 +130,13 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download release folder from artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: Connect-A-PIC-RELEASE-FOLDER
           path: ./Release
 
       - name: Download signed EXE from artifact
-        uses: actions/download-artifact@v2
+        uses: actions/download-artifact@v4
         with:
           name: Connect-A-PIC-EXE-SIGNED
           path: ./Release
