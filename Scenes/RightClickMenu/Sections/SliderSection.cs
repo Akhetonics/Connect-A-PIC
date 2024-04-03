@@ -73,13 +73,6 @@ namespace ConnectAPIC.Scenes.RightClickMenu.Sections {
             base._Ready();
         }
 
-        //TODO: can add own arguments for sections to make them more flexible
-        public void ValueChangeSubscription(object sender, PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(ExternalPortViewModel.Power)) {
-                SetSliderValue((sender as ExternalPortViewModel).Power);
-            }
-        }
-
         public void SetSliderValue(double value) {
             Value = value.ToString("0.00");
             Slider.Value = value;

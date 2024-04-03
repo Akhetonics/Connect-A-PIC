@@ -93,7 +93,14 @@ namespace ConnectAPIC.Scripts.ViewModel
             } 
         }
 
-       
+        private float _phase;
+        public float Phase {
+            get => _phase;
+            set {
+                _phase = value;
+                OnPropertyChanged();
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -162,7 +169,7 @@ namespace ConnectAPIC.Scripts.ViewModel
                 return;
             };
             var fieldOut = e.LightFieldVector[(Guid)touchingPin].Magnitude;
-
+            Phase = Mathf.RadToDeg((float)e.LightFieldVector[(Guid)touchingPin].Phase + 2*Mathf.Pi)%360;
             UpdateInputPowerAndColorUsingLaserType(e.LaserInUse, (float)(fieldOut * fieldOut));
         }
 

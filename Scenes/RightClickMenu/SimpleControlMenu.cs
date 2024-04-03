@@ -40,7 +40,6 @@ namespace ConnectAPIC.Scenes.RightClickMenu {
                     && mouseButton.ButtonIndex == MouseButton.Left
                     && mouseOutsideClickArea) {
                 Visible = false;
-                //spawnInstantly = true;
             }
         }
 
@@ -63,7 +62,6 @@ namespace ConnectAPIC.Scenes.RightClickMenu {
                 }
             }
 
-            //TODO: remove comment when done testing
             this.Visible = false;
         }
 
@@ -144,14 +142,15 @@ namespace ConnectAPIC.Scenes.RightClickMenu {
             if (e.PropertyName == nameof(ExternalPortViewModel.IsInput)) {
                 SetSections(port.IsInput);
                 portModeButtons[3].ButtonPressed = true;
-            } else if (e.PropertyName == nameof(ExternalPortViewModel.Power)) {
+            } else if (e.PropertyName == nameof(ExternalPortViewModel.Power)
+                    || e.PropertyName == nameof(ExternalPortViewModel.Phase)) {
                 if (port.IsInput) {
                     sliderSection.SetSliderValue(port.Power);
                 } else {
-                    powerInfo.Value = port.Power.Length().ToString("0.00");
+                    SetInfoSections(port);
                 }
-            }//TODO: could also add phase change code
-              else if (e.PropertyName == nameof(ExternalPortViewModel.Color)) {
+            }
+            else if (e.PropertyName == nameof(ExternalPortViewModel.Color)) {
                 SetPortModeRadioButton(port);
             }
         }
@@ -181,7 +180,16 @@ namespace ConnectAPIC.Scenes.RightClickMenu {
 
             if (port.IsInput)
                 sliderSection.SetSliderValue(port.Power);
+            else {
+                SetInfoSections(port);
+            }
         }
+
+        private void SetInfoSections(ExternalPortViewModel port) {
+            powerInfo.Value = port.Power.Length().ToString("0.00");
+            phaseInfo.Value = port.Phase.ToString("0.00") + "°";
+        }
+
         private void OnMouseEntered() {
             mouseOutsideClickArea = false;
         }

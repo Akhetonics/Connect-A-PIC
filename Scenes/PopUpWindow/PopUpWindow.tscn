@@ -1,12 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://cpu4bmee8crlg"]
+[gd_scene load_steps=5 format=3 uid="uid://cpu4bmee8crlg"]
 
 [ext_resource type="Script" path="res://Scenes/PopUpWindow/PopUpWindow.cs" id="1_jmlt2"]
 [ext_resource type="Texture2D" uid="uid://cag00ywoyr8q7" path="res://Scenes/PopUpWindow/window.png" id="1_u8fof"]
 [ext_resource type="Texture2D" uid="uid://bwofnv3cggxhh" path="res://Scenes/PopUpWindow/ExitButton.png" id="3_guuwr"]
 [ext_resource type="Theme" uid="uid://b2f4xgnx0xy5e" path="res://Scenes/Assets/Themes/MainTheme.tres" id="3_nygil"]
-
-[sub_resource type="VideoStreamTheora" id="VideoStreamTheora_3egct"]
-file = "res://Scenes/PopUpWindow/ComponentPlacement.ogv"
 
 [node name="PopUpWindow" type="Control"]
 layout_mode = 3
@@ -42,7 +39,7 @@ offset_right = -0.999878
 offset_bottom = 0.000366211
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/margin_left = 28
+theme_override_constants/margin_left = 35
 theme_override_constants/margin_top = 28
 theme_override_constants/margin_right = 28
 theme_override_constants/margin_bottom = 28
@@ -57,15 +54,15 @@ layout_mode = 2
 metadata/_edit_use_anchors_ = true
 
 [node name="Segment" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer"]
-custom_minimum_size = Vector2(518, 120)
+custom_minimum_size = Vector2(518, 35)
 layout_mode = 2
 mouse_filter = 1
 
 [node name="tip1" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/Segment"]
+custom_minimum_size = Vector2(518, 0)
 layout_mode = 2
-offset_left = 205.0
-offset_right = 2292.0
-offset_bottom = 800.0
+offset_right = 3440.0
+offset_bottom = 233.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(0.15, 0.15)
@@ -74,27 +71,16 @@ theme = ExtResource("3_nygil")
 text = "left click the component in toolbar to use it"
 autowrap_mode = 2
 
-[node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="MarginContainer/ScrollContainer/VBoxContainer/Segment"]
-custom_minimum_size = Vector2(200, 120)
-layout_mode = 2
-offset_right = 200.0
-offset_bottom = 120.0
-mouse_filter = 1
-stream = SubResource("VideoStreamTheora_3egct")
-autoplay = true
-expand = true
-loop = true
-
 [node name="Segment2" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer"]
-custom_minimum_size = Vector2(518, 120)
+custom_minimum_size = Vector2(518, 35)
 layout_mode = 2
 mouse_filter = 1
 
 [node name="tip1" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/Segment2"]
 layout_mode = 2
-offset_left = 205.0
-offset_right = 2292.0
-offset_bottom = 829.0
+offset_top = -4.0
+offset_right = 3460.0
+offset_bottom = 409.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(0.15, 0.15)
@@ -105,27 +91,16 @@ left click and drag to place multiple.
 "
 autowrap_mode = 2
 
-[node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="MarginContainer/ScrollContainer/VBoxContainer/Segment2"]
-custom_minimum_size = Vector2(200, 120)
-layout_mode = 2
-offset_right = 200.0
-offset_bottom = 120.0
-mouse_filter = 1
-stream = SubResource("VideoStreamTheora_3egct")
-autoplay = true
-expand = true
-loop = true
-
 [node name="Segment3" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer"]
-custom_minimum_size = Vector2(518, 120)
+custom_minimum_size = Vector2(518, 35)
 layout_mode = 2
 mouse_filter = 1
 
 [node name="tip1" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/Segment3"]
 layout_mode = 2
-offset_left = 205.0
-offset_right = 2292.0
-offset_bottom = 800.0
+offset_top = 20.0
+offset_right = 3440.0
+offset_bottom = 433.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(0.15, 0.15)
@@ -134,27 +109,16 @@ theme = ExtResource("3_nygil")
 text = "click middle mouse button to delete the components"
 autowrap_mode = 2
 
-[node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="MarginContainer/ScrollContainer/VBoxContainer/Segment3"]
-custom_minimum_size = Vector2(200, 120)
-layout_mode = 2
-offset_right = 200.0
-offset_bottom = 120.0
-mouse_filter = 1
-stream = SubResource("VideoStreamTheora_3egct")
-autoplay = true
-expand = true
-loop = true
-
 [node name="Segment4" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer"]
-custom_minimum_size = Vector2(518, 120)
+custom_minimum_size = Vector2(518, 35)
 layout_mode = 2
 mouse_filter = 1
 
 [node name="tip1" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/Segment4"]
 layout_mode = 2
-offset_left = 205.0
-offset_right = 2292.0
-offset_bottom = 800.0
+offset_top = 41.0
+offset_right = 3440.0
+offset_bottom = 274.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(0.15, 0.15)
@@ -163,27 +127,16 @@ theme = ExtResource("3_nygil")
 text = "right click and hold to pan"
 autowrap_mode = 2
 
-[node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="MarginContainer/ScrollContainer/VBoxContainer/Segment4"]
-custom_minimum_size = Vector2(200, 120)
-layout_mode = 2
-offset_right = 200.0
-offset_bottom = 120.0
-mouse_filter = 1
-stream = SubResource("VideoStreamTheora_3egct")
-autoplay = true
-expand = true
-loop = true
-
 [node name="Segment5" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer"]
-custom_minimum_size = Vector2(518, 120)
+custom_minimum_size = Vector2(518, 35)
 layout_mode = 2
 mouse_filter = 1
 
 [node name="tip1" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/Segment5"]
 layout_mode = 2
-offset_left = 205.0
-offset_right = 2292.0
-offset_bottom = 800.0
+offset_top = 37.0
+offset_right = 3440.0
+offset_bottom = 270.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(0.15, 0.15)
@@ -191,17 +144,6 @@ mouse_filter = 1
 theme = ExtResource("3_nygil")
 text = "scroll to zoom"
 autowrap_mode = 2
-
-[node name="VideoStreamPlayer" type="VideoStreamPlayer" parent="MarginContainer/ScrollContainer/VBoxContainer/Segment5"]
-custom_minimum_size = Vector2(200, 120)
-layout_mode = 2
-offset_right = 200.0
-offset_bottom = 120.0
-mouse_filter = 1
-stream = SubResource("VideoStreamTheora_3egct")
-autoplay = true
-expand = true
-loop = true
 
 [node name="Button" type="Button" parent="."]
 texture_filter = 1
