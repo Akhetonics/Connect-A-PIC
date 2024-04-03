@@ -33,7 +33,6 @@ public partial class PortsContainer : Node2D
     public List<ExternalPortViewModel> PortViewModels { get; set; } = new();
 
     //Commands
-    //TODO: this is temporary solution, needs to be removed after implementing command handling
     public static InputPowerAdjustCommand inputPowerAdjustCommand;
     public static InputColorChangeCommand inputColorChangeCommand;
     public static InputOutputChangeCommand inputOutputChangeCommand;
