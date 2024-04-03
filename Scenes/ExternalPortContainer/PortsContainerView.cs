@@ -37,7 +37,7 @@ public partial class PortsContainerView : Node2D
         var factory = new ExternalPortViewFactory(this, Grid, LightCalculator);
         List<ExternalPortViewModel> ports = factory.InitializeExternalPortViewList();
 
-        // create contorl menu, it will be child of ports container as well
+        // create control menu, it will be child of ports container as well
         ControlMenu controlMenu = RightClickMenuTemplate.Instantiate<ControlMenu>();
         controlMenu.Initialize(Grid);
         this.AddChild(controlMenu);
