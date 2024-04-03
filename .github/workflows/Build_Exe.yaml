@@ -66,14 +66,14 @@ jobs:
         run: ls -la $GITHUB_WORKSPACE/Release
 
       - name: Upload EXE as artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: Connect-A-PIC-EXE
           path: ${{ github.workspace }}/Release/Connect-A-PIC.exe
       
       # also upload all the files BUT the exe for the zipping later on.
       - name: Upload Release directory as artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: Connect-A-PIC-RELEASE-FOLDER
           path: ${{ github.workspace }}/Release/
@@ -123,7 +123,7 @@ jobs:
         shell: cmd
 
       - name: Upload signed EXE as artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: Connect-A-PIC-EXE-SIGNED
           path: ./Release/Connect-A-PIC.exe
