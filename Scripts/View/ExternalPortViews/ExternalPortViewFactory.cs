@@ -12,16 +12,17 @@ namespace ConnectAPic.LayoutWindow
 {
     public class ExternalPortViewFactory
     {
-        public PortsContainer PortsContainer{ get; set; }
+        public PortsContainerView PortsContainerView { get; set; }
         public GridManager Grid {  get; set; }
         public LightCalculationService LightCalculator { get; set; }
 
-        public ExternalPortViewFactory(PortsContainer portsContainer, GridManager grid, LightCalculationService lightCalculator)
+        public ExternalPortViewFactory(PortsContainerView portsContainer, GridManager grid, LightCalculationService lightCalculator)
         {
-            PortsContainer = portsContainer;
+            PortsContainerView = portsContainer;
             LightCalculator = lightCalculator;
             Grid = grid;
         }
+
 
         /// <summary>
         /// Initializes port view and view model corresponding to given external port model
@@ -30,7 +31,7 @@ namespace ConnectAPic.LayoutWindow
         /// <returns>View model for given external port</returns>
         public ExternalPortViewModel InitializeExternalPortView(ExternalPort externalPort)
         {
-            ExternalPortView portView = PortsContainer.ExternalPortViewTemplate.Instantiate<ExternalPortView>();
+            ExternalPortView portView = PortsContainerView.ExternalPortViewTemplate.Instantiate<ExternalPortView>();
             ExternalPortViewModel portViewModel = new ExternalPortViewModel(Grid, externalPort, LightCalculator);
 
             portView.Initialize(portViewModel);
@@ -59,7 +60,7 @@ namespace ConnectAPic.LayoutWindow
     
             portView.Visible = true;
             portView.Position = new Vector2(0, (GameManager.TilePixelSize) * externalPort.TilePositionY);
-            PortsContainer.AddChild(portView);
+            PortsContainerView.AddChild(portView);
             return portViewModel;
         }
 
@@ -80,5 +81,9 @@ namespace ConnectAPic.LayoutWindow
 
                 return portViewModels;
             }
+
+        public List<ExternalPortViewModel> InitializeExternalPortViewList() {
+            return InitializeExternalPortViewList(Grid.ExternalPortManager.ExternalPorts);
+        }
     }
 }

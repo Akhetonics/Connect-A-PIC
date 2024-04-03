@@ -54,7 +54,7 @@ namespace ConnectAPic.LayoutWindow
         public static int TilePixelSize { get; private set; } = 62; // the tile size including the border
         public static int TileBorderLeftDown { get; private set; } = 2;
         public GridView GridView { get; set; }
-        public PortsContainer PortsContainer { get; set; }
+        public PortsContainerView PortsContainer { get; set; }
         public static System.Version Version => Assembly.GetExecutingAssembly().GetName().Version; // Get the version from the assembly
         public GridManager Grid { get; set; }
         public LightCalculationService LightCalculator { get; private set; }
