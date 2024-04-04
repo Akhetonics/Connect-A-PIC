@@ -1,18 +1,23 @@
 using CAP_Contracts.Logger;
-using CAP_Core;
 using CAP_Core.Helpers;
+using Chickensoft.AutoInject;
 using ConnectAPic.LayoutWindow;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scripts.Helpers;
 using ConnectAPIC.Scripts.View.ToolBox;
+using ConnectAPIC.Scripts.ViewModel;
 using Godot;
+using SuperNodes.Types;
 using System;
 using System.Collections.Generic;
 
+[SuperNode(typeof(Dependent))]
 public partial class DragDropProxy : Control
 {
+    public override partial void _Notification(int what);
+    [Dependency] public ToolViewModel ToolViewModel => DependOn<ToolViewModel>();
     public delegate Variant GetDragData(Vector2 position);
     public delegate bool CanDropData(Vector2 position, Variant data);
     public delegate void DropData(Vector2 position, Variant data);
@@ -109,36 +114,27 @@ public partial class DragDropProxy : Control
 
     public void CreateOrUpdatePreviewComponent(Vector2I originalGridPosition, Vector2I targetGridPosition, Color color)
     {
-        ComponentView previewComponent;
-        if (previewComponents.TryGetValue(originalGridPosition, out previewComponent))
+        if (previewComponents.TryGetValue(originalGridPosition, out var previewComponent))
         {
             // Preview component already exists, update its position and color
             previewComponent.Position = MapToLocalCorrected(targetGridPosition); // Assuming a method to convert grid position to local position
-            previewComponent.Modulate = color;
-            previewComponent.Show();
         }
         else
         {
             // Create a new preview component
-            var brush = GridView.GridComponentViews[originalGridPosition.X, originalGridPosition.Y];
-            if (brush == null)
+            var componentToMove= GridView.GridComponentViews[originalGridPosition.X, originalGridPosition.Y];
+            if (componentToMove == null)
                 return;
-            previewComponent = brush.Duplicate(); // Or however you instantiate your preview
-            previewComponent.Position = MapToLocalCorrected(targetGridPosition);
-            previewComponent.Modulate = color;
-            previewComponent.MouseFilter = Control.MouseFilterEnum.Ignore;
-            previewComponent.GetChildren();
-            foreach (var child in previewComponent.GetChildren())
-            {
-                if (child is Control node)
-                {
-                    node.MouseFilter = Control.MouseFilterEnum.Ignore;
-                }
-            }
-            AddChild(previewComponent); // Add to the scene
-
-            previewComponents[originalGridPosition] = previewComponent;
+            componentToMove.Position = MapToLocalCorrected(targetGridPosition);
+            MoveChildToTop(componentToMove);
+            previewComponents.Add(originalGridPosition, componentToMove);
         }
+    }
+    public static void MoveChildToTop( Node childNode)
+    {
+        var parentNode = childNode.GetParent();
+        int newPosition = parentNode.GetChildCount();
+        parentNode.MoveChild(childNode, newPosition);
     }
 
     private Godot.Vector2 MapToLocalCorrected(Vector2I targetGridPosition)
@@ -151,7 +147,7 @@ public partial class DragDropProxy : Control
     {
         foreach (var entry in previewComponents)
         {
-            entry.Value.QueueFree();
+            entry.Value.Position = MapToLocalCorrected(entry.Key);
         }
         previewComponents.Clear();
     }
@@ -159,6 +155,7 @@ public partial class DragDropProxy : Control
     public override Variant _GetDragData(Godot.Vector2 position)
     {
         if (SelectionTool.IsEditSelectionKeyPressed()) return default;
+        if (ToolViewModel.CurrentTool.GetType() != typeof(SelectionTool)) return default; // drag drop only works with the selection tool
         StartGridXY = GridView.LocalToMap(position);
         var selectionMgr = ViewModel.SelectionGroupManager.SelectionManager;
         var selections = selectionMgr.Selections;

@@ -93,6 +93,7 @@ namespace ConnectAPIC.LayoutWindow.View
                 actualComponent.CustomMinimumSize = new(draft.WidthInTiles * GameManager.TilePixelSize, draft.HeightInTiles * GameManager.TilePixelSize);
                 componentView.AddChild(actualComponent);
                 componentView.Initialize(slotDataSets, draft.WidthInTiles, draft.HeightInTiles);
+                MakeComponentClickThrough(componentView); // otherwise drag drop won't work
                 // viewModel has to be added last, so that the componentView has finished constructing before adding the data ot initialize sliders etc.
                 componentView.ViewModel.InitializeComponent(componentNR, MapDataAccessSlidersToViewSliders(draft), Logger);
                 return componentView;
@@ -101,6 +102,17 @@ namespace ConnectAPIC.LayoutWindow.View
             {
                 Logger.PrintErr($"ComponentTemplate is not or not well defined: {draft?.Identifier} - Exception: {ex.Message}");
                 throw;
+            }
+        }
+
+        private static void MakeComponentClickThrough(ComponentView componentView)
+        {
+            foreach (var child in componentView.GetChildren())
+            {
+                if (child is Godot.Control node)
+                {
+                    node.MouseFilter = Godot.Control.MouseFilterEnum.Ignore;
+                }
             }
         }
 
