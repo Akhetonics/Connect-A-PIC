@@ -87,7 +87,6 @@ namespace ConnectAPIC.test.src {
             MyControlMenu.ViewModel.InputPowerAdjustCommand.ExecuteAsync(
                 new InputPowerAdjustArgs(MyRandomExternalPort.ViewModel.PortModel, randomPowerValue)).Wait();
 
-            //power (vector3) has values in floats and in model its in double but some error is acceptable on view
             MyRandomExternalPort.ViewModel.Power[0].ShouldBeInRange((float)randomPowerValue - 0.01f, (float)randomPowerValue + 0.01f);
             MyRandomExternalPort.ViewModel.Power[1].ShouldBeInRange(0.01f, 0.01f);
             MyRandomExternalPort.ViewModel.Power[2].ShouldBeInRange(0.01f, 0.01f);

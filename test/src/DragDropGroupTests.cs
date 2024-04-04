@@ -47,40 +47,41 @@ namespace ConnectAPIC.test.src
             await MyGameManager.GridViewModel.CreateComponentCommand.ExecuteAsync(new CreateComponentArgs(straightComponentNr, ComponentRightPos.X, ComponentRightPos.Y, DiscreteRotation.R0));
             StraightLeft = MyGameManager.GridView.GridComponentViews[ComponentLeftPos.X, ComponentLeftPos.Y];
             StraightRight = MyGameManager.GridView.GridComponentViews[ComponentRightPos.X, ComponentRightPos.Y];
+            await TestScene.GetTree().NextFrame(2);
         }
         [Test]
         public async Task TestLightVectorAssignment()
         {
             // select the two elements in the grid
+            await TestScene.GetTree().NextFrame();
             var screenPosLeft = MyGameManager.GridView.ToGlobal(MyGameManager.GridView.MapToLocal(ComponentLeftPos));
             var screenPosRight = MyGameManager.GridView.ToGlobal(MyGameManager.GridView.MapToLocal(ComponentRightPos));
-            MyGameManager.GetViewport().MoveMouseTo(screenPosRight + new Vector2(-40, -40)); // move it a bit out of the object so it can open a selection box properly
-            MyGameManager.GetViewport().PressMouse(MouseButton.Left);
+            MyGameManager.GetViewport().DragMouse(screenPosRight - new Vector2(-40, -40), screenPosLeft, MouseButton.Left);
             await TestScene.GetTree().NextFrame();
-            MyGameManager.GetViewport().MoveMouseTo(screenPosLeft);
-            MyGameManager.GetViewport().ReleaseMouse(MouseButton.Left);
-            await TestScene.GetTree().NextFrame();
-
             // drag the items two tiles to the right
-            MyGameManager.GetViewport().MoveMouseTo(screenPosRight);
-            MyGameManager.GetViewport().PressMouse(MouseButton.Left);
+            var moveTilesVector = new Vector2I(3, 0);
+            var dragTarget = screenPosLeft + moveTilesVector * GameManager.TilePixelSize;
+            MyGameManager.GetViewport().MoveMouseTo(screenPosLeft);
+            var data = MyGameManager.GridView.DragDropProxy._GetDragData(MyGameManager.GridView.GetLocalMousePosition());
             await TestScene.GetTree().NextFrame();
-            MyGameManager.GetViewport().MoveMouseTo(screenPosLeft + new Vector2(GameManager.TilePixelSize * 2,0));
+            MyGameManager.GetViewport().MoveMouseTo(dragTarget);
             await TestScene.GetTree().NextFrame();
-            MyGameManager.GetViewport().ReleaseMouse(MouseButton.Left);
+            MyGameManager.GridView.DragDropProxy._DropData(MyGameManager.GridView.GetLocalMousePosition(), data);
             await TestScene.GetTree().NextFrame();
             // check if they have both moved (deleted and newly created)
             var oldLeft = MyGameManager.Grid.ComponentMover.GetComponentAt(ComponentRightPos.X, ComponentRightPos.Y);
             var oldRight = MyGameManager.Grid.ComponentMover.GetComponentAt(ComponentRightPos.X, ComponentRightPos.Y);
-            ComponentLeftPos += new Vector2I(2, 0);
-            ComponentRightPos += new Vector2I(2, 0);
-            var foundLeft = MyGameManager.Grid.ComponentMover.GetComponentAt(ComponentLeftPos.X, ComponentLeftPos.Y);
-            var foundRight = MyGameManager.Grid.ComponentMover.GetComponentAt(ComponentRightPos.X, ComponentRightPos.Y);
-            
-            //oldLeft.ShouldBe(null, "because we moved the left component");
-            //oldRight.ShouldBe(null, "because we moved the right component");
-            //foundLeft.Identifier.ShouldBe(StraightCompIdentifier, "because we moved the straight thing there");
-            //foundRight.Identifier.ShouldBe(StraightCompIdentifier, "because we moved the straight thing there");
+            var newPosLeft = ComponentLeftPos += moveTilesVector;
+            var newPosRight = ComponentRightPos += moveTilesVector;
+            var foundLeft = MyGameManager.Grid.ComponentMover.GetComponentAt(newPosLeft.X, newPosLeft.Y);
+            var foundRight = MyGameManager.Grid.ComponentMover.GetComponentAt(newPosRight.X, newPosRight.Y);
+            await TestScene.GetTree().NextFrame(100);
+            // assert
+
+            oldLeft.ShouldBe(null, "because we moved the left component");
+            oldRight.ShouldBe(null, "because we moved the right component");
+            foundLeft.Identifier.ShouldBe(StraightCompIdentifier, "because we moved the straight thing there");
+            foundRight.Identifier.ShouldBe(StraightCompIdentifier, "because we moved the straight thing there");
         }
 
         [Cleanup]

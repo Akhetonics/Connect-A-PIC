@@ -56,7 +56,7 @@ namespace ConnectAPIC.test.src
         {
             var component = MyGameManager.Grid.ComponentMover.GetComponentAt(MMI3x3.ViewModel.GridX, MMI3x3.ViewModel.GridY);
             var lightPower = (float)MyGameManager.Grid.ExternalPortManager.GetUsedExternalInputs().FirstOrDefault(i => i.Input.LaserType == LaserType.Red).Input.InFlowPower.Magnitude;
-            MyGameManager.GridViewModel.LightCalculator.LightCalculationChanged += (object sender, CAP_Core.LightCalculation.LightCalculationChangeEventArgs e) =>
+            MyGameManager.GridViewModel.LightCalculator.LightCalculationUpdated += (object sender, CAP_Core.LightCalculation.LightCalculationUpdated e) =>
             {
                 var PinUpRight = (Guid)component.PinIdRightOut(2, 0);
                 var PinMiddleRight = (Guid)component.PinIdRightOut(2, 1);

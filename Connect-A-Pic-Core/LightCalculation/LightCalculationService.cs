@@ -16,7 +16,8 @@ namespace CAP_Core.LightCalculation
 {
     public class LightCalculationService
     {
-        public event EventHandler<LightCalculationChangeEventArgs>? LightCalculationChanged;
+        public event EventHandler<LightCalculationUpdated>? LightCalculationUpdated; // is only called when new data is available - not when the calculation got cancelled
+        public event EventHandler CalculationCanceled;
         private Task? LightCalculationTask;
         private CancellationTokenSource CancelTokenLightCalc { get; set; } = new();
         public ConcurrentBag<ExternalInput> LightInputs { get; private set; }
@@ -63,7 +64,7 @@ namespace CAP_Core.LightCalculation
                     CancelTokenLightCalc.Token.ThrowIfCancellationRequested();
                     // the results must run in the main thread so that the UI can be updated properly
                     ExecuteOnMainThread(()=>{
-                        LightCalculationChanged?.Invoke(this, new(resultLightVector, port.LaserType));
+                        LightCalculationUpdated?.Invoke(this, new(resultLightVector, port.LaserType));
                     });
                 }
             }
@@ -122,6 +123,7 @@ namespace CAP_Core.LightCalculation
             finally
             {
                 Semaphore.Release();
+                CalculationCanceled?.Invoke(this, new EventArgs());
             }
         }
 

@@ -3,9 +3,9 @@ using System.Numerics;
 
 namespace CAP_Core.LightCalculation
 {
-    public class LightCalculationChangeEventArgs
+    public class LightCalculationUpdated
     {
-        public LightCalculationChangeEventArgs(Dictionary<Guid, Complex> lightFieldVector, LaserType laser)
+        public LightCalculationUpdated(Dictionary<Guid, Complex> lightFieldVector, LaserType laser)
         {
             LightFieldVector = lightFieldVector;
             LaserInUse = laser;

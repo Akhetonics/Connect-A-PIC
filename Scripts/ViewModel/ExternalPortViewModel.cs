@@ -121,7 +121,7 @@ namespace ConnectAPIC.Scripts.ViewModel
                 }
             };
 
-            lightCalculator.LightCalculationChanged += ResetPowerMeterDisplay;
+            lightCalculator.LightCalculationUpdated += ResetPowerMeterDisplay;
         }
 
 
@@ -150,7 +150,7 @@ namespace ConnectAPIC.Scripts.ViewModel
             Power = Vector3.Zero;
         }
 
-        private void ResetPowerMeterDisplay(object sender, LightCalculationChangeEventArgs e)
+        private void ResetPowerMeterDisplay(object sender, LightCalculationUpdated e)
         {
             if (IsInput) return;
             var touchingComponent = Grid.ComponentMover.GetComponentAt(0, PortModel.TilePositionY);

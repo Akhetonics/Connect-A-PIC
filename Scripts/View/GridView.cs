@@ -70,7 +70,7 @@ namespace ConnectAPIC.LayoutWindow.View
                 ResetTilesAt(gridX, gridY, component.WidthInTiles, component.HeightInTiles);
                 await RecalculateLightIfOn();
             };
-            viewModel.LightCalculator.LightCalculationChanged += (object sender, LightCalculationChangeEventArgs e)
+            viewModel.LightCalculator.LightCalculationUpdated += (object sender, LightCalculationUpdated e)
                 => AssignLightFieldsToComponentViews(e.LightFieldVector, e.LaserInUse);
             this.GridComponentViews = new ComponentView[viewModel.Width, viewModel.Height];
             CreateEmptyField();

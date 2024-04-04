@@ -1,18 +1,10 @@
-using ConnectAPIC.Scenes.ExternalPorts;
 using Godot;
-using System;
 using System.Collections.Generic;
 using SuperNodes.Types;
 using Chickensoft.AutoInject;
-using System.Collections.ObjectModel;
 using CAP_Core.Grid;
-using CAP_Core.ExternalPorts;
-using System.Diagnostics;
 using CAP_Core.LightCalculation;
-using System.ComponentModel;
 using ConnectAPIC.Scripts.ViewModel;
-using ConnectAPIC.LayoutWindow.ViewModel.Commands;
-using ConnectAPIC.Scripts.ViewModel.Commands;
 using ConnectAPic.LayoutWindow;
 using ConnectAPIC.Scenes.RightClickMenu;
 
