@@ -16,6 +16,9 @@ namespace ConnectAPIC.Scripts.View.ToolBox
         public Vector2 SelectionStartMousePos { get; private set; }
         public Vector2 SelectionEndMousePos { get; private set; }
         public Rect2 SelectionRect { get; private set; }
+        public Vector2 RightClickStartXY { get; private set; }
+
+        private const float DragThreshold = 5.0f;
 
         public TemplateTileView CreateIcon()
         {
@@ -63,7 +66,6 @@ namespace ConnectAPIC.Scripts.View.ToolBox
             base._Process(delta);
             if (IsActive)
             {
-                // draw the rectangle and implement selection groups
             }
         }
 
@@ -87,6 +89,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
         {
             if (IsActive == false) return;
             HandleMiddleMouseDeleteDrawing(@event);
+
             if (@event is InputEventMouseButton mouseButtonEvent)
             {
                 if (mouseButtonEvent.ButtonIndex == MouseButton.Left)
@@ -95,7 +98,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
                     LeftMouseButtonPressed = mouseButtonEvent.Pressed; // release or press the button
                     // ignore drag when startPoint is on top of a component
                     Vector2I gridPosition = GetMouseGridPosition();
-                    
+
                     if (mouseButtonEvent.Pressed)
                     {
                         SelectionStartMousePos = GridView.GetLocalMousePosition();
@@ -127,6 +130,21 @@ namespace ConnectAPIC.Scripts.View.ToolBox
                         SelectItems(parameter);
                     }
                 }
+                if (mouseButtonEvent.ButtonIndex == MouseButton.Right)
+                {
+                    if (mouseButtonEvent.Pressed)
+                    {
+                        RightClickStartXY = mouseButtonEvent.GlobalPosition;
+                    }
+                    else
+                    {
+                        float dragDistance = RightClickStartXY.DistanceTo(mouseButtonEvent.GlobalPosition);
+                        if (dragDistance <= DragThreshold)
+                        {
+                            TryRotateComponent(GridView.LocalToMap(GridView.GetLocalMousePosition()));
+                        }
+                    }
+                }
             }
 
             // Keyboard input
@@ -146,6 +164,14 @@ namespace ConnectAPIC.Scripts.View.ToolBox
             }
         }
 
+        private void TryRotateComponent(Vector2I componentPos)
+        {
+            var args = new RotateComponentArgs(componentPos.X, componentPos.Y);
+            if (GridViewModel.RotateComponentCommand?.CanExecute(args) == true)
+            {
+                GridViewModel.RotateComponentCommand?.ExecuteAsync(args).Wait();
+            }
+        }
         public static bool IsEditSelectionKeyPressed()
         {
             return Input.IsKeyPressed(Key.Shift) || Input.IsKeyPressed(Key.Ctrl) || Input.IsKeyPressed(Key.Alt);
@@ -153,7 +179,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
 
         public override void _Draw()
         {
-            if (IsSelectionBoxActive)
+            if (IsSelectionBoxActive && Input.IsMouseButtonPressed(MouseButton.Left))
             {
                 DrawRect(SelectionRect, Colors.AliceBlue - new Color(0, 0, 0, 0.8f), true);
                 DrawRect(SelectionRect, Colors.AliceBlue, false);
