@@ -56,7 +56,7 @@ public partial class DragDropProxy : Control
             }
             if (canDropData == false)
             {
-                ClearDragPreview();
+                ResetDragPreview();
             }
             return canDropData;
         }
@@ -74,7 +74,7 @@ public partial class DragDropProxy : Control
         {
             ViewModel.MoveComponentCommand.ExecuteAsync(args).Wait();
         }
-        ClearDragPreview();
+        ResetDragPreview();
     }
 
     private static MoveComponentArgs ConvertGodotListToMoveComponentArgs(Variant data, IntVector deltaGridXY)
@@ -143,7 +143,7 @@ public partial class DragDropProxy : Control
         return GridView.MapToLocal(targetGridPosition) - 0.5f * tileSize;
     }
 
-    public void ClearDragPreview()
+    public void ResetDragPreview()
     {
         foreach (var entry in previewComponents)
         {
@@ -194,7 +194,7 @@ public partial class DragDropProxy : Control
             {
                 if (eventMouseButton.Pressed == false)
                 {
-                    ClearDragPreview();
+                    ResetDragPreview();
                 }
             }
         }

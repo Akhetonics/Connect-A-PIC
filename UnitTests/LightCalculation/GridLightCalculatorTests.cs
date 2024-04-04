@@ -45,7 +45,7 @@ namespace UnitTests.LightCalculation
 
             var usedInputs = grid.ExternalPortManager.GetUsedExternalInputs()
                                  .Where(i => i.Input.LaserType.WaveLengthInNm == LaserType.Red.WaveLengthInNm)
-                                 .ToList();
+                                 .ToConcurrentBag();
             var inputVector = UsedInputConverter.ToVectorOfFields(usedInputs, calculator.SystemSMatrix);
             var inputAfterSteps = calculator.SystemSMatrix.SMat * inputVector + inputVector;
 

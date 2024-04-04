@@ -1,4 +1,5 @@
-﻿using CAP_Core.ExternalPorts;
+using CAP_Core.ExternalPorts;
+using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 
 namespace CAP_Core.Grid
@@ -6,7 +7,7 @@ namespace CAP_Core.Grid
     public interface IExternalPortManager
     {
         public ObservableCollection<ExternalPort> ExternalPorts { get; }
-        List<ExternalInput> GetAllExternalInputs();
-        List<UsedInput> GetUsedExternalInputs();
+        ConcurrentBag<ExternalInput> GetAllExternalInputs();
+        ConcurrentBag<UsedInput> GetUsedExternalInputs();
     }
 }

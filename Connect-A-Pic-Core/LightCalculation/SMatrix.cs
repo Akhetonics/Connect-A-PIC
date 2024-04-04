@@ -1,4 +1,3 @@
-using System.Text;
 using System.Numerics;
 using MathNet.Numerics.LinearAlgebra;
 using System.Linq.Dynamic.Core;
@@ -8,7 +7,7 @@ namespace CAP_Core.LightCalculation
 {
     public class SMatrix
     {
-        public Matrix<Complex> SMat; // the SMat works like SMat[PinNROutflow, PinNRInflow] --> so opposite from what one might expect
+        public Matrix<Complex> SMat { get; private set; } // the SMat works like SMat[PinNROutflow, PinNRInflow] --> so opposite from what one might expect
         public readonly Dictionary<Guid, int> PinReference; // all PinIDs inside of the matrix. the int is the index of the row/column in the SMat.. and also of the inputVector.
         public Dictionary<Guid, double> SliderReference { get; internal set; }
         private readonly Dictionary<int, Guid> ReversePinReference; // sometimes we want to find the GUID and only have the ID
