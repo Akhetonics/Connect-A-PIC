@@ -34,7 +34,16 @@ namespace CAP_Core.ExternalPorts
         {
             return $"color: {Color.ToReadableString()}, WaveLength: {WaveLengthInNm}nm";
         }
-
+        public override int GetHashCode()
+        {
+            return WaveLengthInNm.GetHashCode();
+        }
+        public override bool Equals(object? obj)
+        {
+            if (obj == null) return false;
+            if (obj is not LaserType laserType) return false;
+            return WaveLengthInNm == laserType.WaveLengthInNm && Color == laserType.Color;
+        }
         public static bool operator ==(LaserType left, LaserType right)
         {
             if (ReferenceEquals(left, right)) // they could both be null so we need this check 
