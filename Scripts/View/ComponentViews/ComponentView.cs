@@ -18,7 +18,6 @@ namespace ConnectAPIC.LayoutWindow.View
     {
         public override partial void _Notification(int what);
         [Dependency] public GridViewModel GridViewModel => DependOn<GridViewModel>();
-        private const float DragThreshold = 5.0f;
         public int WidthInTiles { get; set; }
         public int HeightInTiles { get; set; }
         private Node2D RotationArea { get; set; } // the part of the component that rotates
@@ -36,7 +35,6 @@ namespace ConnectAPIC.LayoutWindow.View
         private new float Rotation { get => RotationArea.Rotation; set => RotationArea.Rotation = value; }
         public SliderManager SliderManager { get; private set; }
         public OverlayManager OverlayManager { get; set; }
-        public Vector2 InitialClickPosition { get; private set; }
 
         public void OnResolved()
         {
@@ -123,55 +121,6 @@ namespace ConnectAPIC.LayoutWindow.View
 
         public void HideLightVector() => OverlayManager.HideLightVector();
 
-        public override void _GuiInput(InputEvent inputEvent)
-        {
-            base._GuiInput(inputEvent);
-            if (inputEvent is InputEventMouseButton mouseEvent)
-            {
-                if (mouseEvent.Position.X < 0
-                    || mouseEvent.Position.Y < 0
-                    || mouseEvent.Position.X > this.WidthInTiles * GameManager.TilePixelSize
-                    || mouseEvent.Position.Y > this.HeightInTiles * GameManager.TilePixelSize
-                    || ViewModel == null)
-                {
-                    return;
-                }
-                if (mouseEvent.ButtonIndex == MouseButton.Middle && mouseEvent.Pressed)
-                {
-                    ViewModel.DeleteComponentCommand?.ExecuteAsync(new DeleteComponentArgs(new() { new IntVector(ViewModel.GridX, ViewModel.GridY) })).Wait();
-                }
-                if (mouseEvent.ButtonIndex == MouseButton.Right)
-                {
-                    if (mouseEvent.Pressed)
-                    {
-                        InitialClickPosition = mouseEvent.GlobalPosition;
-                    }
-                    else
-                    {
-                        float dragDistance = InitialClickPosition.DistanceTo(mouseEvent.GlobalPosition);
-                        if (dragDistance <= DragThreshold)
-                        {
-                            TryRotateComponent();
-                        }
-                    }
-
-                }
-            }
-        }
-
-        private void TryRotateComponent()
-        {
-            var args = new RotateComponentArgs(ViewModel.GridX, ViewModel.GridY);
-            if (ViewModel.RotateComponentCommand?.CanExecute(args) == true)
-            {
-                ViewModel.RotateComponentCommand?.ExecuteAsync(args).Wait();
-            }
-            else
-            {
-                // Error Animation
-            }
-        }
-
         public virtual ComponentView Duplicate()
         {
             var copy = (ComponentView)base.Duplicate();
@@ -185,9 +134,6 @@ namespace ConnectAPIC.LayoutWindow.View
             copy.ViewModel.InitializeComponent(ViewModel.TypeNumber, newSliderData, ViewModel.Logger);
             return copy;
         }
-
-
-
         public override void _ExitTree()
         {
             this.GridViewModel.SelectionGroupManager.SelectedComponents.CollectionChanged -= SelectedComponents_CollectionChanged;

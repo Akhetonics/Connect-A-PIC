@@ -20,7 +20,6 @@ namespace ConnectAPIC.Scripts.ViewModel
     {
         public ILogger Logger { get; private set; }
         public ICommand DeleteComponentCommand { get; set; }
-        public ICommand RotateComponentCommand { get; set; }
         public int GridX { get; set; }
         public int GridY { get; set; }
         private ObservableCollection<SliderViewData> sliderData = new();
@@ -125,7 +124,6 @@ namespace ConnectAPIC.Scripts.ViewModel
         public void RegisterInGrid(GridManager grid, int gridX, int gridY, DiscreteRotation rotationCounterClockwise)
         {
             DeleteComponentCommand = new DeleteComponentCommand(grid);
-            RotateComponentCommand = new RotateComponentCommand(grid);
             this.GridX = gridX;
             this.GridY = gridY;
             this.RotationCC = rotationCounterClockwise;

@@ -1,6 +1,7 @@
 using CAP_Core.Components;
 using CAP_Core.ExternalPorts;
 using CAP_Core.Tiles;
+using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
 
 namespace CAP_Core.Grid
@@ -24,15 +25,23 @@ namespace CAP_Core.Grid
                     new ExternalOutput("io7",9),
                 };
         }
-        public List<ExternalInput> GetAllExternalInputs() =>
-           ExternalPorts
-           .Where(p => p is ExternalInput)
-           .Select(p => (ExternalInput)p)
-           .ToList();
-
-        public List<UsedInput> GetUsedExternalInputs()
+        public ConcurrentBag<ExternalInput> GetAllExternalInputs()
         {
-            List<UsedInput> inputsFound = new();
+            var inputs = new ConcurrentBag<ExternalInput>();
+            foreach (var p in ExternalPorts)
+            {
+                if (p is ExternalInput input)
+                {
+                    inputs.Add(input);
+                }
+            }
+            return inputs;
+        }
+
+
+        public ConcurrentBag<UsedInput> GetUsedExternalInputs()
+        {
+            ConcurrentBag<UsedInput> inputsFound = new();
             foreach (var port in ExternalPorts)
             {
                 if (port is ExternalInput input)

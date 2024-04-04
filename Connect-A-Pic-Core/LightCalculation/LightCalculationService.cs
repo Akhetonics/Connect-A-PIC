@@ -1,6 +1,7 @@
 using CAP_Core.ExternalPorts;
 using CAP_Core.Grid;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -15,12 +16,12 @@ namespace CAP_Core.LightCalculation
 {
     public class LightCalculationService
     {
-        public event EventHandler<LightCalculationChangeEventArgs> LightCalculationChanged;
+        public event EventHandler<LightCalculationChangeEventArgs>? LightCalculationChanged;
         private Task? LightCalculationTask;
         private CancellationTokenSource CancelTokenLightCalc { get; set; } = new();
-        public List<ExternalInput> LightInputs { get; private set; }
+        public ConcurrentBag<ExternalInput> LightInputs { get; private set; }
         public ILightCalculator GridSMatrixAnalyzer { get; }
-        public SynchronizationContext MainThreadContext { get; }
+        public SynchronizationContext? MainThreadContext { get; }
 
         private SemaphoreSlim Semaphore = new (1, 1);
 
@@ -51,6 +52,9 @@ namespace CAP_Core.LightCalculation
                 {
                     CancelTokenLightCalc.Token.ThrowIfCancellationRequested();
                     Dictionary<Guid, Complex> resultLightVector = new();
+                    // What has to become thread safe:
+                    // GridSMatrixAnalyzer
+                    // LightInputs
                     LightCalculationTask = Task.Run(async () =>
                     {
                         resultLightVector = await GridSMatrixAnalyzer.CalculateFieldPropagationAsync(CancelTokenLightCalc, port.LaserType.WaveLengthInNm);
@@ -77,7 +81,14 @@ namespace CAP_Core.LightCalculation
         }
         private void ExecuteOnMainThread(Action action)
         {
-            MainThreadContext.Post(_ => action(), null);
+            if (MainThreadContext != null)
+            {
+                MainThreadContext.Post(_ => action(), null);
+            } else
+            {
+                action();
+            }
+            
         }
         public async Task CancelLightCalculation()
         {

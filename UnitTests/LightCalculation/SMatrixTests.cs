@@ -1,7 +1,9 @@
 using CAP_Core;
 using CAP_Core.Components.ComponentHelpers;
+using CAP_Core.ExternalPorts;
 using CAP_Core.Grid;
 using CAP_Core.LightCalculation;
+using Godot;
 using System.Numerics;
 using UnitTests.Grid;
 
@@ -12,17 +14,16 @@ namespace UnitTests.LightCalculation
         [Fact]
         public async Task TestDirectionalCoupler()
         {
-            var directionalCoupler = TestComponentFactory.CreateDirectionalCoupler();
-            var grid = GridHelpers.InitializeGridWithComponents(20, 10);
+            var directionalCoupler = TestComponentFactory.CreateComponent(TestComponentFactory.DirectionalCouplerJSON);
+            var grid = new GridManager(20, 10);
             grid.ComponentMover.PlaceComponent(0, grid.ExternalPortManager.ExternalPorts[0].TilePositionY, directionalCoupler);
-            var laserType = grid.ExternalPortManager.GetUsedExternalInputs().First().Input.LaserType;
+            var input = (ExternalInput) grid.ExternalPortManager.ExternalPorts[0];
             var gridSMatrixAnalyzer = new GridLightCalculator(new SystemMatrixBuilder(grid), grid);
-            var lightPropagation = await gridSMatrixAnalyzer.CalculateFieldPropagationAsync(new CancellationTokenSource(), laserType.WaveLengthInNm);
+            var lightPropagation = await gridSMatrixAnalyzer.CalculateFieldPropagationAsync(new CancellationTokenSource(), input.LaserType.WaveLengthInNm);
 
             var directionalCouplerPowerIn = lightPropagation[(Guid)directionalCoupler.PinIdLeftIn()];
             var directionalCouplerPowerOutUp = lightPropagation[(Guid)directionalCoupler.PinIdRightOut(1, 0)];
             var directionalCouplerPowerOutDown = lightPropagation[(Guid)directionalCoupler.PinIdRightOut(1, 1)];
-
 
             Assert.Equal(1, Math.Pow(directionalCouplerPowerIn.Magnitude, 2), 0.000000001);
             Assert.Equal(0.5, Math.Pow(directionalCouplerPowerOutUp.Magnitude, 2), 0.000000001);

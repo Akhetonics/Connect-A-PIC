@@ -28,7 +28,10 @@ namespace CAP_Core.LightCalculation
         {
             var interComponentConnections = GetAllConnectionsBetweenComponents();
             var allUsedPinIDs = interComponentConnections.SelectMany(c => new[] { c.Key.Item1, c.Key.Item2 }).Distinct().ToList();
-            Grid.ExternalPortManager.GetUsedExternalInputs().ForEach(input => allUsedPinIDs.Add(input.AttachedComponentPinId)); // Grating coupler has no internal connections and might be only connected to the Laser directly
+            foreach( var input in Grid.ExternalPortManager.GetUsedExternalInputs())
+            {
+                allUsedPinIDs.Add(input.AttachedComponentPinId); // Grating coupler has no internal connections and might be only connected to the Laser directly
+            }
             var allConnectionsSMatrix = new SMatrix(allUsedPinIDs, new());
             allConnectionsSMatrix.SetValues(interComponentConnections);
             return allConnectionsSMatrix;
