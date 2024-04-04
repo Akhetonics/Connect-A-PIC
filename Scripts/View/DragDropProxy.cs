@@ -52,7 +52,7 @@ public partial class DragDropProxy : Control
             }
             if (canDropData == true && data.Obj is Godot.Collections.Array transitions)
             {
-                ShowComponentDragPreview(position, transitions, canDropData);
+                ShowComponentDragPreview(position, transitions);
             }
             if (canDropData == false)
             {
@@ -94,10 +94,9 @@ public partial class DragDropProxy : Control
         return null;
     }
 
-    public void ShowComponentDragPreview(Godot.Vector2 position, Godot.Collections.Array transitions, bool canDropData)
+    public void ShowComponentDragPreview(Godot.Vector2 position, Godot.Collections.Array transitions)
     {
         var deltaGridXY = (GridView.LocalToMap(position) - StartGridXY);
-        Color previewColor = canDropData ? new Color(0.5f, 1, 0.5f) : new Color(1, 0, 0); // Light green for valid, red for invalid.
         foreach (Variant componentPositionVariant in transitions)
         {
             if (componentPositionVariant.VariantType != Variant.Type.Vector2I)
@@ -108,11 +107,11 @@ public partial class DragDropProxy : Control
             var targetGridPosition = componentGridPosition + deltaGridXY;
 
             // Assuming CreatePreviewComponent is a method that creates a visual representation of the component.
-            CreateOrUpdatePreviewComponent(componentGridPosition, targetGridPosition, previewColor);
+            CreateOrUpdatePreviewComponent(componentGridPosition, targetGridPosition);
         }
     }
 
-    public void CreateOrUpdatePreviewComponent(Vector2I originalGridPosition, Vector2I targetGridPosition, Color color)
+    public void CreateOrUpdatePreviewComponent(Vector2I originalGridPosition, Vector2I targetGridPosition)
     {
         if (previewComponents.TryGetValue(originalGridPosition, out var previewComponent))
         {

@@ -107,7 +107,7 @@ namespace CAP_Core.Components
 
         public Slider? GetSlider (int sliderNr)
         {
-            if(SliderMap.TryGetValue(sliderNr, out Slider slider) == true)
+            if(SliderMap.TryGetValue(sliderNr, out Slider? slider) == true)
             {
                 return slider;
             }

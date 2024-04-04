@@ -15,6 +15,7 @@ namespace CAP_Core.ExternalPorts
                 OnPropertyChanged();
             }
         }
+
         public Complex _inFlowPower;
         public Complex InFlowPower
         {

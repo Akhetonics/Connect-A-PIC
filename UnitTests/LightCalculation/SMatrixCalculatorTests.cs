@@ -65,8 +65,8 @@ namespace UnitTests.LightCalculation
                     var connection = connections.SingleOrDefault(c => c.FromPinNr == rowNR && c.ToPinNr == columnNR);
                     if (connection == null) continue;
                     Complex reference = referenceMatrix[row, column];
-                    reference.Magnitude.ShouldBe((double)connection.Magnitude, 1e-10);
-                    ArePhasesEqual(reference.Phase, (double)connection.Phase).ShouldBe(true);
+                    reference.Magnitude.ShouldBe((double)(connection?.Magnitude ?? 0), 1e-10);
+                    ArePhasesEqual(reference.Phase, (double)(connection?.Phase ?? 0)).ShouldBe(true);
                 }
             }
         }

@@ -95,7 +95,7 @@ namespace ConnectAPIC.Scenes.RightClickMenu {
 
             SetSectionsVisibility(port.IsInput);
 
-            InitialiseSectionValues(port);
+            InitializeSectionValues(port);
 
             targetOffsetY = (GameManager.TilePixelSize) * port.PortModel.TilePositionY;
 
@@ -123,7 +123,7 @@ namespace ConnectAPIC.Scenes.RightClickMenu {
             }
         }
 
-        private void InitialiseSectionValues(ExternalPortViewModel port) {
+        private void InitializeSectionValues(ExternalPortViewModel port) {
             port.PropertyChanged += Port_PropertyChanged;
             sliderSection.PropertyChanged += SliderSection_PropertyChanged;
 

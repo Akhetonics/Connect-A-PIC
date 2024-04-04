@@ -8,9 +8,9 @@ namespace CAP_Core.Grid
 {
     public class ComponentMover : IComponentMover
     {
-        public event OnComponentChangedEventHandler OnComponentMoved;
-        public event OnComponentChangedEventHandler OnComponentRemoved;
-        public event OnComponentChangedEventHandler OnComponentPlacedOnTile;
+        public event OnComponentChangedEventHandler? OnComponentMoved;
+        public event OnComponentChangedEventHandler? OnComponentRemoved;
+        public event OnComponentChangedEventHandler? OnComponentPlacedOnTile;
         public ITileManager TileManager { get; }
 
         public ComponentMover(ITileManager tileManager)

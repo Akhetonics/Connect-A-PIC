@@ -47,8 +47,6 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
 
             ViewModel.PortModel = newPort;
             Grid.ExternalPortManager.ExternalPorts[index] = newPort;
-
-            //LightCalculator.ShowLightPropagationAsync();
             Grid.LightManager.IsLightOn = !Grid.LightManager.IsLightOn;
             Grid.LightManager.IsLightOn = !Grid.LightManager.IsLightOn;
         }

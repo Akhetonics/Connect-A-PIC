@@ -42,9 +42,14 @@ namespace UnitTests.LightCalculation
             grid.ComponentMover.PlaceComponent(0, redPortY, straight);
             grid.ComponentMover.PlaceComponent(1, redPortY, directionalCoupler);
             grid.ComponentMover.PlaceComponent(3, redPortY, directionalCoupler2);
-            directionalCoupler.GetSlider(0).Value = 0.83;
-            var slider = directionalCoupler2.GetSlider(0);
-            slider.Value = 0.76;
+            var slider1 = directionalCoupler.GetSlider(0);
+            if (slider1 == null)
+            {
+                throw new NullReferenceException("slider cannot be null here");
+            }
+            slider1.Value = 0.83;
+            var slider2 = directionalCoupler2.GetSlider(0) ?? throw new NullReferenceException("Slide 2 was null but it cannot");
+            slider2.Value = 0.76;
 
             //act
             var laserType = grid.ExternalPortManager.GetUsedExternalInputs().First().Input.LaserType;
@@ -72,8 +77,8 @@ namespace UnitTests.LightCalculation
 
             double phaseShiftThroughWaveGuide = 1.2545454545433;
 
-            var calculatedFieldOutUp = CalculateDirectionalCouplerField(fieldInUp, fieldInDown, slider.Value, phaseShiftThroughWaveGuide);
-            var calculatedFieldOutDown = CalculateDirectionalCouplerField(fieldInDown, fieldInUp, slider.Value, phaseShiftThroughWaveGuide);
+            var calculatedFieldOutUp = CalculateDirectionalCouplerField(fieldInUp, fieldInDown, slider2.Value, phaseShiftThroughWaveGuide);
+            var calculatedFieldOutDown = CalculateDirectionalCouplerField(fieldInDown, fieldInUp, slider2.Value, phaseShiftThroughWaveGuide);
             var powerED = Math.Pow(calculatedFieldOutUp.Magnitude, 2);
             var powerEB = Math.Pow(calculatedFieldOutDown.Magnitude, 2);
             var powerSum = powerED + powerEB;

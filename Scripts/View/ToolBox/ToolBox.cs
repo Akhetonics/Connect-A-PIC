@@ -58,7 +58,7 @@ namespace ConnectAPIC.Scenes.ToolBox
                 try
                 {
                     toolID = ComponentBrush.GetToolIDFromPreview(item);
-                } catch (FormatException formEx)
+                } catch (FormatException)
                 {
                     Logger.PrintErr($"Guid was not properly stored in Meta: {item.GetMeta(ToolBase.ToolIDMetaName)}");
                     continue;
