@@ -125,8 +125,6 @@ namespace ConnectAPIC.Scripts.ViewModel
         }
 
 
-
-
         public string AllColorsPower()
         {
             string allUsedPowers = "";

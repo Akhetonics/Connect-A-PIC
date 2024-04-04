@@ -1,5 +1,6 @@
 using CAP_Core.ExternalPorts;
 using CAP_Core.Grid;
+using CAP_Core.LightCalculation;
 using Godot;
 using System;
 using System.Collections.Generic;
@@ -14,9 +15,10 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
     public class InputPowerAdjustCommand : ICommand
     {
         public GridManager Grid { get; }
+        public LightCalculationService LightCalculator { get; }
 
-        public InputPowerAdjustCommand(GridManager grid)
-        {
+        public InputPowerAdjustCommand(GridManager grid, LightCalculationService lightCalculator) {
+            LightCalculator = lightCalculator;
             Grid = grid;
         }
 
@@ -37,8 +39,7 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
 
             input.InFlowPower = args.PowerValue;
 
-            Grid.LightManager.IsLightOn = !Grid.LightManager.IsLightOn;
-            Grid.LightManager.IsLightOn = !Grid.LightManager.IsLightOn;
+            LightCalculator.ShowLightPropagationAsync().Wait();
         }
         
     }

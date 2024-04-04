@@ -1,5 +1,6 @@
 using CAP_Core.ExternalPorts;
 using CAP_Core.Grid;
+using CAP_Core.LightCalculation;
 using ConnectAPic.LayoutWindow;
 using ConnectAPIC.Scenes.ExternalPorts;
 using ConnectAPIC.Scenes.RightClickMenu.Sections;
@@ -12,7 +13,6 @@ using System.Collections.Generic;
 using System.Reflection;
 
 namespace ConnectAPIC.Scenes.RightClickMenu {
-
     public partial class ControlMenu : Control {
         [Export] public ButtonGroup ButtonGroup { get; set; }
         [Export] public Curve animationCurve { get; set; }
@@ -68,8 +68,8 @@ namespace ConnectAPIC.Scenes.RightClickMenu {
             MoveToTargetOffsetIfNotThere(delta);
         }
 
-        public void Initialize(GridManager grid){
-            ViewModel = new ControlMenuViewModel(grid);
+        public void Initialize(GridManager grid, LightCalculationService lightCalculator){
+            ViewModel = new ControlMenuViewModel(grid, lightCalculator);
         }
 
         public void OnPortClicked(object sender, EventArgs e)
@@ -95,7 +95,7 @@ namespace ConnectAPIC.Scenes.RightClickMenu {
 
             SetSectionsVisibility(port.IsInput);
 
-            SetSectionValues(port);
+            InitialiseSectionValues(port);
 
             targetOffsetY = (GameManager.TilePixelSize) * port.PortModel.TilePositionY;
 
@@ -123,11 +123,7 @@ namespace ConnectAPIC.Scenes.RightClickMenu {
             }
         }
 
-        public void SetSectionsVisibility(bool isInput) {
-            InputMenu.Visible = isInput;
-            OutputMenu.Visible = !isInput;
-        }
-        private void SetSectionValues(ExternalPortViewModel port) {
+        private void InitialiseSectionValues(ExternalPortViewModel port) {
             port.PropertyChanged += Port_PropertyChanged;
             sliderSection.PropertyChanged += SliderSection_PropertyChanged;
 
@@ -135,6 +131,10 @@ namespace ConnectAPIC.Scenes.RightClickMenu {
                 sliderSection.SetSliderValue(port.Power);
             else 
                 SetInfoSectionValues(port);
+        }
+        public void SetSectionsVisibility(bool isInput) {
+            InputMenu.Visible = isInput;
+            OutputMenu.Visible = !isInput;
         }
         private void SetInfoSectionValues(ExternalPortViewModel port) {
             powerInfo.Value = port.Power.Length().ToString("0.00");
