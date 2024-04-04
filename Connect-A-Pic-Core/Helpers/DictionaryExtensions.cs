@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 using System.Text;
 
 namespace CAP_Core.Helpers
@@ -28,8 +29,9 @@ namespace CAP_Core.Helpers
             return "[" + entries + "]";
         }
         public static string ToCustomString<TKey, TValue>(this Dictionary<TKey, TValue> dictionary)
+            where TKey : notnull
         {
-            StringBuilder sb = new StringBuilder();
+            StringBuilder sb = new();
             foreach (var kvp in dictionary)
             {
                 sb.AppendLine($"key: {kvp.Key}, val: {kvp.Value}");

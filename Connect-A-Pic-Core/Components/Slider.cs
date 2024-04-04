@@ -23,7 +23,7 @@ public class Slider : ICloneable, INotifyPropertyChanged
     public double MaxValue { get; set; }
     public double MinValue { get; set; }
 
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
     public Slider(Guid id, int number, double value, double maxValue, double minValue)
     {

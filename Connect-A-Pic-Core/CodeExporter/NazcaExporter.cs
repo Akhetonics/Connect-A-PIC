@@ -10,10 +10,12 @@ namespace CAP_Core.CodeExporter
 {
     public class NazcaExporter : IExporter
     {
-        private GridManager grid;
-        private List<Component> AlreadyProcessedComponents;
+        private GridManager? grid;
+        private List<Component>? AlreadyProcessedComponents = new();
         private StringBuilder ExportAllConnectedTiles(Tile connectedParent, Tile child)
         {
+            if (AlreadyProcessedComponents == null) throw new NullReferenceException($"The list of {nameof(AlreadyProcessedComponents)} cannot be null");
+            if (child.Component == null) throw new NullReferenceException($"child.{nameof(child.Component)} cannot be null");
             var nazcaString = new StringBuilder();
             nazcaString.Append(child.ExportToNazca(connectedParent));
             AlreadyProcessedComponents.Add(child.Component);

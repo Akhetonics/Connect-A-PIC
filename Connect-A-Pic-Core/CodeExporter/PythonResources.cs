@@ -1,4 +1,4 @@
-﻿namespace CAP_Core.CodeExporter
+namespace CAP_Core.CodeExporter
 {
     public class PythonResources
     {
@@ -9,7 +9,7 @@
                 .Replace("grating", StandardInputCellName);
         }
 
-        public static string CreateFooter(string layoutName = null, string gdsFileName = null)
+        public static string CreateFooter(string? layoutName = null, string? gdsFileName = null)
         {
             layoutName ??= Resources.NazcaLayoutName;
             gdsFileName ??= Resources.PDKFileName;

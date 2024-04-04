@@ -27,9 +27,10 @@ namespace CAP_Core.Tiles
         }
         public string ExportToNazca(Tile parentTile)
         {
+            if (parentTile == null) throw new NullReferenceException("parentTile cannot be null, you ought to want to export some tile");
             var parentCellName = parentTile.GetComponentCellName();
             var parentTileEdgeSide = GetParentTileTouchingEdgeSide(parentTile);
-            var parentPinName = parentTile.GetPinAt(parentTileEdgeSide).Name;
+            var parentPinName = parentTile.GetPinAt(parentTileEdgeSide)?.Name ?? "";
             return ExportToNazcaExtended(new IntVector(parentTile.GridX, parentTile.GridY), parentCellName, parentPinName);
         }
         public string ExportToNazcaExtended(IntVector parentGridPos, string parentCellName, string parentPinName)

@@ -67,7 +67,7 @@
     </PackageReference>
     <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
     <None Include=".github\workflows\Build_Exe.yaml" />
-    <None Include=".github\workflows\NunitTests.yaml" />
+    <None Include=".github\workflows\xUnitTests.yaml" />
     <None Include=".github\workflows\spellcheck.yaml" />
     <None Include=".github\workflows\version_change.yaml" />
     <None Include=".github\workflows\visual_tests.yaml" />
