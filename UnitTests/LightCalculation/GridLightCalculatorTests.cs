@@ -22,12 +22,12 @@ namespace UnitTests.LightCalculation
             var component = TestComponentFactory.CreateComponent(TestComponentFactory.MMI3x3);
             component.HeightInTiles.ShouldBe(3);
             // make all external Ports red so we have three red inputLasers
-            grid.ExternalPortManager.ExternalPorts[0] = new ExternalInput(grid.ExternalPortManager.ExternalPorts[0].PinName, LaserType.Red, grid.ExternalPortManager.ExternalPorts[0].TilePositionY, 1.0);
-            grid.ExternalPortManager.ExternalPorts[1] = new ExternalInput(grid.ExternalPortManager.ExternalPorts[1].PinName, LaserType.Red, grid.ExternalPortManager.ExternalPorts[1].TilePositionY, 1.0);
-            grid.ExternalPortManager.ExternalPorts[2] = new ExternalInput(grid.ExternalPortManager.ExternalPorts[2].PinName, LaserType.Red, grid.ExternalPortManager.ExternalPorts[2].TilePositionY, 1.0);
+            grid.ExternalPortManager.ExternalPorts[0] = new ExternalInput(grid.ExternalPortManager.ExternalPorts[0].PinName, LaserType.Red, grid.ExternalPortManager.ExternalPorts[0].TilePositionY, 1.0 / 3.0);
+            grid.ExternalPortManager.ExternalPorts[1] = new ExternalInput(grid.ExternalPortManager.ExternalPorts[1].PinName, LaserType.Red, grid.ExternalPortManager.ExternalPorts[1].TilePositionY, 1.0 / 3.0);
+            grid.ExternalPortManager.ExternalPorts[2] = new ExternalInput(grid.ExternalPortManager.ExternalPorts[2].PinName, LaserType.Red, grid.ExternalPortManager.ExternalPorts[2].TilePositionY, 1.0 / 3.0);
 
-            var RedLaserYPos = grid.ExternalPortManager.GetAllExternalInputs().FirstOrDefault(i => i.LaserType == LaserType.Red).TilePositionY;
-            grid.ComponentMover.PlaceComponent(0, RedLaserYPos, component);
+            var FirstRedLaserYPos = grid.ExternalPortManager.ExternalPorts[0].TilePositionY;
+            grid.ComponentMover.PlaceComponent(0, FirstRedLaserYPos, component);
 
             // create systemMatrix of this two components
             SystemMatrixBuilder builder = new SystemMatrixBuilder(grid);
@@ -40,7 +40,7 @@ namespace UnitTests.LightCalculation
             // start light calculation
             var calculator = new GridLightCalculator(builder, grid);
             var fieldVector = await calculator.CalculateFieldPropagationAsync(new CancellationTokenSource(), LaserType.Red.WaveLengthInNm);
-            var expectedField = Math.Sqrt(1.0 / 3.0);
+            var expectedField = Math.Sqrt(1.0 );
 
             var usedInputs = grid.ExternalPortManager.GetUsedExternalInputs()
                                  .Where(i => i.Input.LaserType.WaveLengthInNm == LaserType.Red.WaveLengthInNm)
