@@ -39,7 +39,7 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
 
             input.InFlowPower = args.PowerValue;
 
-            LightCalculator.ShowLightPropagationAsync();
+            LightCalculator.ShowLightPropagationAsync().Wait();
         }
         
     }

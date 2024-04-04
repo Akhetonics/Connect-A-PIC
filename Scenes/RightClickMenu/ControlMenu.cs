@@ -95,7 +95,7 @@ namespace ConnectAPIC.Scenes.RightClickMenu {
 
             SetSectionsVisibility(port.IsInput);
 
-            SetSectionValues(port);
+            InitialiseSectionValues(port);
 
             targetOffsetY = (GameManager.TilePixelSize) * port.PortModel.TilePositionY;
 
@@ -123,11 +123,7 @@ namespace ConnectAPIC.Scenes.RightClickMenu {
             }
         }
 
-        public void SetSectionsVisibility(bool isInput) {
-            InputMenu.Visible = isInput;
-            OutputMenu.Visible = !isInput;
-        }
-        private void SetSectionValues(ExternalPortViewModel port) {
+        private void InitialiseSectionValues(ExternalPortViewModel port) {
             port.PropertyChanged += Port_PropertyChanged;
             sliderSection.PropertyChanged += SliderSection_PropertyChanged;
 
@@ -135,6 +131,10 @@ namespace ConnectAPIC.Scenes.RightClickMenu {
                 sliderSection.SetSliderValue(port.Power);
             else 
                 SetInfoSectionValues(port);
+        }
+        public void SetSectionsVisibility(bool isInput) {
+            InputMenu.Visible = isInput;
+            OutputMenu.Visible = !isInput;
         }
         private void SetInfoSectionValues(ExternalPortViewModel port) {
             powerInfo.Value = port.Power.Length().ToString("0.00");
