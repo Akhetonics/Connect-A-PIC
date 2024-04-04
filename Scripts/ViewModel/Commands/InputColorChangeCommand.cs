@@ -1,5 +1,6 @@
 using CAP_Core.ExternalPorts;
 using CAP_Core.Grid;
+using CAP_Core.LightCalculation;
 using Godot;
 using System;
 using System.Collections.Generic;
@@ -14,9 +15,10 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
     public class InputColorChangeCommand : ICommand
     {
         public GridManager Grid { get; }
+        public LightCalculationService LightCalculator { get; }
 
-        public InputColorChangeCommand(GridManager grid)
-        {
+        public InputColorChangeCommand(GridManager grid, LightCalculationService lightCalculator) {
+            LightCalculator = lightCalculator;
             Grid = grid;
         }
 
@@ -36,7 +38,7 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
 
             args.Port.LaserType = args.LaserColor;
 
-            //easy way to recalculate light
+            //LightCalculator.ShowLightPropagationAsync();
             Grid.LightManager.IsLightOn = !Grid.LightManager.IsLightOn;
             Grid.LightManager.IsLightOn = !Grid.LightManager.IsLightOn;
         }

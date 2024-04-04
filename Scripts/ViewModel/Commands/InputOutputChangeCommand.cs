@@ -1,5 +1,6 @@
 using CAP_Core.ExternalPorts;
 using CAP_Core.Grid;
+using CAP_Core.LightCalculation;
 using Godot;
 using System;
 using System.Collections.Generic;
@@ -14,9 +15,11 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
     public class InputOutputChangeCommand : ICommand
     {
         public GridManager Grid { get; }
+        public LightCalculationService LightCalculator { get; }
 
-        public InputOutputChangeCommand(GridManager grid)
+        public InputOutputChangeCommand(GridManager grid, LightCalculationService lightCalculator)
         {
+            LightCalculator = lightCalculator;
             Grid = grid;
         }
 
@@ -45,6 +48,7 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
             ViewModel.PortModel = newPort;
             Grid.ExternalPortManager.ExternalPorts[index] = newPort;
 
+            //LightCalculator.ShowLightPropagationAsync();
             Grid.LightManager.IsLightOn = !Grid.LightManager.IsLightOn;
             Grid.LightManager.IsLightOn = !Grid.LightManager.IsLightOn;
         }

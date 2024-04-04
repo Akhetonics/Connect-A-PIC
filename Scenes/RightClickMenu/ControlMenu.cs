@@ -1,5 +1,6 @@
 using CAP_Core.ExternalPorts;
 using CAP_Core.Grid;
+using CAP_Core.LightCalculation;
 using ConnectAPic.LayoutWindow;
 using ConnectAPIC.Scenes.ExternalPorts;
 using ConnectAPIC.Scenes.RightClickMenu.Sections;
@@ -12,7 +13,6 @@ using System.Collections.Generic;
 using System.Reflection;
 
 namespace ConnectAPIC.Scenes.RightClickMenu {
-
     public partial class ControlMenu : Control {
         [Export] public ButtonGroup ButtonGroup { get; set; }
         [Export] public Curve animationCurve { get; set; }
@@ -68,8 +68,8 @@ namespace ConnectAPIC.Scenes.RightClickMenu {
             MoveToTargetOffsetIfNotThere(delta);
         }
 
-        public void Initialize(GridManager grid){
-            ViewModel = new ControlMenuViewModel(grid);
+        public void Initialize(GridManager grid, LightCalculationService lightCalculator){
+            ViewModel = new ControlMenuViewModel(grid, lightCalculator);
         }
 
         public void OnPortClicked(object sender, EventArgs e)

@@ -39,7 +39,7 @@ public partial class PortsContainerView : Node2D
 
         // create control menu, it will be child of ports container as well
         ControlMenu controlMenu = RightClickMenuTemplate.Instantiate<ControlMenu>();
-        controlMenu.Initialize(Grid);
+        controlMenu.Initialize(Grid, LightCalculator);
         this.AddChild(controlMenu);
 
         // connect ports to control menu

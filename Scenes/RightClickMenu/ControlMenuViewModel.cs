@@ -1,4 +1,5 @@
 using CAP_Core.Grid;
+using CAP_Core.LightCalculation;
 using ConnectAPIC.Scripts.ViewModel.Commands;
 using Godot;
 using System;
@@ -13,10 +14,10 @@ namespace ConnectAPIC.Scenes.RightClickMenu {
         public InputColorChangeCommand InputColorChangeCommand;
         public InputOutputChangeCommand InputOutputChangeCommand;
 
-        public ControlMenuViewModel(GridManager grid){
-            InputPowerAdjustCommand = new InputPowerAdjustCommand(grid);
-            InputColorChangeCommand = new InputColorChangeCommand(grid);
-            InputOutputChangeCommand = new InputOutputChangeCommand(grid);
+        public ControlMenuViewModel(GridManager grid, LightCalculationService lightCalculator){
+            InputPowerAdjustCommand = new InputPowerAdjustCommand(grid, lightCalculator);
+            InputColorChangeCommand = new InputColorChangeCommand(grid, lightCalculator);
+            InputOutputChangeCommand = new InputOutputChangeCommand(grid, lightCalculator);
         }
     }
 }
