@@ -25,8 +25,8 @@ uniform vec4 lightInFlow8;
 uniform vec4 lightOutFlow8;
 uniform vec4 lightInFlow9;
 uniform vec4 lightOutFlow9;
-// ... so viele wie man lustig ist. Am Besten 16 (8 in, 8 out) oder sowas, damit man nur einen einzigen Shader braucht für alle
 
+// we only need half of the actual textures as outflow is simply inflow with speed=-1
 uniform sampler2D animation1;
 uniform sampler2D animation2;
 uniform sampler2D animation3;
@@ -36,21 +36,16 @@ uniform sampler2D animation6;
 uniform sampler2D animation7;
 uniform sampler2D animation8;
 uniform sampler2D animation9;
-// ... die hälfte von oben, also 8 (in/out ist ja nur umgedreht in der Zeit)
+
 uniform float numAnimationColumns = 4.0;
 
-
-vec4 getAnimationFrameColor(sampler2D animationTexture, vec2 uvCoord, float speed, vec4 lightInOutFlow) {
-    float phaseShift = lightInOutFlow.y;
-	    
-    int currentFrameIndex = int(TIME * speed + phaseShift) % int(numAnimationColumns);
-    float frameShift = float(currentFrameIndex) / numAnimationColumns; // frameshift shifts the UV.x so that the starting point is in the proper column
-	if(speed < 0.0) // if the speed is negative, then the animation should playbackwards, so 0.75, 0.5, 0.25, 0
-	{
-		 frameShift = 0.75 - frameShift;
-	}
-	
-    vec2 adjustedUV = vec2((uvCoord.x / numAnimationColumns + frameShift), uvCoord.y);
+vec4 getAnimationFrameColor(sampler2D animationTexture, vec2 uvCoord, float speed, vec4 lightAttributes) {
+	float elapsedTime = round(TIME * speed);
+    float lightPhase = lightAttributes.y;
+	float animationOffset = elapsedTime + round(lightPhase * speed);
+    int currentFrameIndex = int(animationOffset) % int(numAnimationColumns);
+    float frameShift = float(currentFrameIndex) / numAnimationColumns;
+    vec2 adjustedUV = vec2((uvCoord.x / numAnimationColumns + frameShift) , uvCoord.y);
     return texture(animationTexture, adjustedUV);
 }
 
@@ -81,8 +76,8 @@ void fragment(){
 	vec4 col_anim9in  = getAnimationFrameColor(animation9,UV,animationspeed, lightInFlow9);
 	vec4 col_anim9out = getAnimationFrameColor(animation9,UV,-animationspeed, lightOutFlow9);
     
-  // Der rot Kanal = höhen, z.B.
-  // Der blau Kanal = tiefen
+  // red channel = hills
+  // blue channel = valleys
   
   float intensity = subtractBlueFromRedLight( col_anim1in, lightInFlow1.x) +
 		subtractBlueFromRedLight( col_anim2in, lightInFlow2.x) +
