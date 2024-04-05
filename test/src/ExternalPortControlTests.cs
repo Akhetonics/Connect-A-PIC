@@ -3,6 +3,8 @@ using Chickensoft.GoDotLog;
 using Chickensoft.GoDotTest;
 using Chickensoft.GodotTestDriver;
 using Chickensoft.GodotTestDriver.Drivers;
+using Chickensoft.GodotTestDriver.Input;
+using Chickensoft.GodotTestDriver.Util;
 using ConnectAPic.LayoutWindow;
 using ConnectAPIC.Scenes.ExternalPorts;
 using ConnectAPIC.Scenes.RightClickMenu;
@@ -33,10 +35,8 @@ namespace ConnectAPIC.test.src {
             MyFixture = new Fixture(TestScene.GetTree());
             try {
                 MyGameManager = await MyFixture.LoadAndAddScene<GameManager>("res://Scenes/PICEditor/PICEditor.tscn");
-                MyPortsContainerView = new PortsContainerView();
-                MyPortsContainerView.ExternalPortViewTemplate = ResourceLoader.Load<PackedScene>("res://Scenes/ExternalPorts/external_port.tscn");
-                MyPortsContainerView.RightClickMenuTemplate = ResourceLoader.Load<PackedScene>("res://Scenes/RightClickMenu/ControlMenu.tscn");
-                MyGameManager.AddChild(MyPortsContainerView);
+                MyPortsContainerView = MyGameManager.GetNode<PortsContainerView>("GridView/PortContainer");
+
                 //control menu is the last child of ports container view (before that are ports)
                 MyControlMenu = MyPortsContainerView.GetChild<ControlMenu>(8);
 
@@ -49,47 +49,86 @@ namespace ConnectAPIC.test.src {
 
         [Test]
         public async Task Test() {
+            // drag view to show full control menu
+            TestScene.GetViewport().DragMouse(new Vector2(200, 200), new Vector2(400,200), MouseButton.Right);
 
-            // control menu should connect to MyRandomExternalPort
-            MyRandomExternalPort.ViewModel.InvokeClicked();
+            // control menu should connect to MyRandomExternaPort and become visible
+            var portPosition = MyRandomExternaPort.GlobalPosition + new Vector2(-50, 25); //some offest so it won't click corner
+            await FrameWaitingMoveAndClickMouse(portPosition);
+            await TestScene.GetTree().NextFrame();
+            bool controlMenuVisible = MyControlMenu.Visible;
 
             //button group automatically manages radio button behaviour (disabling others when one is pressed)
             //port types according to indexes 0 - red, 1 - green, 2 - blue, 3 - output
 
             //Test port switching
+            var radioButtonPosition = MyControlMenu.ButtonGroup.GetButtons()[0].GlobalPosition + new Vector2(20, 25); //offset to not click corner
+
             //red input
-            MyControlMenu.ButtonGroup.GetButtons()[0].ButtonPressed = true;
-            MyRandomExternalPort.ViewModel.IsInput.ShouldBe<bool>(true);
+            if (!MyRandomExternaPort.ViewModel.IsInput
+                || MyRandomExternaPort.ViewModel.Color != LaserType.Red
+            ) {
+                await FrameWaitingMoveAndClickMouse(radioButtonPosition);
+            }
+
+            //red input
+            bool startedAsInput = MyRandomExternaPort.ViewModel.IsInput;
 
             //output
-            MyControlMenu.ButtonGroup.GetButtons()[3].ButtonPressed = true;
-            MyRandomExternalPort.ViewModel.IsInput.ShouldBe<bool>(false);
+            radioButtonPosition = MyControlMenu.ButtonGroup.GetButtons()[3].GlobalPosition + new Vector2(20, 25);
+            await FrameWaitingMoveAndClickMouse(radioButtonPosition);
+            bool switchedToOutput = !MyRandomExternaPort.ViewModel.IsInput;
 
-            //red input
-            MyControlMenu.ButtonGroup.GetButtons()[0].ButtonPressed = true;
-            MyRandomExternalPort.ViewModel.IsInput.ShouldBe<bool>(true);
-
+            //red input again
+            radioButtonPosition = MyControlMenu.ButtonGroup.GetButtons()[0].GlobalPosition + new Vector2(20, 25);
+            await FrameWaitingMoveAndClickMouse(radioButtonPosition);
+            bool switchedToInput = MyRandomExternaPort.ViewModel.IsInput;
 
             //test color switching
             // blue
-            MyControlMenu.ButtonGroup.GetButtons()[2].ButtonPressed = true;
-            MyRandomExternalPort.ViewModel.Color.ShouldBe<LaserType>(LaserType.Blue);
+            radioButtonPosition = MyControlMenu.ButtonGroup.GetButtons()[2].GlobalPosition + new Vector2(20, 25);
+            await FrameWaitingMoveAndClickMouse(radioButtonPosition);
+            LaserType changeColorToBlue = MyRandomExternaPort.ViewModel.Color;
+
             // green
-            MyControlMenu.ButtonGroup.GetButtons()[1].ButtonPressed = true;
-            MyRandomExternalPort.ViewModel.Color.ShouldBe<LaserType>(LaserType.Green);
+            radioButtonPosition = MyControlMenu.ButtonGroup.GetButtons()[1].GlobalPosition + new Vector2(20, 25);
+            await FrameWaitingMoveAndClickMouse(radioButtonPosition);
+            LaserType changeColorToGreen = MyRandomExternaPort.ViewModel.Color;
+
             // red
-            MyControlMenu.ButtonGroup.GetButtons()[0].ButtonPressed = true;
-            MyRandomExternalPort.ViewModel.Color.ShouldBe<LaserType>(LaserType.Red);
+            radioButtonPosition = MyControlMenu.ButtonGroup.GetButtons()[0].GlobalPosition + new Vector2(20, 25);
+            await FrameWaitingMoveAndClickMouse(radioButtonPosition);
+            LaserType changeColorToRed = MyRandomExternaPort.ViewModel.Color;
 
 
-            //test slider value changing command
-            double randomPowerValue = new Random().NextDouble();
-            MyControlMenu.ViewModel.InputPowerAdjustCommand.ExecuteAsync(
-                new InputPowerAdjustArgs(MyRandomExternalPort.ViewModel.PortModel, randomPowerValue)).Wait();
+            //test slider value chagnding command
+            int randomSliderValue = new Random().Next(-193, -6);
+            float approximateValue = -randomSliderValue / 188.0f;
 
-            MyRandomExternalPort.ViewModel.Power[0].ShouldBeInRange((float)randomPowerValue - 0.01f, (float)randomPowerValue + 0.01f);
-            MyRandomExternalPort.ViewModel.Power[1].ShouldBeInRange(0.01f, 0.01f);
-            MyRandomExternalPort.ViewModel.Power[2].ShouldBeInRange(0.01f, 0.01f);
+            var sliderPosition = MyControlMenu.GlobalPosition + new Vector2(-193, 90);
+            await FrameWaitingMoveAndClickMouse(sliderPosition);
+            TestScene.GetViewport().DragMouse(sliderPosition + new Vector2(200, 0), sliderPosition + new Vector2(-randomSliderValue, 0) + new Vector2(200, 0), MouseButton.Left);
+            await TestScene.GetTree().NextFrame();
+
+            //assertions
+            controlMenuVisible.ShouldBeTrue();
+            startedAsInput.ShouldBeTrue();
+            switchedToOutput.ShouldBeTrue();
+            switchedToInput.ShouldBeTrue();
+            changeColorToBlue.ShouldBe<LaserType>(LaserType.Blue);
+            changeColorToGreen.ShouldBe<LaserType>(LaserType.Green);
+            changeColorToRed.ShouldBe<LaserType>(LaserType.Red);
+            MyRandomExternaPort.ViewModel.Power[0].ShouldBeInRange((float)approximateValue - 0.1f, (float)approximateValue + 0.1f);
+            MyRandomExternaPort.ViewModel.Power[1].ShouldBeInRange(-0.01f, 0.01f);
+            MyRandomExternaPort.ViewModel.Power[2].ShouldBeInRange(-0.01f, 0.01f);
+        }
+
+        public async Task FrameWaitingMoveAndClickMouse(Vector2 position, MouseButton mouseButton = MouseButton.Left, int framesAfterMove = 1, int framesAfterClick = 1){
+            TestScene.GetViewport().MoveMouseTo(position + new Vector2(200, 0));
+            // for some reason click doesn't register for next 3 frames after moving mouse there
+            await TestScene.GetTree().NextFrame(framesAfterMove);
+            TestScene.GetViewport().ClickMouseAt(position + new Vector2(200, 0), mouseButton);
+            await TestScene.GetTree().NextFrame(framesAfterClick);
         }
 
         [Cleanup]
