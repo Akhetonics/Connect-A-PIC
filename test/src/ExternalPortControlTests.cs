@@ -52,7 +52,7 @@ namespace ConnectAPIC.test.src {
             // drag view to show full control menu
             TestScene.GetViewport().DragMouse(new Vector2(200, 200), new Vector2(400,200), MouseButton.Right);
 
-            // control menu should connect to MyRandomExternaPort and become visible
+            // control menu should connect to MyRandomExternalPort and become visible
             var portPosition = MyRandomExternalPort.GlobalPosition + new Vector2(-50, 25); //some offset so it won't click corner
             await FrameWaitingMoveAndClickMouse(portPosition);
             await TestScene.GetTree().NextFrame();
