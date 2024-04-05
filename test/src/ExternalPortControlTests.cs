@@ -24,7 +24,7 @@ namespace ConnectAPIC.test.src {
         private readonly ILog _log = new GDLog(nameof(ExternalPortControlTests));
 
         private static Vector2 sliderKnobLocalPosition = new(-193, 90); // offset of slider knob from control menu position
-        private static float sliderLenghtInPixels = 185f;               // total lenght of slider in pixel
+        private static float sliderLengthInPixels = 185f;               // total Length of slider in pixel
         private static Vector2 dragPoint = new(200, 200);               // safe(where no other component is clicked) position for mouse to click and drag from
         private static Vector2 dragOffset = new(200, 0);                // how much camera should be dragged
         private static Vector2 portPositionOffset = new(-50, 25);       // offset from external port corner so that mouse doesn't click on corner
@@ -127,8 +127,8 @@ namespace ConnectAPIC.test.src {
 
             //test slider value changing command
             //offset of 45%
-            float newValue = 0.45f * sliderLenghtInPixels;
-            float approximateValue = newValue / sliderLenghtInPixels;
+            float newValue = 0.45f * sliderLengthInPixels;
+            float approximateValue = newValue / sliderLengthInPixels;
             var sliderPosition = MyControlMenu.GlobalPosition + sliderKnobLocalPosition;
             await FrameWaitingMoveAndClickMouse(sliderPosition);
             float zeroedSliderValue = port.ViewModel.Power.Length();
