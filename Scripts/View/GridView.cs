@@ -34,11 +34,11 @@ namespace ConnectAPIC.LayoutWindow.View
         public override void _Ready()
         {
             base._Ready();
-            this.CheckForNull(x => DragDropProxy);
-            this.CheckForNull(x => ComponentViewFactory);
-            this.CheckForNull(x => LightOnTexture);
-            this.CheckForNull(x => LightOffTexture);
-            this.CheckForNull(x => LightOnButton);
+            this.CheckForNull(x => DragDropProxy, Logger);
+            this.CheckForNull(x => ComponentViewFactory, Logger);
+            this.CheckForNull(x => LightOnTexture, Logger);
+            this.CheckForNull(x => LightOffTexture, Logger);
+            this.CheckForNull(x => LightOnButton, Logger);
         }
         public void Initialize(GridViewModel viewModel, ILogger logger)
         {

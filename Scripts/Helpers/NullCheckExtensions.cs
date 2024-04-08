@@ -1,3 +1,4 @@
+using CAP_Contracts.Logger;
 using ConnectAPic.LayoutWindow;
 using Godot;
 using System;
@@ -11,8 +12,13 @@ namespace ConnectAPIC.Scripts.Helpers
 {
     public static class NullCheckExtensions
     {
-        public static void CheckForNull<T>(this T instance, Expression<Func<T, object>> expr) where T : Node
+        public static void CheckForNull<T>(this T instance, Expression<Func<T, object>> expr , ILogger logger= null) where T : Node
         {
+            if(expr.Body is ConstantExpression)
+            {
+                PrintErrorMsg(instance, logger, "");
+                return;
+            }
             var body = expr.Body as MemberExpression;
 
             if (body == null)
@@ -25,9 +31,21 @@ namespace ConnectAPIC.Scripts.Helpers
             var compile = expr.Compile();
             if (compile(instance) == null)
             {
-                string className = instance.GetType().Name;
-                string errorMsg = $"'{variableName}' of this element is not set in the class: '{className}'";
+                PrintErrorMsg(instance, logger, variableName);
+            }
+        }
+
+        private static void PrintErrorMsg<T>(T instance, ILogger logger, string variableName) where T : Node
+        {
+            string className = instance.GetType().Name;
+            string errorMsg = $"'{variableName}' of this element is not set in the class: '{className}'";
+            if (logger == null)
+            {
                 GD.PrintErr(errorMsg);
+            }
+            else
+            {
+                logger.PrintErr(errorMsg);
             }
         }
     }

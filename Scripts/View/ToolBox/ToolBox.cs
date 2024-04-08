@@ -28,7 +28,7 @@ namespace ConnectAPIC.Scenes.ToolBox
         [Export] public GridContainer gridContainer;
         public override void _Ready()
         {
-            this.CheckForNull(x => x.gridContainer);
+            this.CheckForNull(x => x.gridContainer, Logger);
         }
         public void OnResolved()
         {

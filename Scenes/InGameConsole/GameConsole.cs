@@ -16,17 +16,20 @@ namespace ConnectAPIC.Scenes.InGameConsole
         [Export] private Node LoggingParent { get; set; }
         [Export] private RichTextLabel InfoTextTemplate { get; set; }
         [Export] private RichTextLabel ErrorTextTemplate { get; set; }
+        public ILogger Logger { get; private set; }
+
         private bool visibilityChanged = false;
 
         public override void _Ready()
         {
-            this.CheckForNull(x => x.LoggingParent);
-            this.CheckForNull(x => x.InfoTextTemplate);
-            this.CheckForNull(x => x.ErrorTextTemplate);
+            this.CheckForNull(x => LoggingParent, Logger);
+            this.CheckForNull(x => InfoTextTemplate, Logger);
+            this.CheckForNull(x => ErrorTextTemplate, Logger);
             Hide();
         }
         public void Initialize(ILogger logger)
         {
+            this.Logger = logger;
             logger.LogAdded += (Log obj) =>
             {
                 if (obj.Level > LogLevel.Warn)

@@ -91,13 +91,13 @@ namespace ConnectAPic.LayoutWindow
             {
                 PCKLoader.LoadStandardPCKs();
                 List<ComponentDraft> componentDrafts = EquipViewComponentFactoryWithJSONDrafts();
-                this.CheckForNull(x => x.ToolBoxPath);
+                this.CheckForNull(x => x.ToolBoxPath, Logger);
                 List<Component> modelComponents = new ComponentDraftConverter(Logger).ToComponentModels(componentDrafts);
                 ComponentModelFactory.InitializeComponentDrafts(modelComponents);
                 InitializationLogs.Add(("Initialized ComponentDrafts", false));
 
                 MainToolBox = GetNode<ToolBox>(ToolBoxPath);
-                this.CheckForNull(x => x.MainToolBox);
+                this.CheckForNull(x => x.MainToolBox, Logger);
             }
             catch (Exception ex)
             {
@@ -143,7 +143,7 @@ namespace ConnectAPic.LayoutWindow
         private void InitializeGridAndGridView(ComponentFactory componentFactory)
         {
             GridView = GetNode<GridView>(GridViewPath);
-            this.CheckForNull(x => GridView);
+            this.CheckForNull(x => GridView, Logger);
             Grid = new GridManager(FieldWidth, FieldHeight);
             LightCalculator = new LightCalculationService(Grid, new GridLightCalculator(new SystemMatrixBuilder(Grid), Grid));
             GridViewModel = new GridViewModel( Grid, Logger, componentFactory, LightCalculator);
