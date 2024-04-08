@@ -10,6 +10,9 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
     {
         public bool CanExecute(object parameter);
         public Task ExecuteAsync(object parameter);
-        
+        public void Undo();
+        bool CanMergeWith(ICommand other);
+        void MergeWith(ICommand other);
+
     }
 }

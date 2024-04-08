@@ -11,20 +11,40 @@ namespace ConnectAPIC.Scripts.View.ToolBox
 {
     public class BoxSelectComponentsCommand : ICommand
     {
-        public BoxSelectComponentsCommand(GridManager grid, SelectionManager selectionManager)
+        public BoxSelectComponentsCommand(GridManager grid, SelectionManager selectionManager, AppendBehaviors appendBehavior)
         {
             Grid = grid;
             SelectionManager = selectionManager;
+            AppendBehavior = appendBehavior;
         }
 
         public GridManager Grid { get; }
         public SelectionManager SelectionManager { get; }
+        public AppendBehaviors AppendBehavior { get; }
         public HashSet<IntVector> OldSelection { get; private set; }
         public HashSet<IntVector> NewSelection { get; private set; }
 
         public bool CanExecute(object parameter)
         {
-            return parameter is BoxSelectComponentsArgs;
+            if (parameter is BoxSelectComponentsArgs boxParam)
+            {
+                if (boxParam.BoxSelections.Count == 1)
+                {
+                    var startX = boxParam.BoxSelections.First().GridStart;
+                    var endY = boxParam.BoxSelections.First().GridEnd;
+                    if(startX == endY)
+                    {
+                        var component = Grid.ComponentMover.GetComponentAt(startX.X, startX.Y);
+                        if (component == null)
+                            return false;
+                    }
+                }
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public Task ExecuteAsync(object parameter)
@@ -33,28 +53,31 @@ namespace ConnectAPIC.Scripts.View.ToolBox
             // select all components in box
             if (parameter is BoxSelectComponentsArgs box)
             {
-                // define start and end to count from low to high in case the box is upside down
-                var startX = Math.Min(box.GridStart.X, box.GridEnd.X);
-                var stopX = Math.Max(box.GridStart.X, box.GridEnd.X);
-                var startY = Math.Min(box.GridStart.Y, box.GridEnd.Y);
-                var stopY = Math.Max(box.GridStart.Y, box.GridEnd.Y);
+                foreach (var boxSelection in box.BoxSelections)
+                {
+                    // define start and end to count from low to high in case the box is upside down
+                    var startX = Math.Min(boxSelection.GridStart.X, boxSelection.GridEnd.X);
+                    var stopX = Math.Max(boxSelection.GridStart.X, boxSelection.GridEnd.X);
+                    var startY = Math.Min(boxSelection.GridStart.Y, boxSelection.GridEnd.Y);
+                    var stopY = Math.Max(boxSelection.GridStart.Y, boxSelection.GridEnd.Y);
 
-                OldSelection = new HashSet<IntVector>(SelectionManager.Selections);
-                // collect all new Components inside the box
-                NewSelection = CollectAllComponentsInBox(startX, stopX, startY, stopY);
+                    OldSelection = new HashSet<IntVector>(SelectionManager.Selections);
+                    // collect all new Components inside the box
+                    NewSelection = CollectAllComponentsInBox(startX, stopX, startY, stopY);
 
-                // AppendBehavior.CreateNew -> fill list with new items and remove old items
-                if (box.AppendBehaviour == AppendBehaviors.CreateNew)
-                {
-                    CreateNewAndFillGridSelections();
-                }
-                else if (box.AppendBehaviour == AppendBehaviors.Append)
-                {
-                    AddNewItemsButExceptions(OldSelection);
-                }
-                else if (box.AppendBehaviour == AppendBehaviors.Remove) // remove the NewSelection From OldSelection
-                {
-                    RemoveFromGridSelectionGroup(NewSelection);
+                    // AppendBehavior.CreateNew -> fill list with new items and remove old items
+                    if (AppendBehavior == AppendBehaviors.CreateNew)
+                    {
+                        CreateNewAndFillGridSelections();
+                    }
+                    else if (AppendBehavior == AppendBehaviors.Append)
+                    {
+                        AddNewItemsButExceptions(OldSelection);
+                    }
+                    else if (AppendBehavior == AppendBehaviors.Remove) // remove the NewSelection From OldSelection
+                    {
+                        RemoveFromGridSelectionGroup(NewSelection);
+                    }
                 }
             }
             return Task.CompletedTask;
@@ -119,19 +142,37 @@ namespace ConnectAPIC.Scripts.View.ToolBox
                 }
             }
         }
+
+        public void Undo()
+        {
+            // should select the items that had been selected before that command was executed.
+            // so remove all items that are not part of the initial selection and add all those that are missing.. 
+            throw new NotImplementedException();
+        }
+
+        // can merge, when the appendBehavior is equal to the current one.
+        // other is the new command..
+        public bool CanMergeWith(ICommand other)
+        {
+            if(other is BoxSelectComponentsCommand boxSelectionCommand && boxSelectionCommand.AppendBehavior == this.AppendBehavior && boxSelectionCommand.AppendBehavior != AppendBehaviors.CreateNew)
+                return true;
+            return false;
+        }
+
+        public void MergeWith(ICommand other)
+        {
+            if(!CanMergeWith(other))
+                throw new InvalidOperationException("Cannot merge with the provided command.");
+
+        }
     }
     public class BoxSelectComponentsArgs
     {
-        public BoxSelectComponentsArgs(IntVector gridStart, IntVector gridEnd, AppendBehaviors appendBehaviour)
+        public BoxSelectComponentsArgs(List<(IntVector GridStart, IntVector GridEnd)> boxSelections)
         {
-            GridStart = gridStart;
-            GridEnd = gridEnd;
-            AppendBehaviour = appendBehaviour;
+            BoxSelections = boxSelections;
         }
-
-        public IntVector GridStart { get; }
-        public IntVector GridEnd { get; }
-        public AppendBehaviors AppendBehaviour { get; }
+        public List<(IntVector GridStart, IntVector GridEnd)> BoxSelections { get; }
     }
     public enum AppendBehaviors
     {
