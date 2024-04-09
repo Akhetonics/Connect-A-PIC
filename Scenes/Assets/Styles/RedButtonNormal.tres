@@ -1,9 +1,9 @@
-[gd_resource type="Theme" load_steps=2 format=3 uid="uid://bg7q3dp2lmaiu"]
+[gd_resource type="StyleBoxFlat" format=3 uid="uid://2isxejv4i0gq"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_malw0"]
-bg_color = Color(0.282353, 0.592157, 0.498039, 1)
+[resource]
+bg_color = Color(0.639216, 0.137255, 0.203922, 1)
 border_width_bottom = 5
-border_color = Color(0.145098, 0.341176, 0.282353, 1)
+border_color = Color(0.443137, 0.0823529, 0.129412, 1)
 corner_radius_top_left = 5
 corner_radius_top_right = 5
 corner_radius_bottom_right = 5
@@ -15,6 +15,3 @@ expand_margin_bottom = 2.0
 shadow_size = 3
 shadow_offset = Vector2(3, 4)
 anti_aliasing = false
-
-[resource]
-Button/styles/normal = SubResource("StyleBoxFlat_malw0")
