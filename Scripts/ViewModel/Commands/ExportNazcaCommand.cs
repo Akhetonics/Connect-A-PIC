@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 {
 
-    public class ExportNazcaCommand : ICommand
+    public class ExportNazcaCommand : CommandBase<ExportNazcaParameters>
     {
         public event EventHandler CanExecuteChanged;
         private readonly IExporter compiler;

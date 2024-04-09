@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace ConnectAPIC.Scripts.ViewModel.Commands
 {
-    public class InputColorChangeCommand : ICommand
+    public class InputColorChangeCommand : CommandBase<InputColorChangeArgs>
     {
         public GridManager Grid { get; }
         public LightCalculationService LightCalculator { get; }

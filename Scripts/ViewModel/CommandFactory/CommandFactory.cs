@@ -14,7 +14,7 @@ namespace ConnectAPIC.Scripts.ViewModel.CommandFactory
 {
     public interface ICommandFactory
     {
-        ICommand CreateCommand(CommandType type, params object[] parameters);
+        CommandBase CreateCommand(CommandType type);
     }
     public enum CommandType
     {
@@ -54,14 +54,14 @@ namespace ConnectAPIC.Scripts.ViewModel.CommandFactory
         public ComponentFactory ComponentFactory { get; }
         public SelectionManager SelectionManager { get; }
         public ILogger Logger { get; }
-        private Stack<ICommand> History { get; } = new();
-        private Stack<ICommand> RedoStack { get; } = new();
+        private Stack<CommandBase> History { get; } = new();
+        private Stack<CommandBase> RedoStack { get; } = new();
         public LightCalculationService LightCalculationService { get; }
         public GridViewModel GridViewModel { get; private set; }
 
-        public ICommand CreateCommand  (CommandType type, params object[] parameters)
+        public CommandBase CreateCommand  (CommandType type)
         {
-            ICommand newCommand;
+            CommandBase newCommand;
             switch (type)
             {
                 case CommandType.BoxSelectComponent:

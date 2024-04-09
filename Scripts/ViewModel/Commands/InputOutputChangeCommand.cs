@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace ConnectAPIC.Scripts.ViewModel.Commands
 {
-    public class InputOutputChangeCommand : ICommand
+    public class InputOutputChangeCommand : CommandBase<InputOutputChangeArgs>
     {
         public GridManager Grid { get; }
         public LightCalculationService LightCalculator { get; }
@@ -50,5 +50,10 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
             Grid.LightManager.IsLightOn = !Grid.LightManager.IsLightOn;
             Grid.LightManager.IsLightOn = !Grid.LightManager.IsLightOn;
         }
+    }
+
+    public class InputOutputChangeArgs
+    {
+
     }
 }

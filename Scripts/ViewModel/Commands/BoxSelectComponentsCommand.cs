@@ -1,6 +1,7 @@
 using CAP_Core.Components;
 using CAP_Core.Grid;
 using CAP_Core.Helpers;
+using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scripts.ViewModel.Commands;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ using static System.Formats.Asn1.AsnWriter;
 
 namespace ConnectAPIC.Scripts.View.ToolBox
 {
-    public class BoxSelectComponentsCommand : ICommand
+    public class BoxSelectComponentsCommand : CommandBase<BoxSelectComponentsArgs>
     {
         public BoxSelectComponentsCommand(GridManager grid, SelectionManager selectionManager)
         {
@@ -26,24 +27,19 @@ namespace ConnectAPIC.Scripts.View.ToolBox
         public HashSet<IntVector> OldSelection { get; private set; }
         public HashSet<IntVector> NewSelection { get; private set; }
 
-        public event EventHandler Executed;
-
-        public bool CanExecute(object parameter)
+        public override bool CanExecute (object parameter)
         {
             if (parameter is BoxSelectComponentsArgs boxParam && CollectAllComponentsInBoxes(boxParam.BoxSelections).Any())
                 return true;
             return false;
         }
 
-        public Task ExecuteAsync(object parameter)
+        internal override Task ExecuteAsyncCmd(BoxSelectComponentsArgs parameter)
         {
-            if (CanExecute(parameter) == false) return Task.CompletedTask;
             // select all components in box
-            var box = (BoxSelectComponentsArgs)parameter;
-
-            AppendBehavior = box.AppendBehavior;
+            AppendBehavior = ExecutionParams.AppendBehavior;
             OldSelection = new HashSet<IntVector>(SelectionManager.Selections);
-            NewSelection = CollectAllComponentsInBoxes(box.BoxSelections);
+            NewSelection = CollectAllComponentsInBoxes(ExecutionParams.BoxSelections);
             
             if (AppendBehavior == AppendBehaviors.CreateNew)
             {
@@ -125,7 +121,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
             }
         }
 
-        public void Undo()
+        public override void Undo()
         {
             RemoveAllButExceptions(OldSelection);
             NewSelection = OldSelection;
@@ -133,24 +129,20 @@ namespace ConnectAPIC.Scripts.View.ToolBox
         }
 
         // can merge, when the appendBehavior is equal to the current one.
-        public bool CanMergeWith(ICommand newCommand)
+        public override bool CanMergeWith(ICommand newCommand)
         {
             if (newCommand is BoxSelectComponentsCommand boxSelectionCommand && boxSelectionCommand.AppendBehavior == this.AppendBehavior && boxSelectionCommand.AppendBehavior != AppendBehaviors.CreateNew)
                 return true;
             return false;
         }
 
-        public void MergeWith(ICommand other)
+        public override void MergeWith(ICommand other)
         {
             if (!CanMergeWith(other))
                 throw new InvalidOperationException("Cannot merge with the provided command.");
-            NewSelection.((BoxSelectComponentsCommand)other).NewSelection));
+            ExecutionParams.BoxSelections.AddRange(((BoxSelectComponentsCommand)other).ExecutionParams.BoxSelections);
         }
 
-        public void Redo()
-        {
-            throw new NotImplementedException();
-        }
     }
     public class BoxSelectComponentsArgs
     {

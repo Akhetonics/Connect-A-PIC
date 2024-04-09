@@ -39,7 +39,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
         }
         public Task ExecuteAsync(object parameter)
         {
-            if (!CanExecute(parameter)) return default;
+            if (!CanExecute(parameter)) return Task.CompletedTask;
             var args = (RotateComponentArgs)parameter;
             Grid.ComponentRotator.RotateComponentBy90CounterClockwise(args.GridX, args.GridY);
             return Task.CompletedTask;

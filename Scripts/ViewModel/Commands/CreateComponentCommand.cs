@@ -1,6 +1,7 @@
 using CAP_Core.Components;
 using CAP_Core.Components.Creation;
 using CAP_Core.Grid;
+using ConnectAPIC.Scripts.View.ToolBox;
 using ConnectAPIC.Scripts.ViewModel.Commands;
 using System;
 using System.Threading.Tasks;
@@ -8,9 +9,8 @@ using System.Threading.Tasks;
 namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 {
 
-    public class CreateComponentCommand : ICommand
+    public class CreateComponentCommand : CommandBase<CreateComponentArgs>
     {
-        public event EventHandler CanExecuteChanged;
         private GridManager GridModel;
         private readonly ComponentFactory ComponentFactory;
 
@@ -20,7 +20,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             this.ComponentFactory = componentFactory;
         }
         
-        public bool CanExecute(object parameter)
+        public override bool CanExecute(object parameter)
         {
             if( parameter is CreateComponentArgs args)
             {
@@ -33,16 +33,21 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             return false;
         }
 
-        public Task ExecuteAsync(object parameter)
+        internal override Task ExecuteAsyncCmd(CreateComponentArgs parameter)
         {
             if ( !CanExecute(parameter) ) return default;
-            var compParams = (CreateComponentArgs)parameter;
-            Component component = ComponentFactory.CreateComponent(compParams.ComponentTypeNumber);
-            component.Rotation90CounterClock = compParams.Rotation;
-            GridModel.ComponentMover.PlaceComponent(compParams.GridX, compParams.GridY, component);
+            Component component = ComponentFactory.CreateComponent(parameter.ComponentTypeNumber);
+            component.Rotation90CounterClock = parameter.Rotation;
+            GridModel.ComponentMover.PlaceComponent(parameter.GridX, parameter.GridY, component);
             return Task.CompletedTask;
-
         }
+
+        public override void Undo()
+        {
+            if (ExecutionParams != null) return;
+            GridModel.ComponentMover.UnregisterComponentAt(ExecutionParams.GridX , ExecutionParams.GridY);
+        }
+
     }
     public class CreateComponentArgs
     {

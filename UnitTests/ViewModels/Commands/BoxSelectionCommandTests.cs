@@ -26,7 +26,7 @@ namespace ConnectAPIC.test.ViewModels.Commands
             var command = new BoxSelectComponentsCommand(gridManager, selectionManager);
             selectionManager.Selections.Add( new IntVector(7,8));
             selectionManager.Selections.Add(new IntVector(7, 8));
-            var parameters = new BoxSelectComponentsArgs(new IntVector(0, 0), new IntVector(4, 4), appendBehavior);
+            var parameters = new BoxSelectComponentsArgs(new() { (GridStart: new IntVector(0, 0), GridEnd: new IntVector(4, 4)) }, appendBehavior);
 
             await command.ExecuteAsync(parameters);
 

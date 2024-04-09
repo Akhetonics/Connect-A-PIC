@@ -8,6 +8,7 @@ using CAP_Core.LightCalculation;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scripts.View.ComponentFactory;
 using ConnectAPIC.Scripts.ViewModel;
+using ConnectAPIC.Scripts.ViewModel.CommandFactory;
 using ConnectAPIC.Scripts.ViewModel.Commands;
 using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
@@ -19,6 +20,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
     public class GridViewModel : System.ComponentModel.INotifyPropertyChanged
     {
         public ICommand SwitchOnLightCommand { get; set; }
+        public CommandFactory CommandFactory { get; private set; }
         public ICommand CreateComponentCommand { get; set; }
         public ICommand MoveComponentCommand { get; set; }
         public ICommand ExportToNazcaCommand { get; set; }
@@ -56,17 +58,8 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             this.ComponentModelFactory = componentModelFactory;
             LightManager = grid.LightManager;
             this.LightManager.OnLightSwitched += (object sender, bool e) => IsLightOn = e;
-            CreateComponentCommand = new CreateComponentCommand(grid, componentModelFactory);
+            CommandFactory = new CommandFactory(Grid, componentModelFactory, SelectionGroupManager.SelectionManager, Logger, lightCalculator, this);
             SelectionGroupManager = new(this, new SelectionManager(grid));
-            MoveComponentCommand = new MoveComponentCommand(grid, SelectionGroupManager.SelectionManager);
-            SaveGridCommand = new SaveGridCommand(grid, new FileDataAccessor());
-            LoadGridCommand = new LoadGridCommand(grid, new FileDataAccessor(), componentModelFactory, this);
-            MoveSliderCommand = new MoveSliderCommand(grid);
-            ExportToNazcaCommand = new ExportNazcaCommand(new NazcaExporter(), grid, new DataAccessorGodot());
-            SwitchOnLightCommand = new SwitchOnLightCommand(grid.LightManager);
-            DeleteComponentCommand = new DeleteComponentCommand(grid);
-            RotateComponentCommand = new RotateComponentCommand(grid);
-
             this.Grid.ComponentMover.OnComponentPlacedOnTile += Grid_OnComponentPlacedOnTile;
             this.Grid.ComponentMover.OnComponentRemoved += (Component component, int x , int y ) => ComponentRemoved?.Invoke(component, x, y);
             this.ToolViewModel = new ToolViewModel(grid);
