@@ -39,7 +39,8 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
 
             input.InFlowPower = args.PowerValue;
 
-            LightCalculator.ShowLightPropagationAsync().Wait();
+            if (Grid.LightManager.IsLightOn)
+                LightCalculator.ShowLightPropagationAsync().Wait();
         }
         
     }

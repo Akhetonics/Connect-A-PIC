@@ -33,6 +33,10 @@ project/assembly_name="Connect-A-PIC"
 
 enabled=PackedStringArray()
 
+[gui]
+
+theme/custom_font="res://Scenes/Assets/Fonts/PressStart2P.ttf"
+
 [rendering]
 
 renderer/rendering_method.mobile="gl_compatibility"

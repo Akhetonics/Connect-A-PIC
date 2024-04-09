@@ -4,6 +4,7 @@
 [ext_resource type="Theme" uid="uid://b2f4xgnx0xy5e" path="res://Scenes/Assets/Themes/MainTheme.tres" id="1_m86ur"]
 
 [node name="InfoSection" type="Control"]
+texture_filter = 1
 custom_minimum_size = Vector2(0, 20)
 layout_mode = 3
 anchors_preset = 0
@@ -21,12 +22,14 @@ mouse_filter = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="Title"]
 layout_mode = 1
-offset_right = 2000.0
-offset_bottom = 205.0
-scale = Vector2(0.1, 0.1)
-theme_override_constants/margin_left = 60
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 60
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -8.0
+offset_right = 50.0
+offset_bottom = 8.0
+grow_vertical = 2
+theme_override_constants/margin_left = 5
 
 [node name="Title" type="Label" parent="Title/MarginContainer"]
 unique_name_in_owner = true
@@ -34,21 +37,30 @@ layout_mode = 2
 size_flags_horizontal = 0
 mouse_filter = 1
 theme = ExtResource("1_m86ur")
+theme_override_font_sizes/font_size = 8
 text = "Title"
 
 [node name="MarginContainer2" type="MarginContainer" parent="Title"]
-layout_mode = 0
-offset_right = 2000.0
-offset_bottom = 205.0
-scale = Vector2(0.1, 0.1)
-theme_override_constants/margin_left = 60
-theme_override_constants/margin_top = 0
-theme_override_constants/margin_right = 60
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -59.0
+offset_top = -9.0
+offset_right = -9.0
+offset_bottom = 7.0
+grow_horizontal = 0
+grow_vertical = 2
+scale = Vector2(1.2, 1.2)
+theme_override_constants/margin_right = 10
 
 [node name="Value" type="Label" parent="Title/MarginContainer2"]
 unique_name_in_owner = true
 layout_mode = 2
 mouse_filter = 1
 theme = ExtResource("1_m86ur")
+theme_override_font_sizes/font_size = 8
 text = "Value"
 horizontal_alignment = 2
