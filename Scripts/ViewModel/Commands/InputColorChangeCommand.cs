@@ -39,8 +39,10 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
             args.Port.LaserType = args.LaserColor;
 
             //LightCalculator.ShowLightPropagationAsync();
-            Grid.LightManager.IsLightOn = !Grid.LightManager.IsLightOn;
-            Grid.LightManager.IsLightOn = !Grid.LightManager.IsLightOn;
+            if (Grid.LightManager.IsLightOn) {
+                Grid.LightManager.IsLightOn = false;
+                Grid.LightManager.IsLightOn = true;
+            }
         }
     }
 

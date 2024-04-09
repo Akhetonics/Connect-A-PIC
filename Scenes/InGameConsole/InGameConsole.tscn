@@ -23,6 +23,7 @@ shadow_color = Color(0.0588235, 0.0588235, 0.0588235, 0.733333)
 
 [node name="InGameConsole" type="ScrollContainer" node_paths=PackedStringArray("LoggingParent", "InfoTextTemplate", "ErrorTextTemplate")]
 top_level = true
+texture_filter = 1
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
@@ -46,6 +47,7 @@ theme = SubResource("Theme_76st6")
 visible = false
 layout_mode = 2
 theme_override_colors/default_color = Color(1, 0.137255, 0.192157, 1)
+theme_override_font_sizes/normal_font_size = 0
 text = "test text in your est"
 fit_content = true
 scroll_active = false
@@ -54,6 +56,7 @@ scroll_active = false
 visible = false
 layout_mode = 2
 theme_override_colors/default_color = Color(0, 0.792157, 0.317647, 1)
+theme_override_font_sizes/normal_font_size = 0
 text = "test text in your est"
 fit_content = true
 scroll_active = false

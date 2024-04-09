@@ -2,10 +2,10 @@
 
 [resource]
 Label/colors/font_shadow_color = Color(0, 0, 0, 1)
-Label/constants/shadow_offset_x = 3
-Label/constants/shadow_offset_y = 3
-Label/constants/shadow_outline_size = 25
-Label/font_sizes/font_size = 150
+Label/constants/shadow_offset_x = 1
+Label/constants/shadow_offset_y = 1
+Label/constants/shadow_outline_size = 2
+Label/font_sizes/font_size = 16
 RichTextLabel/colors/font_shadow_color = Color(0, 0, 0, 1)
 RichTextLabel/constants/shadow_offset_x = 3
 RichTextLabel/constants/shadow_offset_y = 3
