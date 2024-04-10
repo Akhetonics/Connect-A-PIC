@@ -216,8 +216,12 @@ script = ExtResource("9_gj54m")
 NotificationBoxScene = ExtResource("10_06t00")
 
 [node name="UpdateWindow" parent="GUILayer" instance=ExtResource("26_ihjn2")]
-offset_top = -92.0
-offset_bottom = 92.0
+visible = false
+offset_left = -319.0
+offset_top = -138.0
+offset_right = 107.0
+offset_bottom = 46.0
+scale = Vector2(1.5, 1.5)
 
 [node name="UpdateManager" type="Node" parent="."]
 script = ExtResource("25_cr0be")

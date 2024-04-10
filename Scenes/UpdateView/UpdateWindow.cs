@@ -13,10 +13,8 @@ public partial class UpdateWindow : Control
         currentVersionNumber = GetNode<RichTextLabel>("%CurrentVersion");
         newVersionNumber = GetNode<RichTextLabel>("%NewVersion");
 
-        Visible = false;
         UpdateManager.UpdateAvalilable += (s, e) => SetupValues();
         if (UpdateManager.IsUpdateAvailable()) SetupValues();
-
     }
 
     private void SetupValues() {
