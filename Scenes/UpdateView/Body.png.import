@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://s14vvxb178my"
-path="res://.godot/imported/GreenArrowUp.png-14f5354163021b1c1bcee47c2fc2689d.ctex"
+uid="uid://orrjgjtm3hv6"
+path="res://.godot/imported/Body.png-ac5b70541f521231bad9cf0c98f1ce8b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Scenes/UpdateWindow/GreenArrowUp.png"
-dest_files=["res://.godot/imported/GreenArrowUp.png-14f5354163021b1c1bcee47c2fc2689d.ctex"]
+source_file="res://Scenes/UpdateView/Body.png"
+dest_files=["res://.godot/imported/Body.png-ac5b70541f521231bad9cf0c98f1ce8b.ctex"]
 
 [params]
 
