@@ -14,7 +14,8 @@ namespace ConnectAPIC.Scripts.ViewModel.CommandFactory
 {
     public interface ICommandFactory
     {
-        CommandBase CreateCommand(CommandType type);
+        ICommand CreateCommand(CommandType type);
+        void ClearHistory();
     }
     public enum CommandType
     {
@@ -31,8 +32,9 @@ namespace ConnectAPIC.Scripts.ViewModel.CommandFactory
         MoveSlider
     }
 
-    public class CommandFactory :ICommandFactory
+    public class CommandFactory : ICommandFactory
     {
+        private const int MaxHistoryItems = 1000;
 
         public CommandFactory(
             GridManager gridManager,
@@ -54,14 +56,15 @@ namespace ConnectAPIC.Scripts.ViewModel.CommandFactory
         public ComponentFactory ComponentFactory { get; }
         public SelectionManager SelectionManager { get; }
         public ILogger Logger { get; }
-        private Stack<CommandBase> History { get; } = new();
-        private Stack<CommandBase> RedoStack { get; } = new();
+        private LinkedList<ICommand> History { get; } = new();
+        private Stack<ICommand> RedoStack { get; } = new();
         public LightCalculationService LightCalculationService { get; }
         public GridViewModel GridViewModel { get; private set; }
 
-        public CommandBase CreateCommand  (CommandType type)
+        public ICommand CreateCommand  (CommandType type)
         {
-            CommandBase newCommand;
+            ICommand newCommand;
+
             switch (type)
             {
                 case CommandType.BoxSelectComponent:
@@ -102,33 +105,53 @@ namespace ConnectAPIC.Scripts.ViewModel.CommandFactory
                     throw new ArgumentException("CommandType unknown", nameof(type));
             }
             newCommand.Executed += (object sender, EventArgs e) => {
-                if (History.TryPop(out var previousCommand) && newCommand.CanMergeWith(previousCommand))
+                if (History.Count > 0 && History.Last.Value.CanMergeWith(newCommand))
                 {
-                    previousCommand.MergeWith(newCommand);
+                    History.Last.Value.MergeWith(newCommand);
                 } else
                 {
-                    History.Push(newCommand);
+                    History.AddLast(newCommand);
+                }
+                if (History.Count > MaxHistoryItems)
+                {
+                    ShrinkHistoryBy(1);
                 }
             };
             RedoStack.Clear();
             return newCommand;
         }
 
+        private void ShrinkHistoryBy(double removeItemCount)
+        {
+            for (int i = 0; i < removeItemCount; i++)
+            {
+                History.RemoveFirst();
+            }
+        }
+
+
         public bool Undo()
         {
             if (History.Count == 0) return false;
-            var commandToUndo = History.Pop();
+            var commandToUndo = History.Last.Value;
             RedoStack.Push(commandToUndo);
             commandToUndo.Undo();
+            History.RemoveLast();
             return true;
         }
         public bool Redo()
         {
             if (RedoStack.Count == 0) return false;
             var commandtoRedo = RedoStack.Pop();
-            History.Push(commandtoRedo);
+            History.AddLast(commandtoRedo);
             commandtoRedo.Redo();
             return true;
+        }
+        // you might want to erase the history after loading a new PIC
+        public void ClearHistory()
+        {
+            History.Clear();
+            RedoStack.Clear();
         }
     }
 }

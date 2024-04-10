@@ -19,7 +19,7 @@ namespace ConnectAPIC.Scripts.ViewModel
     public class ComponentViewModel : INotifyPropertyChanged
     {
         public ILogger Logger { get; private set; }
-        public ICommand DeleteComponentCommand { get; set; }
+        public ICommandBase DeleteComponentCommand { get; set; }
         public int GridX { get; set; }
         public int GridY { get; set; }
         private ObservableCollection<SliderViewData> sliderData = new();

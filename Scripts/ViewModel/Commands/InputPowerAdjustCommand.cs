@@ -12,36 +12,37 @@ using System.Threading.Tasks;
 
 namespace ConnectAPIC.Scripts.ViewModel.Commands
 {
-    public class InputPowerAdjustCommand : ICommand
+    public class InputPowerAdjustCommand : CommandBase<InputPowerAdjustArgs>
     {
         public GridManager Grid { get; }
         public LightCalculationService LightCalculator { get; }
+        public Complex OldInflowPower { get; private set; }
 
         public InputPowerAdjustCommand(GridManager grid, LightCalculationService lightCalculator) {
             LightCalculator = lightCalculator;
             Grid = grid;
         }
 
-        public bool CanExecute(object parameter)
+        public override bool CanExecute(object parameter)
         {
-            InputPowerAdjustArgs inputParams = parameter as InputPowerAdjustArgs;
-            if (inputParams == null || inputParams.PowerValue < 0 || inputParams.PowerValue > 1) return false;
-
+            if (parameter is not InputPowerAdjustArgs inputParams || inputParams.PowerValue < 0 || inputParams.PowerValue > 1) return false;
             return Grid.ExternalPortManager.ExternalPorts.Contains(inputParams.Port) && inputParams.Port is ExternalInput;
-
         }
-        public async Task ExecuteAsync(object parameter)
+        internal async override Task ExecuteAsyncCmd(InputPowerAdjustArgs args)
         {
-            if (!CanExecute(parameter)) return;
-
-            InputPowerAdjustArgs args = (InputPowerAdjustArgs)parameter;
+            if (!CanExecute(args)) return;
             ExternalInput input = args.Port as ExternalInput;
-
+            OldInflowPower = input.InFlowPower;
             input.InFlowPower = args.PowerValue;
-
+            await LightCalculator.ShowLightPropagationAsync();
+            return;
+        }
+        public override void Undo()
+        {
+            ((ExternalInput)ExecutionParams.Port).InFlowPower = OldInflowPower;
             LightCalculator.ShowLightPropagationAsync().Wait();
         }
-        
+
     }
 
     public class InputPowerAdjustArgs

@@ -7,7 +7,10 @@ using System.Threading.Tasks;
 
 namespace ConnectAPIC.Scripts.ViewModel.Commands
 {
-    public interface ICommand
+    public interface ICommand :ICommandBase, IUndoableCommand, IMergeAbleCommand
+    {
+    }
+    public interface ICommandBase
     {
         public bool CanExecute(object parameter);
         public Task ExecuteAsync(object parameter);
@@ -24,7 +27,7 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
         void MergeWith (ICommand other);
     }
 
-    public abstract class CommandBase<T> : ICommand, IUndoableCommand , IMergeAbleCommand
+    public abstract class CommandBase<T> : ICommand
     {
         public T ExecutionParams { get; internal set; }
 

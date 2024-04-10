@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 {
 
-    public class SwitchOnLightCommand : ICommand
+    public class SwitchOnLightCommand : ICommandBase
     {
         public LightManager LightManager { get; }
 

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 {
-    public class RotateComponentCommand : ICommand
+    public class RotateComponentCommand : ICommandBase
     {
         private readonly GridManager Grid;
 

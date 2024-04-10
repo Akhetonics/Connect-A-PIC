@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 {
 
-    public class SaveGridCommand : ICommand
+    public class SaveGridCommand : ICommandBase
     {
         public event EventHandler CanExecuteChanged;
         private GridPersistenceManager gridPersistenceManager;

@@ -7,12 +7,15 @@ using CAP_Core.LightCalculation;
 using ConnectAPIC.Scripts.ViewModel;
 using ConnectAPic.LayoutWindow;
 using ConnectAPIC.Scenes.RightClickMenu;
+using ConnectAPIC.LayoutWindow.ViewModel;
+using ConnectAPIC.Scripts.ViewModel.CommandFactory;
 
 
 [SuperNode(typeof(Dependent))]
 public partial class PortsContainerView : Node2D
 {
     public override partial void _Notification(int what);
+    [Dependency] public GridViewModel GridViewModel => DependOn<GridViewModel>();
     [Dependency] public GridManager Grid => DependOn<GridManager>();
     [Dependency] public LightCalculationService LightCalculator => DependOn<LightCalculationService>();
 
@@ -31,7 +34,7 @@ public partial class PortsContainerView : Node2D
 
         // create control menu, it will be child of ports container as well
         ControlMenu controlMenu = RightClickMenuTemplate.Instantiate<ControlMenu>();
-        controlMenu.Initialize(Grid, LightCalculator);
+        controlMenu.Initialize(GridViewModel.ControlMenuViewModel);
         this.AddChild(controlMenu);
 
         // connect ports to control menu

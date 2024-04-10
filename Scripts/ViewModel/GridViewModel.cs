@@ -6,6 +6,7 @@ using CAP_Core.Grid;
 using CAP_Core.Helpers;
 using CAP_Core.LightCalculation;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
+using ConnectAPIC.Scenes.RightClickMenu;
 using ConnectAPIC.Scripts.View.ComponentFactory;
 using ConnectAPIC.Scripts.ViewModel;
 using ConnectAPIC.Scripts.ViewModel.CommandFactory;
@@ -19,16 +20,16 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
 {
     public class GridViewModel : System.ComponentModel.INotifyPropertyChanged
     {
-        public ICommand SwitchOnLightCommand { get; set; }
-        public CommandFactory CommandFactory { get; private set; }
-        public ICommand CreateComponentCommand { get; set; }
-        public ICommand MoveComponentCommand { get; set; }
-        public ICommand ExportToNazcaCommand { get; set; }
-        public ICommand SaveGridCommand { get; internal set; }
-        public ICommand LoadGridCommand { get; internal set; }
-        public ICommand MoveSliderCommand { get; internal set; }
-        public ICommand DeleteComponentCommand { get; internal set; }
-        public ICommand RotateComponentCommand { get; internal set; }
+        public ICommandBase SwitchOnLightCommand { get; set; }
+        public ICommandFactory CommandFactory { get; private set; }
+        public ICommandBase CreateComponentCommand { get; set; }
+        public ICommandBase MoveComponentCommand { get; set; }
+        public ICommandBase ExportToNazcaCommand { get; set; }
+        public ICommandBase SaveGridCommand { get; internal set; }
+        public ICommandBase LoadGridCommand { get; internal set; }
+        public ICommandBase MoveSliderCommand { get; internal set; }
+        public ICommandBase DeleteComponentCommand { get; internal set; }
+        public ICommandBase RotateComponentCommand { get; internal set; }
         public SelectionGroupManager SelectionGroupManager;
         public delegate void ComponentCreatedEventHandler(Component component, int gridX, int gridY);
         public event ComponentCreatedEventHandler ComponentCreated;
@@ -47,6 +48,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             set { isLightOn = value; OnPropertyChanged(); }
         }
         public LightManager LightManager { get; private set; }
+        public ControlMenuViewModel ControlMenuViewModel { get; internal set; }
 
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
@@ -63,6 +65,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             this.Grid.ComponentMover.OnComponentPlacedOnTile += Grid_OnComponentPlacedOnTile;
             this.Grid.ComponentMover.OnComponentRemoved += (Component component, int x , int y ) => ComponentRemoved?.Invoke(component, x, y);
             this.ToolViewModel = new ToolViewModel(grid);
+            ControlMenuViewModel = new ControlMenuViewModel(Grid, LightCalculator, CommandFactory);
         }
 
         private void Grid_OnComponentPlacedOnTile(Component component, int gridX, int gridY)

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ConnectAPIC.Scripts.ViewModel.Commands
 {
-    public class MoveSliderCommand : ICommand
+    public class MoveSliderCommand : ICommandBase
     {
         public GridManager Grid { get; }
         public MoveSliderCommand(GridManager mainGrid)

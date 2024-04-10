@@ -49,7 +49,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
 
         private void SelectItems(BoxSelectComponentsArgs parameter)
         {
-            ICommand command = GridViewModel.CommandFactory.CreateCommand(CommandType.BoxSelectComponent);
+            ICommandBase command = GridViewModel.CommandFactory.CreateCommand(CommandType.BoxSelectComponent);
             if (command != null && command.CanExecute(parameter))
             {
                 command.ExecuteAsync(parameter).Wait();

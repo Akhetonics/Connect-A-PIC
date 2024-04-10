@@ -12,10 +12,12 @@ using System.Threading.Tasks;
 
 namespace ConnectAPIC.Scripts.ViewModel.Commands
 {
-    public class InputOutputChangeCommand : CommandBase<InputOutputChangeArgs>
+    public class InputOutputChangeCommand : CommandBase<ExternalPortViewModel>
     {
         public GridManager Grid { get; }
         public LightCalculationService LightCalculator { get; }
+        public ExternalPort OldPort { get; private set; }
+        public int OldPortIndex { get; private set; }
 
         public InputOutputChangeCommand(GridManager grid, LightCalculationService lightCalculator)
         {
@@ -23,37 +25,42 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
             Grid = grid;
         }
 
-        public bool CanExecute(object parameter)
+        public override bool CanExecute(object parameter)
         {
-            ExternalPortViewModel ViewModel = parameter as ExternalPortViewModel;
-            if (ViewModel == null) return false;
-
+            if (parameter is ExternalPortViewModel ViewModel == false)
+                return false;
             return Grid.ExternalPortManager.ExternalPorts.Contains(ViewModel.PortModel);
         }
 
-        public async Task ExecuteAsync(object parameter)
+        internal override Task ExecuteAsyncCmd(ExternalPortViewModel ViewModel)
         {
-            if (!CanExecute(parameter)) return;
-            ExternalPortViewModel ViewModel = parameter as ExternalPortViewModel;
+            if (!CanExecute(ViewModel)) return Task.CompletedTask;
+            OldPort = ViewModel.PortModel;
+            OldPortIndex = Grid.ExternalPortManager.ExternalPorts.IndexOf(OldPort);
 
             ExternalPort newPort;
-            ExternalPort port = ViewModel.PortModel;
-            int index = Grid.ExternalPortManager.ExternalPorts.IndexOf(port);
-
-            if (port is ExternalInput)
-                newPort = new ExternalOutput(port.PinName, port.TilePositionY);
+            if (OldPort is ExternalInput)
+                newPort = new ExternalOutput(OldPort.PinName, OldPort.TilePositionY);
             else
-                newPort = new ExternalInput(port.PinName, LaserType.Red, port.TilePositionY, 1);
+                newPort = new ExternalInput(OldPort.PinName, LaserType.Red, OldPort.TilePositionY, 1);
 
             ViewModel.PortModel = newPort;
-            Grid.ExternalPortManager.ExternalPorts[index] = newPort;
+            Grid.ExternalPortManager.ExternalPorts[OldPortIndex] = newPort;
+            RestartLight();
+            return Task.CompletedTask;
+        }
+
+        private void RestartLight()
+        {
             Grid.LightManager.IsLightOn = !Grid.LightManager.IsLightOn;
             Grid.LightManager.IsLightOn = !Grid.LightManager.IsLightOn;
         }
-    }
 
-    public class InputOutputChangeArgs
-    {
-
+        public override void Undo()
+        {
+            ExecutionParams.PortModel = OldPort;
+            Grid.ExternalPortManager.ExternalPorts[OldPortIndex] = OldPort;
+            RestartLight();
+        }
     }
 }

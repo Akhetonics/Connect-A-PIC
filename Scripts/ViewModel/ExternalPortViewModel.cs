@@ -28,18 +28,20 @@ namespace ConnectAPIC.Scripts.ViewModel
             set
             {
                 if (_portModel != null)
-                    _portModel.PropertyChanged -= Model_PropertyChanged;
-                _portModel = value;
-                _portModel.PropertyChanged += Model_PropertyChanged;
-
-                IsInput = (value is ExternalInput);
-
-                ExternalInput tmp = (value as ExternalInput);
-                if (tmp != null)
                 {
-                    ResetInputPowerAndColorUsingLaserType(tmp.LaserType, tmp.InFlowPower.Real);
+                    // unregister from propertyChanged events as the old _portModel is about to get replaced
+                    // and we don't want to get spammed with events from removed PortModels
+                    _portModel.PropertyChanged -= PortModel_PropertyChanged;
                 }
+                _portModel = value;
+                // register again to all propertyChanged events for the new PortModel
+                _portModel.PropertyChanged += PortModel_PropertyChanged;
 
+                if (value is ExternalInput input)
+                {
+                    IsInput = true;
+                    ResetInputPowerAndColorUsingLaserType(input.LaserType, input.InFlowPower.Real);
+                }
                 OnPropertyChanged();
             }
         }
@@ -175,11 +177,10 @@ namespace ConnectAPIC.Scripts.ViewModel
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        private void Model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        private void PortModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            //only external inputs gives away meaningful property change signals
-            ExternalInput inputPort = PortModel as ExternalInput;
-            if (inputPort == null) return;
+            //only external inputs give away meaningful property change signals for now
+            if (PortModel is not ExternalInput inputPort) return;
 
             if (e.PropertyName == nameof(ExternalInput.LaserType)
              || e.PropertyName == nameof(ExternalInput.InFlowPower))

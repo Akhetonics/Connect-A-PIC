@@ -9,11 +9,13 @@ using System.Threading.Tasks;
 
 namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 {
-    public class MoveComponentCommand : ICommand
+    public class MoveComponentCommand : CommandBase<MoveComponentArgs>
     {
         private readonly GridManager grid;
 
         public SelectionManager SelectionManager { get; }
+        public List<Component> OldSelections { get; private set; } = new();
+        public List<(Component Component, IntVector Position)> OldComponentsAndPositionInTargetArea { get; private set; }
 
         public event EventHandler CanExecuteChanged;
 
@@ -22,7 +24,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             this.grid = grid;
             SelectionManager = selectionManager;
         }
-        public bool CanExecute(object parameter)
+        public override bool CanExecute(object parameter)
         {
             if (parameter is not MoveComponentArgs args) return false;
             if (VerifyAllInGrid(args) == false) return false;
@@ -79,14 +81,41 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             return true;
         }
 
-        public Task ExecuteAsync(object parameter)
+        internal override Task ExecuteAsyncCmd(MoveComponentArgs parameter)
         {
-            if(CanExecute(parameter) == false) return Task.CompletedTask;
-            var componentAndTargets = CollectMoveInfo((MoveComponentArgs)parameter);
+            if (CanExecute(parameter) == false) return Task.CompletedTask;
+
+            StoreSelectedElementsForUndo();
+            StoreComponentsInTargetAreaForUndo(parameter);
+            // store the initial position of all elements that are about to be moved
+            foreach( var transition in parameter.Transitions)
+            {
+                transition.Source.
+            }
+            var componentAndTargets = CollectMoveInfo(parameter);
             UnregisterSourceAndTargetAreas(componentAndTargets);
             PlaceComponentsInTargets(componentAndTargets);
             SelectMovedComponents(componentAndTargets);
             return Task.CompletedTask;
+        }
+
+        private void StoreComponentsInTargetAreaForUndo(MoveComponentArgs parameter)
+        {
+            foreach (var targetPosition in parameter.Transitions)
+            {
+                var targetCmp = grid.ComponentMover.GetComponentAt(targetPosition.Target.X, targetPosition.Target.Y);
+                var targetPos = new IntVector(targetCmp.GridXMainTile, targetCmp.GridYMainTile);
+                OldComponentsAndPositionInTargetArea.Add((Component: targetCmp, Position: targetPos));
+            }
+        }
+
+        private void StoreSelectedElementsForUndo()
+        {
+            OldSelections = new();
+            foreach (var selection in SelectionManager.Selections)
+            {
+                OldSelections.Add(grid.ComponentMover.GetComponentAt(selection.X, selection.Y));
+            }
         }
 
         private void SelectMovedComponents(HashSet<(Component component, IntVector Target)> componentAndTargets)
@@ -137,6 +166,14 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
                     }
                 }
             }
+        }
+
+        public override void Undo()
+        {
+            // it could be that there was a list of components that has been dragged.
+            // they had overridden the elements on the target area -> so we have to recreate the deleted elements
+            // and also move all moved components back.
+            // and we have to reset the selection as well
         }
     }
 

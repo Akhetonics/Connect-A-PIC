@@ -1,6 +1,8 @@
+using Antlr4.Runtime.Misc;
 using CAP_Core.ExternalPorts;
 using CAP_Core.Grid;
 using CAP_Core.LightCalculation;
+using ConnectAPIC.LayoutWindow.ViewModel;
 using Godot;
 using System;
 using System.Collections.Generic;
@@ -15,30 +17,44 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
     public class InputColorChangeCommand : CommandBase<InputColorChangeArgs>
     {
         public GridManager Grid { get; }
-        public LightCalculationService LightCalculator { get; }
+        public GridViewModel GridViewModel { get; }
+        public LaserType OldLaserType { get; private set; }
 
-        public InputColorChangeCommand(GridManager grid, LightCalculationService lightCalculator) {
-            LightCalculator = lightCalculator;
+        public InputColorChangeCommand(GridManager grid, GridViewModel gridViewModel) {
             Grid = grid;
+            GridViewModel = gridViewModel;
         }
 
-        public bool CanExecute(object parameter)
+        public override bool CanExecute(object parameter)
         {
             InputColorChangeArgs inputParams = parameter as InputColorChangeArgs;
-            if (inputParams == null || inputParams.LaserColor == null) return false;
+            if (inputParams == null || inputParams.LaserType == null) return false;
 
             return Grid.ExternalPortManager.ExternalPorts.Contains(inputParams.Port);
         }
 
-        public async Task ExecuteAsync(object parameter)
+        internal override Task ExecuteAsyncCmd(InputColorChangeArgs args)
         {
-            if (!CanExecute(parameter)) return;
+            if (!CanExecute(args)) return Task.CompletedTask;
+            OldLaserType = args.Port.LaserType;
+            args.Port.LaserType = args.LaserType;
+            RestartLight();
+            return Task.CompletedTask;
+        }
+        public override void Undo()
+        {
+            // the port could have been replaced to be an input instead of an output
+            ExecutionParams.Port.LaserType = OldLaserType;
+            RestartLight();
+        }
+        public override void Redo()
+        {
+            base.Redo();
+            RestartLight();
+        }
 
-            InputColorChangeArgs args = parameter as InputColorChangeArgs;
-
-            args.Port.LaserType = args.LaserColor;
-
-            //LightCalculator.ShowLightPropagationAsync();
+        private void RestartLight()
+        {
             Grid.LightManager.IsLightOn = !Grid.LightManager.IsLightOn;
             Grid.LightManager.IsLightOn = !Grid.LightManager.IsLightOn;
         }
@@ -46,23 +62,13 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
 
     public class InputColorChangeArgs
     {
-        public InputColorChangeArgs(ExternalInput port, String colorString)
+        public InputColorChangeArgs(ExternalInput port, LaserType laserType)
         {
             Port = port;
-            switch (colorString.ToLower()) {
-                case "red": LaserColor = LaserType.Red; break;
-                case "green": LaserColor = LaserType.Green; break;
-                case "blue": LaserColor = LaserType.Blue; break;
-            }
-        }
-
-        public InputColorChangeArgs(ExternalInput port, LaserType laserColor)
-        {
-            Port = port;
-            LaserColor = laserColor;
+            LaserType = laserType;
         }
 
         public ExternalInput Port { get; }
-        public LaserType LaserColor { get; }
+        public LaserType LaserType { get; }
     }
 }

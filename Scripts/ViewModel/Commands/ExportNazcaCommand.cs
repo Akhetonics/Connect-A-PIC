@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 
 namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 {
-
     public class ExportNazcaCommand : CommandBase<ExportNazcaParameters>
     {
         public event EventHandler CanExecuteChanged;
@@ -25,16 +24,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             this.dataAccessor = dataAccessor;
         }
         
-        public bool CanExecute(object parameter)
-        {
-            if( parameter is ExportNazcaParameters)
-            {
-                return true;
-            }
-            return false;
-        }
-        
-        public async Task ExecuteAsync(object parameter)
+        internal async override Task ExecuteAsyncCmd(ExportNazcaParameters parameter)
         {
             if (!CanExecute(parameter)) return;
             var nazcaParams = (ExportNazcaParameters)parameter;
@@ -43,6 +33,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             string directoryPath = Path.GetDirectoryName(nazcaParams.Path);
             string fullPDKPath = Path.Combine(directoryPath, Resources.PDKFileName);
             await this.dataAccessor.Write(fullPDKPath, Resources.PDK);
+            if (!CanExecute(parameter)) return;
         }
     }
 
@@ -52,7 +43,6 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
         {
             Path = path;
         }
-
         public string Path { get; }
     }
 }
