@@ -1,43 +1,31 @@
 [gd_scene load_steps=7 format=3 uid="uid://ckp2oek7mdfdr"]
 
+[ext_resource type="Texture2D" uid="uid://bskt8xmas4b1b" path="res://Scenes/UpdateWindow/Background.png" id="1_10xxx"]
 [ext_resource type="Theme" uid="uid://b2f4xgnx0xy5e" path="res://Scenes/Assets/Themes/MainTheme.tres" id="2_xo7yr"]
-[ext_resource type="Texture2D" uid="uid://bseakecs4865n" path="res://Scenes/RightClickMenu/Body.png" id="3_7tq0f"]
 [ext_resource type="StyleBox" uid="uid://2isxejv4i0gq" path="res://Scenes/Assets/Styles/RedButtonNormal.tres" id="3_vdg8s"]
 [ext_resource type="StyleBox" uid="uid://drsxpwqtwkesm" path="res://Scenes/Assets/Styles/RedButtonPressed.tres" id="4_my1vj"]
 [ext_resource type="FontFile" uid="uid://8ct2wwxvfs7q" path="res://Scenes/Assets/Fonts/PressStart2P.ttf" id="4_q43xb"]
 [ext_resource type="Texture2D" uid="uid://s14vvxb178my" path="res://Scenes/UpdateWindow/GreenArrowUp.png" id="5_e0jwg"]
 
 [node name="ControlMenu" type="Control"]
-light_mask = 0
 texture_filter = 1
+custom_minimum_size = Vector2(200, 100)
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 0
-mouse_filter = 1
-
-[node name="ControlMenu" type="Control" parent="."]
-custom_minimum_size = Vector2(200, 100)
-layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
 offset_left = -213.0
-offset_top = -85.5
+offset_top = -85.0
 offset_right = 213.0
-offset_bottom = 85.5
+offset_bottom = 99.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Body" type="NinePatchRect" parent="ControlMenu"]
+[node name="Body" type="NinePatchRect" parent="."]
 modulate = Color(1, 1, 1, 0.784314)
+texture_filter = 1
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -45,14 +33,15 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
-texture = ExtResource("3_7tq0f")
-region_rect = Rect2(0, 0, 128, 128)
-patch_margin_left = 3
-patch_margin_right = 3
-patch_margin_bottom = 20
+texture = ExtResource("1_10xxx")
+region_rect = Rect2(0, 0, 566, 328)
+patch_margin_left = 27
+patch_margin_top = 44
+patch_margin_right = 27
+patch_margin_bottom = 60
 metadata/_edit_group_ = true
 
-[node name="Cancel" type="Button" parent="ControlMenu"]
+[node name="Cancel" type="Button" parent="."]
 texture_filter = 1
 texture_repeat = 1
 layout_mode = 1
@@ -62,9 +51,9 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = -134.0
-offset_top = -38.5
+offset_top = -46.0
 offset_right = -30.0
-offset_bottom = -14.5
+offset_bottom = -22.0
 grow_horizontal = 2
 grow_vertical = 0
 focus_mode = 0
@@ -74,7 +63,7 @@ theme_override_styles/hover = ExtResource("3_vdg8s")
 theme_override_styles/pressed = ExtResource("4_my1vj")
 text = "Cancel"
 
-[node name="Update" type="Button" parent="ControlMenu"]
+[node name="Update" type="Button" parent="."]
 texture_filter = 1
 texture_repeat = 1
 layout_mode = 1
@@ -84,9 +73,9 @@ anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
 offset_left = 30.0
-offset_top = -38.5
+offset_top = -46.0
 offset_right = 134.0
-offset_bottom = -14.5
+offset_bottom = -22.0
 grow_horizontal = 2
 grow_vertical = 0
 focus_mode = 0
@@ -95,20 +84,21 @@ theme_override_fonts/font = ExtResource("4_q43xb")
 theme_override_font_sizes/font_size = 16
 text = "Update"
 
-[node name="Title" type="RichTextLabel" parent="ControlMenu"]
+[node name="Title" type="RichTextLabel" parent="."]
 layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
-offset_top = 11.0
-offset_right = -39.0
-offset_bottom = 53.0
+offset_left = 6.0
+offset_top = 20.0
+offset_right = -44.0
+offset_bottom = 62.0
 grow_horizontal = 2
 scale = Vector2(1.1, 1.1)
 theme = ExtResource("2_xo7yr")
 bbcode_enabled = true
 text = "[center]New version of the game is out![/center]"
 
-[node name="CurrentVersion" type="RichTextLabel" parent="ControlMenu"]
+[node name="CurrentVersion" type="RichTextLabel" parent="."]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -116,16 +106,16 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -47.0
-offset_top = 23.0
+offset_top = 16.0
 offset_right = 47.0
-offset_bottom = 45.0
+offset_bottom = 38.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("2_xo7yr")
 bbcode_enabled = true
 text = "[center][color=#FFC826]0.215[/color][/center]"
 
-[node name="NewVersion" type="RichTextLabel" parent="ControlMenu"]
+[node name="NewVersion" type="RichTextLabel" parent="."]
 unique_name_in_owner = true
 layout_mode = 1
 anchors_preset = 8
@@ -134,9 +124,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -53.0
-offset_top = -12.0
+offset_top = -19.0
 offset_right = 41.0
-offset_bottom = 10.0
+offset_bottom = 3.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(1.15, 1.15)
@@ -144,7 +134,7 @@ theme = ExtResource("2_xo7yr")
 bbcode_enabled = true
 text = "[center][color=#44FF44]1.2[/color][/center]"
 
-[node name="UpdateArrow" type="TextureRect" parent="ControlMenu"]
+[node name="UpdateArrow" type="TextureRect" parent="."]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -152,9 +142,9 @@ anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
 offset_left = -20.0
-offset_top = -7.0
+offset_top = -14.0
 offset_right = 20.0
-offset_bottom = 33.0
+offset_bottom = 26.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("5_e0jwg")
