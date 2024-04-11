@@ -8,6 +8,7 @@ using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using CAP_Core.Components;
 using CAP_Core.Helpers;
 using static Godot.Control;
+using ConnectAPIC.Scripts.ViewModel.CommandFactory;
 
 namespace ConnectAPIC.Scripts.View.ToolBox
 {
@@ -119,10 +120,10 @@ namespace ConnectAPIC.Scripts.View.ToolBox
                     if (mouseButtonEvent.Pressed == true)
                     {
                         var createCommandParams = new CreateComponentArgs(ComponentTypeNr, gridPosition.X, gridPosition.Y, StandardRotation);
-                        if (GridViewModel.CreateComponentCommand.CanExecute(createCommandParams))
-                        {
-                            GridViewModel.CreateComponentCommand.ExecuteAsync(createCommandParams).Wait();
-                        }
+                        GridViewModel.CommandFactory
+                            .CreateCommand(CommandType.CreateComponent)
+                            .ExecuteAsync(createCommandParams)
+                            .Wait();
                     }
                 }
                 else if (mouseButtonEvent.ButtonIndex == MouseButton.Right )
@@ -149,10 +150,10 @@ namespace ConnectAPIC.Scripts.View.ToolBox
                 if (LeftMouseButtonPressed)
                 {   
                     var createCommandParams = new CreateComponentArgs(ComponentTypeNr, gridPosition.X, gridPosition.Y, StandardRotation);
-                    if (GridViewModel.CreateComponentCommand.CanExecute(createCommandParams))
-                    {
-                        GridViewModel.CreateComponentCommand.ExecuteAsync(createCommandParams).Wait();
-                    }
+                    GridViewModel.CommandFactory
+                        .CreateCommand(CommandType.CreateComponent)
+                        .ExecuteAsync(createCommandParams)
+                        .Wait();
                 }
             }
             HandleMiddleMouseDeleteDrawing(@event);

@@ -30,7 +30,6 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
         }
         internal async override Task ExecuteAsyncCmd(InputPowerAdjustArgs args)
         {
-            if (!CanExecute(args)) return;
             ExternalInput input = args.Port as ExternalInput;
             OldInflowPower = input.InFlowPower;
             input.InFlowPower = args.PowerValue;

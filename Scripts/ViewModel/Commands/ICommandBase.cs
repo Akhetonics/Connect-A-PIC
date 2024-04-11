@@ -35,7 +35,7 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
         internal abstract Task ExecuteAsyncCmd(T parameter);
         public virtual bool CanExecute (object parameter)
         {
-            return true;
+            return parameter is T;
         }
 
         public virtual bool CanMergeWith(ICommand other)

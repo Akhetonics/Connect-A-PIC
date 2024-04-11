@@ -26,7 +26,6 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
         
         internal async override Task ExecuteAsyncCmd(ExportNazcaParameters parameter)
         {
-            if (!CanExecute(parameter)) return;
             var nazcaParams = (ExportNazcaParameters)parameter;
             var pythonCode = compiler.Export(this.grid);
             await this.dataAccessor.Write(nazcaParams.Path, pythonCode);

@@ -6,6 +6,7 @@ using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scripts.Helpers;
 using ConnectAPIC.Scripts.View.ComponentViews;
+using ConnectAPIC.Scripts.ViewModel.CommandFactory;
 using ConnectAPIC.Scripts.ViewModel.Commands;
 using Godot;
 using System;
@@ -128,7 +129,9 @@ namespace ConnectAPIC.LayoutWindow.View
             var ComponentView = ComponentViewFactory.CreateComponentView(componentTypeNumber);
             ComponentView.ViewModel.RegisterInGrid(ViewModel.Grid, gridX, gridY, rotationCounterClockwise);
             ComponentView.ViewModel.SliderChanged += async (int sliderNumber, double newVal) => {
-                await ViewModel.MoveSliderCommand.ExecuteAsync(new MoveSliderCommandArgs(ComponentView.ViewModel.GridX, ComponentView.ViewModel.GridY, sliderNumber, newVal));
+                await ViewModel.CommandFactory
+                    .CreateCommand(CommandType.MoveSlider)
+                    .ExecuteAsync(new MoveSliderCommandArgs(ComponentView.ViewModel.GridX, ComponentView.ViewModel.GridY, sliderNumber, newVal));
                 await RecalculateLightIfOn();
             };
             RegisterComponentViewInGridView(ComponentView);
@@ -157,7 +160,7 @@ namespace ConnectAPIC.LayoutWindow.View
             {
                 try
                 {
-                    ViewModel.ExportToNazcaCommand.ExecuteAsync(new ExportNazcaParameters(path));
+                    ViewModel.CommandFactory.CreateCommand(CommandType.ExportNazca).ExecuteAsync(new ExportNazcaParameters(path)).Wait();
                     NotificationManager.Instance.Notify("Successfully saved file");
                 }
                 catch (Exception ex)
@@ -170,7 +173,7 @@ namespace ConnectAPIC.LayoutWindow.View
 
         private void _on_btn_show_light_propagation_toggled(bool button_pressed)
         {
-            ViewModel.SwitchOnLightCommand.ExecuteAsync(button_pressed).Wait();
+            ViewModel.CommandFactory.CreateCommand(CommandType.SwitchOnLight).ExecuteAsync(button_pressed).Wait();
             if (button_pressed)
             {
                 LightOnButton.Icon = LightOnTexture;
@@ -187,7 +190,7 @@ namespace ConnectAPIC.LayoutWindow.View
             {
                 try
                 {
-                    await ViewModel.SaveGridCommand.ExecuteAsync(new SaveGridParameters(path));
+                    await ViewModel.CommandFactory.CreateCommand(CommandType.SaveGrid).ExecuteAsync(new SaveGridParameters(path));
                     NotificationManager.Instance.Notify("Successfully saved file");
                 }
                 catch (Exception ex)
@@ -204,7 +207,7 @@ namespace ConnectAPIC.LayoutWindow.View
             {
                 try
                 {
-                    await ViewModel.LoadGridCommand.ExecuteAsync(new LoadGridParameters(path));
+                    await ViewModel.CommandFactory.CreateCommand(CommandType.LoadGrid).ExecuteAsync(new LoadGridParameters(path));
                     NotificationManager.Instance.Notify("Successfully loaded file");
                 }
                 catch (Exception ex)

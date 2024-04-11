@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 {
 
-    public class SaveGridCommand : ICommandBase
+    public class SaveGridCommand : CommandBase<SaveGridParameters>
     {
         public event EventHandler CanExecuteChanged;
         private GridPersistenceManager gridPersistenceManager;
@@ -21,19 +21,9 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
         { 
             this.gridPersistenceManager = new GridPersistenceManager(grid, dataAccessor);
         }
-        
-        public bool CanExecute(object parameter)
+
+        internal async override Task ExecuteAsyncCmd(SaveGridParameters parameter)
         {
-            if( parameter is SaveGridParameters)
-            {
-                return true;
-            }
-            return false;
-        }
-        
-        public async Task ExecuteAsync(object parameter)
-        {
-            if (!CanExecute(parameter)) return;
             var saveParams = (SaveGridParameters)parameter;
             await gridPersistenceManager.SaveAsync(saveParams.Path);
         }

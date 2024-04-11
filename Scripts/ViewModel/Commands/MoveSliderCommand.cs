@@ -8,29 +8,34 @@ using System.Threading.Tasks;
 
 namespace ConnectAPIC.Scripts.ViewModel.Commands
 {
-    public class MoveSliderCommand : ICommandBase
+    public class MoveSliderCommand : CommandBase<MoveSliderCommandArgs>
     {
         public GridManager Grid { get; }
+        public Slider OldSlider { get; private set; }
+        public double OldSliderPosition { get; private set; }
+
         public MoveSliderCommand(GridManager mainGrid)
         {
             Grid = mainGrid;
         }
 
-        public bool CanExecute(object parameter)
+        public override bool CanExecute(object parameter)
         {
             return (parameter is MoveSliderCommandArgs moveParams
                 && Grid.ComponentMover.GetComponentAt(moveParams.gridX, moveParams.gridY)?.GetAllSliders().SingleOrDefault(s=>s.Number== moveParams.sliderNumber)!= null);
         }
 
-        public Task ExecuteAsync(object parameter)
+        internal override Task ExecuteAsyncCmd(MoveSliderCommandArgs moveParams)
         {
-            if (!CanExecute(parameter)) return Task.CompletedTask;
-            var moveParams = (MoveSliderCommandArgs)parameter;
             var sliderComponent = Grid.ComponentMover.GetComponentAt(moveParams.gridX, moveParams.gridY);
-            sliderComponent.GetSlider(moveParams.sliderNumber).Value = moveParams.newValue;
-            // also update the SliderValue in the SMatrix.. this should be cleaned up sooner or later
-           
+            OldSlider = sliderComponent.GetSlider(moveParams.sliderNumber);
+            OldSliderPosition = OldSlider.Value;
+            OldSlider.Value = moveParams.newValue;
             return Task.CompletedTask;
+        }
+        public override void Undo()
+        {
+            OldSlider.Value = OldSliderPosition;
         }
     }
 

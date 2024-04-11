@@ -1,13 +1,17 @@
+using Antlr4.Runtime.Misc;
+using CAP_Core.Components;
 using CAP_Core.Grid;
+using CAP_Core.Helpers;
 using ConnectAPIC.Scripts.ViewModel.Commands;
 using System;
 using System.Threading.Tasks;
 
 namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 {
-    public class RotateComponentCommand : ICommandBase
+    public class RotateComponentCommand : CommandBase<RotateComponentArgs>
     {
         private readonly GridManager Grid;
+        public IntVector OldComponentPosition { get; private set; }
 
         public event EventHandler CanExecuteChanged;
 
@@ -15,7 +19,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
         {
             this.Grid = grid;
         }
-        public bool CanExecute(object parameter)
+        public override bool CanExecute(object parameter)
         {
             if (parameter is not RotateComponentArgs args) return false;
             return CanRotateComponentBy90(args.GridX, args.GridY);
@@ -37,12 +41,19 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             }
             return true;
         }
-        public Task ExecuteAsync(object parameter)
+        internal override Task ExecuteAsyncCmd(RotateComponentArgs args)
         {
-            if (!CanExecute(parameter)) return Task.CompletedTask;
-            var args = (RotateComponentArgs)parameter;
+            var oldComponent = Grid.ComponentMover.GetComponentAt(args.GridX, args.GridY);
+            OldComponentPosition = new IntVector(oldComponent.GridXMainTile, oldComponent.GridYMainTile);
             Grid.ComponentRotator.RotateComponentBy90CounterClockwise(args.GridX, args.GridY);
             return Task.CompletedTask;
+        }
+        public override void Undo()
+        {
+            // rotating something back means to rotate it 270° = 3 times by 90°
+            Grid.ComponentRotator.RotateComponentBy90CounterClockwise(OldComponentPosition.X, OldComponentPosition.Y);
+            Grid.ComponentRotator.RotateComponentBy90CounterClockwise(OldComponentPosition.X, OldComponentPosition.Y);
+            Grid.ComponentRotator.RotateComponentBy90CounterClockwise(OldComponentPosition.X, OldComponentPosition.Y);
         }
     }
     public class RotateComponentArgs

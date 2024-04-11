@@ -28,15 +28,9 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             ComponentFactory = componentFactory;
             ViewModel = viewModel;
         }
-        
-        public override bool CanExecute(object parameter)
-        {
-            return parameter is LoadGridParameters;
-        }
 
         internal async override Task ExecuteAsyncCmd(LoadGridParameters loadParams)
         {
-            if (!CanExecute(loadParams)) return;
             var lightStatus = ViewModel.LightManager.IsLightOn;
             ViewModel.LightManager.IsLightOn = false;
             await gridPersistenceManager.LoadAsync(loadParams.Path, ComponentFactory);

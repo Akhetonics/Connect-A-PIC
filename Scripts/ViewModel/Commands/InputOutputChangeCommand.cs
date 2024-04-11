@@ -27,14 +27,12 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
 
         public override bool CanExecute(object parameter)
         {
-            if (parameter is ExternalPortViewModel ViewModel == false)
-                return false;
+            if (parameter is not ExternalPortViewModel ViewModel) return false;
             return Grid.ExternalPortManager.ExternalPorts.Contains(ViewModel.PortModel);
         }
 
         internal override Task ExecuteAsyncCmd(ExternalPortViewModel ViewModel)
         {
-            if (!CanExecute(ViewModel)) return Task.CompletedTask;
             OldPort = ViewModel.PortModel;
             OldPortIndex = Grid.ExternalPortManager.ExternalPorts.IndexOf(OldPort);
 

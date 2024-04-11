@@ -35,7 +35,6 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 
         internal override Task ExecuteAsyncCmd(CreateComponentArgs parameter)
         {
-            if ( !CanExecute(parameter) ) return default;
             Component component = ComponentFactory.CreateComponent(parameter.ComponentTypeNumber);
             component.Rotation90CounterClock = parameter.Rotation;
             GridModel.ComponentMover.PlaceComponent(parameter.GridX, parameter.GridY, component);

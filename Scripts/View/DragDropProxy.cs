@@ -8,6 +8,8 @@ using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scripts.Helpers;
 using ConnectAPIC.Scripts.View.ToolBox;
 using ConnectAPIC.Scripts.ViewModel;
+using ConnectAPIC.Scripts.ViewModel.CommandFactory;
+using ConnectAPIC.Scripts.ViewModel.Commands;
 using Godot;
 using SuperNodes.Types;
 using System;
@@ -30,6 +32,7 @@ public partial class DragDropProxy : Control
     private Dictionary<Vector2I, ComponentView> previewComponents = new Dictionary<Vector2I, ComponentView>();
     public ILogger Logger { get; private set; }
     public Vector2I StartGridXY { get; private set; }
+    public ICommand MyCreateComponentCommand { get; private set; }
 
     public void Initialize(GridView gridView, GridViewModel viewModel, ILogger logger)
     {
@@ -46,9 +49,9 @@ public partial class DragDropProxy : Control
             bool canDropData = false;
             var deltaGridXY = (GridView.LocalToMap(position) - StartGridXY).ToIntVector();
             var args = ConvertGodotListToMoveComponentArgs(data, deltaGridXY);
-            if (args != null)
+            if (args != null && MyCreateComponentCommand != null)
             {
-                canDropData = ViewModel.MoveComponentCommand.CanExecute(args);
+                canDropData = MyCreateComponentCommand.CanExecute(args);
             }
             if (canDropData == true && data.Obj is Godot.Collections.Array transitions)
             {
@@ -72,7 +75,8 @@ public partial class DragDropProxy : Control
         var args = ConvertGodotListToMoveComponentArgs(data, deltaGridXY);
         if (args != null)
         {
-            ViewModel.MoveComponentCommand.ExecuteAsync(args).Wait();
+            MyCreateComponentCommand.ExecuteAsync(args).Wait();
+            MyCreateComponentCommand = null;
         }
         ResetDragPreview();
     }
@@ -105,8 +109,6 @@ public partial class DragDropProxy : Control
             }
             var componentGridPosition = (Vector2I)componentPositionVariant;
             var targetGridPosition = componentGridPosition + deltaGridXY;
-
-            // Assuming CreatePreviewComponent is a method that creates a visual representation of the component.
             CreateOrUpdatePreviewComponent(componentGridPosition, targetGridPosition);
         }
     }
@@ -116,7 +118,7 @@ public partial class DragDropProxy : Control
         if (previewComponents.TryGetValue(originalGridPosition, out var previewComponent))
         {
             // Preview component already exists, update its position and color
-            previewComponent.Position = MapToLocalCorrected(targetGridPosition); // Assuming a method to convert grid position to local position
+            previewComponent.Position = MapToLocalCorrected(targetGridPosition);
         }
         else
         {
@@ -175,6 +177,7 @@ public partial class DragDropProxy : Control
             {
                 componentLocations.Add(cursorComponentPos);
             }
+            MyCreateComponentCommand = ViewModel.CommandFactory.CreateCommand(CommandType.CreateComponent);
         }
 
         if(componentLocations.Count == 0)

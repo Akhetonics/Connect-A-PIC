@@ -14,6 +14,7 @@ using CAP_Core.ExternalPorts;
 using CAP_Core.Tiles;
 using Chickensoft.GodotTestDriver;
 using Chickensoft.GodotTestDriver.Util;
+using ConnectAPIC.Scripts.ViewModel.CommandFactory;
 
 namespace ConnectAPIC.test.src
 {
@@ -58,9 +59,9 @@ namespace ConnectAPIC.test.src
             RedLaser = (firstLaserInput as ExternalInput).LaserType;
             GreenLaser = (secondLaserInput as ExternalInput).LaserType;
 
-            await MyGameManager.GridViewModel.CreateComponentCommand.ExecuteAsync(new CreateComponentArgs(straightComponentNr, 0, secondInputTileY, DiscreteRotation.R0));
-            await MyGameManager.GridViewModel.CreateComponentCommand.ExecuteAsync(new CreateComponentArgs(straightComponentNr, 1, secondInputTileY, DiscreteRotation.R0));
-            await MyGameManager.GridViewModel.CreateComponentCommand.ExecuteAsync(new CreateComponentArgs(curveComponentNr, 0, firstInputTileY, DiscreteRotation.R270));
+            await MyGameManager.GridViewModel.CommandFactory.CreateCommand(CommandType.CreateComponent).ExecuteAsync(new CreateComponentArgs(straightComponentNr, 0, secondInputTileY, DiscreteRotation.R0));
+            await MyGameManager.GridViewModel.CommandFactory.CreateCommand(CommandType.CreateComponent).ExecuteAsync(new CreateComponentArgs(straightComponentNr, 1, secondInputTileY, DiscreteRotation.R0));
+            await MyGameManager.GridViewModel.CommandFactory.CreateCommand(CommandType.CreateComponent).ExecuteAsync(new CreateComponentArgs(curveComponentNr, 0, firstInputTileY, DiscreteRotation.R270));
             // create a curve at the position of one of the standardInputs and rotate it by 90 degrees and then start light distribution
             RotatedCurve = MyGameManager.GridView.GridComponentViews[0, firstInputTileY];
             StraightLine = MyGameManager.GridView.GridComponentViews[0, secondInputTileY];

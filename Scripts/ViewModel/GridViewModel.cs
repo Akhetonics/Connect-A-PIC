@@ -20,16 +20,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
 {
     public class GridViewModel : System.ComponentModel.INotifyPropertyChanged
     {
-        public ICommandBase SwitchOnLightCommand { get; set; }
         public ICommandFactory CommandFactory { get; private set; }
-        public ICommandBase CreateComponentCommand { get; set; }
-        public ICommandBase MoveComponentCommand { get; set; }
-        public ICommandBase ExportToNazcaCommand { get; set; }
-        public ICommandBase SaveGridCommand { get; internal set; }
-        public ICommandBase LoadGridCommand { get; internal set; }
-        public ICommandBase MoveSliderCommand { get; internal set; }
-        public ICommandBase DeleteComponentCommand { get; internal set; }
-        public ICommandBase RotateComponentCommand { get; internal set; }
         public SelectionGroupManager SelectionGroupManager;
         public delegate void ComponentCreatedEventHandler(Component component, int gridX, int gridY);
         public event ComponentCreatedEventHandler ComponentCreated;
@@ -60,8 +51,8 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             this.ComponentModelFactory = componentModelFactory;
             LightManager = grid.LightManager;
             this.LightManager.OnLightSwitched += (object sender, bool e) => IsLightOn = e;
-            CommandFactory = new CommandFactory(Grid, componentModelFactory, SelectionGroupManager.SelectionManager, Logger, lightCalculator, this);
             SelectionGroupManager = new(this, new SelectionManager(grid));
+            CommandFactory = new CommandFactory(Grid, componentModelFactory, SelectionGroupManager.SelectionManager, Logger, lightCalculator, this);
             this.Grid.ComponentMover.OnComponentPlacedOnTile += Grid_OnComponentPlacedOnTile;
             this.Grid.ComponentMover.OnComponentRemoved += (Component component, int x , int y ) => ComponentRemoved?.Invoke(component, x, y);
             this.ToolViewModel = new ToolViewModel(grid);

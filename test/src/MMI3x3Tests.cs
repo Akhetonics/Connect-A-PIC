@@ -15,6 +15,7 @@ using Chickensoft.GodotTestDriver;
 using Chickensoft.GodotTestDriver.Util;
 using CAP_DataAccess.Components.ComponentDraftMapper.DTOs;
 using CAP_Core.Components.ComponentHelpers;
+using ConnectAPIC.Scripts.ViewModel.CommandFactory;
 
 namespace ConnectAPIC.test.src
 {
@@ -46,8 +47,8 @@ namespace ConnectAPIC.test.src
             var firstLaserInput = MyGameManager.Grid.ExternalPortManager.ExternalPorts[0];
             var firstInputTileY = firstLaserInput.TilePositionY;
             RedLaser = (firstLaserInput as ExternalInput).LaserType;
-            await MyGameManager.GridViewModel.CreateComponentCommand.ExecuteAsync(new CreateComponentArgs(MMI3x3NR, 0, firstInputTileY, DiscreteRotation.R0));
-            await MyGameManager.GridViewModel.CreateComponentCommand.ExecuteAsync(new CreateComponentArgs(MMI3x3NR, 3, firstInputTileY, DiscreteRotation.R0));
+            await MyGameManager.GridViewModel.CommandFactory.CreateCommand(CommandType.CreateComponent).ExecuteAsync(new CreateComponentArgs(MMI3x3NR, 0, firstInputTileY, DiscreteRotation.R0));
+            await MyGameManager.GridViewModel.CommandFactory.CreateCommand(CommandType.CreateComponent).ExecuteAsync(new CreateComponentArgs(MMI3x3NR, 3, firstInputTileY, DiscreteRotation.R0));
             MMI3x3 = MyGameManager.GridView.GridComponentViews[3, firstInputTileY];
         }
 

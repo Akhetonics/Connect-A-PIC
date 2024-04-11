@@ -6,6 +6,7 @@ using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scripts.ViewModel;
+using ConnectAPIC.Scripts.ViewModel.CommandFactory;
 using Godot;
 using SuperNodes.Types;
 using System;
@@ -65,34 +66,26 @@ namespace ConnectAPIC.Scripts.View.ToolBox
             if (IsActive == false) return;
             if (@event is InputEventMouseButton mouseButtonEvent)
             {
-                Vector2I gridPosition = GetMouseGridPosition();
                 if (mouseButtonEvent.ButtonIndex == MouseButton.Middle)
                 {
                     MiddleMouseButtonPressed = mouseButtonEvent.Pressed;
-                    if (mouseButtonEvent.Pressed)
-                    {
-                        var delParams = new DeleteComponentArgs(new() { new IntVector(gridPosition.X, gridPosition.Y) });
-                        if (GridViewModel.DeleteComponentCommand.CanExecute(delParams))
-                        {
-                            GridViewModel.DeleteComponentCommand.ExecuteAsync(delParams).Wait();
-                        }
-                    }
+                    DeleteComponentIfMiddleMouseIsPressed();
                 }
             }
             // enabling mouse drag drawing
             else if (@event is InputEventMouseMotion)
             {
-                Vector2I gridPosition = GetMouseGridPosition();
-                if (MiddleMouseButtonPressed)
-                {
-                    // enabling mouse drag deleting of components
-                    var delParams = new DeleteComponentArgs(new() { new IntVector(gridPosition.X, gridPosition.Y) });
-                    if (GridViewModel.DeleteComponentCommand.CanExecute(delParams))
-                    {
-                        GridViewModel.DeleteComponentCommand.ExecuteAsync(delParams).Wait();
-                    }
-                }
+                DeleteComponentIfMiddleMouseIsPressed();
+            }
+        }
 
+        private void DeleteComponentIfMiddleMouseIsPressed()
+        {
+            Vector2I gridPosition = GetMouseGridPosition();
+            if (Input.IsMouseButtonPressed(MouseButton.Middle))
+            {
+                var delParams = new DeleteComponentArgs(new() { new IntVector(gridPosition.X, gridPosition.Y) });
+                GridViewModel.CommandFactory.CreateCommand(CommandType.DeleteComponent).ExecuteAsync(delParams).Wait();
             }
         }
     }

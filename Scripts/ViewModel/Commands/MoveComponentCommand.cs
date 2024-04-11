@@ -16,6 +16,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
         public SelectionManager SelectionManager { get; }
         public List<Component> OldSelections { get; private set; } = new();
         public List<(Component Component, IntVector Position)> OldComponentsAndPositionInTargetArea { get; private set; }
+        public List<(IntVector StartPosition, Component ComponentToMove)> OldTransitions { get; private set; }
 
         public event EventHandler CanExecuteChanged;
 
@@ -83,15 +84,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 
         internal override Task ExecuteAsyncCmd(MoveComponentArgs parameter)
         {
-            if (CanExecute(parameter) == false) return Task.CompletedTask;
-
-            StoreSelectedElementsForUndo();
-            StoreComponentsInTargetAreaForUndo(parameter);
-            // store the initial position of all elements that are about to be moved
-            foreach( var transition in parameter.Transitions)
-            {
-                transition.Source.
-            }
+            StoreDataForUndo(parameter);
             var componentAndTargets = CollectMoveInfo(parameter);
             UnregisterSourceAndTargetAreas(componentAndTargets);
             PlaceComponentsInTargets(componentAndTargets);
@@ -99,11 +92,30 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             return Task.CompletedTask;
         }
 
+        private void StoreDataForUndo(MoveComponentArgs parameter)
+        {
+            StoreSelectedElementsForUndo();
+            StoreComponentsInTargetAreaForUndo(parameter);
+            StoreInitialComponentPositionsForUndo(parameter);
+        }
+
+        // store the initial position of all elements that are about to be moved
+        private void StoreInitialComponentPositionsForUndo(MoveComponentArgs parameter)
+        {
+            OldTransitions = new();
+            foreach (var (Source, _) in parameter.Transitions)
+            {
+                var oldComponent = grid.ComponentMover.GetComponentAt(Source.X, Source.Y);
+                var oldPosition = new IntVector(oldComponent.GridXMainTile, oldComponent.GridYMainTile);
+                OldTransitions.Add((StartPosition: oldPosition, ComponentToMove: oldComponent));
+            }
+        }
+
         private void StoreComponentsInTargetAreaForUndo(MoveComponentArgs parameter)
         {
-            foreach (var targetPosition in parameter.Transitions)
+            foreach (var (_, Target) in parameter.Transitions)
             {
-                var targetCmp = grid.ComponentMover.GetComponentAt(targetPosition.Target.X, targetPosition.Target.Y);
+                var targetCmp = grid.ComponentMover.GetComponentAt(Target.X, Target.Y);
                 var targetPos = new IntVector(targetCmp.GridXMainTile, targetCmp.GridYMainTile);
                 OldComponentsAndPositionInTargetArea.Add((Component: targetCmp, Position: targetPos));
             }
@@ -170,10 +182,25 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 
         public override void Undo()
         {
-            // it could be that there was a list of components that has been dragged.
-            // they had overridden the elements on the target area -> so we have to recreate the deleted elements
-            // and also move all moved components back.
-            // and we have to reset the selection as well
+            // first move the components back to where they came from
+            foreach( var (StartPosition, ComponentToMove) in OldTransitions)
+            {
+                // unregister the components and register them again at startPosition
+                grid.ComponentMover.UnregisterComponentAt(ComponentToMove.GridXMainTile, ComponentToMove.GridYMainTile);
+                grid.ComponentMover.PlaceComponent(StartPosition.X, StartPosition.Y, ComponentToMove);
+            }
+            // then recreate the deleted / overridden components
+            foreach( var (Component, Position) in OldComponentsAndPositionInTargetArea)
+            {
+                grid.ComponentMover.PlaceComponent(Position.X, Position.Y, Component);
+            }
+
+            // then restore the selection
+            SelectionManager.Selections.Clear();
+            foreach ( var Component in OldSelections)
+            {
+                SelectionManager.Selections.Add(new IntVector(Component.GridXMainTile, Component.GridYMainTile));
+            }
         }
     }
 

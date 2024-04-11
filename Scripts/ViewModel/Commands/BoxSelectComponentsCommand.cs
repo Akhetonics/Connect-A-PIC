@@ -129,14 +129,14 @@ namespace ConnectAPIC.Scripts.View.ToolBox
         }
 
         // can merge, when the appendBehavior is equal to the current one.
-        public override bool CanMergeWith(ICommandBase newCommand)
+        public override bool CanMergeWith(ICommand newCommand)
         {
             if (newCommand is BoxSelectComponentsCommand boxSelectionCommand && boxSelectionCommand.AppendBehavior == this.AppendBehavior && boxSelectionCommand.AppendBehavior != AppendBehaviors.CreateNew)
                 return true;
             return false;
         }
 
-        public override void MergeWith(ICommandBase other)
+        public override void MergeWith(ICommand other)
         {
             if (!CanMergeWith(other))
                 throw new InvalidOperationException("Cannot merge with the provided command.");

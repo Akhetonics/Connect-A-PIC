@@ -1,4 +1,5 @@
 using CAP_Contracts.Logger;
+using CAP_Core.CodeExporter;
 using CAP_Core.Components.Creation;
 using CAP_Core.Grid;
 using CAP_Core.Helpers;
@@ -29,7 +30,9 @@ namespace ConnectAPIC.Scripts.ViewModel.CommandFactory
         RotateComponent,
         SwitchOnLight,
         LoadGrid,
-        MoveSlider
+        MoveSlider,
+        ExportNazca,
+        SaveGrid
     }
 
     public class CommandFactory : ICommandFactory
@@ -80,7 +83,7 @@ namespace ConnectAPIC.Scripts.ViewModel.CommandFactory
                     newCommand = new DeleteComponentCommand(GridManager);
                     break;
                 case CommandType.InputColorChange:
-                    newCommand = new InputColorChangeCommand(GridManager , LightCalculationService);
+                    newCommand = new InputColorChangeCommand(GridManager , GridViewModel);
                     break;
                 case CommandType.InputOutputChange:
                     newCommand = new InputOutputChangeCommand(GridManager, LightCalculationService);
@@ -99,6 +102,12 @@ namespace ConnectAPIC.Scripts.ViewModel.CommandFactory
                     break;
                 case CommandType.MoveSlider:
                     newCommand = new MoveSliderCommand(GridManager);
+                    break;
+                case CommandType.ExportNazca:
+                    newCommand = new ExportNazcaCommand(new NazcaExporter(),GridManager, new FileDataAccessor());
+                    break;
+                case CommandType.SaveGrid:
+                    newCommand = new SaveGridCommand(GridManager, new FileDataAccessor());
                     break;
                     // more cases for new command types
                 default:

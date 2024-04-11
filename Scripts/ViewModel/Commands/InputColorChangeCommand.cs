@@ -27,15 +27,12 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
 
         public override bool CanExecute(object parameter)
         {
-            InputColorChangeArgs inputParams = parameter as InputColorChangeArgs;
-            if (inputParams == null || inputParams.LaserType == null) return false;
-
+            if (parameter is not InputColorChangeArgs inputParams || inputParams.LaserType == null) return false;
             return Grid.ExternalPortManager.ExternalPorts.Contains(inputParams.Port);
         }
 
         internal override Task ExecuteAsyncCmd(InputColorChangeArgs args)
         {
-            if (!CanExecute(args)) return Task.CompletedTask;
             OldLaserType = args.Port.LaserType;
             args.Port.LaserType = args.LaserType;
             RestartLight();
