@@ -27,41 +27,16 @@ namespace ConnectAPIC.Scripts.ViewModel
             get => _portModel;
             set
             {
-                if (_portModel != null)
-                {
-                    // unregister from propertyChanged events as the old _portModel is about to get replaced
-                    // and we don't want to get spammed with events from removed PortModels
-                    _portModel.PropertyChanged -= PortModel_PropertyChanged;
-                }
                 _portModel = value;
-                // register again to all propertyChanged events for the new PortModel
-                _portModel.PropertyChanged += PortModel_PropertyChanged;
-
                 if (value is ExternalInput input)
                 {
-                    IsInput = true;
                     ResetInputPowerAndColorUsingLaserType(input.LaserType, input.InFlowPower.Real);
                 }
                 OnPropertyChanged();
             }
         }
-
-        public int TilePositionY
-        {
-            get;
-            private set;
-        } = -1;
-
-        private bool _isInput;
-        public bool IsInput
-        {
-            get => _isInput;
-            set
-            {
-                _isInput = value;
-                OnPropertyChanged();
-            }
-        }
+        public bool IsInput => PortModel is ExternalInput;
+        public int TilePositionY { get; private set; } = -1;
 
         private bool _isLightOn;
         public bool IsLightOn
@@ -116,7 +91,7 @@ namespace ConnectAPIC.Scripts.ViewModel
             Grid.LightManager.OnLightSwitched += (object sender, bool e) =>
             {
                 IsLightOn = e;
-                if (!IsLightOn && !IsInput)
+                if (!IsLightOn && PortModel is not ExternalInput)
                 {
                     //for some reason when light turns off LightCalculationChanged signal isn't emitted
                     ResetPowers();
@@ -154,7 +129,7 @@ namespace ConnectAPIC.Scripts.ViewModel
 
         private void ResetPowerMeterDisplay(object sender, LightCalculationUpdated e)
         {
-            if (IsInput) return;
+            if (PortModel is ExternalInput) return;
             var touchingComponent = Grid.ComponentMover.GetComponentAt(0, PortModel.TilePositionY);
             if (touchingComponent == null)
             {
@@ -176,18 +151,6 @@ namespace ConnectAPIC.Scripts.ViewModel
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        private void PortModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            //only external inputs give away meaningful property change signals for now
-            if (PortModel is not ExternalInput inputPort) return;
-
-            if (e.PropertyName == nameof(ExternalInput.LaserType)
-             || e.PropertyName == nameof(ExternalInput.InFlowPower))
-            {
-                var inputPower = inputPort.InFlowPower.Real;
-                ResetInputPowerAndColorUsingLaserType(inputPort.LaserType, inputPower);
-            }
         }
 
         private void UpdateInputPowerAndColorUsingLaserType(LaserType laserType, double inputPower)

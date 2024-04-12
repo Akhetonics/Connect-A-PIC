@@ -12,19 +12,19 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
     {
         private readonly GridManager Grid;
 
-        public List<(Component Component,IntVector Position)> DeletedComponents { get; private set; }
+        public List<(Component Component, IntVector Position)> DeletedComponents { get; private set; } = new();
 
         public DeleteComponentCommand(GridManager grid)
         {
             this.Grid = grid;
         }
-        public override bool CanExecute(object parameter) => parameter is DeleteComponentArgs;
 
         internal override Task ExecuteAsyncCmd(DeleteComponentArgs parameter)
         {
             foreach (IntVector deletePosition in parameter.DeletePositions)
             {
                 var componentToDelete = Grid.ComponentMover.GetComponentAt(deletePosition.X, deletePosition.Y);
+                if(componentToDelete == null) continue; // one mit accidentally have clicked on an empty field
                 DeletedComponents.Add((componentToDelete,new IntVector(componentToDelete.GridXMainTile,componentToDelete.GridYMainTile)));
                 Grid.ComponentMover.UnregisterComponentAt(deletePosition.X, deletePosition.Y);
             }

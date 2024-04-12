@@ -49,11 +49,8 @@ namespace ConnectAPIC.Scripts.View.ToolBox
 
         private void SelectItems(BoxSelectComponentsArgs parameter)
         {
-            ICommandBase command = GridViewModel.CommandFactory.CreateCommand(CommandType.BoxSelectComponent);
-            if (command != null && command.CanExecute(parameter))
-            {
-                command.ExecuteAsync(parameter).Wait();
-            }
+            var command = GridViewModel.CommandFactory.CreateCommand(CommandType.BoxSelectComponent);
+            command.ExecuteAsync(parameter).Wait();
         }
         private void DeleteItems()
         {

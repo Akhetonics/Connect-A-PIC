@@ -32,7 +32,7 @@ public partial class DragDropProxy : Control
     private Dictionary<Vector2I, ComponentView> previewComponents = new Dictionary<Vector2I, ComponentView>();
     public ILogger Logger { get; private set; }
     public Vector2I StartGridXY { get; private set; }
-    public ICommand MyCreateComponentCommand { get; private set; }
+    public ICommand MyMoveComponentCommand { get; private set; }
 
     public void Initialize(GridView gridView, GridViewModel viewModel, ILogger logger)
     {
@@ -49,9 +49,9 @@ public partial class DragDropProxy : Control
             bool canDropData = false;
             var deltaGridXY = (GridView.LocalToMap(position) - StartGridXY).ToIntVector();
             var args = ConvertGodotListToMoveComponentArgs(data, deltaGridXY);
-            if (args != null && MyCreateComponentCommand != null)
+            if (args != null && MyMoveComponentCommand != null)
             {
-                canDropData = MyCreateComponentCommand.CanExecute(args);
+                canDropData = MyMoveComponentCommand.CanExecute(args);
             }
             if (canDropData == true && data.Obj is Godot.Collections.Array transitions)
             {
@@ -75,8 +75,8 @@ public partial class DragDropProxy : Control
         var args = ConvertGodotListToMoveComponentArgs(data, deltaGridXY);
         if (args != null)
         {
-            MyCreateComponentCommand.ExecuteAsync(args).Wait();
-            MyCreateComponentCommand = null;
+            MyMoveComponentCommand.ExecuteAsync(args).Wait();
+            MyMoveComponentCommand = null;
         }
         ResetDragPreview();
     }
@@ -177,7 +177,7 @@ public partial class DragDropProxy : Control
             {
                 componentLocations.Add(cursorComponentPos);
             }
-            MyCreateComponentCommand = ViewModel.CommandFactory.CreateCommand(CommandType.CreateComponent);
+            MyMoveComponentCommand = ViewModel.CommandFactory.CreateCommand(CommandType.MoveComponent);
         }
 
         if(componentLocations.Count == 0)

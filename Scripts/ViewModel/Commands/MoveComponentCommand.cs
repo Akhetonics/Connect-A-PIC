@@ -113,11 +113,12 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 
         private void StoreComponentsInTargetAreaForUndo(MoveComponentArgs parameter)
         {
-            foreach (var (_, Target) in parameter.Transitions)
+            OldComponentsAndPositionInTargetArea = new();
+            foreach (var (Source, _) in parameter.Transitions)
             {
-                var targetCmp = grid.ComponentMover.GetComponentAt(Target.X, Target.Y);
-                var targetPos = new IntVector(targetCmp.GridXMainTile, targetCmp.GridYMainTile);
-                OldComponentsAndPositionInTargetArea.Add((Component: targetCmp, Position: targetPos));
+                var CmpToBeMoved = grid.ComponentMover.GetComponentAt(Source.X, Source.Y);
+                var ComponentPosition = new IntVector(CmpToBeMoved.GridXMainTile, CmpToBeMoved.GridYMainTile);
+                OldComponentsAndPositionInTargetArea.Add((Component: CmpToBeMoved, Position: ComponentPosition));
             }
         }
 

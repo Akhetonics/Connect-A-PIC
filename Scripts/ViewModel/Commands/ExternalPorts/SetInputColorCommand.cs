@@ -12,26 +12,27 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConnectAPIC.Scripts.ViewModel.Commands
+namespace ConnectAPIC.Scripts.ViewModel.Commands.ExternalPorts
 {
-    public class InputColorChangeCommand : CommandBase<InputColorChangeArgs>
+    public class SetInputColorCommand : CommandBase<SetInputColorArgs>
     {
         public GridManager Grid { get; }
         public GridViewModel GridViewModel { get; }
         public LaserType OldLaserType { get; private set; }
 
-        public InputColorChangeCommand(GridManager grid, GridViewModel gridViewModel) {
+        public SetInputColorCommand(GridManager grid, GridViewModel gridViewModel)
+        {
             Grid = grid;
             GridViewModel = gridViewModel;
         }
 
         public override bool CanExecute(object parameter)
         {
-            if (parameter is not InputColorChangeArgs inputParams || inputParams.LaserType == null) return false;
+            if (parameter is not SetInputColorArgs inputParams || inputParams.LaserType == null) return false;
             return Grid.ExternalPortManager.ExternalPorts.Contains(inputParams.Port);
         }
 
-        internal override Task ExecuteAsyncCmd(InputColorChangeArgs args)
+        internal override Task ExecuteAsyncCmd(SetInputColorArgs args)
         {
             OldLaserType = args.Port.LaserType;
             args.Port.LaserType = args.LaserType;
@@ -57,9 +58,9 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
         }
     }
 
-    public class InputColorChangeArgs
+    public class SetInputColorArgs
     {
-        public InputColorChangeArgs(ExternalInput port, LaserType laserType)
+        public SetInputColorArgs(ExternalInput port, LaserType laserType)
         {
             Port = port;
             LaserType = laserType;

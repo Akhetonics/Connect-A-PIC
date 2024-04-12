@@ -23,14 +23,14 @@ public partial class PortsContainerView : Node2D
     [Export] public PackedScene RightClickMenuTemplate {  get; set; }
 
     public void OnResolved() {
-        InitializePortsAndControlMenuThenConnectThem();
+        InstantiatePortsAndControlMenus();
     }
 
-    private void InitializePortsAndControlMenuThenConnectThem()
+    private void InstantiatePortsAndControlMenus()
     {
-        // initialize ports (port views will be children of this, and they will be connected to view model properly)
+        // instantiate ports (port views will be children of this, and they will be connected to view model properly)
         var factory = new ExternalPortViewFactory(this, Grid, LightCalculator);
-        List<ExternalPortViewModel> ports = factory.InitializeExternalPortViewList();
+        List<ExternalPortViewModel> ports = factory.InstantiateExternalPortViews();
 
         // create control menu, it will be child of ports container as well
         ControlMenu controlMenu = RightClickMenuTemplate.Instantiate<ControlMenu>();

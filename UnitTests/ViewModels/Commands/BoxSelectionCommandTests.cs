@@ -1,12 +1,15 @@
+using CAP_Core.Components;
 using CAP_Core.Grid;
 using CAP_Core.Helpers;
 using ConnectAPIC.Scripts.View.ToolBox;
 using Moq;
+using Shouldly;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static UnitTests.Helpers.GridHelpers;
 using UnitTests;
 using UnitTests.Grid;
 
@@ -45,5 +48,45 @@ namespace ConnectAPIC.test.ViewModels.Commands
             }
         }
 
+        [Fact]
+        public async Task TestDownToUpSelectionBox()
+        {
+            // arrange
+            var gridManager = GridHelpers.InitializeGridWithComponents();
+            var selectionManager = new SelectionManager(gridManager);
+            var command = new BoxSelectComponentsCommand(gridManager, selectionManager);
+            var parameters = new BoxSelectComponentsArgs(new() { (GridStart: new IntVector(4, 4), GridEnd: new IntVector(0, 0)) }, AppendBehaviors.CreateNew);
+            var components = FindAllComponentsInGrid(gridManager);
+
+            // act
+            await command.ExecuteAsync(parameters);
+            
+            // assert
+            selectionManager.Selections.Count.ShouldBe(components.Count);
+        }
+
+        [Fact]
+        public async void TestRevertBoxSelection()
+        {
+            // initialize
+            var gridManager = GridHelpers.InitializeGridWithComponents();
+            var components = FindAllComponentsInGrid(gridManager);
+            var initiallySelectedComponent = components.ToArray()[1];
+            var selectionManager = new SelectionManager(gridManager);
+            selectionManager.Selections.Add(new IntVector(initiallySelectedComponent.GridXMainTile, initiallySelectedComponent.GridYMainTile));
+            var command = new BoxSelectComponentsCommand(gridManager, selectionManager);
+            var parameters = new BoxSelectComponentsArgs(new() { (GridStart: new IntVector(4, 4), GridEnd: new IntVector(0, 0)) }, AppendBehaviors.CreateNew);
+            selectionManager.Selections.Add(new IntVector(components.First().GridXMainTile, components.First().GridYMainTile));
+
+            // act
+            await command.ExecuteAsync(parameters);
+            var selectedElementCount = selectionManager.Selections.Count();
+
+            command.Undo();
+
+            // assert
+            selectedElementCount.ShouldBe(components.Count);
+            selectionManager.Selections.First().ShouldBe(new IntVector(initiallySelectedComponent.GridXMainTile, initiallySelectedComponent.GridYMainTile));
+        }
     }
 }

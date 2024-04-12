@@ -24,12 +24,12 @@ namespace ConnectAPIC.Scripts.View.ToolBox
         public SelectionManager SelectionManager { get; }
         public AppendBehaviors AppendBehavior { get; set; }
         public bool WasExecuted { get; set; }
-        public HashSet<IntVector> OldSelection { get; private set; }
-        public HashSet<IntVector> NewSelection { get; private set; }
+        public HashSet<IntVector> OldSelection { get; private set; } = new();
+        public HashSet<IntVector> NewSelection { get; private set; } = new();
 
         public override bool CanExecute (object parameter)
         {
-            if (parameter is BoxSelectComponentsArgs boxParam && CollectAllComponentsInBoxes(boxParam.BoxSelections).Any())
+            if (parameter is BoxSelectComponentsArgs boxParam)
                 return true;
             return false;
         }
@@ -62,20 +62,27 @@ namespace ConnectAPIC.Scripts.View.ToolBox
             var componentsInBox = new HashSet<IntVector>();
 
             foreach(var (Start, End) in boxes) {
-                for (int x = Start.X; x <= End.X; x++)
+                var startX = Math.Min(Start.X, End.X);
+                var endX = Math.Max(Start.X, End.X);
+                var startY = Math.Min(Start.Y, End.Y);
+                var endY = Math.Max(Start.Y, End.Y);
+                for (int x = startX; x <= endX; x++)
                 {
-                    for (int y = Start.Y; y <= End.Y; y++)
+                    for (int y = startY; y <= endY; y++)
                     {
-                        var newComponent = Grid.ComponentMover.GetComponentAt(x, y);
-                        if (newComponent != null)
-                        {
-                            componentsInBox.Add(new IntVector(newComponent.GridXMainTile, newComponent.GridYMainTile));
-                        }
+                        AddComponentAt(componentsInBox, x, y);
                     }
                 }
             }
             
             return componentsInBox;
+        }
+
+        private void AddComponentAt(HashSet<IntVector> componentsInBox, int x, int y)
+        {
+            var newComponent = Grid.ComponentMover.GetComponentAt(x, y);
+            if (newComponent == null) return;
+            componentsInBox.Add(new IntVector(newComponent.GridXMainTile, newComponent.GridYMainTile));
         }
 
         private void CreateNewAndFillGridSelections()

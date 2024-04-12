@@ -10,25 +10,26 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConnectAPIC.Scripts.ViewModel.Commands
+namespace ConnectAPIC.Scripts.ViewModel.Commands.ExternalPorts
 {
-    public class InputPowerAdjustCommand : CommandBase<InputPowerAdjustArgs>
+    public class SetInputPowerCommand : CommandBase<SetInputPowerArgs>
     {
         public GridManager Grid { get; }
         public LightCalculationService LightCalculator { get; }
         public Complex OldInflowPower { get; private set; }
 
-        public InputPowerAdjustCommand(GridManager grid, LightCalculationService lightCalculator) {
+        public SetInputPowerCommand(GridManager grid, LightCalculationService lightCalculator)
+        {
             LightCalculator = lightCalculator;
             Grid = grid;
         }
 
         public override bool CanExecute(object parameter)
         {
-            if (parameter is not InputPowerAdjustArgs inputParams || inputParams.PowerValue < 0 || inputParams.PowerValue > 1) return false;
+            if (parameter is not SetInputPowerArgs inputParams || inputParams.PowerValue < 0 || inputParams.PowerValue > 1) return false;
             return Grid.ExternalPortManager.ExternalPorts.Contains(inputParams.Port) && inputParams.Port is ExternalInput;
         }
-        internal async override Task ExecuteAsyncCmd(InputPowerAdjustArgs args)
+        internal async override Task ExecuteAsyncCmd(SetInputPowerArgs args)
         {
             ExternalInput input = args.Port as ExternalInput;
             OldInflowPower = input.InFlowPower;
@@ -44,9 +45,9 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
 
     }
 
-    public class InputPowerAdjustArgs
+    public class SetInputPowerArgs
     {
-        public InputPowerAdjustArgs(ExternalPort port, double powerValue)
+        public SetInputPowerArgs(ExternalPort port, double powerValue)
         {
             Port = port;
             PowerValue = powerValue;

@@ -8,6 +8,7 @@ using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scripts.View.ToolBox;
 using ConnectAPIC.Scripts.ViewModel.Commands;
+using ConnectAPIC.Scripts.ViewModel.Commands.ExternalPorts;
 using System;
 using System.Collections.Generic;
 
@@ -83,13 +84,13 @@ namespace ConnectAPIC.Scripts.ViewModel.CommandFactory
                     newCommand = new DeleteComponentCommand(GridManager);
                     break;
                 case CommandType.InputColorChange:
-                    newCommand = new InputColorChangeCommand(GridManager , GridViewModel);
+                    newCommand = new SetInputColorCommand(GridManager , GridViewModel);
                     break;
                 case CommandType.InputOutputChange:
-                    newCommand = new InputOutputChangeCommand(GridManager, LightCalculationService);
+                    newCommand = new SetPortTypeCommand(GridManager, LightCalculationService);
                     break;
                 case CommandType.InputPowerAdjust:
-                    newCommand = new InputPowerAdjustCommand(GridManager, LightCalculationService);
+                    newCommand = new SetInputPowerCommand(GridManager, LightCalculationService);
                     break;
                 case CommandType.RotateComponent:
                     newCommand = new RotateComponentCommand(GridManager);
