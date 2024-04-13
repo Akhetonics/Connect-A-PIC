@@ -6,7 +6,7 @@ public partial class UpdateButton : Button
 	public override void _Ready()
 	{
         Visible = false;
-        UpdateManager.UpdateAvalilable += (s, e) => ShowSelf();
+        UpdateManager.UpdateAvailable += (s, e) => ShowSelf();
         if (UpdateManager.IsUpdateAvailable()) ShowSelf();
     }
 
