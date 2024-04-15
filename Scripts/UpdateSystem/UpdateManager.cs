@@ -10,7 +10,7 @@ using System.Runtime.CompilerServices;
 
 public partial class UpdateManager : Node
 {
-    private static string RepoOwnerName = "Cx3n1";//"Akhetonics";
+    private static string RepoOwnerName = "Akhetonics";
     private static string RepoName = "Connect-A-PIC";
 
     public static event EventHandler UpdateAvailable;
@@ -48,7 +48,6 @@ public partial class UpdateManager : Node
     public async Task DownloadProcess(){
         var downloadPath = Path.GetTempPath();
 
-        // Get last release using .GetLatest(), can substitute with other available methods
         var release = ReleaseManager.Instance.GetLatest(RepoOwnerName, RepoName);
 
         if (release is null) return;
@@ -63,7 +62,7 @@ public partial class UpdateManager : Node
 
         if (!startedUpdate){
             startedUpdate = true;
-            DownloadStarted?.Invoke(this, EventArgs.Empty);
+            DownloadStarted.Invoke(this, EventArgs.Empty);
         }
 
         Progress = (float) downloadInfo.DownloadPercent;

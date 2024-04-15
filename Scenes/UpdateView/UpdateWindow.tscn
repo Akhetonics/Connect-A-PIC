@@ -11,6 +11,7 @@
 [ext_resource type="Texture2D" uid="uid://dpputvgdqytr5" path="res://Scenes/UpdateView/ProgressBarProgress.png" id="9_n3w8m"]
 
 [node name="UpdateWindow" type="Control"]
+process_priority = 10
 texture_filter = 1
 custom_minimum_size = Vector2(200, 100)
 layout_mode = 3
@@ -25,6 +26,8 @@ offset_right = 213.0
 offset_bottom = 92.0
 grow_horizontal = 2
 grow_vertical = 2
+focus_mode = 2
+mouse_filter = 2
 script = ExtResource("1_6lc00")
 metadata/_edit_vertical_guides_ = [213.0]
 
@@ -36,7 +39,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 0
+focus_mode = 2
 texture = ExtResource("1_10xxx")
 region_rect = Rect2(0, 0, 566, 328)
 patch_margin_left = 27
@@ -95,12 +98,15 @@ layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 offset_left = 6.0
-offset_top = 20.0
+offset_top = 26.0
 offset_right = -44.0
-offset_bottom = 62.0
+offset_bottom = 63.0
 grow_horizontal = 2
 scale = Vector2(1.1, 1.1)
+focus_mode = 2
+mouse_filter = 2
 theme = ExtResource("2_xo7yr")
+theme_override_font_sizes/normal_font_size = 0
 bbcode_enabled = true
 text = "[center]New version of the game is out![/center]"
 
@@ -115,6 +121,8 @@ offset_right = -47.0
 offset_bottom = 127.0
 grow_horizontal = 2
 scale = Vector2(1.1, 1.1)
+focus_mode = 2
+mouse_filter = 2
 theme = ExtResource("2_xo7yr")
 theme_override_constants/line_separation = 7
 bbcode_enabled = true
@@ -122,12 +130,14 @@ bbcode_enabled = true
 [node name="UpdateSection" type="Control" parent="."]
 unique_name_in_owner = true
 layout_mode = 1
-anchors_preset = 15
+anchor_top = 0.342391
 anchor_right = 1.0
-anchor_bottom = 1.0
+anchor_bottom = 0.690217
 grow_horizontal = 2
 grow_vertical = 2
+focus_mode = 2
 mouse_filter = 2
+metadata/_edit_use_anchors_ = true
 
 [node name="CurrentVersion" type="RichTextLabel" parent="UpdateSection"]
 unique_name_in_owner = true
@@ -143,6 +153,8 @@ offset_right = 203.0
 offset_bottom = 40.0
 grow_horizontal = 2
 grow_vertical = 2
+focus_mode = 2
+mouse_filter = 2
 theme = ExtResource("2_xo7yr")
 bbcode_enabled = true
 text = "[center][color=#FFC826]0.0[/color][/center]"
@@ -162,6 +174,8 @@ offset_bottom = -1.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(1.15, 1.15)
+focus_mode = 2
+mouse_filter = 2
 theme = ExtResource("2_xo7yr")
 bbcode_enabled = true
 text = "[center][color=#44FF44]1.2[/color][/center]"
@@ -179,7 +193,8 @@ offset_right = 20.0
 offset_bottom = 26.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 0
+focus_mode = 2
+mouse_filter = 2
 texture = ExtResource("5_e0jwg")
 stretch_mode = 3
 
@@ -198,7 +213,7 @@ offset_right = 192.0
 offset_bottom = 8.032
 grow_horizontal = 2
 grow_vertical = 2
+focus_mode = 2
+mouse_filter = 2
 texture_under = ExtResource("8_i5so3")
 texture_progress = ExtResource("9_n3w8m")
-
-[connection signal="pressed" from="Cancel" to="." method="OnCancelPressed"]
