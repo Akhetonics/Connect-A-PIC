@@ -38,12 +38,13 @@ namespace ConnectAPIC.Scenes.ExternalPorts
             InfoLabel = GetNode<RichTextLabel>("%Label");
 
             ViewModel.PropertyChanged += ViewModel_PropertyChanged;
-        }
 
-        public override void _Ready() {
-            if (ViewModel.IsInput) {
+            if (ViewModel.IsInput)
+            {
                 SetAsInput();
-            } else {
+            }
+            else
+            {
                 SetAsOutput();
             }
         }
