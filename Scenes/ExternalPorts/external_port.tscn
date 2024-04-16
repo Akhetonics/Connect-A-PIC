@@ -24,7 +24,8 @@ script = ExtResource("1_k7enb")
 InputTexture = ExtResource("2_hbsyq")
 OutputTexture = ExtResource("3_0hsmo")
 
-[node name="Texture" type="TextureRect" parent="."]
+[node name="CurrentTexture" type="TextureRect" parent="."]
+unique_name_in_owner = true
 texture_filter = 1
 anchors_preset = 1
 anchor_left = 1.0
@@ -36,6 +37,7 @@ texture = ExtResource("2_hbsyq")
 metadata/_edit_use_anchors_ = true
 
 [node name="LightContainer" type="Node2D" parent="."]
+unique_name_in_owner = true
 
 [node name="OverallLight" type="PointLight2D" parent="LightContainer"]
 z_index = 1
@@ -56,7 +58,8 @@ color = Color(1, 0, 0, 1)
 energy = 16.0
 texture = ExtResource("4_08arr")
 
-[node name="RichTextLabel" type="RichTextLabel" parent="."]
+[node name="Label" type="RichTextLabel" parent="."]
+unique_name_in_owner = true
 modulate = Color(2, 2, 2, 1)
 offset_left = -144.0
 offset_right = 1296.0

@@ -29,15 +29,23 @@ namespace ConnectAPIC.Scenes.ExternalPorts
         {
             ViewModel = viewModel;
 
-            currentTexture = GetChild<TextureRect>(0);
+            currentTexture = GetNode<TextureRect>("%CurrentTexture");//GetChild<TextureRect>(0);
             lightContainer = new List<PointLight2D>();
-            foreach (PointLight2D light in GetChild(1).GetChildren())
+            foreach (PointLight2D light in GetNode<Node2D>("%LightContainer").GetChildren())
             {
                 lightContainer.Add(light);
             }
-            InfoLabel = GetChild<RichTextLabel>(2);
+            InfoLabel = GetNode<RichTextLabel>("%Label");
 
             ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+        }
+
+        public override void _Ready() {
+            if (ViewModel.IsInput) {
+                SetAsInput();
+            } else {
+                SetAsOutput();
+            }
         }
 
         public override void _Input(InputEvent @event)
