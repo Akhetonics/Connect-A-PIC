@@ -27,6 +27,11 @@ namespace ConnectAPIC.Scripts.ViewModel
             get => _portModel;
             set
             {
+                if (_portModel != null)
+                    _portModel.PropertyChanged -= Model_PropertyChanged;
+                _portModel = value;
+                _portModel.PropertyChanged += Model_PropertyChanged;
+
                 _portModel = value;
                 if (value is ExternalInput input)
                 {
@@ -146,6 +151,18 @@ namespace ConnectAPIC.Scripts.ViewModel
             var fieldOut = e.LightFieldVector[(Guid)touchingPin].Magnitude;
             Phase = Mathf.RadToDeg((float)e.LightFieldVector[(Guid)touchingPin].Phase + 2*Mathf.Pi)%360;
             UpdateInputPowerAndColorUsingLaserType(e.LaserInUse, (float)(fieldOut * fieldOut));
+        }
+
+        private void Model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+            //only external inputs gives away meaningful property change signals
+            ExternalInput inputPort = PortModel as ExternalInput;
+            if (inputPort == null) return;
+
+            if (e.PropertyName == nameof(ExternalInput.LaserType)
+             || e.PropertyName == nameof(ExternalInput.InFlowPower)) {
+                var inputPower = inputPort.InFlowPower.Real;
+                ResetInputPowerAndColorUsingLaserType(inputPort.LaserType, inputPower);
+            }
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "")

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using ConnectAPIC.Scenes.RightClickMenu;
+using CAP_Core.ExternalPorts;
 
 
 namespace ConnectAPIC.Scenes.ExternalPorts
@@ -87,9 +88,11 @@ namespace ConnectAPIC.Scenes.ExternalPorts
 
         public void SetLightColor(float alpha = 1)
         {
+            System.Drawing.Color color = ViewModel.Color.Color.ToColor();
+            float multiplier = ViewModel.Power.Length();
             foreach (var light in lightContainer)
             {
-                light.Color = new Color(ViewModel.Power.X, ViewModel.Power.Y, ViewModel.Power.Z, alpha);
+                light.Color = new Color(multiplier*color.R / 255, multiplier*color.G / 255, multiplier * color.B / 255, alpha);
             }
         }
 
@@ -120,7 +123,8 @@ namespace ConnectAPIC.Scenes.ExternalPorts
                     InfoLabel.Text = ViewModel.AllColorsPower();
                 }
             }
-            else if (e.PropertyName == nameof(ExternalPortViewModel.Power))
+            else if (e.PropertyName == nameof(ExternalPortViewModel.Power)
+                  || e.PropertyName == nameof(ExternalPortViewModel.Color))
             {
                 if (ViewModel.IsInput){
                     SetLightColor();
