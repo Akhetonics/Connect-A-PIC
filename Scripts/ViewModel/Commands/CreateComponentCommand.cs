@@ -25,7 +25,8 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             if( parameter is CreateComponentArgs args)
             {
                 var dimensions = ComponentFactory.GetDimensions(args.ComponentTypeNumber);
-                if (GridModel != null && !GridModel.ComponentMover.IsColliding(args.GridX, args.GridY, dimensions.X, dimensions.Y))
+                if (GridModel != null &&
+                !GridModel.ComponentMover.IsColliding(args.GridX, args.GridY, dimensions.X, dimensions.Y))
                 {
                     return true;
                 }
@@ -43,10 +44,9 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 
         public override void Undo()
         {
-            if (ExecutionParams != null) return;
+            if (ExecutionParams == null) return;
             GridModel.ComponentMover.UnregisterComponentAt(ExecutionParams.GridX , ExecutionParams.GridY);
         }
-
     }
     public class CreateComponentArgs
     {
