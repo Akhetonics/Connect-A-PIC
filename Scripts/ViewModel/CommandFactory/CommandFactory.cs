@@ -152,9 +152,9 @@ namespace ConnectAPIC.Scripts.ViewModel.CommandFactory
         public bool Redo()
         {
             if (RedoStack.Count == 0) return false;
-            var commandtoRedo = RedoStack.Pop();
-            History.AddLast(commandtoRedo);
-            commandtoRedo.Redo();
+            var commandToRedo = RedoStack.Pop();
+            History.AddLast(commandToRedo);
+            commandToRedo.Redo(); 
             return true;
         }
         // you might want to erase the history after loading a new PIC

@@ -1,16 +1,7 @@
 using CAP_Core.Components;
-using CAP_Core.Components.Creation;
 using CAP_Core.Grid;
-using CAP_Core.Helpers;
-using ConnectAPic.LayoutWindow;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace UnitTests.ViewModels.Commands
 {
@@ -27,7 +18,7 @@ namespace UnitTests.ViewModels.Commands
             var externalPortMgr = new Mock<IExternalPortManager>();
             var componentRotator = new ComponentRotator(tileMgr, componentMover);//new Mock<IComponentRotator>();
             var componentRelationshipMgr = new Mock<IComponentRelationshipManager>();
-            gridManagerMock = new Mock<GridManager>(tileMgr, componentMover, externalPortMgr.Object,componentRotator,componentRelationshipMgr.Object, lightMgr);
+            gridManagerMock = new Mock<GridManager>(tileMgr, componentMover, externalPortMgr.Object, componentRotator, componentRelationshipMgr.Object, lightMgr);
 
             command = new RotateComponentCommand(gridManagerMock.Object);
         }
@@ -56,7 +47,8 @@ namespace UnitTests.ViewModels.Commands
         }
 
         [Fact]
-        public async Task TestExecute() {
+        public async Task TestExecute()
+        {
             gridManagerMock.Object.ComponentMover.PlaceComponent(5, 0, TestComponentFactory.CreateComponent(TestComponentFactory.MMI3x3));
             gridManagerMock.Object.ComponentMover.PlaceComponent(1, 0, TestComponentFactory.CreateComponent(TestComponentFactory.StraightWGJson));
 
