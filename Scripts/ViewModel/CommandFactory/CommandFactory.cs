@@ -84,7 +84,7 @@ namespace ConnectAPIC.Scripts.ViewModel.CommandFactory
                     newCommand = new DeleteComponentCommand(GridManager);
                     break;
                 case CommandType.InputColorChange:
-                    newCommand = new SetInputColorCommand(GridManager , GridViewModel);
+                    newCommand = new SetInputColorCommand(GridManager);
                     break;
                 case CommandType.InputOutputChange:
                     newCommand = new SetPortTypeCommand(GridManager, LightCalculationService);

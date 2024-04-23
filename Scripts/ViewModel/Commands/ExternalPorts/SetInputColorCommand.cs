@@ -16,13 +16,11 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands.ExternalPorts
     public class SetInputColorCommand : CommandBase<SetInputColorArgs>
     {
         public GridManager Grid { get; }
-        public GridViewModel GridViewModel { get; }
         public LaserType OldLaserType { get; private set; }
 
-        public SetInputColorCommand(GridManager grid, GridViewModel gridViewModel)
+        public SetInputColorCommand(GridManager grid)
         {
             Grid = grid;
-            GridViewModel = gridViewModel;
         }
 
         public override bool CanExecute(object parameter)

@@ -1,3 +1,4 @@
+using CAP_Core.ExternalPorts;
 using CAP_Core.Grid;
 using CAP_Core.Helpers;
 using CAP_Core.LightCalculation;
@@ -17,14 +18,29 @@ namespace UnitTests.ViewModels.Commands
 {
     public class SetPortTypeCommandTests
     {
+        private readonly GridManager gridManager;
+        private readonly SetPortTypeCommand command;
+        private readonly LightCalculationService lightCalculationService;
+
+        public SetPortTypeCommandTests()
+        {
+            gridManager = GridHelpers.InitializeGridWithComponents();
+            SystemMatrixBuilder systemMatrixBuilder = new(gridManager);
+            lightCalculationService = new LightCalculationService(gridManager, new GridLightCalculator(systemMatrixBuilder, gridManager));
+            command = new SetPortTypeCommand(gridManager, lightCalculationService);
+        }
+
         [Fact]
-        public async Task TestChangingExternalPortType()
+        public void CanExecute_ReturnsFalse_WhenArgumentIsNotSetPortTypeArgs()
+        {
+            var result = command.CanExecute(new object());
+            Assert.False(result);
+        }
+
+        [Fact]
+        public async Task TestExecute()
         {
             // arrange
-            var gridManager = GridHelpers.InitializeGridWithComponents();
-            SystemMatrixBuilder systemMatrixBuilder = new(gridManager);
-            var lightCalculationService = new LightCalculationService(gridManager, new GridLightCalculator(systemMatrixBuilder, gridManager));
-            var command = new SetPortTypeCommand(gridManager, lightCalculationService);
             var externalPort = gridManager.ExternalPortManager.ExternalPorts.First();
             var portViewModel = new ConnectAPIC.Scripts.ViewModel.ExternalPortViewModel(gridManager, externalPort, lightCalculationService);
             var setToOutputParams = new SetPortTypeArgs(portViewModel,true);
