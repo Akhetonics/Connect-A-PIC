@@ -7,6 +7,7 @@ using GithubReleaseDownloader.Entities;
 using GithubReleaseDownloader;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
+using ConnectAPic.LayoutWindow;
 
 public partial class UpdateManager : Node
 {
@@ -31,7 +32,7 @@ public partial class UpdateManager : Node
     public override void _Ready()
 	{
         Client = new GitHubClient(new ProductHeaderValue(RepoName));
-        CurrentVersion = GetType().Assembly.GetName().Version;
+        CurrentVersion = GameManager.Version;
 
         Instance = this;
 
@@ -86,7 +87,7 @@ public partial class UpdateManager : Node
 
     private async Task CheckForUpdates(){
         var releases = await Client.Repository.Release.GetAll(RepoOwnerName, RepoName);
-        var vers = releases[0].TagName.Replace("v", "") + ".0";
+        var vers = releases[0].TagName.Replace("v", "");
         LatestVersion = new Version(vers);
 
         if (LatestVersion != null && CurrentVersion < LatestVersion){
