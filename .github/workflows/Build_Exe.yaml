@@ -63,7 +63,7 @@ jobs:
           fi
       # list files in release folder
       - name: List files in Release directory
-        run: ls -la ${{ github.workspace }}
+        run: ls -la ${{ github.workspace }}/Release
         #/Release
 
       - name: Upload EXE as artifact
@@ -88,7 +88,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: Connect-A-PIC-EXE
-          path: $GITHUB_WORKSPACE/Release # was ./ instead of $GITHUB_WORKSPACE 
+          path: ./Release
 
       - name: Setup Certificate
         run: |
