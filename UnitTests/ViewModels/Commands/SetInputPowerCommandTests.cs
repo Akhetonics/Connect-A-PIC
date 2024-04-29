@@ -1,20 +1,9 @@
 using CAP_Core.ExternalPorts;
 using CAP_Core.Grid;
-using CAP_Core.Helpers;
 using CAP_Core.LightCalculation;
-using ConnectAPIC.LayoutWindow.ViewModel.Commands;
-using ConnectAPIC.Scripts.Helpers;
-using ConnectAPIC.Scripts.View.ToolBox;
 using ConnectAPIC.Scripts.ViewModel.Commands.ExternalPorts;
-using Moq;
 using Shouldly;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnitTests.Grid;
-using static UnitTests.Helpers.GridHelpers;
 
 namespace UnitTests.ViewModels.Commands
 {
