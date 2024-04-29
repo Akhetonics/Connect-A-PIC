@@ -24,7 +24,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             foreach (IntVector deletePosition in parameter.DeletePositions)
             {
                 var componentToDelete = Grid.ComponentMover.GetComponentAt(deletePosition.X, deletePosition.Y);
-                if(componentToDelete == null) continue; // one mit accidentally have clicked on an empty field
+                if(componentToDelete == null) continue; // one might accidentally have clicked on an empty field
                 DeletedComponents.Add((componentToDelete,new IntVector(componentToDelete.GridXMainTile,componentToDelete.GridYMainTile)));
                 Grid.ComponentMover.UnregisterComponentAt(deletePosition.X, deletePosition.Y);
             }

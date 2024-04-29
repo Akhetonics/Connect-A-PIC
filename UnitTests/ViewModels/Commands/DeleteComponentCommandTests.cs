@@ -31,29 +31,6 @@ namespace UnitTests.ViewModels.Commands
         }
 
         [Fact]
-        public void CanExecute_ReturnsFalse_WhenDeleteIsInvalid()
-        {
-            //// arrange
-            //var onEmptyTile = new List<IntVector>() {
-            //    new IntVector(1,0)
-            //};
-            //var outOfGrid = new List<IntVector>() {
-            //    new IntVector(-1,0)
-            //};
-
-            //var argsOnEmptyTile = new DeleteComponentArgs(onEmptyTile);
-            //var argsOutOfGrid = new DeleteComponentArgs(outOfGrid);
-
-            //// act
-            //var canExecuteOnEmptyTile = command.CanExecute(argsOnEmptyTile);
-            //var canExecuteOutOfGrid = command.CanExecute(argsOutOfGrid);
-
-            //// assert
-            //Assert.False(canExecuteOnEmptyTile);
-            //Assert.False(canExecuteOutOfGrid);
-        }
-
-        [Fact]
         public async Task TestExecute()
         {
             gridManagerMock.Object.ComponentMover.PlaceComponent(1, 0, TestComponentFactory.CreateComponent(TestComponentFactory.StraightWGJson));
