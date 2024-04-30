@@ -1,3 +1,5 @@
+using CAP_Core.Components;
+using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.Grid;
 using CAP_Core.Helpers;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
@@ -14,13 +16,58 @@ namespace UnitTests.ViewModels.Commands
         {
             var tileMgr = new TileManager(24, 12);
             var lightMgr = new LightManager();
-            var componentMover = new ComponentMover(tileMgr);//new Mock<IComponentMover>();
+            var componentMover = new Mock<IComponentMover>();
             var externalPortMgr = new Mock<IExternalPortManager>();
             var componentRotator = new Mock<IComponentRotator>();
             var componentRelationshipMgr = new Mock<IComponentRelationshipManager>();
-            gridManagerMock = new Mock<GridManager>(tileMgr, componentMover, externalPortMgr.Object, componentRotator.Object, componentRelationshipMgr.Object, lightMgr);
+            gridManagerMock = new Mock<GridManager>(tileMgr, componentMover.Object, externalPortMgr.Object, componentRotator.Object, componentRelationshipMgr.Object, lightMgr);
 
             command = new DeleteComponentCommand(gridManagerMock.Object);
+
+            componentMover.Setup(m => m.GetComponentAt(It.IsAny<int>(), It.IsAny<int>(), 1, 1))
+               .Returns<int, int, int, int>((x, y, width, height)
+                   => tileMgr.Tiles[x, y].Component);
+
+            componentMover.Setup(m => m.UnregisterComponentAt(It.IsAny<int>(), It.IsAny<int>()))
+                .Callback<int, int>((x, y)
+                    =>
+                {
+                    Component? component = tileMgr.Tiles[x, y].Component;
+                    if (component == null) return;
+                    x = component.GridXMainTile;
+                    y = component.GridYMainTile;
+                    for (int i = 0; i < component.WidthInTiles; i++)
+                    {
+                        for (int j = 0; j < component.HeightInTiles; j++)
+                        {
+                            tileMgr.Tiles[x + i, y + j].Component = null;
+                        }
+                    }
+                    component.ClearGridData();
+
+                });
+
+            componentMover.Setup(m => m.PlaceComponent(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Component>()))
+            .Callback<int, int, Component>((x, y, comp)
+            =>
+                {
+                    if (componentMover.Object.IsColliding(x, y, comp.WidthInTiles, comp.HeightInTiles))
+                    {
+                        var blockingComponent = componentMover.Object.GetComponentAt(x, y);
+                        throw new ComponentCannotBePlacedException(comp, blockingComponent);
+                    }
+                    comp.RegisterPositionInGrid(x, y);
+
+                    for (int i = 0; i < comp.WidthInTiles; i++)
+                    {
+                        for (int j = 0; j < comp.HeightInTiles; j++)
+                        {
+                            int gridX = x + i;
+                            int gridY = y + j;
+                            tileMgr.Tiles[gridX, gridY].Component = comp;
+                        }
+                    }
+                });
         }
 
         [Fact]

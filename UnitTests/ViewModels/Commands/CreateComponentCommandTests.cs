@@ -1,4 +1,5 @@
 using CAP_Core.Components;
+using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.Components.Creation;
 using CAP_Core.Grid;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
@@ -32,18 +33,36 @@ namespace UnitTests.ViewModels.Commands
                 .Callback<int, int>((x, y)
                     => tileMgr.Tiles[x, y].Component = null);
 
-            componentMover.Setup(m => m.PlaceComponent(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Component>()))
-                .Callback<int, int, Component>((x, y, comp)
-                    => tileMgr.Tiles[x, y].Component = comp);
-
             componentMover.Setup(m => m.IsColliding(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Component>()))
                 .Returns<int, int, int, int, Component>((x, y, width, height, comp)
                     =>
                 {
-                    if (x < 0 || y < 0) return true; //had to add this check otherwise out of bounds exception is throwns (hopefully actuall isColliding has this check)
+                    if (x < 0 || y < 0) return true;
                     if (tileMgr.Tiles[x, y].Component != null) return true;
                     return false;
                 });
+
+            componentMover.Setup(m => m.PlaceComponent(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Component>()))
+            .Callback<int, int, Component>((x, y, comp)
+            =>
+            {
+                if (componentMover.Object.IsColliding(x, y, comp.WidthInTiles, comp.HeightInTiles))
+                {
+                    var blockingComponent = componentMover.Object.GetComponentAt(x, y);
+                    throw new ComponentCannotBePlacedException(comp, blockingComponent);
+                }
+                comp.RegisterPositionInGrid(x, y);
+
+                for (int i = 0; i < comp.WidthInTiles; i++)
+                {
+                    for (int j = 0; j < comp.HeightInTiles; j++)
+                    {
+                        int gridX = x + i;
+                        int gridY = y + j;
+                        tileMgr.Tiles[gridX, gridY].Component = comp;
+                    }
+                }
+            });
         }
 
         [Fact]

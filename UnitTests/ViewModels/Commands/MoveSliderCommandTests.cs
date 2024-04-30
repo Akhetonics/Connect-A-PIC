@@ -40,22 +40,10 @@ namespace UnitTests.ViewModels.Commands
                         if (x < 0 || y < 0) return null;
                         return tileMgr.Tiles[x, y].Component;
                     });
-            componentMover.Setup(m => m.UnregisterComponentAt(It.IsAny<int>(), It.IsAny<int>()))
-                .Callback<int, int>((x, y)
-                    => tileMgr.Tiles[x, y].Component = null);
 
             componentMover.Setup(m => m.PlaceComponent(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Component>()))
                 .Callback<int, int, Component>((x, y, comp)
                     => tileMgr.Tiles[x, y].Component = comp);
-
-            componentMover.Setup(m => m.IsColliding(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Component>()))
-                .Returns<int, int, int, int, Component>((x, y, width, height, comp)
-                    =>
-                {
-                    if (x < 0 || y < 0) return true;
-                    if (tileMgr.Tiles[x, y].Component != null) return true;
-                    return false;
-                });
         }
 
         [Fact]
