@@ -11,6 +11,7 @@ using ConnectAPIC.Scripts.ViewModel.Commands;
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -131,7 +132,7 @@ namespace ConnectAPIC.LayoutWindow.View
             ComponentView.ViewModel.SliderChanged += async (int sliderNumber, double newVal) => {
                 await ViewModel.CommandFactory
                     .CreateCommand(CommandType.MoveSlider)
-                    .ExecuteAsync(new MoveSliderCommandArgs(ComponentView.ViewModel.GridX, ComponentView.ViewModel.GridY, sliderNumber, newVal));
+                    .ExecuteAsync(new MoveSliderCommandArgs(ComponentView.ViewModel.GridX, ComponentView.ViewModel.GridY, sliderNumber, newVal, ViewModel));
                 await RecalculateLightIfOn();
             };
             RegisterComponentViewInGridView(ComponentView);
@@ -171,6 +172,14 @@ namespace ConnectAPIC.LayoutWindow.View
             });
         }
 
+        private void _on_btn_undo_pressed()
+        {
+            ViewModel.CommandFactory.Undo();
+        }
+        private void _on_btn_redo_pressed()
+        {
+            ViewModel.CommandFactory.Redo();
+        }
         private void _on_btn_show_light_propagation_toggled(bool button_pressed)
         {
             ViewModel.CommandFactory.CreateCommand(CommandType.SwitchOnLight).ExecuteAsync(button_pressed).Wait();

@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://cu6wqy6xwjfo1"]
+[gd_scene load_steps=26 format=3 uid="uid://cu6wqy6xwjfo1"]
 
 [ext_resource type="Script" path="res://Scripts/GameManager.cs" id="1_c0scx"]
 [ext_resource type="Script" path="res://Scripts/View/ComponentFactory/ComponentViewFactory.cs" id="2_7hjmy"]
@@ -13,8 +13,10 @@
 [ext_resource type="PackedScene" uid="uid://bscqmaslppyt8" path="res://Scenes/NotificationBox.tscn" id="10_06t00"]
 [ext_resource type="PackedScene" uid="uid://dx13abdux2230" path="res://Scenes/RightClickMenu/ControlMenu.tscn" id="11_ylcdl"]
 [ext_resource type="PackedScene" uid="uid://bd8isg4mddv21" path="res://Scenes/InGameConsole/InGameConsole.tscn" id="16_7rcst"]
+[ext_resource type="Texture2D" uid="uid://btlonrwsn36cw" path="res://Scenes/MenuBar/UndoIcon.png" id="17_mtqba"]
 [ext_resource type="Texture2D" uid="uid://djdwbxfnvfvfb" path="res://Scenes/MenuBar/SaveIcon.png" id="17_q4e7w"]
 [ext_resource type="Texture2D" uid="uid://qtdana7kc4y" path="res://Scenes/MenuBar/LoadIcon.png" id="18_17x6l"]
+[ext_resource type="Texture2D" uid="uid://d2c2xf2ifsfsu" path="res://Scenes/MenuBar/Redo.png" id="18_cnnar"]
 [ext_resource type="Script" path="res://Scripts/View/GUIControls/MainCamera.cs" id="19_tfkoi"]
 [ext_resource type="Texture2D" uid="uid://cwxymtqs0hclu" path="res://Scripts/View/ToolBox/CollapseButton.png" id="19_wkq3d"]
 [ext_resource type="Texture2D" uid="uid://bpf4xfrmslfao" path="res://Scripts/View/ToolBox/CollapseButtonToggledOn.png" id="20_8i2ba"]
@@ -132,6 +134,20 @@ layout_mode = 2
 text = "Export Nazca"
 metadata/_edit_use_anchors_ = true
 
+[node name="btnUndo" type="Button" parent="GUILayer/MenuBar/HBoxContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+icon = ExtResource("17_mtqba")
+expand_icon = true
+metadata/_edit_use_anchors_ = true
+
+[node name="btnRedo" type="Button" parent="GUILayer/MenuBar/HBoxContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+icon = ExtResource("18_cnnar")
+expand_icon = true
+metadata/_edit_use_anchors_ = true
+
 [node name="ToolboxControl" type="Control" parent="GUILayer"]
 layout_mode = 3
 anchors_preset = 3
@@ -200,6 +216,8 @@ NotificationBoxScene = ExtResource("10_06t00")
 [connection signal="pressed" from="GUILayer/MenuBar/HBoxContainer/btnLoad" to="GridView" method="_on_btn_load_pressed"]
 [connection signal="toggled" from="GUILayer/MenuBar/HBoxContainer/btnShowLightPropagation" to="GridView" method="_on_btn_show_light_propagation_toggled"]
 [connection signal="pressed" from="GUILayer/MenuBar/HBoxContainer/btnExportNazca" to="GridView" method="_on_btn_export_nazca_pressed"]
+[connection signal="pressed" from="GUILayer/MenuBar/HBoxContainer/btnUndo" to="GridView" method="_on_btn_undo_pressed"]
+[connection signal="pressed" from="GUILayer/MenuBar/HBoxContainer/btnRedo" to="GridView" method="_on_btn_redo_pressed"]
 [connection signal="toggled" from="GUILayer/ToolboxControl/MarginContainer/VBoxContainer/HideToggle" to="GUILayer/ToolboxControl" method="OnToggleButtonPressed"]
 [connection signal="WindowClosed" from="GUILayer/HelpWindow" to="MainCamera" method="OnMouseExitedTutorialWindow"]
 [connection signal="mouse_entered" from="GUILayer/HelpWindow" to="MainCamera" method="OnMouseEnteredTutorialWindow"]

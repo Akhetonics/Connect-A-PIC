@@ -30,7 +30,14 @@ namespace ConnectAPIC.Scripts.View.ToolBox
         public override bool CanExecute (object parameter)
         {
             if (parameter is BoxSelectComponentsArgs boxParam)
+            {
+                NewSelection = CollectAllComponentsInBoxes(boxParam.BoxSelections);
+                if(SelectionManager.Selections.Count == 0 && NewSelection.Count == 0)
+                {
+                    return false;
+                }
                 return true;
+            }
             return false;
         }
 
@@ -70,7 +77,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
                 {
                     for (int y = startY; y <= endY; y++)
                     {
-                        AddComponentAt(componentsInBox, x, y);
+                        AddComponentPositionAt(componentsInBox, x, y);
                     }
                 }
             }
@@ -78,7 +85,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
             return componentsInBox;
         }
 
-        private void AddComponentAt(HashSet<IntVector> componentsInBox, int x, int y)
+        private void AddComponentPositionAt(HashSet<IntVector> componentsInBox, int x, int y)
         {
             var newComponent = Grid.ComponentMover.GetComponentAt(x, y);
             if (newComponent == null) return;

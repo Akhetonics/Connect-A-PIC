@@ -58,7 +58,7 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
 
         public virtual void Redo()
         {
-            if (ExecutionParams != null) return;
+            if (ExecutionParams == null) return;
             ExecuteAsync(ExecutionParams).Wait();
         }
 

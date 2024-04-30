@@ -11,6 +11,7 @@ using ConnectAPIC.Scripts.ViewModel.Commands;
 using ConnectAPIC.Scripts.ViewModel.Commands.ExternalPorts;
 using System;
 using System.Collections.Generic;
+using System.Management;
 
 namespace ConnectAPIC.Scripts.ViewModel.CommandFactory
 {
@@ -18,6 +19,8 @@ namespace ConnectAPIC.Scripts.ViewModel.CommandFactory
     {
         ICommand CreateCommand(CommandType type);
         void ClearHistory();
+        public bool Undo();
+        public bool Redo();
     }
     public enum CommandType
     {
@@ -144,17 +147,33 @@ namespace ConnectAPIC.Scripts.ViewModel.CommandFactory
         {
             if (History.Count == 0) return false;
             var commandToUndo = History.Last.Value;
-            RedoStack.Push(commandToUndo);
-            commandToUndo.Undo();
-            History.RemoveLast();
+            try
+            {
+                commandToUndo.Undo();
+                RedoStack.Push(commandToUndo);
+                History.RemoveLast();
+                Logger.Print("Undo Action: " + commandToUndo.GetType().Name);
+            }
+            catch (Exception ex)
+            {
+                Logger.PrintErr("Error at Undo " + commandToUndo.GetType().Name + " " + ex.ToString());
+            }
+            
             return true;
         }
         public bool Redo()
         {
             if (RedoStack.Count == 0) return false;
             var commandToRedo = RedoStack.Pop();
-            History.AddLast(commandToRedo);
-            commandToRedo.Redo(); 
+            try
+            {
+                commandToRedo.Redo();
+                Logger.Print("Redo Action: " + commandToRedo.GetType().Name);
+            } catch (Exception ex)
+            {
+                Logger.PrintErr("Error at Redo: " + commandToRedo.GetType().Name  + " " + ex.ToString());
+            }
+            
             return true;
         }
         // you might want to erase the history after loading a new PIC

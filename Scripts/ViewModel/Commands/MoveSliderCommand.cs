@@ -1,9 +1,7 @@
-using CAP_Core.Components;
 using CAP_Core.Grid;
-using System;
-using System.Collections.Generic;
+using ConnectAPIC.LayoutWindow.View;
+using ConnectAPIC.LayoutWindow.ViewModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ConnectAPIC.Scripts.ViewModel.Commands
@@ -11,7 +9,7 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
     public class MoveSliderCommand : CommandBase<MoveSliderCommandArgs>
     {
         public GridManager Grid { get; }
-        public Slider OldSlider { get; private set; }
+        public Slider Slider { get; private set; }
         public double OldSliderPosition { get; private set; }
 
         public MoveSliderCommand(GridManager mainGrid)
@@ -28,15 +26,49 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
         internal override Task ExecuteAsyncCmd(MoveSliderCommandArgs moveParams)
         {
             var sliderComponent = Grid.ComponentMover.GetComponentAt(moveParams.gridX, moveParams.gridY);
-            OldSlider = sliderComponent.GetSlider(moveParams.sliderNumber);
-            OldSliderPosition = OldSlider.Value;
-            OldSlider.Value = moveParams.newValue;
+            Slider = sliderComponent.GetSlider(moveParams.sliderNumber);
+            OldSliderPosition = Slider.Value;
+            Slider.Value = moveParams.newValue;
             return Task.CompletedTask;
         }
         public override void Undo()
         {
-            OldSlider.Value = OldSliderPosition;
+            var sliderComponent = Grid.ComponentMover.GetComponentAt(ExecutionParams.gridX , ExecutionParams.gridY);
+            Slider = sliderComponent.GetSlider(ExecutionParams.sliderNumber);
+            Slider.Value = OldSliderPosition;
+            SetSliderViewModelValue();
         }
+        public override void Redo()
+        {
+            base.Redo();
+            SetSliderViewModelValue();
+        }
+
+        private void SetSliderViewModelValue()
+        {
+            var x = ExecutionParams.gridX;
+            var y = ExecutionParams.gridY;
+            ExecutionParams.gridViewModel.ComponentViewModels[x, y].SetSliderValue(Slider.Number, OldSliderPosition, true);
+        }
+
+        public override bool CanMergeWith(ICommand other)
+        {
+            if(other is  MoveSliderCommand moveSliderCmd)
+            {
+                if (   moveSliderCmd.ExecutionParams.gridX == this.ExecutionParams.gridX
+                    && moveSliderCmd.ExecutionParams.gridY == this.ExecutionParams.gridY
+                    && moveSliderCmd.ExecutionParams.sliderNumber == this.ExecutionParams.sliderNumber)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        public override void MergeWith(ICommand other)
+        {
+            this.ExecutionParams = ((MoveSliderCommand)other).ExecutionParams;
+        }
+
     }
 
     public class MoveSliderCommandArgs
@@ -45,13 +77,16 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
         public readonly int gridY;
         public readonly int sliderNumber;
         public readonly double newValue;
+        public readonly GridViewModel gridViewModel;
 
-        public MoveSliderCommandArgs(int gridX, int gridY, int sliderNumber, double newValue)
+        public MoveSliderCommandArgs(int gridX, int gridY, int sliderNumber, double newValue, GridViewModel gridViewModel)
         {
             this.gridX = gridX;
             this.gridY = gridY;
             this.sliderNumber = sliderNumber;
             this.newValue = newValue;
+            this.gridViewModel = gridViewModel;
         }
+
     }
 }
