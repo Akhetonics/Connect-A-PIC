@@ -57,7 +57,7 @@ public partial class UpdateWindow : Control
             trackedTime += delta;
             if (trackedTime > processingAnimationSpeed) {
                 trackedTime = 0;
-                dots = (1 + dots) % 3;
+                dots = (1 + dots) % 4;
                 body.Text = "[center]Processing[/center]" + new string('.', dots);
             }
         }
@@ -112,7 +112,7 @@ public partial class UpdateWindow : Control
     }
 
     private void CloseProgramAndStartInstaller() {
-        UpdateManager.OpenInstaller();
+        UpdateManager.RunInstaller();
         System.Environment.Exit(0);
     }
     private static String FormatVersionToString(Version version) {
