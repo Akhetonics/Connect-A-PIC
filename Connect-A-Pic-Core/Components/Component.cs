@@ -22,6 +22,7 @@ namespace CAP_Core.Components
         public Part[,] Parts { get; protected set; }
         public Dictionary<int, SMatrix> WaveLengthToSMatrixMap { get; set; }
         private Dictionary<int, Slider> SliderMap { get; set; } // where int is the sliderNumber
+        public event EventHandler SliderValueChanged;
         public string NazcaFunctionName { get; set; }
         public string NazcaFunctionParameters { get; set; }
         private DiscreteRotation _discreteRotation;
@@ -100,6 +101,7 @@ namespace CAP_Core.Components
                     {
                         sMatrix.SliderReference.Add(slider.ID, slider.Value);
                     }
+                    SliderValueChanged?.Invoke(sender, e);
                 }
                 NazcaFunctionParameters = "deltaLength = " + slider.Value;
             }

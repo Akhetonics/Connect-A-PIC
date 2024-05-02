@@ -6,6 +6,7 @@ using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scripts.Helpers;
 using ConnectAPIC.Scripts.View.ComponentViews;
+using ConnectAPIC.Scripts.ViewModel;
 using ConnectAPIC.Scripts.ViewModel.CommandFactory;
 using ConnectAPIC.Scripts.ViewModel.Commands;
 using Godot;
@@ -128,6 +129,8 @@ namespace ConnectAPIC.LayoutWindow.View
         public ComponentView CreateComponentView(int gridX, int gridY, DiscreteRotation rotationCounterClockwise, int componentTypeNumber, List<Slider> slidersInUse)
         {
             var ComponentView = ComponentViewFactory.CreateComponentView(componentTypeNumber);
+            
+            ComponentView.SetViewModel()
             ComponentView.ViewModel.RegisterInGrid(ViewModel.Grid, gridX, gridY, rotationCounterClockwise);
             ComponentView.ViewModel.SliderChanged += async (int sliderNumber, double newVal) => {
                 await ViewModel.CommandFactory

@@ -36,21 +36,11 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
             var sliderComponent = Grid.ComponentMover.GetComponentAt(ExecutionParams.gridX , ExecutionParams.gridY);
             Slider = sliderComponent.GetSlider(ExecutionParams.sliderNumber);
             Slider.Value = OldSliderPosition;
-            SetSliderViewModelValue();
         }
         public override void Redo()
         {
             base.Redo();
-            SetSliderViewModelValue();
         }
-
-        private void SetSliderViewModelValue()
-        {
-            var x = ExecutionParams.gridX;
-            var y = ExecutionParams.gridY;
-            ExecutionParams.gridViewModel.ComponentViewModels[x, y].SetSliderValue(Slider.Number, OldSliderPosition, true);
-        }
-
         public override bool CanMergeWith(ICommand other)
         {
             if(other is  MoveSliderCommand moveSliderCmd)

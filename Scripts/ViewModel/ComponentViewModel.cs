@@ -9,14 +9,13 @@ using ConnectAPIC.Scripts.View.ComponentViews;
 using CAP_Contracts.Logger;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using CAP_Core.Grid;
-using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.ObjectModel;
 using ConnectAPIC.LayoutWindow.ViewModel;
 
 namespace ConnectAPIC.Scripts.ViewModel
 {
-    public class ComponentViewModel : INotifyPropertyChanged
+    public class ComponentViewModel : System.ComponentModel.INotifyPropertyChanged
     {
         public ILogger Logger { get; private set; }
         public ICommandBase DeleteComponentCommand { get; set; }
@@ -27,6 +26,7 @@ namespace ConnectAPIC.Scripts.ViewModel
         {
             get { return sliderData; }
         }
+
         private DiscreteRotation rotationCC;
         public DiscreteRotation RotationCC
         {
@@ -54,14 +54,25 @@ namespace ConnectAPIC.Scripts.ViewModel
         public int TypeNumber { get; set; }
         public delegate void SliderChangedEventHandler(int sliderNumber, double newVal);
         public event SliderChangedEventHandler SliderChanged;
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
         public const int SliderDebounceTimeMs = 50;
         private bool isPlacedInGrid;
         public bool IsPlacedInGrid { get => isPlacedInGrid; set { isPlacedInGrid = value; OnPropertyChanged(); } }
 
-        public ComponentViewModel()
+        public ComponentViewModel(Component componentModel)
         {
+            var sliders = componentModel.GetAllSliders();
+            componentModel.SliderValueChanged += ComponentModel_SliderValueChanged;
         }
+
+        private void ComponentModel_SliderValueChanged(object sender, System.EventArgs e)
+        {
+            if(sender is Slider slider)
+            {
+                SliderData[slider.Number].Value = slider.Value;
+            }
+        }
+
         public void InitializeComponent(int componentTypeNumber, List<SliderViewData> sliderDataSets,  ILogger logger )
         {
             Logger = logger;
@@ -134,7 +145,7 @@ namespace ConnectAPIC.Scripts.ViewModel
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
 }

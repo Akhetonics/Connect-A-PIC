@@ -31,8 +31,8 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         public ILogger Logger { get; }
         public ComponentFactory ComponentModelFactory { get; }
         public ToolViewModel ToolViewModel { get; private set; }
-        public ComponentViewModel[,] ComponentViewModels { get; private set; }
         public LightCalculationService LightCalculator { get; private set; }
+        private ComponentViewModel[,] ComponentViewModels { get; set; }
         public int MaxTileCount { get => Width * Height; }
         private bool isLightOn = false;
         public bool IsLightOn {
@@ -59,7 +59,18 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
             this.ToolViewModel = new ToolViewModel(grid);
             ControlMenuViewModel = new ControlMenuViewModel(Grid, LightCalculator, CommandFactory);
         }
-
+        public ComponentViewModel GetComponentViewModel(int gridX, int gridY)
+        {
+            return ComponentViewModels[gridX, gridY];
+        }
+        public void RegisterComponentViewModel(int gridX, int gridY, ComponentViewModel componentViewModel)
+        {
+            ComponentViewModels[gridX, gridY] = componentViewModel;
+        }
+        public void UnRegisterComponentViewModel( int gridX, int gridY)
+        {
+            ComponentViewModels[gridX, gridY] = null;
+        }
         private void Grid_OnComponentPlacedOnTile(Component component, int gridX, int gridY)
         {
             ComponentCreated?.Invoke(component, gridX, gridY);

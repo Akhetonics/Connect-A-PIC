@@ -68,12 +68,15 @@ namespace ConnectAPIC.LayoutWindow.View
 
         public ComponentView()
         {
-            ViewModel = new ComponentViewModel();
-            ViewModel.PropertyChanged += ViewModel_PropertyChanged;
-            SliderManager = new SliderManager(ViewModel, this);
             OverlayManager = new OverlayManager(this);
         }
 
+        public void SetViewModel(ComponentViewModel viewModel)
+        {
+            this.ViewModel = viewModel;
+            ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+            SliderManager = new SliderManager(ViewModel, this);
+        }
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ComponentViewModel.RotationCC))
@@ -117,23 +120,20 @@ namespace ConnectAPIC.LayoutWindow.View
             this.WidthInTiles = widthInTiles;
             this.HeightInTiles = heightInTiles;
             OverlayManager.Initialize(animationSlotOverlays, WidthInTiles, HeightInTiles);
+            MakeComponentClickThroughForDragDrop();
         }
-
+        private void MakeComponentClickThroughForDragDrop()
+        {
+            foreach (var child in GetChildren())
+            {
+                if (child is Control node)
+                {
+                    node.MouseFilter = MouseFilterEnum.Ignore;
+                }
+            }
+        }
         public void HideLightVector() => OverlayManager.HideLightVector();
 
-        public virtual ComponentView Duplicate()
-        {
-            var copy = (ComponentView)base.Duplicate();
-            copy.Initialize(OverlayManager.AnimationSlotRawData, WidthInTiles, HeightInTiles);
-            copy._Ready();
-            copy.ViewModel = new ComponentViewModel();
-            copy.ViewModel.RotationCC = ViewModel.RotationCC; // give the new copy the proper RotationCC so that it has the correct rotation
-
-            // deep copy that list of sliders
-            List<SliderViewData> newSliderData = SliderManager.DuplicateSliders();
-            copy.ViewModel.InitializeComponent(ViewModel.TypeNumber, newSliderData, ViewModel.Logger);
-            return copy;
-        }
         public override void _ExitTree()
         {
             this.GridViewModel.SelectionGroupManager.SelectedComponents.CollectionChanged -= SelectedComponents_CollectionChanged;

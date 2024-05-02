@@ -1,19 +1,26 @@
 using CAP_Contracts.Logger;
 using CAP_Core.Grid;
 using CAP_DataAccess.Components.ComponentDraftMapper.DTOs;
+using Chickensoft.AutoInject;
 using ConnectAPic.LayoutWindow;
+using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.Scripts.View.ComponentFactory;
 using ConnectAPIC.Scripts.View.ComponentViews;
+using ConnectAPIC.Scripts.ViewModel;
 using Godot;
 using MathNet.Numerics;
+using SuperNodes.Types;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace ConnectAPIC.LayoutWindow.View
 {
+    [SuperNode(typeof(Dependent))]
     public partial class ComponentViewFactory : Node
     {
+        public override partial void _Notification(int what);
+        [Dependency] public GridViewModel GridViewModel => DependOn<GridViewModel>();
         [Signal] public delegate void InitializedEventHandler();
         [Export] private Script ComponentBaseScriptPath;
         private List<PackedScene> PackedComponentScenes;
@@ -57,7 +64,7 @@ namespace ConnectAPIC.LayoutWindow.View
             EmitSignal(nameof(InitializedEventHandler).Replace("EventHandler", ""));
         }
 
-        public ComponentView CreateComponentView(int componentNR)
+        public ComponentView CreateComponentView(int componentNR, ComponentViewModel cmpViewModel)
         {
             if (!PackedComponentCache.ContainsKey(componentNR))
             {
@@ -65,11 +72,31 @@ namespace ConnectAPIC.LayoutWindow.View
             }
             var draft = PackedComponentCache[componentNR].Draft;
             var packedScene = PackedComponentCache[componentNR].Scene;
-            var slotDataSets = new List<AnimationSlotOverlayData>();
-
+            var slotDataSets = MapOverlayModelsToOverlayViews(componentNR, draft);
             try
             {
-                // Map overlays to OverlayViews
+                ComponentView componentView = new();
+                componentView._Ready();
+                var actualComponent = (TextureRect)packedScene.Instantiate();
+                actualComponent.CustomMinimumSize = new(draft.WidthInTiles * GameManager.TilePixelSize, draft.HeightInTiles * GameManager.TilePixelSize);
+                componentView.AddChild(actualComponent);
+                componentView.Initialize(slotDataSets, draft.WidthInTiles, draft.HeightInTiles);
+                // viewModel has to be added last, so that the componentView has finished constructing before adding the data to initialize sliders etc.
+                cmpViewModel.InitializeComponent(componentNR, MapDataAccessSlidersToViewSliders(draft), Logger);
+                return componentView;
+            }
+            catch (Exception ex)
+            {
+                Logger.PrintErr($"ComponentTemplate is not or not well defined: {draft?.Identifier} - Exception: {ex.Message}");
+                throw;
+            }
+        }
+
+        private List<AnimationSlotOverlayData> MapOverlayModelsToOverlayViews(int componentNR, ComponentDraft draft)
+        {
+            var slotDataSets = new List<AnimationSlotOverlayData>();
+            try
+            {
                 foreach (Overlay overlay in draft.Overlays)
                 {
                     var overlayBluePrint = ResourceLoader.Load<Texture2D>(overlay.OverlayAnimTexturePath);
@@ -87,35 +114,14 @@ namespace ConnectAPIC.LayoutWindow.View
                             overlay.TileOffsetY
                         ));
                 }
-                ComponentView componentView = new();
-                componentView._Ready();
-                var actualComponent = (TextureRect)packedScene.Instantiate();
-                actualComponent.CustomMinimumSize = new(draft.WidthInTiles * GameManager.TilePixelSize, draft.HeightInTiles * GameManager.TilePixelSize);
-                componentView.AddChild(actualComponent);
-                componentView.Initialize(slotDataSets, draft.WidthInTiles, draft.HeightInTiles);
-                MakeComponentClickThrough(componentView); // otherwise drag drop won't work
-                // viewModel has to be added last, so that the componentView has finished constructing before adding the data ot initialize sliders etc.
-                componentView.ViewModel.InitializeComponent(componentNR, MapDataAccessSlidersToViewSliders(draft), Logger);
-                return componentView;
             }
             catch (Exception ex)
             {
                 Logger.PrintErr($"ComponentTemplate is not or not well defined: {draft?.Identifier} - Exception: {ex.Message}");
                 throw;
             }
+            return slotDataSets;
         }
-
-        private static void MakeComponentClickThrough(ComponentView componentView)
-        {
-            foreach (var child in componentView.GetChildren())
-            {
-                if (child is Godot.Control node)
-                {
-                    node.MouseFilter = Godot.Control.MouseFilterEnum.Ignore;
-                }
-            }
-        }
-
         private static List<SliderViewData> MapDataAccessSlidersToViewSliders(ComponentDraft draft)
         {
             if (draft.Sliders == null) return new();
