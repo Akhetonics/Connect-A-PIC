@@ -171,7 +171,6 @@ jobs:
             SetVersion ${{ steps.read_version.outputs.version }}
             AddFile APPDIR ${{ github.workspace }}/Release/Connect-A-PIC.exe
             AddFolder APPDIR ${{ github.workspace }}/Release/data_Connect-A-PIC_windows_x86_64
-            NewShortcut -name Connect_A_PIC -dir DesktopFolder -target APPDIR/Connect-A-PIC.exe
 
       # signing part
       - name: Setup Certificate
