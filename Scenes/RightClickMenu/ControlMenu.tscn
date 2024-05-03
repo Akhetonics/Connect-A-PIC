@@ -1,6 +1,7 @@
 [gd_scene load_steps=14 format=3 uid="uid://dx13abdux2230"]
 
 [ext_resource type="Script" path="res://Scenes/RightClickMenu/ControlMenu.cs" id="1_52xip"]
+[ext_resource type="Texture2D" uid="uid://bf73g5d7ntr48" path="res://Scenes/RightClickMenu/Background.png" id="3_22omj"]
 [ext_resource type="Texture2D" uid="uid://bnhwsteqou1xj" path="res://Scenes/RightClickMenu/ExternalOutputIcon.png" id="4_bggqw"]
 [ext_resource type="Texture2D" uid="uid://1g5psmv4aj8a" path="res://Scenes/RightClickMenu/RedInputIcon.png" id="4_dyqqw"]
 [ext_resource type="PackedScene" uid="uid://cbnwjaf2rjctr" path="res://Scenes/RightClickMenu/Sections/slider_section.tscn" id="4_lktol"]
@@ -8,7 +9,6 @@
 [ext_resource type="PackedScene" uid="uid://bibqhya7kmikv" path="res://Scenes/RightClickMenu/Sections/info_section.tscn" id="5_50guf"]
 [ext_resource type="Texture2D" uid="uid://cab2i6pa52wbr" path="res://Scenes/RightClickMenu/GreenInputIcon.png" id="5_aecc8"]
 [ext_resource type="Texture2D" uid="uid://civbgw8ohuxul" path="res://Scenes/RightClickMenu/BlueInputIcon.png" id="6_hkhch"]
-[ext_resource type="Texture2D" uid="uid://bseakecs4865n" path="res://Scenes/RightClickMenu/Body.png" id="8_7xmtp"]
 
 [sub_resource type="Curve" id="Curve_dlfrx"]
 _data = [Vector2(0, 0), 0.0, 3.40635, 0, 0, Vector2(0.996078, 1), 0.0730049, 0.0, 0, 0]
@@ -67,6 +67,8 @@ anti_aliasing = false
 
 [node name="ControlMenu" type="Control"]
 light_mask = 0
+z_index = 1
+z_as_relative = false
 texture_filter = 1
 layout_mode = 3
 anchors_preset = 0
@@ -87,19 +89,23 @@ offset_bottom = 100.0
 grow_horizontal = 0
 
 [node name="Body" type="NinePatchRect" parent="ControlMenu"]
-modulate = Color(1, 1, 1, 0.784314)
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -13.0
+offset_top = -10.0
+offset_right = 9.0
+offset_bottom = 12.0
 grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 1
-texture = ExtResource("8_7xmtp")
-region_rect = Rect2(0, 0, 128, 128)
-patch_margin_left = 3
-patch_margin_right = 3
-patch_margin_bottom = 20
+texture = ExtResource("3_22omj")
+region_rect = Rect2(0, 0, 567, 328)
+patch_margin_left = 27
+patch_margin_top = 44
+patch_margin_right = 100
+patch_margin_bottom = 60
 
 [node name="SectionContainer" type="VBoxContainer" parent="ControlMenu"]
 layout_mode = 1
@@ -178,7 +184,6 @@ icon = ExtResource("4_bggqw")
 
 [node name="OutputMenu" type="Control" parent="ControlMenu/SectionContainer"]
 unique_name_in_owner = true
-visible = false
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 mouse_filter = 1
@@ -197,6 +202,7 @@ offset_bottom = 40.0
 metadata/_edit_vertical_guides_ = [237.0]
 
 [node name="PointerToPort" type="Line2D" parent="ControlMenu/SectionContainer/OutputMenu"]
+z_as_relative = false
 position = Vector2(200, -49)
 points = PackedVector2Array(0, 1, 7, 1, 17, 10)
 width = 6.0
@@ -204,6 +210,7 @@ default_color = Color(0.760784, 0.658824, 0.254902, 1)
 
 [node name="InputMenu" type="Control" parent="ControlMenu/SectionContainer"]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 mouse_filter = 1
@@ -218,6 +225,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="PointerToPort" type="Line2D" parent="ControlMenu/SectionContainer/InputMenu"]
+z_as_relative = false
 position = Vector2(200, -49)
 points = PackedVector2Array(0, 1, 11, 1, 29, 17)
 width = 6.0
