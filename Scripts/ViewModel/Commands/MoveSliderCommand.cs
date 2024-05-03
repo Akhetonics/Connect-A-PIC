@@ -67,15 +67,13 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
         public readonly int gridY;
         public readonly int sliderNumber;
         public readonly double newValue;
-        public readonly GridViewModel gridViewModel;
 
-        public MoveSliderCommandArgs(int gridX, int gridY, int sliderNumber, double newValue, GridViewModel gridViewModel)
+        public MoveSliderCommandArgs(int gridX, int gridY, int sliderNumber, double newValue)
         {
             this.gridX = gridX;
             this.gridY = gridY;
             this.sliderNumber = sliderNumber;
             this.newValue = newValue;
-            this.gridViewModel = gridViewModel;
         }
 
     }

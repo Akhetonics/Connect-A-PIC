@@ -61,10 +61,10 @@ namespace UnitTests.ViewModels.Commands
 
 
             // arrange
-            var argsOnNonSliderComponent = new MoveSliderCommandArgs(1, 0, 0, halfValue, gridViewModelMock.Object);
-            var argsOutOfGrid = new MoveSliderCommandArgs(0, -1, 0, halfValue, gridViewModelMock.Object);
-            var argsOnEmptyTile = new MoveSliderCommandArgs(0, 0, 0, halfValue, gridViewModelMock.Object);
-            var argsOnInvalidSliderValue = new MoveSliderCommandArgs(5, 5, 0, invalidValue, gridViewModelMock.Object);
+            var argsOnNonSliderComponent = new MoveSliderCommandArgs(1, 0, 0, halfValue);
+            var argsOutOfGrid = new MoveSliderCommandArgs(0, -1, -1, halfValue);
+            var argsOnEmptyTile = new MoveSliderCommandArgs(0, 0, 0, halfValue);
+            var argsOnInvalidSliderValue = new MoveSliderCommandArgs(5, 5, 0, invalidValue);
 
             // act
             var canSlideNonSliderComponent = command.CanExecute(argsOnNonSliderComponent);
@@ -85,9 +85,9 @@ namespace UnitTests.ViewModels.Commands
             gridManagerMock.Object.ComponentMover.PlaceComponent(1, 0, TestComponentFactory.CreateComponent(TestComponentFactory.DirectionalCouplerJSON));
 
             // arrange
-            var argsOnMoveToMin = new MoveSliderCommandArgs(1, 0, 0, minValue, gridViewModelMock.Object);
-            var argsOnMoveToHalf = new MoveSliderCommandArgs(1, 0, 0, halfValue, gridViewModelMock.Object);
-            var argsOnMoveToMax = new MoveSliderCommandArgs(1, 0, 0, maxValue, gridViewModelMock.Object);
+            var argsOnMoveToMin = new MoveSliderCommandArgs(1, 0, 0, minValue);
+            var argsOnMoveToHalf = new MoveSliderCommandArgs(1, 0, 0, halfValue);
+            var argsOnMoveToMax = new MoveSliderCommandArgs(1, 0, 0, maxValue);
 
 
             // act

@@ -82,6 +82,7 @@ namespace ConnectAPIC.LayoutWindow.View
                 componentView.AddChild(actualComponent);
                 componentView.Initialize(slotDataSets, draft.WidthInTiles, draft.HeightInTiles);
                 // viewModel has to be added last, so that the componentView has finished constructing before adding the data to initialize sliders etc.
+                componentView.SetViewModel(cmpViewModel);
                 cmpViewModel.InitializeComponent(componentNR, MapDataAccessSlidersToViewSliders(draft), Logger);
                 return componentView;
             }

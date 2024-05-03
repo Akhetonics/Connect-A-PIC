@@ -18,11 +18,11 @@ namespace ConnectAPIC.LayoutWindow.View
     {
         public override partial void _Notification(int what);
         [Dependency] public GridViewModel GridViewModel => DependOn<GridViewModel>();
+        public ComponentViewModel ViewModel { get; private set; }
         public int WidthInTiles { get; set; }
         public int HeightInTiles { get; set; }
         private Node2D RotationArea { get; set; } // the part of the component that rotates
         public Sprite2D OverlayBluePrint { get; set; }
-        public ComponentViewModel ViewModel { get; private set; }
         public new float RotationDegrees
         {
             get => RotationArea?.RotationDegrees ?? 0;

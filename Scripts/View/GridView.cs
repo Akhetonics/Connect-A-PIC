@@ -37,6 +37,12 @@ namespace ConnectAPIC.LayoutWindow.View
         public override void _Ready()
         {
             base._Ready();
+            AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+            {
+                Exception ex = (Exception)args.ExceptionObject;
+                Logger.PrintErr("Unhandled Exception: " + ex.Message);
+            };
+
             this.CheckForNull(x => DragDropProxy, Logger);
             this.CheckForNull(x => ComponentViewFactory, Logger);
             this.CheckForNull(x => LightOnTexture, Logger);
@@ -66,7 +72,8 @@ namespace ConnectAPIC.LayoutWindow.View
             };
             viewModel.ComponentCreated += async (Component component, int gridX, int gridY) =>
             {
-                CreateComponentView(gridX, gridY, component.Rotation90CounterClock, component.TypeNumber, component.GetAllSliders());
+                var cmpViewModel = new ComponentViewModel(component);
+                CreateComponentView(cmpViewModel, gridX, gridY, component.Rotation90CounterClock, component.TypeNumber, component.GetAllSliders());
                 await RecalculateLightIfOn();
             };
             viewModel.ComponentRemoved += async (Component component, int gridX, int gridY) => {
@@ -126,16 +133,15 @@ namespace ConnectAPIC.LayoutWindow.View
             }
         }
 
-        public ComponentView CreateComponentView(int gridX, int gridY, DiscreteRotation rotationCounterClockwise, int componentTypeNumber, List<Slider> slidersInUse)
+        public ComponentView CreateComponentView(ComponentViewModel cmpViewModel , int gridX, int gridY, DiscreteRotation rotationCounterClockwise, int componentTypeNumber, List<Slider> slidersInUse)
         {
-            var ComponentView = ComponentViewFactory.CreateComponentView(componentTypeNumber);
-            
-            ComponentView.SetViewModel()
+            var ComponentView = ComponentViewFactory.CreateComponentView(componentTypeNumber, cmpViewModel);
+           
             ComponentView.ViewModel.RegisterInGrid(ViewModel.Grid, gridX, gridY, rotationCounterClockwise);
             ComponentView.ViewModel.SliderChanged += async (int sliderNumber, double newVal) => {
                 await ViewModel.CommandFactory
                     .CreateCommand(CommandType.MoveSlider)
-                    .ExecuteAsync(new MoveSliderCommandArgs(ComponentView.ViewModel.GridX, ComponentView.ViewModel.GridY, sliderNumber, newVal, ViewModel));
+                    .ExecuteAsync(new MoveSliderCommandArgs(ComponentView.ViewModel.GridX, ComponentView.ViewModel.GridY, sliderNumber, newVal));
                 await RecalculateLightIfOn();
             };
             RegisterComponentViewInGridView(ComponentView);

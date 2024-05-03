@@ -21,8 +21,8 @@ namespace ConnectAPIC.Scripts.ViewModel
         public ICommandBase DeleteComponentCommand { get; set; }
         public int GridX { get; set; }
         public int GridY { get; set; }
-        private ObservableCollection<SliderViewData> sliderData = new();
-        public ObservableCollection<SliderViewData> SliderData
+        private ObservableFixedCollection<SliderViewData> sliderData = new();
+        public ObservableFixedCollection<SliderViewData> SliderData
         {
             get { return sliderData; }
         }
@@ -64,12 +64,16 @@ namespace ConnectAPIC.Scripts.ViewModel
             var sliders = componentModel.GetAllSliders();
             componentModel.SliderValueChanged += ComponentModel_SliderValueChanged;
         }
-
+        public ComponentViewModel()
+        {
+            
+        }
         private void ComponentModel_SliderValueChanged(object sender, System.EventArgs e)
         {
             if(sender is Slider slider)
             {
                 SliderData[slider.Number].Value = slider.Value;
+                SliderChanged?.Invoke((int)slider.Number, slider.Value);
             }
         }
 

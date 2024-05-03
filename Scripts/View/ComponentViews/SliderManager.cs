@@ -1,14 +1,16 @@
-﻿using ConnectAPIC.Scripts.ViewModel;
+using ConnectAPIC.Scripts.ViewModel;
 using Godot;
-using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
+using static Godot.Range;
 
 namespace ConnectAPIC.Scripts.View.ComponentViews
 {
+
     public class SliderManager
     {
         private List<Godot.Slider> Sliders { get; set; } = new();
@@ -33,7 +35,9 @@ namespace ConnectAPIC.Scripts.View.ComponentViews
                     }
                 }
             };
+            ViewModel.SliderChanged += (int sliderNumber, double newVal) => SetSliderValue(sliderNumber, newVal);
         }
+
         public List<SliderViewData> DuplicateSliders()
         {
             var newSliderData = new List<SliderViewData>();
@@ -55,10 +59,15 @@ namespace ConnectAPIC.Scripts.View.ComponentViews
         }
         private void SetSliderValue(int sliderNumber, double value)
         {
-            var slider = Sliders.Single(s => (int)s.GetMeta(SliderNumberMetaID) == sliderNumber);
+            var slider = GetSliderByNumber(sliderNumber);
             var label = (RichTextLabel)slider.GetMeta(SliderLabelMetaID);
             slider.Value = value;
             SetSliderLabelText(label, value);
+        }
+
+        private Godot.Slider GetSliderByNumber(int sliderNumber)
+        {
+            return Sliders.Single(s => (int)s.GetMeta(SliderNumberMetaID) == sliderNumber);
         }
 
         // initialize one of the existing sliders
@@ -70,16 +79,12 @@ namespace ConnectAPIC.Scripts.View.ComponentViews
             godotSlider.MaxValue = sliderData.MaxVal;
             godotSlider.SetMeta(SliderNumberMetaID, sliderData.Number);
             godotSlider.SetMeta(SliderLabelMetaID, label);
-            if ((bool)godotSlider.GetMeta(SliderIsCallbackRegistered) != true)
+            godotSlider.SetMeta(SliderIsCallbackRegistered, true);
+            godotSlider.ValueChanged += (newVal) =>
             {
-                godotSlider.SetMeta(SliderIsCallbackRegistered, true);
-                godotSlider.ValueChanged += (newVal) =>
-                {
-                    SetSliderLabelText(label, newVal);
-                    ViewModel.SetSliderValue(sliderData.Number, newVal);
-                };
-            }
-
+                SetSliderLabelText(label, newVal);
+                ViewModel.SetSliderValue(sliderData.Number, newVal);
+            };
             godotSlider.Value = sliderData.Value;
             SetSliderLabelText(label, sliderData.Value);
             godotSlider.Step = (sliderData.MaxVal - sliderData.MinVal) / sliderData.Steps; // step is the distance between two steps in value

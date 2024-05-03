@@ -9,6 +9,7 @@ using CAP_Core.Components;
 using CAP_Core.Helpers;
 using static Godot.Control;
 using ConnectAPIC.Scripts.ViewModel.CommandFactory;
+using ConnectAPIC.Scripts.ViewModel;
 
 namespace ConnectAPIC.Scripts.View.ToolBox
 {
@@ -30,7 +31,8 @@ namespace ConnectAPIC.Scripts.View.ToolBox
             ComponentViewFactory = componentViewFactory;
             TileBorderSize = tileBorderSize;
             ComponentTypeNr = componentTypeNr;
-            MousePreviewComponent = ComponentViewFactory.CreateComponentView(ComponentTypeNr);
+            var cmpViewModel = new ComponentViewModel();
+            MousePreviewComponent = ComponentViewFactory.CreateComponentView(ComponentTypeNr, cmpViewModel);
             MousePreview = CreatePreview(MousePreviewComponent);
             GridView.AddChild(MousePreview);
             MousePreview.Hide();
@@ -83,7 +85,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
         public TemplateTileView CreateIcon()
         {
             var toolTilePixelSize = GameManager.TilePixelSize - TileBorderSize;
-            var componentInstance = ComponentViewFactory.CreateComponentView(ComponentTypeNr);
+            var componentInstance = ComponentViewFactory.CreateComponentView(ComponentTypeNr, new ComponentViewModel());
             componentInstance.CustomMinimumSize = new Vector2(toolTilePixelSize, toolTilePixelSize);
             var componentSizeCorrection = componentInstance.GetBiggestSize() / toolTilePixelSize;
             var biggestScaleFactor = Math.Max(componentSizeCorrection.X, componentSizeCorrection.Y);
