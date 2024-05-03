@@ -11,11 +11,11 @@ using ConnectAPic.LayoutWindow;
 
 public partial class UpdateManager : Node
 {
-    private static string InstallerPath =
-        Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData), "installers");
-
-    private static string RepoOwnerName = "Akhetonics";
+    private static string RepoOwnerName = "Cx3n1";
     private static string RepoName = "Connect-A-PIC";
+
+    private static string InstallerPath =
+        Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData), RepoOwnerName, RepoName, "installers");
 
     public static event EventHandler UpdateAvailable;
     public static event EventHandler DownloadStarted;
@@ -63,7 +63,8 @@ public partial class UpdateManager : Node
             installerName = downloadInfo.Name;
 
             // set installer name to latest version
-            string newFilePath = Path.Combine(InstallerPath, LatestVersion.ToString(), ".msi");
+            string newFilePath = Path.Combine(InstallerPath, $"{LatestVersion}.msi");
+
             File.Move(Path.Combine(InstallerPath, installerName), newFilePath);
 
             DownloadCompleted?.Invoke(this, EventArgs.Empty);

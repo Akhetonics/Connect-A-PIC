@@ -35,7 +35,7 @@ enabled=PackedStringArray()
 
 [gui]
 
-theme/custom_font="res://Scenes/Assets/Fonts/PressStart2P.ttf"
+theme/custom_font="res://Scenes/Assets/Fonts/04B_11__.TTF"
 
 [rendering]
 

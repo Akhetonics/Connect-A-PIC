@@ -1,11 +1,10 @@
-[gd_scene load_steps=10 format=3 uid="uid://ckp2oek7mdfdr"]
+[gd_scene load_steps=9 format=3 uid="uid://ckp2oek7mdfdr"]
 
 [ext_resource type="Script" path="res://Scenes/UpdateView/UpdateWindow.cs" id="1_6lc00"]
 [ext_resource type="Texture2D" uid="uid://bskt8xmas4b1b" path="res://Scenes/UpdateView/Background.png" id="1_10xxx"]
 [ext_resource type="Theme" uid="uid://b2f4xgnx0xy5e" path="res://Scenes/Assets/Themes/MainTheme.tres" id="2_xo7yr"]
 [ext_resource type="StyleBox" uid="uid://2isxejv4i0gq" path="res://Scenes/Assets/Styles/RedButtonNormal.tres" id="3_vdg8s"]
 [ext_resource type="StyleBox" uid="uid://drsxpwqtwkesm" path="res://Scenes/Assets/Styles/RedButtonPressed.tres" id="4_my1vj"]
-[ext_resource type="FontFile" uid="uid://8ct2wwxvfs7q" path="res://Scenes/Assets/Fonts/PressStart2P.ttf" id="4_q43xb"]
 [ext_resource type="Texture2D" uid="uid://s14vvxb178my" path="res://Scenes/UpdateView/GreenArrowUp.png" id="5_e0jwg"]
 [ext_resource type="Texture2D" uid="uid://dxvurvr0haeii" path="res://Scenes/UpdateView/ProgressBarBackground.png" id="8_i5so3"]
 [ext_resource type="Texture2D" uid="uid://dpputvgdqytr5" path="res://Scenes/UpdateView/ProgressBarProgress.png" id="9_n3w8m"]
@@ -88,7 +87,6 @@ grow_horizontal = 2
 grow_vertical = 0
 focus_mode = 0
 theme = ExtResource("2_xo7yr")
-theme_override_fonts/font = ExtResource("4_q43xb")
 theme_override_font_sizes/font_size = 16
 text = "Update"
 
@@ -98,15 +96,14 @@ layout_mode = 1
 anchors_preset = 10
 anchor_right = 1.0
 offset_left = 6.0
-offset_top = 26.0
-offset_right = -44.0
-offset_bottom = 63.0
+offset_top = 23.0
+offset_right = -6.0
+offset_bottom = 73.0
 grow_horizontal = 2
-scale = Vector2(1.1, 1.1)
 focus_mode = 2
 mouse_filter = 2
 theme = ExtResource("2_xo7yr")
-theme_override_font_sizes/normal_font_size = 0
+theme_override_font_sizes/normal_font_size = 24
 bbcode_enabled = true
 text = "[center]New version of the game is out![/center]"
 
@@ -156,6 +153,7 @@ grow_vertical = 2
 focus_mode = 2
 mouse_filter = 2
 theme = ExtResource("2_xo7yr")
+theme_override_font_sizes/normal_font_size = 24
 bbcode_enabled = true
 text = "[center][color=#FFC826]0.0[/color][/center]"
 
@@ -167,16 +165,16 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -203.0
-offset_top = -25.0
-offset_right = 150.0
-offset_bottom = -1.0
+offset_left = -176.0
+offset_top = -19.0
+offset_right = 177.0
+offset_bottom = 12.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(1.15, 1.15)
 focus_mode = 2
 mouse_filter = 2
 theme = ExtResource("2_xo7yr")
+theme_override_font_sizes/normal_font_size = 24
 bbcode_enabled = true
 text = "[center][color=#44FF44]1.2[/color][/center]"
 
