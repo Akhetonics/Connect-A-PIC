@@ -15,10 +15,10 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands.ExternalPorts
     public class SetInputPowerCommand : CommandBase<SetInputPowerArgs>
     {
         public GridManager Grid { get; }
-        public LightCalculationService LightCalculator { get; }
+        public ILightCalculationService LightCalculator { get; }
         public Complex OldInflowPower { get; private set; }
 
-        public SetInputPowerCommand(GridManager grid, LightCalculationService lightCalculator)
+        public SetInputPowerCommand(GridManager grid, ILightCalculationService lightCalculator)
         {
             LightCalculator = lightCalculator;
             Grid = grid;

@@ -105,10 +105,21 @@ namespace UnitTests.ViewModels.Commands
             var argsWorking = new MoveComponentArgs(transitionWorking);
             // act
             await command.ExecuteAsync(argsWorking);
+            var isFirstCmpMoved = gridManagerMock.Object.TileManager.Tiles[1, 4].Component != null;
+            var isSecondCmpMoved = gridManagerMock.Object.TileManager.Tiles[1, 2].Component != null;
 
+            command.Undo();
+            var isFirstComponentPlacedBack = gridManagerMock.Object.TileManager.Tiles[1, 0].Component != null;
+            var isSecondComponentPlacedBack = gridManagerMock.Object.TileManager.Tiles[0, 1].Component != null;
+            var isFirstNewPositionEmpty = gridManagerMock.Object.TileManager.Tiles[1, 4].Component == null;
+            var isSecondNewPositionEmpty = gridManagerMock.Object.TileManager.Tiles[1, 2].Component == null;
             // assert
-            Assert.True(gridManagerMock.Object.TileManager.Tiles[1, 4].Component != null);
-            Assert.True(gridManagerMock.Object.TileManager.Tiles[1, 2].Component != null);
+            Assert.True(isFirstCmpMoved);
+            Assert.True(isSecondCmpMoved);
+            Assert.True(isFirstComponentPlacedBack, "because after undo it should be placed back");
+            Assert.True(isSecondComponentPlacedBack, "because after undo it should be placed back");
+            Assert.True(isFirstNewPositionEmpty, "because after undo it should be placed back");
+            Assert.True(isSecondNewPositionEmpty, "because after undo it should be placed back");
         }
     }
 

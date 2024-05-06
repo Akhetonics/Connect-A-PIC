@@ -14,14 +14,14 @@ namespace ConnectAPIC.Scripts.View.ToolBox
 {
     public class BoxSelectComponentsCommand : CommandBase<BoxSelectComponentsArgs>
     {
-        public BoxSelectComponentsCommand(GridManager grid, SelectionManager selectionManager)
+        public BoxSelectComponentsCommand(GridManager grid, ISelectionManager selectionManager)
         {
             Grid = grid;
             SelectionManager = selectionManager;
         }
 
         public GridManager Grid { get; }
-        public SelectionManager SelectionManager { get; }
+        public ISelectionManager SelectionManager { get; }
         public AppendBehaviors AppendBehavior { get; set; }
         public bool WasExecuted { get; set; }
         public HashSet<IntVector> OldSelection { get; private set; } = new();

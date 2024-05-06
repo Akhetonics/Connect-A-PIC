@@ -8,7 +8,11 @@ using System.Threading.Tasks;
 
 namespace CAP_Core.Grid
 {
-    public class SelectionManager
+    public interface ISelectionManager
+    {
+        public UniqueObservableCollection<IntVector> Selections { get; set; }
+    }
+    public class SelectionManager : ISelectionManager
     {
         public UniqueObservableCollection<IntVector> Selections { get; set; } = new();
         public SelectionManager(GridManager grid)
@@ -32,4 +36,5 @@ namespace CAP_Core.Grid
         }
 
     }
+
 }

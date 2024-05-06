@@ -13,14 +13,14 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
     {
         private readonly GridManager grid;
 
-        public SelectionManager SelectionManager { get; }
+        public ISelectionManager SelectionManager { get; }
         public List<Component> OldSelections { get; private set; } = new();
         public List<(Component Component, IntVector Position)> OldComponentsAndPositionInTargetArea { get; private set; }
         public List<(IntVector StartPosition, Component ComponentToMove)> OldTransitions { get; private set; }
 
         public event EventHandler CanExecuteChanged;
 
-        public MoveComponentCommand(GridManager grid, SelectionManager selectionManager)
+        public MoveComponentCommand(GridManager grid, ISelectionManager selectionManager)
         {
             this.grid = grid;
             SelectionManager = selectionManager;

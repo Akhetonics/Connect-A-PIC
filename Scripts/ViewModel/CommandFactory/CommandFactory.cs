@@ -45,10 +45,10 @@ namespace ConnectAPIC.Scripts.ViewModel.CommandFactory
 
         public CommandFactory(
             GridManager gridManager,
-            ComponentFactory componentFactory,
-            SelectionManager selectionManager,
+            IComponentFactory componentFactory,
+            ISelectionManager selectionManager,
             ILogger logger,
-            LightCalculationService lightCalculationService,
+            ILightCalculationService lightCalculationService,
             GridViewModel gridViewModel) 
         {
             GridManager = gridManager;
@@ -60,12 +60,12 @@ namespace ConnectAPIC.Scripts.ViewModel.CommandFactory
         }
 
         public GridManager GridManager { get; }
-        public ComponentFactory ComponentFactory { get; }
-        public SelectionManager SelectionManager { get; }
+        public IComponentFactory ComponentFactory { get; }
+        public ISelectionManager SelectionManager { get; }
         public ILogger Logger { get; }
         private LinkedList<ICommand> History { get; } = new();
         private Stack<ICommand> RedoStack { get; } = new();
-        public LightCalculationService LightCalculationService { get; }
+        public ILightCalculationService LightCalculationService { get; }
         public GridViewModel GridViewModel { get; private set; }
 
         public ICommand CreateCommand  (CommandType type)

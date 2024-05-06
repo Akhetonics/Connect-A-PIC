@@ -11,14 +11,14 @@ using System.Threading.Tasks;
 
 namespace ConnectAPIC.Scenes.RightClickMenu {
     public class ControlMenuViewModel {
-        public ControlMenuViewModel(GridManager grid, LightCalculationService lightCalculator, ICommandFactory commandFactory){
+        public ControlMenuViewModel(GridManager grid, ILightCalculationService lightCalculator, ICommandFactory commandFactory){
             Grid = grid;
             LightCalculator = lightCalculator;
             CommandFactory = commandFactory;
         }
 
         public GridManager Grid { get; }
-        public LightCalculationService LightCalculator { get; }
+        public ILightCalculationService LightCalculator { get; }
         public ICommandFactory CommandFactory { get; }
     }
 }

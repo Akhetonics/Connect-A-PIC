@@ -16,11 +16,11 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands.ExternalPorts
     public class SetPortTypeCommand : CommandBase<SetPortTypeArgs>
     {
         public GridManager Grid { get; }
-        public LightCalculationService LightCalculator { get; }
+        public ILightCalculationService LightCalculator { get; }
         public ExternalPort OldPort { get; private set; }
         public int OldPortIndex { get; private set; }
 
-        public SetPortTypeCommand(GridManager grid, LightCalculationService lightCalculator)
+        public SetPortTypeCommand(GridManager grid, ILightCalculationService lightCalculator)
         {
             LightCalculator = lightCalculator;
             Grid = grid;

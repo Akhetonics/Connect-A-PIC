@@ -9,7 +9,7 @@ namespace UnitTests.ViewModels.Commands
     public class RotateComponentCommandTests
     {
         private readonly Mock<GridManager> gridManagerMock;
-        private readonly RotateComponentCommand command;
+        private readonly RotateComponentCommand rotateCommand;
 
         public RotateComponentCommandTests()
         {
@@ -21,7 +21,7 @@ namespace UnitTests.ViewModels.Commands
             var componentRelationshipMgr = new Mock<IComponentRelationshipManager>();
             gridManagerMock = new Mock<GridManager>(tileMgr, componentMover.Object, externalPortMgr.Object, componentRotator.Object, componentRelationshipMgr.Object, lightMgr);
 
-            command = new RotateComponentCommand(gridManagerMock.Object);
+            rotateCommand = new RotateComponentCommand(gridManagerMock.Object);
 
      
 
@@ -115,7 +115,7 @@ namespace UnitTests.ViewModels.Commands
         [Fact]
         public void CanExecute_ReturnsFalse_WhenArgumentIsNotRotateComponentArgs()
         {
-            var result = command.CanExecute(new object());
+            var result = rotateCommand.CanExecute(new object());
             Assert.False(result);
         }
 
@@ -127,8 +127,8 @@ namespace UnitTests.ViewModels.Commands
             var argsOutOfGrid = new RotateComponentArgs(-1, 0);
 
             // act
-            var canExecuteOnEmptyTile = command.CanExecute(argsOnEmptyTile);
-            var canExecuteOutOfGrid = command.CanExecute(argsOutOfGrid);
+            var canExecuteOnEmptyTile = rotateCommand.CanExecute(argsOnEmptyTile);
+            var canExecuteOutOfGrid = rotateCommand.CanExecute(argsOutOfGrid);
 
             // assert
             Assert.False(canExecuteOnEmptyTile);
@@ -146,20 +146,20 @@ namespace UnitTests.ViewModels.Commands
             var argsOnSingleComponent = new RotateComponentArgs(1, 0);
 
             // act
-            await command.ExecuteAsync(argsOnBigComponent);
-            await command.ExecuteAsync(argsOnSingleComponent);
+            await rotateCommand.ExecuteAsync(argsOnBigComponent);
+            await rotateCommand.ExecuteAsync(argsOnSingleComponent);
 
 
             bool rotatedBigComponent = gridManagerMock.Object.TileManager.Tiles[5, 0].Component?.Rotation90CounterClock == DiscreteRotation.R90;
             bool rotatedSingleComponent = gridManagerMock.Object.TileManager.Tiles[1, 0].Component?.Rotation90CounterClock == DiscreteRotation.R90;
-
+            
             // undoes single deleted component
-            command.Undo();
-
+            rotateCommand.Undo();
+            bool isComponentRotatedBack = gridManagerMock.Object.TileManager.Tiles[1, 0].Component?.Rotation90CounterClock == DiscreteRotation.R0;
             // assert
             Assert.True(rotatedSingleComponent);
             Assert.True(rotatedBigComponent);
-            Assert.True(gridManagerMock.Object.TileManager.Tiles[1, 0].Component?.Rotation90CounterClock == DiscreteRotation.R0);
+            Assert.True(isComponentRotatedBack);
         }
     }
 }

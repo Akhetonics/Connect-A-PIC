@@ -29,9 +29,9 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
         public int Height => Grid.TileManager.Height;
         public GridManager Grid { get; set; }
         public ILogger Logger { get; }
-        public ComponentFactory ComponentModelFactory { get; }
+        public IComponentFactory ComponentModelFactory { get; }
         public ToolViewModel ToolViewModel { get; private set; }
-        public LightCalculationService LightCalculator { get; private set; }
+        public ILightCalculationService LightCalculator { get; private set; }
         private ComponentViewModel[,] ComponentViewModels { get; set; }
         public int MaxTileCount { get => Width * Height; }
         private bool isLightOn = false;
@@ -44,7 +44,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel
 
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
-        public GridViewModel( GridManager grid, ILogger logger, ComponentFactory componentModelFactory, LightCalculationService lightCalculator )
+        public GridViewModel( GridManager grid, ILogger logger, IComponentFactory componentModelFactory, ILightCalculationService lightCalculator )
         {
             this.Grid = grid;
             LightCalculator = lightCalculator;

@@ -14,15 +14,22 @@ using System.Xml.Linq;
 
 namespace CAP_Core.LightCalculation
 {
-    public class LightCalculationService
+    public interface ILightCalculationService
     {
         public event EventHandler<LightCalculationUpdated>? LightCalculationUpdated; // is only called when new data is available - not when the calculation got cancelled
         public event EventHandler CalculationCanceled;
+        public Task ShowLightPropagationAsync();
+        public Task CancelLightCalculation();
+    }
+    public class LightCalculationService : ILightCalculationService
+    {
+        public event EventHandler<LightCalculationUpdated>? LightCalculationUpdated; 
+        public event EventHandler CalculationCanceled;
         private Task? LightCalculationTask;
         private CancellationTokenSource CancelTokenLightCalc { get; set; } = new();
-        public ConcurrentBag<ExternalInput> LightInputs { get; private set; }
-        public ILightCalculator GridSMatrixAnalyzer { get; }
-        public SynchronizationContext? MainThreadContext { get; }
+        private ConcurrentBag<ExternalInput> LightInputs { get; set; }
+        private ILightCalculator GridSMatrixAnalyzer { get; }
+        private SynchronizationContext? MainThreadContext { get; }
 
         private SemaphoreSlim Semaphore = new (1, 1);
 

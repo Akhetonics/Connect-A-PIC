@@ -12,9 +12,9 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
     public class CreateComponentCommand : CommandBase<CreateComponentArgs>
     {
         private GridManager GridModel;
-        private readonly ComponentFactory ComponentFactory;
+        private readonly IComponentFactory ComponentFactory;
 
-        public CreateComponentCommand(GridManager mainGrid , ComponentFactory componentFactory)
+        public CreateComponentCommand(GridManager mainGrid , IComponentFactory componentFactory)
         {
             this.GridModel = mainGrid;
             this.ComponentFactory = componentFactory;
