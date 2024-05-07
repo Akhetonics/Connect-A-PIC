@@ -162,16 +162,16 @@ namespace CAP_Core.Components
 
         public override string ToString()
         {
-            return $"Nazca Name: {NazcaFunctionName} \n" +
-                   $"Parameters: {NazcaFunctionParameters} \n" +
-                   $"Width in Tiles: {WidthInTiles} \n" +
-                   $"Height in Tiles: {HeightInTiles} \n" +
-                   $"Is Placed in Grid: {IsPlacedInGrid} \n" +
-                   $"Grid X (Main Tile): {GridXMainTile} \n" +
-                   $"Grid Y (Main Tile): {GridYMainTile} \n" +
-                   $"Rotation: {Rotation90CounterClock} \n" +
-                   $"Parts Length: {Parts?.Length} \n" +
-                   $"Defined SMatrices: {WaveLengthToSMatrixMap.ToCustomString<int,SMatrix>()}";
+            return $"Nazca: {NazcaFunctionName} \n" +
+                   $"Params: {NazcaFunctionParameters} \n" +
+                   $"Width: {WidthInTiles} \n" +
+                   $"Height: {HeightInTiles} \n" +
+                   $"Placed: {IsPlacedInGrid} \n" +
+                   $"X: {GridXMainTile} \n" +
+                   $"Y: {GridYMainTile} \n" +
+                   $"R°: {Rotation90CounterClock} \n" +
+                   $"#Parts: {Parts?.Length} \n" +
+                   $"#SMatrices: {WaveLengthToSMatrixMap.Count}";
         }
         public List<Pin> GetAllPins()
         {

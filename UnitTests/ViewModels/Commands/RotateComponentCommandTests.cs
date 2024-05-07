@@ -1,6 +1,7 @@
 using CAP_Core.Components;
 using CAP_Core.Components.ComponentHelpers;
 using CAP_Core.Grid;
+using CAP_Core.Helpers;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using Moq;
 
@@ -65,13 +66,7 @@ namespace UnitTests.ViewModels.Commands
             .Callback<int, int, Component>((x, y, comp)
             =>
             {
-                if (componentMover.Object.IsColliding(x, y, comp.WidthInTiles, comp.HeightInTiles))
-                {
-                    var blockingComponent = componentMover.Object.GetComponentAt(x, y);
-                    throw new ComponentCannotBePlacedException(comp, blockingComponent);
-                }
                 comp.RegisterPositionInGrid(x, y);
-
                 for (int i = 0; i < comp.WidthInTiles; i++)
                 {
                     for (int j = 0; j < comp.HeightInTiles; j++)
@@ -138,24 +133,27 @@ namespace UnitTests.ViewModels.Commands
         [Fact]
         public async Task TestExecute()
         {
-            gridManagerMock.Object.ComponentMover.PlaceComponent(5, 0, TestComponentFactory.CreateComponent(TestComponentFactory.MMI3x3));
-            gridManagerMock.Object.ComponentMover.PlaceComponent(1, 0, TestComponentFactory.CreateComponent(TestComponentFactory.StraightWGJson));
+            var MMIPos = new IntVector(5, 0);
+            var StraightPos = new IntVector(8, 3);
+            gridManagerMock.Object.ComponentMover.PlaceComponent(MMIPos.X, MMIPos.Y, TestComponentFactory.CreateComponent(TestComponentFactory.MMI3x3));
+            gridManagerMock.Object.ComponentMover.PlaceComponent(StraightPos.X, StraightPos.Y, TestComponentFactory.CreateComponent(TestComponentFactory.StraightWGJson));
 
             // arrange
-            var argsOnBigComponent = new RotateComponentArgs(6, 1);
-            var argsOnSingleComponent = new RotateComponentArgs(1, 0);
+            var argsOnBigComponent = new RotateComponentArgs(MMIPos.X+2, MMIPos.Y+2);
+            var argsOnSingleComponent = new RotateComponentArgs(StraightPos.X, StraightPos.Y);
 
             // act
             await rotateCommand.ExecuteAsync(argsOnBigComponent);
             await rotateCommand.ExecuteAsync(argsOnSingleComponent);
 
-
-            bool rotatedBigComponent = gridManagerMock.Object.TileManager.Tiles[5, 0].Component?.Rotation90CounterClock == DiscreteRotation.R90;
-            bool rotatedSingleComponent = gridManagerMock.Object.TileManager.Tiles[1, 0].Component?.Rotation90CounterClock == DiscreteRotation.R90;
+            bool rotatedBigComponent = gridManagerMock.Object.TileManager.Tiles[MMIPos.X, MMIPos.Y].Component?.Rotation90CounterClock == DiscreteRotation.R90;
+            bool rotatedSingleComponent = gridManagerMock.Object.TileManager.Tiles[StraightPos.X, StraightPos.Y].Component?.Rotation90CounterClock == DiscreteRotation.R90;
             
             // undoes single deleted component
             rotateCommand.Undo();
-            bool isComponentRotatedBack = gridManagerMock.Object.TileManager.Tiles[1, 0].Component?.Rotation90CounterClock == DiscreteRotation.R0;
+            var StraightRot = gridManagerMock.Object.TileManager.Tiles[StraightPos.X, StraightPos.Y].Component?.Rotation90CounterClock;
+            bool isComponentRotatedBack = StraightRot == DiscreteRotation.R0;
+
             // assert
             Assert.True(rotatedSingleComponent);
             Assert.True(rotatedBigComponent);

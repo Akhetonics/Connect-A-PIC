@@ -68,7 +68,7 @@ namespace ConnectAPIC.test.ViewModels.Commands
         [Fact]
         public async void TestRevertBoxSelection()
         {
-            // initialize
+            // arrange
             var gridManager = GridHelpers.InitializeGridWithComponents();
             var components = FindAllComponentsInGrid(gridManager);
             var initiallySelectedComponent = components.ToArray()[1];

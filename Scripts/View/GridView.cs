@@ -154,7 +154,7 @@ namespace ConnectAPIC.LayoutWindow.View
             }).ToList();
             foreach (var slider in SliderInitialData)
             {
-                ComponentView.ViewModel.SetSliderValue(slider.Number, slider.Value, true);
+                ComponentView.ViewModel.SetSliderValue(slider.Number, slider.Value);
             }
             return ComponentView;
         }

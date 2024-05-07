@@ -137,9 +137,18 @@ namespace ConnectAPIC.Scripts.View.ToolBox
 
         public override void Undo()
         {
-            RemoveAllButExceptions(OldSelection);
+            UnselectAllButPreviouslySelectedItems();
             NewSelection = OldSelection;
             AddNewItemsButExceptions(new HashSet<IntVector>());
+        }
+
+        private void UnselectAllButPreviouslySelectedItems()
+        {
+            foreach (var componentPos in NewSelection)
+            {
+                if (OldSelection.Contains(componentPos)) continue;
+                SelectionManager.Selections.Remove(componentPos);
+            }
         }
 
         // can merge, when the appendBehavior is equal to the current one.

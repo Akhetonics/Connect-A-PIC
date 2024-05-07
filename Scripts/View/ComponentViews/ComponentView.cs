@@ -38,6 +38,8 @@ namespace ConnectAPIC.LayoutWindow.View
 
         public void OnResolved()
         {
+            // unregister the event to avoid douple registration
+            GridViewModel.SelectionGroupManager.SelectedComponents.CollectionChanged -= SelectedComponents_CollectionChanged;
             GridViewModel.SelectionGroupManager.SelectedComponents.CollectionChanged += SelectedComponents_CollectionChanged;
         }
 

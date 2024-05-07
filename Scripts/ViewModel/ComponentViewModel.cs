@@ -102,7 +102,7 @@ namespace ConnectAPIC.Scripts.ViewModel
             }
         }
 
-        public void SetSliderValue(int sliderNumber, double newVal, bool isUpdateView = false)
+        public void SetSliderValue(int sliderNumber, double newVal)
         {
             var slider = SliderData.Single(s => s.Number == sliderNumber);
             if(slider.Value != newVal)
@@ -112,13 +112,6 @@ namespace ConnectAPIC.Scripts.ViewModel
                 slider.SliderDebounceTimer.AutoReset = false;
             }
             slider.Value = newVal;
-
-            if (isUpdateView)
-            {
-                // remove and add the element to get the view updated
-                sliderData.Remove(slider);
-                sliderData.Add(slider);
-            }
         }
         public void TreeExited()
         {

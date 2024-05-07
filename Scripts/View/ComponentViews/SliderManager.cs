@@ -15,16 +15,16 @@ namespace ConnectAPIC.Scripts.View.ComponentViews
     {
         private List<Godot.Slider> Sliders { get; set; } = new();
         public ComponentViewModel ViewModel { get; }
-        public TextureRect GodotObject { get; }
+        public TextureRect Parent { get; }
 
         public const string SliderNumberMetaID = "SliderNumber";
         public const string SliderLabelMetaID = "SliderLabel";
         public const string SliderIsCallbackRegistered = "SliderIsCallbackRegistered";
 
-        public SliderManager(ComponentViewModel viewModel , TextureRect godotObject)
+        public SliderManager(ComponentViewModel viewModel , TextureRect parent)
         {
             ViewModel = viewModel;
-            this.GodotObject = godotObject;
+            this.Parent = parent;
             ViewModel.SliderData.CollectionChanged += (object sender, NotifyCollectionChangedEventArgs e) =>
             {
                 if (e.Action == NotifyCollectionChangedAction.Add)
@@ -38,31 +38,12 @@ namespace ConnectAPIC.Scripts.View.ComponentViews
             ViewModel.SliderChanged += (int sliderNumber, double newVal) => SetSliderValue(sliderNumber, newVal);
         }
 
-        public List<SliderViewData> DuplicateSliders()
-        {
-            var newSliderData = new List<SliderViewData>();
-            foreach (var slider in ViewModel.SliderData)
-            {
-                newSliderData.Add(new SliderViewData()
-                {
-                    GodotSliderLabelName = slider.GodotSliderLabelName,
-                    GodotSliderName = slider.GodotSliderName,
-                    Value = slider.Value,
-                    MaxVal = slider.MaxVal,
-                    MinVal = slider.MinVal,
-                    Number = slider.Number,
-                    Steps = slider.Steps
-                });
-            }
-
-            return newSliderData;
-        }
         private void SetSliderValue(int sliderNumber, double value)
         {
             var slider = GetSliderByNumber(sliderNumber);
             var label = (RichTextLabel)slider.GetMeta(SliderLabelMetaID);
             slider.Value = value;
-            SetSliderLabelText(label, value);
+            slider.CallDeferred(nameof(SetSliderLabelText), label, value);
         }
 
         private Godot.Slider GetSliderByNumber(int sliderNumber)
@@ -73,8 +54,8 @@ namespace ConnectAPIC.Scripts.View.ComponentViews
         // initialize one of the existing sliders
         private void FindAndInitializeSlider(SliderViewData sliderData)
         {
-            var label = GodotObject.FindChild(sliderData.GodotSliderLabelName, true, false) as RichTextLabel;
-            var godotSlider = GodotObject.FindChild(sliderData.GodotSliderName, true, false) as Godot.Slider;
+            var label = (RichTextLabel)Parent.FindChild(sliderData.GodotSliderLabelName, true, false);
+            var godotSlider = Parent.FindChild(sliderData.GodotSliderName, true, false) as Godot.Slider;
             godotSlider.MinValue = sliderData.MinVal;
             godotSlider.MaxValue = sliderData.MaxVal;
             godotSlider.SetMeta(SliderNumberMetaID, sliderData.Number);

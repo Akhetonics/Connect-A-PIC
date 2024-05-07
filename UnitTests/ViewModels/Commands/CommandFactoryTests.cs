@@ -81,7 +81,8 @@ namespace UnitTests.ViewModels.Commands
         public void UndoAndRedoSequencesOfCommandsTest()
         {
             // arrange
-            
+
+
             // act
 
             // assert

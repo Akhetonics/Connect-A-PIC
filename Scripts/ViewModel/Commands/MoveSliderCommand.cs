@@ -37,17 +37,14 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
             Slider = sliderComponent.GetSlider(ExecutionParams.sliderNumber);
             Slider.Value = OldSliderPosition;
         }
-        public override void Redo()
-        {
-            base.Redo();
-        }
         public override bool CanMergeWith(ICommand other)
         {
             if(other is  MoveSliderCommand moveSliderCmd)
             {
                 if (   moveSliderCmd.ExecutionParams.gridX == this.ExecutionParams.gridX
                     && moveSliderCmd.ExecutionParams.gridY == this.ExecutionParams.gridY
-                    && moveSliderCmd.ExecutionParams.sliderNumber == this.ExecutionParams.sliderNumber)
+                    && moveSliderCmd.ExecutionParams.sliderNumber == this.ExecutionParams.sliderNumber
+                    && moveSliderCmd.ExecutionParams.newValue == this.ExecutionParams.newValue)
                 {
                     return true;
                 }
