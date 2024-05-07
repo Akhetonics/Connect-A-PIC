@@ -44,7 +44,7 @@ public partial class UpdateWindow : Control
         // these are called from another thread and we need to update gui elements from main thread
         UpdateManager.DownloadStarted += (s,e) => this.CallDeferred("DownloadStarted");
         UpdateManager.ProgressUpdated += (s, a) => this.CallDeferred("ProgressUpdated");
-        UpdateManager.DownloadCompleted += (s, a) => this.CallDeferred("DownloadCompleted");
+        UpdateManager.InstallerReady += (s, a) => this.CallDeferred("DownloadCompleted");
 
         UpdateManager.UpdateAvailable += (s, e) => SetupValues();
         if (UpdateManager.IsUpdateAvailable()) SetupValues();

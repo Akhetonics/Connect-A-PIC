@@ -11,7 +11,7 @@ using ConnectAPic.LayoutWindow;
 
 public partial class UpdateManager : Node
 {
-    private static string RepoOwnerName = "Cx3n1";
+    private static string RepoOwnerName = "Akhetonics";
     private static string RepoName = "Connect-A-PIC";
 
     private static string InstallerPath =
@@ -21,6 +21,7 @@ public partial class UpdateManager : Node
     public static event EventHandler DownloadStarted;
     public static event EventHandler ProgressUpdated;
     public static event EventHandler DownloadCompleted;
+    public static event EventHandler InstallerReady;
 
     public static UpdateManager Instance {  get; private set; }
 
@@ -40,6 +41,8 @@ public partial class UpdateManager : Node
         Directory.CreateDirectory(InstallerPath);
 
         Instance = this;
+
+        DownloadCompleted += (s, e) => RenameInstallerFile();
 
         _ = CheckForUpdates();
     }
@@ -61,12 +64,6 @@ public partial class UpdateManager : Node
     private void RunOnProgressChanged(DownloadInfo downloadInfo) {
         if (downloadInfo.DownloadPercent == 1.0) {
             installerName = downloadInfo.Name;
-
-            // set installer name to latest version
-            string newFilePath = Path.Combine(InstallerPath, $"{LatestVersion}.msi");
-
-            File.Move(Path.Combine(InstallerPath, installerName), newFilePath);
-
             DownloadCompleted?.Invoke(this, EventArgs.Empty);
         }
 
@@ -88,9 +85,9 @@ public partial class UpdateManager : Node
         if (LatestVersion == null || CurrentVersion > LatestVersion) return; // Update not needed
 
         // if installer is downloaded then run installation
-        if (File.Exists(Path.Combine(InstallerPath, LatestVersion.ToString(), ".msi")))
+        if (File.Exists(Path.Combine(InstallerPath, $"{RepoName}_{LatestVersion}.msi")))
         {
-            RunInstaller(Path.Combine(InstallerPath, LatestVersion.ToString(), ".msi"));
+            RunInstaller(Path.Combine(InstallerPath, $"{RepoName}_{LatestVersion}.msi"));
             System.Environment.Exit(0);
         }
 
@@ -113,5 +110,17 @@ public partial class UpdateManager : Node
         p.StartInfo.FileName = "msiexec";
         p.StartInfo.Arguments = "/i " + Path.Combine(installerPath);
         p.Start();
+    }
+
+    private static void RenameInstallerFile() {
+        var newInstallerName = $"{RepoName}_{LatestVersion}.msi";
+        if (installerName == newInstallerName) return;
+
+        string newFilePath = Path.Combine(InstallerPath, newInstallerName);
+
+        File.Move(Path.Combine(InstallerPath, installerName), newFilePath);
+        installerName = newInstallerName;
+
+        InstallerReady?.Invoke(null, EventArgs.Empty);
     }
 }

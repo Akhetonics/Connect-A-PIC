@@ -18,7 +18,7 @@ public partial class UpdateButton : Button
         if (UpdateManager.IsUpdateAvailable()) ShowSelf();
 
         UpdateManager.DownloadStarted += DownloadStarted;
-        UpdateManager.DownloadCompleted += (s,e) => this.CallDeferred("UpdateReady");
+        UpdateManager.InstallerReady += (s,e) => this.CallDeferred("UpdateReady");
 
     }
 
