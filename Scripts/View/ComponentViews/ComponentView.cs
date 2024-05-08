@@ -41,6 +41,8 @@ namespace ConnectAPIC.LayoutWindow.View
             // unregister the event to avoid douple registration
             GridViewModel.SelectionGroupManager.SelectedComponents.CollectionChanged -= SelectedComponents_CollectionChanged;
             GridViewModel.SelectionGroupManager.SelectedComponents.CollectionChanged += SelectedComponents_CollectionChanged;
+            // check if the place where the componentView was created is already selected (e.g. when DeleteCommand.Undo() is called)
+            SelectedComponents_CollectionChanged(GridViewModel.SelectionGroupManager.SelectedComponents, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
         private void SelectedComponents_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -61,11 +63,13 @@ namespace ConnectAPIC.LayoutWindow.View
                     Modulate = new Godot.Color(1, 1, 1);
                 }
             }
-            if (e.Action == NotifyCollectionChangedAction.Reset)
+            if(e.Action == NotifyCollectionChangedAction.Reset)
             {
-                Modulate = new Godot.Color(1, 1, 1);
+                if(GridViewModel.SelectionGroupManager.SelectedComponents.Contains(new IntVector(ViewModel.GridX, ViewModel.GridY)))
+                {
+                    Modulate = new Godot.Color(0, 1, 0);
+                }
             }
-
         }
 
         public ComponentView()

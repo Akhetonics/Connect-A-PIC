@@ -146,7 +146,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
             }
 
             // Keyboard input
-            if (@event is InputEventKey eventKey)
+            if (@event is InputEventKey eventKey && eventKey.Pressed)
             {
                 switch(eventKey.Keycode)
                 {

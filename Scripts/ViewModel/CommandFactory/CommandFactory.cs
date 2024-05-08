@@ -84,7 +84,7 @@ namespace ConnectAPIC.Scripts.ViewModel.CommandFactory
                     newCommand = new MoveComponentCommand(GridManager, SelectionManager);
                     break;
                 case CommandType.DeleteComponent:
-                    newCommand = new DeleteComponentCommand(GridManager);
+                    newCommand = new DeleteComponentCommand(GridManager, SelectionManager);
                     break;
                 case CommandType.InputColorChange:
                     newCommand = new SetInputColorCommand(GridManager);

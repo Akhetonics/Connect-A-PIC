@@ -19,7 +19,6 @@ namespace ConnectAPIC.Scripts.ViewModel
     public class ComponentViewModel : System.ComponentModel.INotifyPropertyChanged
     {
         public ILogger Logger { get; private set; }
-        public ICommandBase DeleteComponentCommand { get; set; }
         public int GridX { get; set; }
         public int GridY { get; set; }
         private ObservableFixedCollection<SliderViewData> sliderData = new();
@@ -149,7 +148,6 @@ namespace ConnectAPIC.Scripts.ViewModel
 
         public void RegisterInGrid(GridManager grid, int gridX, int gridY, DiscreteRotation rotationCounterClockwise)
         {
-            DeleteComponentCommand = new DeleteComponentCommand(grid);
             this.GridX = gridX;
             this.GridY = gridY;
             this.RotationCC = rotationCounterClockwise;
