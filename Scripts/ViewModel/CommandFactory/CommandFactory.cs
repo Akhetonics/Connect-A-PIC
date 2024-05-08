@@ -121,6 +121,7 @@ namespace ConnectAPIC.Scripts.ViewModel.CommandFactory
                 if (History.Count > 0 && History.Last.Value.CanMergeWith(newCommand))
                 {
                     History.Last.Value.MergeWith(newCommand);
+                    newCommand = History.Last.Value;
                 } else
                 {
                     History.AddLast(newCommand);

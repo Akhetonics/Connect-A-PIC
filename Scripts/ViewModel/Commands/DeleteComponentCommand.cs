@@ -14,7 +14,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
     {
         private readonly GridManager Grid;
 
-        public List<(Component Component, IntVector Position)> DeletedComponents { get; private set; }
+        public HashSet<(Component Component, IntVector Position)> DeletedComponentsAndPos { get; private set; }
         public List<IntVector> SelectedComponentPositions { get; private set; }
         public ISelectionManager SelectionManager { get; }
 
@@ -26,14 +26,14 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 
         internal override Task ExecuteAsyncCmd(DeleteComponentArgs parameter)
         {
-            DeletedComponents = new();
+            DeletedComponentsAndPos = new();
             SelectedComponentPositions = new();
             foreach (IntVector deletePosition in parameter.DeletePositions)
             {
                 var componentToDelete = Grid.ComponentMover.GetComponentAt(deletePosition.X, deletePosition.Y);
                 if(componentToDelete == null) continue; // one might accidentally have clicked on an empty field
                 var componentPosition = new IntVector(componentToDelete.GridXMainTile, componentToDelete.GridYMainTile);
-                DeletedComponents.Add((componentToDelete, componentPosition));
+                DeletedComponentsAndPos.Add((componentToDelete, componentPosition));
                 if (SelectionManager.Selections.Contains(componentPosition)){
                     SelectedComponentPositions.Add(componentPosition);
                 }
@@ -44,7 +44,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 
         public override void Undo()
         {
-            foreach ((var Component,var Position) in DeletedComponents)
+            foreach ((var Component,var Position) in DeletedComponentsAndPos)
             {
                 Grid.ComponentMover.PlaceComponent(Position.X , Position.Y, Component);
             }
@@ -66,11 +66,20 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
         {
             if (!CanMergeWith(other))
                 throw new InvalidOperationException("Cannot merge with the provided command.");
-            foreach( var deletePos in ((DeleteComponentCommand)other).ExecutionParams.DeletePositions)
+            var otherCmd = (DeleteComponentCommand)other;
+            foreach ( var deletePos in otherCmd.ExecutionParams.DeletePositions)
             {
                 if (ExecutionParams.DeletePositions.Contains(deletePos) == false)
                 {
                     ExecutionParams.DeletePositions.Add(deletePos);
+                }
+            }
+            // also store previously deleted components for undo
+            foreach (var deleteComponentAndPos in otherCmd.DeletedComponentsAndPos)
+            {
+                if (DeletedComponentsAndPos.Contains(deleteComponentAndPos) == false)
+                {
+                    DeletedComponentsAndPos.Add(deleteComponentAndPos);
                 }
             }
         }
