@@ -166,6 +166,19 @@ namespace ConnectAPIC.LayoutWindow.View
             LightOnButton.ButtonPressed = isLightButtonOn;
         }
 
+        public override void _Input(InputEvent @event)
+        {
+            if (@event.IsActionPressed("ui_undo"))
+            {
+                _on_btn_undo_pressed();
+                @event.Dispose(); // this event should not be propagated any further
+            } else if (@event.IsActionPressed("ui_redo"))
+            {
+                _on_btn_redo_pressed();
+                @event.Dispose();
+            }
+        }
+
         private void _on_btn_export_nazca_pressed()
         {
             SaveFileDialog.Save(this, path =>
