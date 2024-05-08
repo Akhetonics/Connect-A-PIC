@@ -165,7 +165,6 @@ namespace ConnectAPIC.Scripts.View.ToolBox
                 throw new InvalidOperationException("Cannot merge with the provided command.");
             ExecutionParams.BoxSelections.AddRange(((BoxSelectComponentsCommand)other).ExecutionParams.BoxSelections);
         }
-
     }
     public class BoxSelectComponentsArgs
     {

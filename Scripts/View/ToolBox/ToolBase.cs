@@ -28,6 +28,8 @@ namespace ConnectAPIC.Scripts.View.ToolBox
         public GridView GridView { get; }
         public GridViewModel GridViewModel { get; private set; }
         public bool MiddleMouseButtonPressed { get; private set; }
+        public bool WasMiddleMousePressedBefore { get; private set; }
+        public Guid DeleteStrokeID { get; private set; }
 
         protected ToolBase(GridView gridView)
         {
@@ -84,8 +86,16 @@ namespace ConnectAPIC.Scripts.View.ToolBox
             Vector2I gridPosition = GetMouseGridPosition();
             if (Input.IsMouseButtonPressed(MouseButton.Middle))
             {
-                var delParams = new DeleteComponentArgs(new() { new IntVector(gridPosition.X, gridPosition.Y) });
+                if( WasMiddleMousePressedBefore == false)
+                {
+                    WasMiddleMousePressedBefore = true;
+                    DeleteStrokeID = Guid.NewGuid();
+                }
+                var delParams = new DeleteComponentArgs(new() { new IntVector(gridPosition.X, gridPosition.Y) }, DeleteStrokeID);
                 GridViewModel.CommandFactory.CreateCommand(CommandType.DeleteComponent).ExecuteAsync(delParams).Wait();
+            } else
+            {
+                WasMiddleMousePressedBefore = false;
             }
         }
     }

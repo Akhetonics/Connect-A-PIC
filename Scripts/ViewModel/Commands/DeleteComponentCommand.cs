@@ -1,9 +1,11 @@
 using CAP_Core.Components;
 using CAP_Core.Grid;
 using CAP_Core.Helpers;
+using ConnectAPIC.Scripts.View.ToolBox;
 using ConnectAPIC.Scripts.ViewModel.Commands;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
@@ -42,7 +44,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 
         public override void Undo()
         {
-            foreach ( (var Component,var Position) in DeletedComponents)
+            foreach ((var Component,var Position) in DeletedComponents)
             {
                 Grid.ComponentMover.PlaceComponent(Position.X , Position.Y, Component);
             }
@@ -52,14 +54,36 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
                 SelectionManager.Selections.Add(componentPos);
             }
         }
+        // can merge, when the appendBehavior is equal to the current one.
+        public override bool CanMergeWith(ICommand newCommand)
+        {
+            if (newCommand is DeleteComponentCommand deleteComponentCommand && deleteComponentCommand.ExecutionParams.StrokeID == this.ExecutionParams.StrokeID)
+                return true;
+            return false;
+        }
+
+        public override void MergeWith(ICommand other)
+        {
+            if (!CanMergeWith(other))
+                throw new InvalidOperationException("Cannot merge with the provided command.");
+            foreach( var deletePos in ((DeleteComponentCommand)other).ExecutionParams.DeletePositions)
+            {
+                if (ExecutionParams.DeletePositions.Contains(deletePos) == false)
+                {
+                    ExecutionParams.DeletePositions.Add(deletePos);
+                }
+            }
+        }
     }
     public class DeleteComponentArgs
     {
-        public DeleteComponentArgs(List<IntVector> deletePositions )
+        public DeleteComponentArgs(HashSet<IntVector> deletePositions , Guid strokeID)
         {
             DeletePositions = deletePositions;
+            StrokeID = strokeID;
         }
 
-        public List<IntVector> DeletePositions { get; }
+        public HashSet<IntVector> DeletePositions { get; }
+        public Guid StrokeID { get; }
     }
 }

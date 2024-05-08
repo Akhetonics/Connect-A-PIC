@@ -44,9 +44,9 @@ namespace UnitTests.ViewModels.Commands
             var singleComponentPos = new List<IntVector>() { new (1,0) };
             var multipleComponentsPos = new List<IntVector>() { new (2,0), new (3,0) };
             var bigComponentPos = new List<IntVector>() { new (6,1) };
-            var argsOnMultipleComponents = new DeleteComponentArgs(multipleComponentsPos);
-            var argsOnBigComponent = new DeleteComponentArgs(bigComponentPos);
-            var argsOnSingleComponent = new DeleteComponentArgs(singleComponentPos);
+            var argsOnMultipleComponents = new DeleteComponentArgs(multipleComponentsPos.ToHashSet(), Guid.NewGuid());
+            var argsOnBigComponent = new DeleteComponentArgs(bigComponentPos.ToHashSet(), Guid.NewGuid());
+            var argsOnSingleComponent = new DeleteComponentArgs(singleComponentPos.ToHashSet(), Guid.NewGuid());
 
             // act
             await command.ExecuteAsync(argsOnMultipleComponents);

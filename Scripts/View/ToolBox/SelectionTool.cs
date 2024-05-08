@@ -7,6 +7,7 @@ using ConnectAPIC.Scripts.Helpers;
 using ConnectAPIC.Scripts.ViewModel.CommandFactory;
 using ConnectAPIC.Scripts.ViewModel.Commands;
 using Godot;
+using System;
 using System.Linq;
 
 namespace ConnectAPIC.Scripts.View.ToolBox
@@ -54,7 +55,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
         }
         private void DeleteItems()
         {
-            var parameter = new DeleteComponentArgs(GridViewModel.SelectionGroupManager.SelectedComponents.ToList());
+            var parameter = new DeleteComponentArgs(GridViewModel.SelectionGroupManager.SelectedComponents.ToHashSet(), Guid.NewGuid());
             var deleteCommand = GridViewModel.CommandFactory.CreateCommand(CommandType.DeleteComponent);
             deleteCommand.ExecuteAsync(parameter).Wait();
         }
