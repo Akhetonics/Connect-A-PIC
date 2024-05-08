@@ -72,7 +72,7 @@ namespace ConnectAPIC.LayoutWindow.View
             };
             viewModel.ComponentCreated += async (Component component, int gridX, int gridY) =>
             {
-                var cmpViewModel = new ComponentViewModel(component);
+                var cmpViewModel = new ComponentViewModel(component, viewModel);
                 CreateComponentView(cmpViewModel, gridX, gridY, component.Rotation90CounterClock, component.TypeNumber, component.GetAllSliders());
                 await RecalculateLightIfOn();
             };
@@ -136,27 +136,29 @@ namespace ConnectAPIC.LayoutWindow.View
         public ComponentView CreateComponentView(ComponentViewModel cmpViewModel , int gridX, int gridY, DiscreteRotation rotationCounterClockwise, int componentTypeNumber, List<Slider> slidersInUse)
         {
             var ComponentView = ComponentViewFactory.CreateComponentView(componentTypeNumber, cmpViewModel);
-           
+
             ComponentView.ViewModel.RegisterInGrid(ViewModel.Grid, gridX, gridY, rotationCounterClockwise);
-            ComponentView.ViewModel.SliderChanged += async (int sliderNumber, double newVal) => {
-                await ViewModel.CommandFactory
-                    .CreateCommand(CommandType.MoveSlider)
-                    .ExecuteAsync(new MoveSliderCommandArgs(ComponentView.ViewModel.GridX, ComponentView.ViewModel.GridY, sliderNumber, newVal));
+            ComponentView.ViewModel.SliderModelChanged += async (int sliderNumber, double newVal) =>
+            {
                 await RecalculateLightIfOn();
             };
             RegisterComponentViewInGridView(ComponentView);
             DragDropProxy.AddChild(ComponentView); // it has to be the child of the DragDropArea to be displayed
-                                                            // set sliders initial values
-            List<SliderViewData> SliderInitialData = slidersInUse.Select(s => {
-                var vmSlider = ComponentView.ViewModel.SliderData.Single(data => data.Number == s.Number);
-                return new SliderViewData(
-                    vmSlider.GodotSliderLabelName, vmSlider.GodotSliderName, s.MinValue, s.MaxValue, s.Value, vmSlider.Steps, s.Number);
-            }).ToList();
-            foreach (var slider in SliderInitialData)
-            {
-                ComponentView.ViewModel.SetSliderValue(slider.Number, slider.Value);
-            }
+                                                   // set sliders initial values
+            SetInitialSliderValueInVM(slidersInUse, ComponentView);
+
             return ComponentView;
+        }
+
+        private static void SetInitialSliderValueInVM(List<Slider> slidersInUse, ComponentView ComponentView)
+        {
+            slidersInUse.ForEach(s =>
+            {
+                var vmSlider = ComponentView.ViewModel.SliderData.Single(data => data.Number == s.Number);
+                vmSlider.MinVal = s.MinValue;
+                vmSlider.MaxVal = s.MaxValue;
+                vmSlider.Value = s.Value;
+            });
         }
 
         public void SetLightButtonOn(bool isLightButtonOn)

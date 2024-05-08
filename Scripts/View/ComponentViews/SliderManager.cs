@@ -1,5 +1,7 @@
+using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.Scripts.ViewModel;
 using Godot;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -13,7 +15,7 @@ namespace ConnectAPIC.Scripts.View.ComponentViews
 
     public class SliderManager
     {
-        private List<Godot.Slider> Sliders { get; set; } = new();
+        private List<Godot.Slider> GodotSliders { get; set; } = new();
         public ComponentViewModel ViewModel { get; }
         public TextureRect Parent { get; }
 
@@ -33,9 +35,14 @@ namespace ConnectAPIC.Scripts.View.ComponentViews
                     {
                         FindAndInitializeSlider(slider);
                     }
-                }
+                } 
             };
-            ViewModel.SliderChanged += (int sliderNumber, double newVal) => SetSliderValue(sliderNumber, newVal);
+            ViewModel.SliderModelChanged += SetSliderValue;
+        }
+
+        private void RemoveSlider(SliderViewData slider)
+        {
+            throw new NotImplementedException();
         }
 
         private void SetSliderValue(int sliderNumber, double value)
@@ -48,7 +55,14 @@ namespace ConnectAPIC.Scripts.View.ComponentViews
 
         private Godot.Slider GetSliderByNumber(int sliderNumber)
         {
-            return Sliders.Single(s => (int)s.GetMeta(SliderNumberMetaID) == sliderNumber);
+            return GodotSliders.Single(s =>
+            {
+                if (GodotObject.IsInstanceValid(s) == false)
+                {
+                    return false;
+                }
+                return (int)s.GetMeta(SliderNumberMetaID) == sliderNumber;
+            });
         }
 
         // initialize one of the existing sliders
@@ -64,13 +78,21 @@ namespace ConnectAPIC.Scripts.View.ComponentViews
             godotSlider.ValueChanged += (newVal) =>
             {
                 SetSliderLabelText(label, newVal);
-                ViewModel.SetSliderValue(sliderData.Number, newVal);
+                ViewModel.ChangeSliderValueThroughTimer(sliderData.Number, newVal);
+            };
+            sliderData.PropertyChanged += (object sender, System.ComponentModel.PropertyChangedEventArgs e) =>
+            {
+                if(e.PropertyName == nameof(SliderViewData.Value))
+                {
+                    SetSliderValue(sliderData.Number, ((SliderViewData)sender).Value);
+                }
             };
             godotSlider.Value = sliderData.Value;
             SetSliderLabelText(label, sliderData.Value);
             godotSlider.Step = (sliderData.MaxVal - sliderData.MinVal) / sliderData.Steps; // step is the distance between two steps in value
-            this.Sliders.Add(godotSlider);
+            this.GodotSliders.Add(godotSlider);
         }
+
 
         private void SetSliderLabelText(RichTextLabel label, double newVal) => label.Text = $"[center]{newVal:F2}";
     }

@@ -22,38 +22,13 @@ namespace UnitTests.ViewModels.Commands
             // IExternalPortManager externalPortManager, IComponentRotator componentRotator, IComponentRelationshipManager componentRelationshipManager
             var tileMgr = new TileManager(24, 12);
             var lightMgr = new LightManager();
-            var componentMover = new Mock<IComponentMover>();
+            var componentMover = new ComponentMover(tileMgr);
             var externalPortMgr = new Mock<IExternalPortManager>();
             var componentRotator = new Mock<IComponentRotator>();
             var componentRelationshipMgr = new Mock<IComponentRelationshipManager>();
-            gridManagerMock = new Mock<GridManager>(tileMgr, componentMover.Object, externalPortMgr.Object, componentRotator.Object, componentRelationshipMgr.Object, lightMgr);
+            gridManagerMock = new Mock<GridManager>(tileMgr, componentMover, externalPortMgr.Object, componentRotator.Object, componentRelationshipMgr.Object, lightMgr);
             selectionManagerMock = new Mock<SelectionManager>(gridManagerMock.Object);
             command = new MoveComponentCommand(gridManagerMock.Object, selectionManagerMock.Object);
-
-            componentMover.Setup(m => m.GetComponentAt(It.IsAny<int>(), It.IsAny<int>(), 1, 1))
-                .Returns<int, int, int, int>((x, y, width, height)
-                    => tileMgr.Tiles[x, y].Component);
-            componentMover.Setup(m => m.UnregisterComponentAt(It.IsAny<int>(), It.IsAny<int>()))
-                .Callback<int, int>((x, y)
-                    => tileMgr.Tiles[x, y].Component = null);
-            componentMover.Setup(m => m.PlaceComponent(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Component>()))
-                .Callback<int, int, Component>((gridX, gridY, comp) =>
-                {
-                    comp.RegisterPositionInGrid(gridX, gridY);
-                    for ( int x = gridX; x < gridX + comp.WidthInTiles; x++)
-                    {
-                        for( int y = gridY; y < gridY + comp.HeightInTiles ; y++)
-                        {
-                            tileMgr.Tiles[x, y].Component = comp;
-                        }
-                    }
-                });
-            componentMover.Setup(m => m.IsColliding(It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<int>(), It.IsAny<Component>()))
-                .Returns<int, int, int, int, Component>((x, y, width, height, comp)
-                    => {
-                        if (tileMgr.Tiles[x, y].Component != null) return true;
-                        return false;
-                    });
         }
 
         [Fact]

@@ -12,7 +12,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
     {
         private readonly GridManager Grid;
 
-        public List<(Component Component, IntVector Position)> DeletedComponents { get; private set; } = new();
+        public List<(Component Component, IntVector Position)> DeletedComponents { get; private set; }
 
         public DeleteComponentCommand(GridManager grid)
         {
@@ -21,6 +21,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 
         internal override Task ExecuteAsyncCmd(DeleteComponentArgs parameter)
         {
+            DeletedComponents = new();
             foreach (IntVector deletePosition in parameter.DeletePositions)
             {
                 var componentToDelete = Grid.ComponentMover.GetComponentAt(deletePosition.X, deletePosition.Y);

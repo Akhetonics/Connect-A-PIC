@@ -101,8 +101,8 @@ namespace CAP_Core.Components
                     {
                         sMatrix.SliderReference.Add(slider.ID, slider.Value);
                     }
-                    SliderValueChanged?.Invoke(sender, e);
                 }
+                SliderValueChanged?.Invoke(sender, e);
                 NazcaFunctionParameters = "deltaLength = " + slider.Value;
             }
         }

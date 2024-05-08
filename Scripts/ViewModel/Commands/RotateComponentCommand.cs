@@ -25,9 +25,9 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
         private bool CanRotateComponentBy90(int GridX, int GridY)
         {
             var component = Grid.ComponentMover.GetComponentAt(GridX, GridY);
+            if(component == null) return false;
             GridX = component.GridXMainTile;
             GridY = component.GridYMainTile;
-            if (component == null) return false;
             int widthAfterRotation = component.HeightInTiles;
             int heightAfterRotation = component.WidthInTiles;
             for (int i = 0; i < widthAfterRotation; i++)

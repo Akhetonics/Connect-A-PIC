@@ -114,11 +114,12 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
         private void StoreComponentsInTargetAreaForUndo(MoveComponentArgs parameter)
         {
             OldComponentsAndPositionInTargetArea = new();
-            foreach (var (Source, _) in parameter.Transitions)
+            foreach (var (Source, Target) in parameter.Transitions)
             {
-                var CmpToBeMoved = grid.ComponentMover.GetComponentAt(Source.X, Source.Y);
-                var ComponentPosition = new IntVector(CmpToBeMoved.GridXMainTile, CmpToBeMoved.GridYMainTile);
-                OldComponentsAndPositionInTargetArea.Add((Component: CmpToBeMoved, Position: ComponentPosition));
+                var CmpInTaretArea = grid.ComponentMover.GetComponentAt(Target.X, Target.Y);
+                if (CmpInTaretArea == null) continue;
+                var TargetCmpPosition = new IntVector(CmpInTaretArea.GridXMainTile, CmpInTaretArea.GridYMainTile);
+                OldComponentsAndPositionInTargetArea.Add((Component: CmpInTaretArea, Position: TargetCmpPosition));
             }
         }
 
@@ -186,12 +187,16 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             // first move the components back to where they came from
             foreach( var (StartPosition, ComponentToMove) in OldTransitions)
             {
-                // unregister the components and register them again at startPosition
+                // unregister the components to move them back
                 grid.ComponentMover.UnregisterComponentAt(ComponentToMove.GridXMainTile, ComponentToMove.GridYMainTile);
+            }
+            foreach (var (StartPosition, ComponentToMove) in OldTransitions)
+            {
+                // move back all now unregistered components
                 grid.ComponentMover.PlaceComponent(StartPosition.X, StartPosition.Y, ComponentToMove);
             }
             // then recreate the deleted / overridden components
-            foreach( var (Component, Position) in OldComponentsAndPositionInTargetArea)
+            foreach ( var (Component, Position) in OldComponentsAndPositionInTargetArea)
             {
                 grid.ComponentMover.PlaceComponent(Position.X, Position.Y, Component);
             }

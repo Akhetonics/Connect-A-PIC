@@ -12,6 +12,7 @@ using CAP_Core.Grid;
 using System.Runtime.CompilerServices;
 using System.Collections.ObjectModel;
 using ConnectAPIC.LayoutWindow.ViewModel;
+using ConnectAPIC.Scripts.ViewModel.CommandFactory;
 
 namespace ConnectAPIC.Scripts.ViewModel
 {
@@ -53,16 +54,22 @@ namespace ConnectAPIC.Scripts.ViewModel
         }
         public int TypeNumber { get; set; }
         public delegate void SliderChangedEventHandler(int sliderNumber, double newVal);
-        public event SliderChangedEventHandler SliderChanged;
+        public event SliderChangedEventHandler SliderModelChanged;
         public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
         public const int SliderDebounceTimeMs = 50;
         private bool isPlacedInGrid;
         public bool IsPlacedInGrid { get => isPlacedInGrid; set { isPlacedInGrid = value; OnPropertyChanged(); } }
 
-        public ComponentViewModel(Component componentModel)
+        public Component ComponentModel { get; }
+        public GridViewModel GridViewModel { get; }
+
+        public ComponentViewModel(Component componentModel, GridViewModel gridViewModel)
         {
             var sliders = componentModel.GetAllSliders();
-            componentModel.SliderValueChanged += ComponentModel_SliderValueChanged;
+            
+            ComponentModel = componentModel;
+            GridViewModel = gridViewModel;
+            ComponentModel.SliderValueChanged += ComponentModel_SliderValueChanged;
         }
         public ComponentViewModel()
         {
@@ -73,7 +80,7 @@ namespace ConnectAPIC.Scripts.ViewModel
             if(sender is Slider slider)
             {
                 SliderData[slider.Number].Value = slider.Value;
-                SliderChanged?.Invoke((int)slider.Number, slider.Value);
+                SliderModelChanged?.Invoke((int)slider.Number, slider.Value);
             }
         }
 
@@ -88,21 +95,27 @@ namespace ConnectAPIC.Scripts.ViewModel
         private void RegisterSliderDebounceTimer(List<SliderViewData> sliderDataSets)
         {
             if (sliderDataSets.Count == 0) return;
-            foreach (var slider in sliderDataSets)
+            foreach (var sliderDataSet in sliderDataSets)
             {
-                slider.SliderDebounceTimer = new(SliderDebounceTimeMs);
-                slider.SliderDebounceTimer.Elapsed += (object sender, System.Timers.ElapsedEventArgs e) =>
+                sliderDataSet.SliderDebounceTimer = new(SliderDebounceTimeMs);
+                sliderDataSet.SliderDebounceTimer.Elapsed += (object sender, System.Timers.ElapsedEventArgs e) =>
                 {
-                    slider.SliderDebounceTimer.Stop();
-                    var sliderFound = this.SliderData.Single(s => s.Number == slider.Number);
-
-                    SliderChanged?.Invoke((int)sliderFound.Number, sliderFound.Value);
+                    sliderDataSet.SliderDebounceTimer.Stop();
+                    var sliderFound = this.SliderData.Single(s => s.Number == sliderDataSet.Number);
+                    // change the slider model
+                    if(GridViewModel != null)
+                    {
+                        GridViewModel.CommandFactory
+                        .CreateCommand(CommandType.MoveSlider)
+                        .ExecuteAsync(new MoveSliderCommandArgs(GridX, GridY, sliderFound.Number, sliderFound.Value))
+                        .Wait();
+                    }
                 };
-                this.SliderData.Add(slider);
+                this.SliderData.Add(sliderDataSet);
             }
         }
 
-        public void SetSliderValue(int sliderNumber, double newVal)
+        public void ChangeSliderValueThroughTimer(int sliderNumber, double newVal)
         {
             var slider = SliderData.Single(s => s.Number == sliderNumber);
             if(slider.Value != newVal)
@@ -115,6 +128,11 @@ namespace ConnectAPIC.Scripts.ViewModel
         }
         public void TreeExited()
         {
+            if(ComponentModel != null)
+            {
+                ComponentModel.SliderValueChanged -= ComponentModel_SliderValueChanged;
+            }
+
             foreach (var slider in SliderData)
             {
                 if (slider.SliderDebounceTimer == null) continue;
