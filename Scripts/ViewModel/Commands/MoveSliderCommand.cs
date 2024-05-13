@@ -1,6 +1,7 @@
 using CAP_Core.Grid;
 using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel;
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -44,7 +45,10 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
                 if (   moveSliderCmd.ExecutionParams.gridX == this.ExecutionParams.gridX
                     && moveSliderCmd.ExecutionParams.gridY == this.ExecutionParams.gridY
                     && moveSliderCmd.ExecutionParams.sliderNumber == this.ExecutionParams.sliderNumber
-                    && moveSliderCmd.ExecutionParams.newValue == this.ExecutionParams.newValue)
+                    &&
+                    (     moveSliderCmd.ExecutionParams.strokeID == this.ExecutionParams.strokeID
+                       || moveSliderCmd.ExecutionParams.newValue == this.ExecutionParams.newValue)
+                    )
                 {
                     return true;
                 }
@@ -64,13 +68,15 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
         public readonly int gridY;
         public readonly int sliderNumber;
         public readonly double newValue;
+        public readonly Guid strokeID;
 
-        public MoveSliderCommandArgs(int gridX, int gridY, int sliderNumber, double newValue)
+        public MoveSliderCommandArgs(int gridX, int gridY, int sliderNumber, double newValue, Guid strokeID)
         {
             this.gridX = gridX;
             this.gridY = gridY;
             this.sliderNumber = sliderNumber;
             this.newValue = newValue;
+            this.strokeID = strokeID;
         }
 
     }

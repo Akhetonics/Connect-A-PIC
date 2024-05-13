@@ -13,6 +13,7 @@ using System.Runtime.CompilerServices;
 using System.Collections.ObjectModel;
 using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.Scripts.ViewModel.CommandFactory;
+using System;
 
 namespace ConnectAPIC.Scripts.ViewModel
 {
@@ -61,6 +62,7 @@ namespace ConnectAPIC.Scripts.ViewModel
 
         public Component ComponentModel { get; }
         public GridViewModel GridViewModel { get; }
+        public Guid MoveSliderDragGuid { get; private set; } = Guid.NewGuid();
 
         public ComponentViewModel(Component componentModel, GridViewModel gridViewModel)
         {
@@ -91,6 +93,10 @@ namespace ConnectAPIC.Scripts.ViewModel
             RegisterSliderDebounceTimer(sliderDataSets);
         }
 
+        public void UpdateDragGuid()
+        {
+            MoveSliderDragGuid = Guid.NewGuid();
+        }
         private void RegisterSliderDebounceTimer(List<SliderViewData> sliderDataSets)
         {
             if (sliderDataSets.Count == 0) return;
@@ -106,7 +112,7 @@ namespace ConnectAPIC.Scripts.ViewModel
                     {
                         GridViewModel.CommandFactory
                         .CreateCommand(CommandType.MoveSlider)
-                        .ExecuteAsync(new MoveSliderCommandArgs(GridX, GridY, sliderFound.Number, sliderFound.Value))
+                        .ExecuteAsync(new MoveSliderCommandArgs(GridX, GridY, sliderFound.Number, sliderFound.Value, MoveSliderDragGuid))
                         .Wait();
                     }
                 };

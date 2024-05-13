@@ -115,6 +115,17 @@ namespace ConnectAPIC.LayoutWindow.View
             }
         }
 
+        public override void _Input(InputEvent @event)
+        {
+            base._Input(@event);
+            if( @event is InputEventMouse mouseEvent)
+            {
+                if(mouseEvent.IsPressed())
+                {
+                    ViewModel.UpdateDragGuid();
+                }
+            }
+        }
         public override void _Ready()
         {
             base._Ready();
