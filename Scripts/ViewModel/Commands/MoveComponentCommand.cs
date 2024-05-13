@@ -126,16 +126,16 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
                 {
                     for(int y = 0; y < sourceCmpHeight; y++)
                     {
-                        var CmpInTaretArea = grid.ComponentMover.GetComponentAt(Target.X+x, Target.Y+y);
-                        if (CmpInTaretArea == null) continue;
-                        var TargetCmpPosition = new IntVector(CmpInTaretArea.GridXMainTile, CmpInTaretArea.GridYMainTile);
+                        var CmpInTargetArea = grid.ComponentMover.GetComponentAt(Target.X+x, Target.Y+y);
+                        if (CmpInTargetArea == null) continue;
+                        var TargetCmpPosition = new IntVector(CmpInTargetArea.GridXMainTile, CmpInTargetArea.GridYMainTile);
                         if(OldComponentsAndPositionInTargetArea.ContainsKey(TargetCmpPosition) == false)
                         {
-                            if (exceptions.ContainsValue(CmpInTaretArea))
+                            if (exceptions.ContainsValue(CmpInTargetArea))
                             {
                                 continue;
                             }
-                            OldComponentsAndPositionInTargetArea.Add(TargetCmpPosition, CmpInTaretArea);
+                            OldComponentsAndPositionInTargetArea.Add(TargetCmpPosition, CmpInTargetArea);
                         }
                     }
                 }

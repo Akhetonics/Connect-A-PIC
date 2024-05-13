@@ -108,7 +108,7 @@ namespace CAP_Core.Components
         }
 
         /// <summary>
-        /// Reteives slider by its index (there can be multiple sliders on a single component)
+        /// Retrieves slider by its index (there can be multiple sliders on a single component)
         /// </summary>
         /// <param name="sliderNr">index of a slider (starts from 0)</param>
         /// <returns><see cref="Slider"/> of the component at the given index, or null if it doesn't exist</returns>

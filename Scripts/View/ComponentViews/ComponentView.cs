@@ -38,7 +38,7 @@ namespace ConnectAPIC.LayoutWindow.View
 
         public void OnResolved()
         {
-            // unregister the event to avoid douple registration
+            // unregister the event to avoid double registration
             GridViewModel.SelectionGroupManager.SelectedComponents.CollectionChanged -= SelectedComponents_CollectionChanged;
             GridViewModel.SelectionGroupManager.SelectedComponents.CollectionChanged += SelectedComponents_CollectionChanged;
             // check if the place where the componentView was created is already selected (e.g. when DeleteCommand.Undo() is called)
