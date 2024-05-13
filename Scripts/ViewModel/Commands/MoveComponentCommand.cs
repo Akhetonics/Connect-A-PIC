@@ -1,3 +1,4 @@
+using CAP_Core;
 using CAP_Core.Components;
 using CAP_Core.Grid;
 using CAP_Core.Helpers;
@@ -15,8 +16,8 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 
         public ISelectionManager SelectionManager { get; }
         public List<Component> OldSelections { get; private set; } = new();
-        public List<(Component Component, IntVector Position)> OldComponentsAndPositionInTargetArea { get; private set; }
-        public List<(IntVector StartPosition, Component ComponentToMove)> OldTransitions { get; private set; }
+        public Dictionary<IntVector, Component> OldComponentsAndPositionInTargetArea { get; private set; }
+        public Dictionary<IntVector, Component> OldComponentsAndPositions { get; private set; }
 
         public event EventHandler CanExecuteChanged;
 
@@ -94,32 +95,50 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 
         private void StoreDataForUndo(MoveComponentArgs parameter)
         {
+            OldComponentsAndPositions = StoreInitialComponentPositionsForUndo(parameter);
             StoreSelectedElementsForUndo();
-            StoreComponentsInTargetAreaForUndo(parameter);
-            StoreInitialComponentPositionsForUndo(parameter);
+            StoreComponentsInTargetAreaForUndo(parameter, OldComponentsAndPositions);
         }
 
         // store the initial position of all elements that are about to be moved
-        private void StoreInitialComponentPositionsForUndo(MoveComponentArgs parameter)
+        private Dictionary<IntVector, Component> StoreInitialComponentPositionsForUndo(MoveComponentArgs parameter)
         {
-            OldTransitions = new();
+            var OldComponentsAndPositions = new Dictionary< IntVector, Component>();
             foreach (var (Source, _) in parameter.Transitions)
             {
                 var oldComponent = grid.ComponentMover.GetComponentAt(Source.X, Source.Y);
                 var oldPosition = new IntVector(oldComponent.GridXMainTile, oldComponent.GridYMainTile);
-                OldTransitions.Add((StartPosition: oldPosition, ComponentToMove: oldComponent));
+                OldComponentsAndPositions.Add(oldPosition, oldComponent);
             }
+            return OldComponentsAndPositions;
         }
 
-        private void StoreComponentsInTargetAreaForUndo(MoveComponentArgs parameter)
+        private void StoreComponentsInTargetAreaForUndo(MoveComponentArgs parameter, Dictionary<IntVector, Component> exceptions)
         {
+            // get SourceComponents 
             OldComponentsAndPositionInTargetArea = new();
             foreach (var (Source, Target) in parameter.Transitions)
             {
-                var CmpInTaretArea = grid.ComponentMover.GetComponentAt(Target.X, Target.Y);
-                if (CmpInTaretArea == null) continue;
-                var TargetCmpPosition = new IntVector(CmpInTaretArea.GridXMainTile, CmpInTaretArea.GridYMainTile);
-                OldComponentsAndPositionInTargetArea.Add((Component: CmpInTaretArea, Position: TargetCmpPosition));
+                var sourceComponent = grid.ComponentMover.GetComponentAt(Source.X, Source.Y);
+                int sourceCmpWidth = sourceComponent.WidthInTiles;
+                int sourceCmpHeight = sourceComponent.HeightInTiles;
+                for(int x = 0; x < sourceCmpWidth; x++)
+                {
+                    for(int y = 0; y < sourceCmpHeight; y++)
+                    {
+                        var CmpInTaretArea = grid.ComponentMover.GetComponentAt(Target.X+x, Target.Y+y);
+                        if (CmpInTaretArea == null) continue;
+                        var TargetCmpPosition = new IntVector(CmpInTaretArea.GridXMainTile, CmpInTaretArea.GridYMainTile);
+                        if(OldComponentsAndPositionInTargetArea.ContainsKey(TargetCmpPosition) == false)
+                        {
+                            if (exceptions.ContainsValue(CmpInTaretArea))
+                            {
+                                continue;
+                            }
+                            OldComponentsAndPositionInTargetArea.Add(TargetCmpPosition, CmpInTaretArea);
+                        }
+                    }
+                }
             }
         }
 
@@ -185,22 +204,21 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
         public override void Undo()
         {
             // first move the components back to where they came from
-            foreach( var (StartPosition, ComponentToMove) in OldTransitions)
+            foreach( var (_, ComponentToMove) in OldComponentsAndPositions)
             {
                 // unregister the components to move them back
                 grid.ComponentMover.UnregisterComponentAt(ComponentToMove.GridXMainTile, ComponentToMove.GridYMainTile);
             }
-            foreach (var (StartPosition, ComponentToMove) in OldTransitions)
+            // move back all now unregistered components
+            foreach (var (StartPosition, ComponentToMove) in OldComponentsAndPositions)
             {
-                // move back all now unregistered components
                 grid.ComponentMover.PlaceComponent(StartPosition.X, StartPosition.Y, ComponentToMove);
             }
             // then recreate the deleted / overridden components
-            foreach ( var (Component, Position) in OldComponentsAndPositionInTargetArea)
+            foreach (var (Position, Component) in OldComponentsAndPositionInTargetArea)
             {
                 grid.ComponentMover.PlaceComponent(Position.X, Position.Y, Component);
             }
-
             // then restore the selection
             SelectionManager.Selections.Clear();
             foreach ( var Component in OldSelections)

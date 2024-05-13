@@ -70,53 +70,24 @@ namespace ConnectAPIC.Scripts.ViewModel.CommandFactory
 
         public ICommand CreateCommand  (CommandType type)
         {
-            ICommand newCommand;
-
-            switch (type)
+            ICommand newCommand = type switch
             {
-                case CommandType.BoxSelectComponent:
-                    newCommand = new BoxSelectComponentsCommand(GridManager, SelectionManager);
-                    break;
-                case CommandType.CreateComponent:
-                    newCommand = new CreateComponentCommand(GridManager, ComponentFactory);
-                    break;
-                case CommandType.MoveComponent:
-                    newCommand = new MoveComponentCommand(GridManager, SelectionManager);
-                    break;
-                case CommandType.DeleteComponent:
-                    newCommand = new DeleteComponentCommand(GridManager, SelectionManager);
-                    break;
-                case CommandType.InputColorChange:
-                    newCommand = new SetInputColorCommand(GridManager);
-                    break;
-                case CommandType.InputOutputChange:
-                    newCommand = new SetPortTypeCommand(GridManager, LightCalculationService);
-                    break;
-                case CommandType.InputPowerAdjust:
-                    newCommand = new SetInputPowerCommand(GridManager, LightCalculationService);
-                    break;
-                case CommandType.RotateComponent:
-                    newCommand = new RotateComponentCommand(GridManager);
-                    break;
-                case CommandType.SwitchOnLight:
-                    newCommand = new SwitchOnLightCommand(GridManager.LightManager);
-                    break;
-                case CommandType.LoadGrid:
-                    newCommand = new LoadGridCommand(GridManager, new FileDataAccessor(), ComponentFactory, this.GridViewModel);
-                    break;
-                case CommandType.MoveSlider:
-                    newCommand = new MoveSliderCommand(GridManager);
-                    break;
-                case CommandType.ExportNazca:
-                    newCommand = new ExportNazcaCommand(new NazcaExporter(),GridManager, new FileDataAccessor());
-                    break;
-                case CommandType.SaveGrid:
-                    newCommand = new SaveGridCommand(GridManager, new FileDataAccessor());
-                    break;
-                    // more cases for new command types
-                default:
-                    throw new ArgumentException("CommandType unknown", nameof(type));
-            }
+                CommandType.BoxSelectComponent => new BoxSelectComponentsCommand(GridManager, SelectionManager),
+                CommandType.CreateComponent => new CreateComponentCommand(GridManager, ComponentFactory),
+                CommandType.MoveComponent => new MoveComponentCommand(GridManager, SelectionManager),
+                CommandType.DeleteComponent => new DeleteComponentCommand(GridManager, SelectionManager),
+                CommandType.InputColorChange => new SetInputColorCommand(GridManager),
+                CommandType.InputOutputChange => new SetPortTypeCommand(GridManager, LightCalculationService),
+                CommandType.InputPowerAdjust => new SetInputPowerCommand(GridManager, LightCalculationService),
+                CommandType.RotateComponent => new RotateComponentCommand(GridManager),
+                CommandType.SwitchOnLight => new SwitchOnLightCommand(GridManager.LightManager),
+                CommandType.LoadGrid => new LoadGridCommand(GridManager, new FileDataAccessor(), ComponentFactory, this.GridViewModel),
+                CommandType.MoveSlider => new MoveSliderCommand(GridManager),
+                CommandType.ExportNazca => new ExportNazcaCommand(new NazcaExporter(), GridManager, new FileDataAccessor()),
+                CommandType.SaveGrid => new SaveGridCommand(GridManager, new FileDataAccessor()),
+                // more cases for new command types
+                _ => throw new ArgumentException("CommandType unknown", nameof(type)),
+            };
             newCommand.Executed += (object sender, EventArgs e) => {
                 if (History.Count > 0 && History.Last.Value.CanMergeWith(newCommand))
                 {
