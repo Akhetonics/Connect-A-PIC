@@ -78,8 +78,8 @@ namespace UnitTests.ViewModels.Commands
             gridManagerMock.Object.ComponentMover.PlaceComponent(1, 0, TestComponentFactory.CreateComponent(TestComponentFactory.StraightWGJson));
 
             // arrange
-            var argsOnOtherComponent = new CreateComponentArgs(0, 1, 0, DiscreteRotation.R0);
-            var argsOutOfGrid = new CreateComponentArgs(0, -1, 0, DiscreteRotation.R0);
+            var argsOnOtherComponent = new CreateComponentArgs(0, 1, 0, DiscreteRotation.R0, Guid.NewGuid());
+            var argsOutOfGrid = new CreateComponentArgs(0, -1, 0, DiscreteRotation.R0, Guid.NewGuid());
 
             // act
             var canExecuteOnAnotherComponent = command.CanExecute(argsOnOtherComponent);
@@ -94,7 +94,7 @@ namespace UnitTests.ViewModels.Commands
         public async Task TestExecute()
         {
             // arrange
-            var args = new CreateComponentArgs(0, 4, 4, DiscreteRotation.R0);
+            var args = new CreateComponentArgs(0, 4, 4, DiscreteRotation.R0, Guid.NewGuid());
 
             // act
             await command.ExecuteAsync(args);

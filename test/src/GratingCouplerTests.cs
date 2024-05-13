@@ -13,6 +13,7 @@ using CAP_Core.ExternalPorts;
 using Chickensoft.GodotTestDriver;
 using Chickensoft.GodotTestDriver.Util;
 using ConnectAPIC.Scripts.ViewModel.CommandFactory;
+using System;
 
 namespace ConnectAPIC.test.src
 {
@@ -34,7 +35,7 @@ namespace ConnectAPIC.test.src
             var firstLaserInput = MyGameManager.Grid.ExternalPortManager.ExternalPorts[0];
             var firstInputTileY = firstLaserInput.TilePositionY;
 
-            await MyGameManager.GridViewModel.CommandFactory.CreateCommand(CommandType.CreateComponent).ExecuteAsync(new CreateComponentArgs(gratingComponentNr, 0, firstInputTileY, DiscreteRotation.R0));
+            await MyGameManager.GridViewModel.CommandFactory.CreateCommand(CommandType.CreateComponent).ExecuteAsync(new CreateComponentArgs(gratingComponentNr, 0, firstInputTileY, DiscreteRotation.R0, Guid.NewGuid()));
             GratingCoupler = MyGameManager.GridView.GridComponentViews[0, firstInputTileY];
 
         }

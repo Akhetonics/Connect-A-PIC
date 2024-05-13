@@ -44,8 +44,8 @@ namespace ConnectAPIC.test.src
             var firstInputTileY = firstLaserInput.TilePositionY;
             ComponentLeftPos = new Vector2I(0,firstInputTileY);
             ComponentRightPos = new Vector2I(1,firstInputTileY);
-            await MyGameManager.GridViewModel.CommandFactory.CreateCommand(CommandType.CreateComponent).ExecuteAsync(new CreateComponentArgs(straightComponentNr, ComponentLeftPos.X, ComponentLeftPos.Y, DiscreteRotation.R0));
-            await MyGameManager.GridViewModel.CommandFactory.CreateCommand(CommandType.CreateComponent).ExecuteAsync(new CreateComponentArgs(straightComponentNr, ComponentRightPos.X, ComponentRightPos.Y, DiscreteRotation.R0));
+            await MyGameManager.GridViewModel.CommandFactory.CreateCommand(CommandType.CreateComponent).ExecuteAsync(new CreateComponentArgs(straightComponentNr, ComponentLeftPos.X, ComponentLeftPos.Y, DiscreteRotation.R0, Guid.NewGuid()));
+            await MyGameManager.GridViewModel.CommandFactory.CreateCommand(CommandType.CreateComponent).ExecuteAsync(new CreateComponentArgs(straightComponentNr, ComponentRightPos.X, ComponentRightPos.Y, DiscreteRotation.R0, Guid.NewGuid()));
             StraightLeft = MyGameManager.GridView.GridComponentViews[ComponentLeftPos.X, ComponentLeftPos.Y];
             StraightRight = MyGameManager.GridView.GridComponentViews[ComponentRightPos.X, ComponentRightPos.Y];
             await TestScene.GetTree().NextFrame(2);

@@ -23,6 +23,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
         public DiscreteRotation StandardRotation { get; set; } = DiscreteRotation.R0;
         public bool LeftMouseButtonPressed { get; private set; }
         public Vector2 RightMouseClickedPosition { get; private set; }
+        public Guid MouseDragStrokeGuid { get; private set; }
 
         public ComponentBrush(ComponentViewFactory componentViewFactory, GridView gridView, float tileBorderSize, int componentTypeNr) : base(gridView)
         {
@@ -121,11 +122,14 @@ namespace ConnectAPIC.Scripts.View.ToolBox
                     LeftMouseButtonPressed = mouseButtonEvent.Pressed;
                     if (mouseButtonEvent.Pressed == true)
                     {
-                        var createCommandParams = new CreateComponentArgs(ComponentTypeNr, gridPosition.X, gridPosition.Y, StandardRotation);
+                        var createCommandParams = new CreateComponentArgs(ComponentTypeNr, gridPosition.X, gridPosition.Y, StandardRotation, MouseDragStrokeGuid);
                         GridViewModel.CommandFactory
                             .CreateCommand(CommandType.CreateComponent)
                             .ExecuteAsync(createCommandParams)
                             .Wait();
+                    }else
+                    {
+                        MouseDragStrokeGuid = Guid.NewGuid();
                     }
                 }
                 else if (mouseButtonEvent.ButtonIndex == MouseButton.Right )
@@ -151,7 +155,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
                 Vector2I gridPosition = GetMouseGridPosition();
                 if (LeftMouseButtonPressed)
                 {   
-                    var createCommandParams = new CreateComponentArgs(ComponentTypeNr, gridPosition.X, gridPosition.Y, StandardRotation);
+                    var createCommandParams = new CreateComponentArgs(ComponentTypeNr, gridPosition.X, gridPosition.Y, StandardRotation, MouseDragStrokeGuid);
                     GridViewModel.CommandFactory
                         .CreateCommand(CommandType.CreateComponent)
                         .ExecuteAsync(createCommandParams)

@@ -55,15 +55,15 @@ namespace ConnectAPIC.test.src
             var firstInputTileY = firstLaserInput.TilePositionY;
             RedLaser = (firstLaserInput as ExternalInput).LaserType;
             var cmdFactory = MyGameManager.GridViewModel.CommandFactory;
-            await cmdFactory.CreateCommand(CommandType.CreateComponent).ExecuteAsync(new CreateComponentArgs(straightNr, 0, firstInputTileY, DiscreteRotation.R0));
-            await cmdFactory.CreateCommand(CommandType.CreateComponent).ExecuteAsync(new CreateComponentArgs(directionalCouplerNr, 1, firstInputTileY, DiscreteRotation.R0));
-            await cmdFactory.CreateCommand(CommandType.CreateComponent).ExecuteAsync(new CreateComponentArgs(directionalCouplerNr, 3, firstInputTileY, DiscreteRotation.R0));
+            await cmdFactory.CreateCommand(CommandType.CreateComponent).ExecuteAsync(new CreateComponentArgs(straightNr, 0, firstInputTileY, DiscreteRotation.R0, Guid.NewGuid()));
+            await cmdFactory.CreateCommand(CommandType.CreateComponent).ExecuteAsync(new CreateComponentArgs(directionalCouplerNr, 1, firstInputTileY, DiscreteRotation.R0, Guid.NewGuid()));
+            await cmdFactory.CreateCommand(CommandType.CreateComponent).ExecuteAsync(new CreateComponentArgs(directionalCouplerNr, 3, firstInputTileY, DiscreteRotation.R0, Guid.NewGuid()));
 
             // add four more to test if power adds up or not
-            await cmdFactory.CreateCommand(CommandType.CreateComponent).ExecuteAsync(new CreateComponentArgs(directionalCouplerNr, 5, firstInputTileY, DiscreteRotation.R0));
-            await cmdFactory.CreateCommand(CommandType.CreateComponent).ExecuteAsync(new CreateComponentArgs(directionalCouplerNr, 7, firstInputTileY, DiscreteRotation.R0));
-            await cmdFactory.CreateCommand(CommandType.CreateComponent).ExecuteAsync(new CreateComponentArgs(directionalCouplerNr, 9, firstInputTileY, DiscreteRotation.R0));
-            await cmdFactory.CreateCommand(CommandType.CreateComponent).ExecuteAsync(new CreateComponentArgs(directionalCouplerNr, 11, firstInputTileY, DiscreteRotation.R0));
+            await cmdFactory.CreateCommand(CommandType.CreateComponent).ExecuteAsync(new CreateComponentArgs(directionalCouplerNr, 5, firstInputTileY, DiscreteRotation.R0, Guid.NewGuid()));
+            await cmdFactory.CreateCommand(CommandType.CreateComponent).ExecuteAsync(new CreateComponentArgs(directionalCouplerNr, 7, firstInputTileY, DiscreteRotation.R0, Guid.NewGuid()));
+            await cmdFactory.CreateCommand(CommandType.CreateComponent).ExecuteAsync(new CreateComponentArgs(directionalCouplerNr, 9, firstInputTileY, DiscreteRotation.R0, Guid.NewGuid()));
+            await cmdFactory.CreateCommand(CommandType.CreateComponent).ExecuteAsync(new CreateComponentArgs(directionalCouplerNr, 11, firstInputTileY, DiscreteRotation.R0, Guid.NewGuid()));
             DirectionalCouplerLightSwitching = MyGameManager.GridView.GridComponentViews[3, firstInputTileY];
             // set all slides to 0.75 for testing power loss
             for( int x = 5; x < 12; x++)
