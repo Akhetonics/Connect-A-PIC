@@ -75,7 +75,7 @@ namespace ConnectAPIC.test.src {
 
         private async Task ExternalPortTest(ExternalPortView port, bool waitForMenuToMoveToPosition = false) {
             // control menu should connect to MyRandomExternalPort and become visible
-            var portPosition = port.GlobalPosition + portPositionOffset; await FrameWaitingMoveAndClickMouse(portPosition);
+            var portPosition = port.GlobalPosition + portPositionOffset; await MoveAndClickMouseAndWaitAsync(portPosition);
             if (waitForMenuToMoveToPosition) {
                 await Task.Delay((int)(ControlMenu.TRAVEL_TIME * 1000));
             }
@@ -92,7 +92,7 @@ namespace ConnectAPIC.test.src {
             if (!port.ViewModel.IsInput
                 || port.ViewModel.Color != LaserType.Red
             ) {
-                await FrameWaitingMoveAndClickMouse(radioButtonPosition);
+                await MoveAndClickMouseAndWaitAsync(radioButtonPosition);
             }
 
             //red input
@@ -100,28 +100,28 @@ namespace ConnectAPIC.test.src {
 
             //output
             radioButtonPosition = MyControlMenu.ButtonGroup.GetButtons()[3].GlobalPosition + radioButtonPositionOffset;
-            await FrameWaitingMoveAndClickMouse(radioButtonPosition);
+            await MoveAndClickMouseAndWaitAsync(radioButtonPosition);
             bool switchedToOutput = !port.ViewModel.IsInput;
 
             //red input again
             radioButtonPosition = MyControlMenu.ButtonGroup.GetButtons()[0].GlobalPosition + radioButtonPositionOffset;
-            await FrameWaitingMoveAndClickMouse(radioButtonPosition);
+            await MoveAndClickMouseAndWaitAsync(radioButtonPosition);
             bool switchedToInput = port.ViewModel.IsInput;
 
             //test color switching
             // blue
             radioButtonPosition = MyControlMenu.ButtonGroup.GetButtons()[2].GlobalPosition + radioButtonPositionOffset;
-            await FrameWaitingMoveAndClickMouse(radioButtonPosition);
+            await MoveAndClickMouseAndWaitAsync(radioButtonPosition);
             LaserType changeColorToBlue = port.ViewModel.Color;
 
             // green
             radioButtonPosition = MyControlMenu.ButtonGroup.GetButtons()[1].GlobalPosition + radioButtonPositionOffset;
-            await FrameWaitingMoveAndClickMouse(radioButtonPosition);
+            await MoveAndClickMouseAndWaitAsync(radioButtonPosition);
             LaserType changeColorToGreen = port.ViewModel.Color;
 
             // red
             radioButtonPosition = MyControlMenu.ButtonGroup.GetButtons()[0].GlobalPosition + radioButtonPositionOffset;
-            await FrameWaitingMoveAndClickMouse(radioButtonPosition);
+            await MoveAndClickMouseAndWaitAsync(radioButtonPosition);
             LaserType changeColorToRed = port.ViewModel.Color;
 
 
@@ -130,7 +130,7 @@ namespace ConnectAPIC.test.src {
             float newValue = 0.45f * sliderLengthInPixels;
             float approximateValue = newValue / sliderLengthInPixels;
             var sliderPosition = MyControlMenu.GlobalPosition + sliderKnobLocalPosition;
-            await FrameWaitingMoveAndClickMouse(sliderPosition);
+            await MoveAndClickMouseAndWaitAsync(sliderPosition);
             float zeroedSliderValue = port.ViewModel.Power.Length();
             sliderPosition += dragOffset;
             TestScene.GetViewport().DragMouse(sliderPosition, sliderPosition + new Vector2(newValue, 0), MouseButton.Left);
@@ -150,7 +150,7 @@ namespace ConnectAPIC.test.src {
             port.ViewModel.Power[2].ShouldBeInRange(-epsilon, epsilon);
         }
 
-        public async Task FrameWaitingMoveAndClickMouse(Vector2 position, MouseButton mouseButton = MouseButton.Left, int framesAfterMove = 1, int framesAfterClick = 1){
+        public async Task MoveAndClickMouseAndWaitAsync(Vector2 position, MouseButton mouseButton = MouseButton.Left, int framesAfterMove = 1, int framesAfterClick = 1){
             TestScene.GetViewport().MoveMouseTo(position + dragOffset);
             await TestScene.GetTree().NextFrame(framesAfterMove);
             TestScene.GetViewport().ClickMouseAt(position + dragOffset, mouseButton);
