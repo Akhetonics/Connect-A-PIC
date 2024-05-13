@@ -13,6 +13,8 @@
     <!-- Test dependencies go here! -->
     <PackageReference Include="Chickensoft.AutoInject" Version="1.5.0" />
     <PackageReference Include="Chickensoft.GodotTestDriver" Version="3.0.0" />
+    <PackageReference Include="GithubReleaseDownloader" Version="1.0.0" />
+    <PackageReference Include="Octokit" Version="10.0.0" />
     <PackageReference Include="Shouldly" Version="4.2.1" />
     <PackageReference Include="Moq" Version="4.20.70" />
   </ItemGroup>
