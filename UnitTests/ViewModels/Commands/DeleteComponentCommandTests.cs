@@ -21,7 +21,7 @@ namespace UnitTests.ViewModels.Commands
             var componentRotator = new Mock<IComponentRotator>();
             var componentRelationshipMgr = new Mock<IComponentRelationshipManager>();
             gridManagerMock = new Mock<GridManager>(tileMgr, componentMover, externalPortMgr.Object, componentRotator.Object, componentRelationshipMgr.Object, lightMgr);
-            var selectionManager = new Mock<ISelectionManager>(gridManagerMock.Object);
+            var selectionManager = new Mock<SelectionManager>(gridManagerMock.Object);
             command = new DeleteComponentCommand(gridManagerMock.Object, selectionManager.Object);
         }
 

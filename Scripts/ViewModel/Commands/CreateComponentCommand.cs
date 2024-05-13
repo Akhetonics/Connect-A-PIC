@@ -24,7 +24,6 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
         
         public override bool CanExecute(object parameter)
         {
-            bool canExecute = true;
             if( parameter is CreateComponentArgs args)
             {
                 foreach(var componentDef in args.ComponentDefinitions)
@@ -33,11 +32,14 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
                     if (GridModel == null ||
                     GridModel.ComponentMover.IsColliding(componentDef.GridX, componentDef.GridY, dimensions.X, dimensions.Y))
                     {
-                        canExecute = false;
+                        return false;
                     }
                 }
+            } else
+            {
+                return false;
             }
-            return canExecute;
+            return true;
         }
 
         internal override Task ExecuteAsyncCmd(CreateComponentArgs parameter)
