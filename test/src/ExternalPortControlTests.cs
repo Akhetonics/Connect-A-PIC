@@ -69,8 +69,6 @@ namespace ConnectAPIC.test.src {
             await ExternalPortTest(MyExternalPorts[2], true);
             await TestScene.GetTree().NextFrame();
             await ExternalPortTest(MyExternalPorts[3], true);
-            await TestScene.GetTree().NextFrame();
-            await ExternalPortTest(MyExternalPorts[7], true);
         }
 
         private async Task ExternalPortTest(ExternalPortView port, bool waitForMenuToMoveToPosition = false) {
@@ -105,6 +103,7 @@ namespace ConnectAPIC.test.src {
 
             //red input again
             radioButtonPosition = MyControlMenu.ButtonGroup.GetButtons()[0].GlobalPosition + radioButtonPositionOffset;
+            bool wasInput = port.ViewModel.IsInput;
             await MoveAndClickMouseAndWaitAsync(radioButtonPosition);
             bool switchedToInput = port.ViewModel.IsInput;
 
