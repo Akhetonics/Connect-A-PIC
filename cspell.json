@@ -28,7 +28,8 @@
     "*.json",
     "*.md",
     "*.psd",
-    "*.ogv"
+    "*.ogv",
+    "*.aip"
   ],
     "words": [
         "Behaviour",

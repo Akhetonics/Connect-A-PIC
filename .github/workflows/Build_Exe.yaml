@@ -127,7 +127,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Connect-A-PIC-EXE-SIGNED
-          path: $GITHUB_WORKSPACE/Release/Connect-A-PIC.exe
+          path: ./Release/Connect-A-PIC.exe
   
   create_installer:
     name: Create Installer
@@ -144,18 +144,18 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: Connect-A-PIC-RELEASE-FOLDER
-          path: ${{ github.workspace }}\Release
+          path: ${{ github.workspace }}/Release
   
       - name: Download signed EXE from artifact
         uses: actions/download-artifact@v4
         with:
           name: Connect-A-PIC-EXE-SIGNED
-          path: ${{ github.workspace }}\Release
+          path: ${{ github.workspace }}/Release
   
       - name: Read version from file
         id: read_version
         run: |
-          $version = Get-Content -Path "${{ github.workspace }}\Release\Version.txt"
+          $version = Get-Content -Path "${{ github.workspace }}/Release/Version.txt"
           Write-Output "::set-output name=version::$version"
 
       - name: Build AIP
@@ -171,7 +171,7 @@ jobs:
             SetVersion ${{ steps.read_version.outputs.version }}
             AddFile APPDIR ${{ github.workspace }}\Release\Connect-A-PIC.exe
             AddFolder APPDIR ${{ github.workspace }}\Release\data_Connect-A-PIC_windows_x86_64
-            NewShortcut -name Connect_A_PIC -dir DesktopFolder -target APPDIR\Connect-A-PIC.exe
+            NewShortcut -name Connect_A_PIC -dir DesktopFolder -target APPDIR/Connect-A-PIC.exe
 
       # signing part
       - name: Setup Certificate
@@ -203,15 +203,15 @@ jobs:
 
       - name: Signing using Signtool
         run: | 
-          signtool.exe sign /sha1 ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 ".\Release\Connect_A_PIC_Setup.msi" 
-          signtool.exe verify /v /pa ".\Release\Connect_A_PIC_Setup.msi" 
+          signtool.exe sign /sha1 ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 "${{ github.workspace }}/Release/Connect_A_PIC_Setup.msi" 
+          signtool.exe verify /v /pa "${{ github.workspace }}/Release/Connect_A_PIC_Setup.msi" 
         shell: cmd
 
       - name: Publish setup artifact
         uses: actions/upload-artifact@v4
         with:
           name: Connect-A-PIC-Setup
-          path: ${{ github.workspace }}\Release\Connect_A_PIC_Setup.msi
+          path: ${{ github.workspace }}/Release/Connect_A_PIC_Setup.msi
 
   publish_installer:
     name: Publish installer
@@ -222,13 +222,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: Connect-A-PIC-Setup
-          path: ${{ github.workspace }}/Release
+          path: ./Release
           
       - name: Download release folder from artifact
         uses: actions/download-artifact@v4
         with:
           name: Connect-A-PIC-RELEASE-FOLDER
-          path: ${{ github.workspace }}/Release
+          path: ./Release
           
       - name: List files in Release Directory
         run: |
@@ -242,9 +242,9 @@ jobs:
 
       - name: Set project version from version.txt
         run: |
-          version=$(cat ${{ github.workspace }}/Release/version.txt)
+          version=$(cat ./Release/version.txt)
           echo "PROJECTVERSION=$version" >> $GITHUB_ENV
-          rm ${{ github.workspace }}/Release/version.txt
+          rm ./Release/version.txt
 
       - name: Print extracted Project version
         run: echo "The extracted Godot version is $PROJECTVERSION"
@@ -267,6 +267,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ github.workspace }}/Release/Connect_A_PIC_Setup.msi
-          asset_name: Connect-A-PIC_Setup.msi
+          asset_path: ./Release/Connect_A_PIC_Setup.msi
+          asset_name: Connect-A-PIC_${{ env.PROJECTVERSION }}.msi
           asset_content_type: application/octet-stream
