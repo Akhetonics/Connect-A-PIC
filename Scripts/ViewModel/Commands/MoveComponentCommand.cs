@@ -95,13 +95,13 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 
         private void StoreDataForUndo(MoveComponentArgs parameter)
         {
-            OldComponentsAndPositions = StoreInitialComponentPositionsForUndo(parameter);
+            OldComponentsAndPositions = FetchInitialComponentPositionsForUndo(parameter);
             StoreSelectedElementsForUndo();
             StoreComponentsInTargetAreaForUndo(parameter, OldComponentsAndPositions);
         }
 
         // store the initial position of all elements that are about to be moved
-        private Dictionary<IntVector, Component> StoreInitialComponentPositionsForUndo(MoveComponentArgs parameter)
+        private Dictionary<IntVector, Component> FetchInitialComponentPositionsForUndo(MoveComponentArgs parameter)
         {
             var OldComponentsAndPositions = new Dictionary< IntVector, Component>();
             foreach (var (Source, _) in parameter.Transitions)
@@ -162,9 +162,9 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 
         private void PlaceComponentsInTargets(HashSet<(Component component, IntVector Target)> componentAndTargets)
         {
-            foreach (var compAndTarget in componentAndTargets)
+            foreach (var (component, Target) in componentAndTargets)
             {
-                grid.ComponentMover.PlaceComponent(compAndTarget.Target.X, compAndTarget.Target.Y, compAndTarget.component);
+                grid.ComponentMover.PlaceComponent(Target.X, Target.Y, component);
             }
         }
 
@@ -182,9 +182,9 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 
         private void UnregisterSourceAndTargetAreas(HashSet<(Component component, IntVector Target)> componentAndTargets)
         {
-            foreach (var componentAndTarget in componentAndTargets)
+            foreach (var (component, Target) in componentAndTargets)
             {
-                Component comp = componentAndTarget.component;
+                Component comp = component;
                 grid.ComponentMover.UnregisterComponentAt(comp.GridXMainTile, comp.GridYMainTile);
 
                 // clear target landing area
@@ -192,8 +192,8 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
                 {
                     for (int y = 0; y < comp.HeightInTiles; y++)
                     {
-                        var targetX = x + componentAndTarget.Target.X;
-                        var targetY = y + componentAndTarget.Target.Y;
+                        var targetX = x + Target.X;
+                        var targetY = y + Target.Y;
                         if (grid.TileManager.IsInGrid(targetX, targetY) == false) continue;
                         grid.ComponentMover.UnregisterComponentAt(targetX, targetY);
                     }
