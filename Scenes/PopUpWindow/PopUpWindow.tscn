@@ -40,7 +40,7 @@ offset_bottom = 0.000366211
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/margin_left = 35
-theme_override_constants/margin_top = 28
+theme_override_constants/margin_top = 35
 theme_override_constants/margin_right = 28
 theme_override_constants/margin_bottom = 28
 
@@ -51,39 +51,39 @@ vertical_scroll_mode = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/ScrollContainer"]
 layout_mode = 2
+theme_override_constants/separation = 5
 metadata/_edit_use_anchors_ = true
 
 [node name="Segment" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer"]
-custom_minimum_size = Vector2(518, 35)
+custom_minimum_size = Vector2(518, 50)
 layout_mode = 2
 mouse_filter = 1
 
 [node name="tip1" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/Segment"]
 custom_minimum_size = Vector2(518, 0)
-layout_mode = 2
-offset_right = 3440.0
-offset_bottom = 233.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(0.15, 0.15)
 mouse_filter = 1
 theme = ExtResource("3_nygil")
 text = "left click the component in toolbar to use it"
 autowrap_mode = 2
 
 [node name="Segment2" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer"]
-custom_minimum_size = Vector2(518, 35)
+custom_minimum_size = Vector2(518, 80)
 layout_mode = 2
 mouse_filter = 1
 
 [node name="tip1" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/Segment2"]
-layout_mode = 2
-offset_top = -4.0
-offset_right = 3460.0
-offset_bottom = 409.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(0.15, 0.15)
 mouse_filter = 1
 theme = ExtResource("3_nygil")
 text = "left click to place one component,
@@ -92,54 +92,51 @@ left click and drag to place multiple.
 autowrap_mode = 2
 
 [node name="Segment3" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer"]
-custom_minimum_size = Vector2(518, 35)
+custom_minimum_size = Vector2(518, 50)
 layout_mode = 2
 mouse_filter = 1
 
 [node name="tip1" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/Segment3"]
-layout_mode = 2
-offset_top = 20.0
-offset_right = 3440.0
-offset_bottom = 433.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(0.15, 0.15)
 mouse_filter = 1
 theme = ExtResource("3_nygil")
 text = "click middle mouse button to delete the components"
 autowrap_mode = 2
 
 [node name="Segment4" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer"]
-custom_minimum_size = Vector2(518, 35)
+custom_minimum_size = Vector2(518, 50)
 layout_mode = 2
 mouse_filter = 1
 
 [node name="tip1" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/Segment4"]
-layout_mode = 2
-offset_top = 41.0
-offset_right = 3440.0
-offset_bottom = 274.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(0.15, 0.15)
 mouse_filter = 1
 theme = ExtResource("3_nygil")
 text = "right click and hold to pan"
 autowrap_mode = 2
 
 [node name="Segment5" type="Control" parent="MarginContainer/ScrollContainer/VBoxContainer"]
-custom_minimum_size = Vector2(518, 35)
+custom_minimum_size = Vector2(518, 50)
 layout_mode = 2
 mouse_filter = 1
 
 [node name="tip1" type="Label" parent="MarginContainer/ScrollContainer/VBoxContainer/Segment5"]
-layout_mode = 2
-offset_top = 37.0
-offset_right = 3440.0
-offset_bottom = 270.0
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(0.15, 0.15)
 mouse_filter = 1
 theme = ExtResource("3_nygil")
 text = "scroll to zoom"

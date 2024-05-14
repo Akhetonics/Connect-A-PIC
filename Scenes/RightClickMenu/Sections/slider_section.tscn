@@ -4,6 +4,7 @@
 [ext_resource type="Script" path="res://Scenes/RightClickMenu/Sections/SliderSection.cs" id="1_dehg3"]
 
 [node name="SliderSection" type="Control"]
+texture_filter = 1
 custom_minimum_size = Vector2(0, 50)
 layout_mode = 3
 anchors_preset = 0
@@ -26,11 +27,9 @@ mouse_filter = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Title"]
 layout_mode = 1
-offset_right = 415.0
-offset_bottom = 205.0
-scale = Vector2(0.1, 0.1)
-theme_override_constants/margin_left = 60
-theme_override_constants/margin_top = 0
+offset_right = 156.0
+offset_bottom = 8.0
+theme_override_constants/margin_left = 5
 
 [node name="Title" type="Label" parent="VBoxContainer/Title/MarginContainer"]
 unique_name_in_owner = true
@@ -38,6 +37,7 @@ layout_mode = 2
 size_flags_horizontal = 0
 mouse_filter = 1
 theme = ExtResource("1_4u8fb")
+theme_override_font_sizes/font_size = 8
 text = "Input Power:"
 
 [node name="Body" type="Control" parent="VBoxContainer"]
@@ -49,14 +49,15 @@ mouse_filter = 1
 unique_name_in_owner = true
 layout_mode = 2
 offset_left = 6.0
-offset_top = -3.90996
-offset_right = 1706.0
-offset_bottom = 201.09
-scale = Vector2(0.1, 0.1)
+offset_top = -4.0
+offset_right = 46.0
+offset_bottom = 4.0
+scale = Vector2(1.5, 1.5)
 mouse_filter = 1
 theme = ExtResource("1_4u8fb")
 theme_override_colors/font_color = Color(0.588235, 0.588235, 0.588235, 0.811765)
 theme_override_colors/font_shadow_color = Color(0.137255, 0.137255, 0.137255, 0.784314)
+theme_override_font_sizes/font_size = 8
 text = "Value"
 
 [node name="Slider" type="HSlider" parent="VBoxContainer/Body"]
