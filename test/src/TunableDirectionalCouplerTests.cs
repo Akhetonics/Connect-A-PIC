@@ -13,6 +13,7 @@ using CAP_Core.Tiles;
 using Shouldly;
 using Chickensoft.GodotTestDriver;
 using Chickensoft.GodotTestDriver.Util;
+using ConnectAPIC.Scripts.ViewModel.CommandFactory;
 
 namespace ConnectAPIC.test.src
 {
@@ -44,7 +45,7 @@ namespace ConnectAPIC.test.src
             var firstLaserInput = MyGameManager.Grid.ExternalPortManager.ExternalPorts[0];
             var firstInputTileY = firstLaserInput.TilePositionY;
             RedLaser = (firstLaserInput as ExternalInput).LaserType;
-            await MyGameManager.GridViewModel.CreateComponentCommand.ExecuteAsync(new CreateComponentArgs(tunableDirectionalCouplerNR, 0, firstInputTileY, DiscreteRotation.R0));
+            await MyGameManager.GridViewModel.CommandFactory.CreateCommand(CommandType.CreateComponent).ExecuteAsync(new CreateComponentArgs(tunableDirectionalCouplerNR, 0, firstInputTileY, DiscreteRotation.R0, Guid.NewGuid()));
             // create a curve at the position of one of the standardInputs and rotate it by 90 degrees and then start light distribution
             TunableDirectionalCoupler = MyGameManager.GridView.GridComponentViews[0, firstInputTileY];
             var usedPorts = MyGameManager.Grid.ExternalPortManager.GetUsedExternalInputs();

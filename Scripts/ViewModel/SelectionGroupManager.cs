@@ -14,14 +14,12 @@ namespace ConnectAPIC.Scripts.View.ToolBox
             {
                 ViewModel = viewModel;
                 SelectionManager = selectionManager;
-                BoxSelectComponentsCommand = new BoxSelectComponentsCommand(viewModel.Grid, selectionManager);
             }
 
             public GridViewModel ViewModel { get; }
             public SelectionManager SelectionManager { get; }
 
             public UniqueObservableCollection<IntVector> SelectedComponents => SelectionManager.Selections;
-            public BoxSelectComponentsCommand BoxSelectComponentsCommand { get; private set; }
         }
     }
 }

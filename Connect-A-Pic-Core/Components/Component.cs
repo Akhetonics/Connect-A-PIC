@@ -22,6 +22,7 @@ namespace CAP_Core.Components
         public Part[,] Parts { get; protected set; }
         public Dictionary<int, SMatrix> WaveLengthToSMatrixMap { get; set; }
         private Dictionary<int, Slider> SliderMap { get; set; } // where int is the sliderNumber
+        public event EventHandler SliderValueChanged;
         public string NazcaFunctionName { get; set; }
         public string NazcaFunctionParameters { get; set; }
         private DiscreteRotation _discreteRotation;
@@ -101,10 +102,16 @@ namespace CAP_Core.Components
                         sMatrix.SliderReference.Add(slider.ID, slider.Value);
                     }
                 }
+                SliderValueChanged?.Invoke(sender, e);
                 NazcaFunctionParameters = "deltaLength = " + slider.Value;
             }
         }
 
+        /// <summary>
+        /// Retrieves slider by its index (there can be multiple sliders on a single component)
+        /// </summary>
+        /// <param name="sliderNr">index of a slider (starts from 0)</param>
+        /// <returns><see cref="Slider"/> of the component at the given index, or null if it doesn't exist</returns>
         public Slider? GetSlider (int sliderNr)
         {
             if(SliderMap.TryGetValue(sliderNr, out Slider? slider) == true)
@@ -155,16 +162,16 @@ namespace CAP_Core.Components
 
         public override string ToString()
         {
-            return $"Nazca Name: {NazcaFunctionName} \n" +
-                   $"Parameters: {NazcaFunctionParameters} \n" +
-                   $"Width in Tiles: {WidthInTiles} \n" +
-                   $"Height in Tiles: {HeightInTiles} \n" +
-                   $"Is Placed in Grid: {IsPlacedInGrid} \n" +
-                   $"Grid X (Main Tile): {GridXMainTile} \n" +
-                   $"Grid Y (Main Tile): {GridYMainTile} \n" +
-                   $"Rotation: {Rotation90CounterClock} \n" +
-                   $"Parts Length: {Parts?.Length} \n" +
-                   $"Defined SMatrices: {WaveLengthToSMatrixMap.ToCustomString<int,SMatrix>()}";
+            return $"Nazca: {NazcaFunctionName} \n" +
+                   $"Params: {NazcaFunctionParameters} \n" +
+                   $"Width: {WidthInTiles} \n" +
+                   $"Height: {HeightInTiles} \n" +
+                   $"Placed: {IsPlacedInGrid} \n" +
+                   $"X: {GridXMainTile} \n" +
+                   $"Y: {GridYMainTile} \n" +
+                   $"R°: {Rotation90CounterClock} \n" +
+                   $"#Parts: {Parts?.Length} \n" +
+                   $"#SMatrices: {WaveLengthToSMatrixMap.Count}";
         }
         public List<Pin> GetAllPins()
         {

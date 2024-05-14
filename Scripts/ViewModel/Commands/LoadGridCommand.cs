@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 {
 
-    public class LoadGridCommand : ICommand
+    public class LoadGridCommand : CommandBase<LoadGridParameters>
     {
         public event EventHandler CanExecuteChanged;
         private GridPersistenceManager gridPersistenceManager;
@@ -28,23 +28,13 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             ComponentFactory = componentFactory;
             ViewModel = viewModel;
         }
-        
-        public bool CanExecute(object parameter)
+
+        internal async override Task ExecuteAsyncCmd(LoadGridParameters loadParams)
         {
-            if( parameter is LoadGridParameters)
-            {
-                return true;
-            }
-            return false;
-        }
-        
-        public async Task ExecuteAsync(object parameter)
-        {
-            if (!CanExecute(parameter)) return;
-            var loadParams = (LoadGridParameters)parameter;
             var lightStatus = ViewModel.LightManager.IsLightOn;
             ViewModel.LightManager.IsLightOn = false;
             await gridPersistenceManager.LoadAsync(loadParams.Path, ComponentFactory);
+            ViewModel.CommandFactory.ClearHistory();
             ViewModel.LightManager.IsLightOn = lightStatus;
         }
     }

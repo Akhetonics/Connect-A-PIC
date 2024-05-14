@@ -1,3 +1,4 @@
+using CAP_Core;
 using CAP_Core.Components;
 using CAP_Core.Grid;
 using CAP_Core.Helpers;
@@ -9,20 +10,23 @@ using System.Threading.Tasks;
 
 namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 {
-    public class MoveComponentCommand : ICommand
+    public class MoveComponentCommand : CommandBase<MoveComponentArgs>
     {
         private readonly GridManager grid;
 
-        public SelectionManager SelectionManager { get; }
+        public ISelectionManager SelectionManager { get; }
+        public List<Component> OldSelections { get; private set; } = new();
+        public Dictionary<IntVector, Component> OldComponentsAndPositionInTargetArea { get; private set; }
+        public Dictionary<IntVector, Component> OldComponentsAndPositions { get; private set; }
 
         public event EventHandler CanExecuteChanged;
 
-        public MoveComponentCommand(GridManager grid, SelectionManager selectionManager)
+        public MoveComponentCommand(GridManager grid, ISelectionManager selectionManager)
         {
             this.grid = grid;
             SelectionManager = selectionManager;
         }
-        public bool CanExecute(object parameter)
+        public override bool CanExecute(object parameter)
         {
             if (parameter is not MoveComponentArgs args) return false;
             if (VerifyAllInGrid(args) == false) return false;
@@ -79,14 +83,72 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             return true;
         }
 
-        public Task ExecuteAsync(object parameter)
+        internal override Task ExecuteAsyncCmd(MoveComponentArgs parameter)
         {
-            if(CanExecute(parameter) == false) return Task.CompletedTask;
-            var componentAndTargets = CollectMoveInfo((MoveComponentArgs)parameter);
+            StoreDataForUndo(parameter);
+            var componentAndTargets = CollectMoveInfo(parameter);
             UnregisterSourceAndTargetAreas(componentAndTargets);
             PlaceComponentsInTargets(componentAndTargets);
             SelectMovedComponents(componentAndTargets);
             return Task.CompletedTask;
+        }
+
+        private void StoreDataForUndo(MoveComponentArgs parameter)
+        {
+            OldComponentsAndPositions = FetchInitialComponentPositionsForUndo(parameter);
+            StoreSelectedElementsForUndo();
+            StoreComponentsInTargetAreaForUndo(parameter, OldComponentsAndPositions);
+        }
+
+        // store the initial position of all elements that are about to be moved
+        private Dictionary<IntVector, Component> FetchInitialComponentPositionsForUndo(MoveComponentArgs parameter)
+        {
+            var OldComponentsAndPositions = new Dictionary< IntVector, Component>();
+            foreach (var (Source, _) in parameter.Transitions)
+            {
+                var oldComponent = grid.ComponentMover.GetComponentAt(Source.X, Source.Y);
+                var oldPosition = new IntVector(oldComponent.GridXMainTile, oldComponent.GridYMainTile);
+                OldComponentsAndPositions.Add(oldPosition, oldComponent);
+            }
+            return OldComponentsAndPositions;
+        }
+
+        private void StoreComponentsInTargetAreaForUndo(MoveComponentArgs parameter, Dictionary<IntVector, Component> exceptions)
+        {
+            // get SourceComponents 
+            OldComponentsAndPositionInTargetArea = new();
+            foreach (var (Source, Target) in parameter.Transitions)
+            {
+                var sourceComponent = grid.ComponentMover.GetComponentAt(Source.X, Source.Y);
+                int sourceCmpWidth = sourceComponent.WidthInTiles;
+                int sourceCmpHeight = sourceComponent.HeightInTiles;
+                for(int x = 0; x < sourceCmpWidth; x++)
+                {
+                    for(int y = 0; y < sourceCmpHeight; y++)
+                    {
+                        var CmpInTargetArea = grid.ComponentMover.GetComponentAt(Target.X+x, Target.Y+y);
+                        if (CmpInTargetArea == null) continue;
+                        var TargetCmpPosition = new IntVector(CmpInTargetArea.GridXMainTile, CmpInTargetArea.GridYMainTile);
+                        if(OldComponentsAndPositionInTargetArea.ContainsKey(TargetCmpPosition) == false)
+                        {
+                            if (exceptions.ContainsValue(CmpInTargetArea))
+                            {
+                                continue;
+                            }
+                            OldComponentsAndPositionInTargetArea.Add(TargetCmpPosition, CmpInTargetArea);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void StoreSelectedElementsForUndo()
+        {
+            OldSelections = new();
+            foreach (var selection in SelectionManager.Selections)
+            {
+                OldSelections.Add(grid.ComponentMover.GetComponentAt(selection.X, selection.Y));
+            }
         }
 
         private void SelectMovedComponents(HashSet<(Component component, IntVector Target)> componentAndTargets)
@@ -100,9 +162,9 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 
         private void PlaceComponentsInTargets(HashSet<(Component component, IntVector Target)> componentAndTargets)
         {
-            foreach (var compAndTarget in componentAndTargets)
+            foreach (var (component, Target) in componentAndTargets)
             {
-                grid.ComponentMover.PlaceComponent(compAndTarget.Target.X, compAndTarget.Target.Y, compAndTarget.component);
+                grid.ComponentMover.PlaceComponent(Target.X, Target.Y, component);
             }
         }
 
@@ -120,9 +182,9 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 
         private void UnregisterSourceAndTargetAreas(HashSet<(Component component, IntVector Target)> componentAndTargets)
         {
-            foreach (var componentAndTarget in componentAndTargets)
+            foreach (var (component, Target) in componentAndTargets)
             {
-                Component comp = componentAndTarget.component;
+                Component comp = component;
                 grid.ComponentMover.UnregisterComponentAt(comp.GridXMainTile, comp.GridYMainTile);
 
                 // clear target landing area
@@ -130,12 +192,38 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
                 {
                     for (int y = 0; y < comp.HeightInTiles; y++)
                     {
-                        var targetX = x + componentAndTarget.Target.X;
-                        var targetY = y + componentAndTarget.Target.Y;
+                        var targetX = x + Target.X;
+                        var targetY = y + Target.Y;
                         if (grid.TileManager.IsInGrid(targetX, targetY) == false) continue;
                         grid.ComponentMover.UnregisterComponentAt(targetX, targetY);
                     }
                 }
+            }
+        }
+
+        public override void Undo()
+        {
+            // first move the components back to where they came from
+            foreach( var (_, ComponentToMove) in OldComponentsAndPositions)
+            {
+                // unregister the components to move them back
+                grid.ComponentMover.UnregisterComponentAt(ComponentToMove.GridXMainTile, ComponentToMove.GridYMainTile);
+            }
+            // move back all now unregistered components
+            foreach (var (StartPosition, ComponentToMove) in OldComponentsAndPositions)
+            {
+                grid.ComponentMover.PlaceComponent(StartPosition.X, StartPosition.Y, ComponentToMove);
+            }
+            // then recreate the deleted / overridden components
+            foreach (var (Position, Component) in OldComponentsAndPositionInTargetArea)
+            {
+                grid.ComponentMover.PlaceComponent(Position.X, Position.Y, Component);
+            }
+            // then restore the selection
+            SelectionManager.Selections.Clear();
+            foreach ( var Component in OldSelections)
+            {
+                SelectionManager.Selections.Add(new IntVector(Component.GridXMainTile, Component.GridYMainTile));
             }
         }
     }

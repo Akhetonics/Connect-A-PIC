@@ -4,12 +4,23 @@ using CAP_Core.LightCalculation;
 using ConnectAPic.LayoutWindow;
 using ConnectAPIC.Scenes.RightClickMenu.Sections;
 using ConnectAPIC.Scripts.ViewModel;
+using ConnectAPIC.Scripts.ViewModel.CommandFactory;
 using ConnectAPIC.Scripts.ViewModel.Commands;
+using ConnectAPIC.Scripts.ViewModel.Commands.ExternalPorts;
 using Godot;
 using System;
+using System.Threading.Tasks;
 
 namespace ConnectAPIC.Scenes.RightClickMenu
 {
+    public enum PortSwitchButtonIndex
+    {
+        RedInput,
+        GreenInput,
+        BlueInput,
+        Output
+    }
+
     public partial class ControlMenu : Control {
         [Export] public ButtonGroup ButtonGroup { get; set; }
         [Export] public Curve animationCurve { get; set; }
@@ -26,7 +37,7 @@ namespace ConnectAPIC.Scenes.RightClickMenu
         private InfoSection phaseInfo;
 
         private Godot.Collections.Array<BaseButton> portModeButtons;
-        private ExternalPortViewModel port;
+        private ExternalPortViewModel portViewModel;
         private bool mouseOutsideClickArea = true;
         private bool spawnInstantly = true;
         private float targetOffsetY = -1;
@@ -55,7 +66,7 @@ namespace ConnectAPIC.Scenes.RightClickMenu
             if (ButtonGroup != null) {
                 portModeButtons = ButtonGroup.GetButtons();
                 foreach (BaseButton button in portModeButtons) {
-                    button.Pressed += () => WhenPortTypeSwitchingRadioButtonPressed(button);
+                    button.Pressed += () => HandlePortTypeSwitchingRadioButtonPressed(button);
                 }
             }
 
@@ -65,36 +76,32 @@ namespace ConnectAPIC.Scenes.RightClickMenu
             MoveToTargetOffsetIfNotThere(delta);
         }
 
-        public void Initialize(GridManager grid, LightCalculationService lightCalculator){
-            ViewModel = new ControlMenuViewModel(grid, lightCalculator);
+        public void Initialize(ControlMenuViewModel viewModel){
+            ViewModel = viewModel;
         }
 
         public void OnPortClicked(object sender, EventArgs e)
         {
-            ExternalPortViewModel portViewModel = sender as ExternalPortViewModel;
-            if (portViewModel == null) return;
+            if (sender is not ExternalPortViewModel portViewModel) return;
             ConnectToPort(portViewModel);
         }
 
-        public void ConnectToPort(ExternalPortViewModel port) {
-            if (this.port == port) {
+        public void ConnectToPort(ExternalPortViewModel portViewModel) {
+            if (this.portViewModel == portViewModel) {
                 this.Visible = true;
                 return;
             }
 
-            if (this.port != null) {
+            if (this.portViewModel != null) {
                 DisconnectFromPort();
             }
 
-            this.port = port;
+            this.portViewModel = portViewModel;
 
-            SetPortTypeSwitchingRadioButton(port);
-
-            SetSectionsVisibility(port.IsInput);
-
-            InitializeSectionValues(port);
-
-            targetOffsetY = (GameManager.TilePixelSize) * port.PortModel.TilePositionY;
+            SetPortTypeSwitchingRadioButton(portViewModel);
+            SetSectionsVisibility(portViewModel.IsInput);
+            InitializeSectionValues(portViewModel);
+            targetOffsetY = (GameManager.TilePixelSize) * portViewModel.PortModel.TilePositionY;
 
             if (spawnInstantly) {
                 Position = new Vector2(X_OFFSET, targetOffsetY);
@@ -106,9 +113,9 @@ namespace ConnectAPIC.Scenes.RightClickMenu
         }
         public void DisconnectFromPort() {
             this.Visible = false;
-            port.PropertyChanged -= Port_PropertyChanged;
+            portViewModel.PropertyChanged -= Port_PropertyChanged;
             sliderSection.PropertyChanged -= SliderSection_PropertyChanged;
-            port = null;
+            portViewModel = null;
         }
 
         private void MoveToTargetOffsetIfNotThere(double delta) {
@@ -124,7 +131,7 @@ namespace ConnectAPIC.Scenes.RightClickMenu
             port.PropertyChanged += Port_PropertyChanged;
             sliderSection.PropertyChanged += SliderSection_PropertyChanged;
 
-            if (port.IsInput)
+            if (port.PortModel is ExternalInput)
                 sliderSection.SetSliderValue(port.Power);
             else 
                 SetInfoSectionValues(port);
@@ -138,56 +145,80 @@ namespace ConnectAPIC.Scenes.RightClickMenu
             phaseInfo.Value = port.Phase.ToString("0.00") + "°";
         }
 
-        private void WhenPortTypeSwitchingRadioButtonPressed(BaseButton button) {
-            int index = portModeButtons.IndexOf(button);
+        private async void HandlePortTypeSwitchingRadioButtonPressed(BaseButton button)
+        {
+            var index = (PortSwitchButtonIndex)portModeButtons.IndexOf(button);
+            await SetPortToInputOrOutputAsync(index);
+            if (portViewModel.IsInput)
+            {
+                SetInputPortColor(index);
+            }
+        }
 
-            if (index == 3) {
-                ViewModel.InputOutputChangeCommand.ExecuteAsync(port).Wait();
-                return;
+        private async Task SetPortToInputOrOutputAsync(PortSwitchButtonIndex indexPressed)
+        {
+            var setPortTypeCommand = (CommandBase<SetPortTypeArgs>)ViewModel.CommandFactory.CreateCommand(CommandType.InputOutputChange);
+            bool? isOutput = null;
+
+            if (indexPressed == PortSwitchButtonIndex.Output)
+            {
+                isOutput = true;
+            }
+            else if (!portViewModel.IsInput) // Simplified check: Change to input only if it's not already an input
+            {
+                isOutput = false;
             }
 
-            if (!port.IsInput)
-                ViewModel.InputOutputChangeCommand.ExecuteAsync(port).Wait();
-
-            LaserType laserType = LaserType.Red;
-
-            if (index == 1)
-                laserType = LaserType.Green;
-            else if (index == 2)
-                laserType = LaserType.Blue;
-
-            ViewModel.InputColorChangeCommand.ExecuteAsync(new InputColorChangeArgs(port.PortModel as ExternalInput, laserType)).Wait();
+            if (isOutput.HasValue)
+            {
+                var setPortTypeArgs = new SetPortTypeArgs(portViewModel, isOutput.Value);
+                await setPortTypeCommand.ExecuteAsync(setPortTypeArgs);
+            }
         }
+
+        private void SetInputPortColor(PortSwitchButtonIndex indexPressed)
+        {
+            LaserType laserType = LaserType.Red;
+            if (indexPressed == PortSwitchButtonIndex.GreenInput)
+                laserType = LaserType.Green;
+            else if (indexPressed == PortSwitchButtonIndex.BlueInput)
+                laserType = LaserType.Blue;
+            var InputColorChangeCommand = ViewModel.CommandFactory.CreateCommand(CommandType.InputColorChange);
+            InputColorChangeCommand.ExecuteAsync(new SetInputColorArgs(portViewModel.PortModel as ExternalInput, laserType)).Wait();
+        }
+
         private void SetPortTypeSwitchingRadioButton(ExternalPortViewModel port) {
-            int index = 3; //3 is by default output button index
-            if (port.IsInput) {
+            int index = (int)PortSwitchButtonIndex.Output; 
+            if (port.PortModel is ExternalInput) {
                 if (port.Color == LaserType.Red)
-                    index = 0;
+                    index = (int)PortSwitchButtonIndex.RedInput;
                 else if (port.Color == LaserType.Green)
-                    index = 1;
+                    index = (int)PortSwitchButtonIndex.GreenInput;
                 else
-                    index = 2;
+                    index = (int)PortSwitchButtonIndex.BlueInput;
             }
             portModeButtons[index].ButtonPressed = true;
         }
 
         private void Port_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            if (e.PropertyName == nameof(ExternalPortViewModel.IsInput)) {
-                SetSectionsVisibility(port.IsInput);
-                portModeButtons[3].ButtonPressed = true;
+            if (e.PropertyName == nameof(ExternalPortViewModel.PortModel))
+            {
+                SetSectionsVisibility(portViewModel.IsInput);
+                portModeButtons[(int)PortSwitchButtonIndex.Output].ButtonPressed = true;
             } else if (e.PropertyName == nameof(ExternalPortViewModel.Power)
                     || e.PropertyName == nameof(ExternalPortViewModel.Phase)) {
-                if (port.IsInput) {
-                    sliderSection.SetSliderValue(port.Power);
+                if (portViewModel.IsInput) {
+                    sliderSection.SetSliderValue(portViewModel.Power);
                 } else {
-                    SetInfoSectionValues(port);
+                    SetInfoSectionValues(portViewModel);
                 }
             } else if (e.PropertyName == nameof(ExternalPortViewModel.Color)) {
-                SetPortTypeSwitchingRadioButton(port);
+                SetPortTypeSwitchingRadioButton(portViewModel);
             }
         }
         private void SliderSection_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            ViewModel.InputPowerAdjustCommand.ExecuteAsync(new InputPowerAdjustArgs(port.PortModel, sliderSection.Slider.Value)).Wait();
+            var SetInputPowerCmd = ViewModel.CommandFactory.CreateCommand(CommandType.InputPowerAdjust);
+            SetInputPowerCmd.ExecuteAsync(new SetInputPowerArgs(portViewModel.PortModel, sliderSection.Slider.Value)).Wait();
         }
 
         private void OnMouseEntered() {

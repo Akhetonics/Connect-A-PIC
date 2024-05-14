@@ -9,24 +9,25 @@ using ConnectAPIC.Scripts.View.ComponentViews;
 using CAP_Contracts.Logger;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using CAP_Core.Grid;
-using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Collections.ObjectModel;
 using ConnectAPIC.LayoutWindow.ViewModel;
+using ConnectAPIC.Scripts.ViewModel.CommandFactory;
+using System;
 
 namespace ConnectAPIC.Scripts.ViewModel
 {
-    public class ComponentViewModel : INotifyPropertyChanged
+    public class ComponentViewModel : System.ComponentModel.INotifyPropertyChanged
     {
         public ILogger Logger { get; private set; }
-        public ICommand DeleteComponentCommand { get; set; }
         public int GridX { get; set; }
         public int GridY { get; set; }
-        private ObservableCollection<SliderViewData> sliderData = new();
-        public ObservableCollection<SliderViewData> SliderData
+        private ObservableFixedCollection<SliderViewData> sliderData = new();
+        public ObservableFixedCollection<SliderViewData> SliderData
         {
             get { return sliderData; }
         }
+
         private DiscreteRotation rotationCC;
         public DiscreteRotation RotationCC
         {
@@ -53,15 +54,37 @@ namespace ConnectAPIC.Scripts.ViewModel
         }
         public int TypeNumber { get; set; }
         public delegate void SliderChangedEventHandler(int sliderNumber, double newVal);
-        public event SliderChangedEventHandler SliderChanged;
-        public event PropertyChangedEventHandler PropertyChanged;
+        public event SliderChangedEventHandler SliderModelChanged;
+        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
         public const int SliderDebounceTimeMs = 50;
         private bool isPlacedInGrid;
         public bool IsPlacedInGrid { get => isPlacedInGrid; set { isPlacedInGrid = value; OnPropertyChanged(); } }
 
+        public Component ComponentModel { get; }
+        public GridViewModel GridViewModel { get; }
+        public Guid MoveSliderDragGuid { get; private set; } = Guid.NewGuid();
+
+        public ComponentViewModel(Component componentModel, GridViewModel gridViewModel)
+        {
+            var sliders = componentModel.GetAllSliders();
+            
+            ComponentModel = componentModel;
+            GridViewModel = gridViewModel;
+            ComponentModel.SliderValueChanged += ComponentModel_SliderValueChanged;
+        }
         public ComponentViewModel()
         {
+            
         }
+        private void ComponentModel_SliderValueChanged(object sender, System.EventArgs e)
+        {
+            if(sender is Slider slider)
+            {
+                SliderData[slider.Number].Value = slider.Value;
+                SliderModelChanged?.Invoke((int)slider.Number, slider.Value);
+            }
+        }
+
         public void InitializeComponent(int componentTypeNumber, List<SliderViewData> sliderDataSets,  ILogger logger )
         {
             Logger = logger;
@@ -70,24 +93,34 @@ namespace ConnectAPIC.Scripts.ViewModel
             RegisterSliderDebounceTimer(sliderDataSets);
         }
 
+        public void UpdateDragGuid()
+        {
+            MoveSliderDragGuid = Guid.NewGuid();
+        }
         private void RegisterSliderDebounceTimer(List<SliderViewData> sliderDataSets)
         {
             if (sliderDataSets.Count == 0) return;
-            foreach (var slider in sliderDataSets)
+            foreach (var sliderDataSet in sliderDataSets)
             {
-                slider.SliderDebounceTimer = new(SliderDebounceTimeMs);
-                slider.SliderDebounceTimer.Elapsed += (object sender, System.Timers.ElapsedEventArgs e) =>
+                sliderDataSet.SliderDebounceTimer = new(SliderDebounceTimeMs);
+                sliderDataSet.SliderDebounceTimer.Elapsed += (object sender, System.Timers.ElapsedEventArgs e) =>
                 {
-                    slider.SliderDebounceTimer.Stop();
-                    var sliderFound = this.SliderData.Single(s => s.Number == slider.Number);
-
-                    SliderChanged?.Invoke((int)sliderFound.Number, sliderFound.Value);
+                    sliderDataSet.SliderDebounceTimer.Stop();
+                    var sliderFound = this.SliderData.Single(s => s.Number == sliderDataSet.Number);
+                    // change the slider model
+                    if(GridViewModel != null)
+                    {
+                        GridViewModel.CommandFactory
+                        .CreateCommand(CommandType.MoveSlider)
+                        .ExecuteAsync(new MoveSliderCommandArgs(GridX, GridY, sliderFound.Number, sliderFound.Value, MoveSliderDragGuid))
+                        .Wait();
+                    }
                 };
-                this.SliderData.Add(slider);
+                this.SliderData.Add(sliderDataSet);
             }
         }
 
-        public void SetSliderValue(int sliderNumber, double newVal, bool isUpdateView = false)
+        public void ChangeSliderValueThroughTimer(int sliderNumber, double newVal)
         {
             var slider = SliderData.Single(s => s.Number == sliderNumber);
             if(slider.Value != newVal)
@@ -97,16 +130,14 @@ namespace ConnectAPIC.Scripts.ViewModel
                 slider.SliderDebounceTimer.AutoReset = false;
             }
             slider.Value = newVal;
-
-            if (isUpdateView)
-            {
-                // remove and add the element to get the view updated
-                sliderData.Remove(slider);
-                sliderData.Add(slider);
-            }
         }
         public void TreeExited()
         {
+            if(ComponentModel != null)
+            {
+                ComponentModel.SliderValueChanged -= ComponentModel_SliderValueChanged;
+            }
+
             foreach (var slider in SliderData)
             {
                 if (slider.SliderDebounceTimer == null) continue;
@@ -123,7 +154,6 @@ namespace ConnectAPIC.Scripts.ViewModel
 
         public void RegisterInGrid(GridManager grid, int gridX, int gridY, DiscreteRotation rotationCounterClockwise)
         {
-            DeleteComponentCommand = new DeleteComponentCommand(grid);
             this.GridX = gridX;
             this.GridY = gridY;
             this.RotationCC = rotationCounterClockwise;
@@ -134,7 +164,7 @@ namespace ConnectAPIC.Scripts.ViewModel
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
         }
     }
 }

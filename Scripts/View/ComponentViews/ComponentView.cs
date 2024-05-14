@@ -18,11 +18,11 @@ namespace ConnectAPIC.LayoutWindow.View
     {
         public override partial void _Notification(int what);
         [Dependency] public GridViewModel GridViewModel => DependOn<GridViewModel>();
+        public ComponentViewModel ViewModel { get; private set; }
         public int WidthInTiles { get; set; }
         public int HeightInTiles { get; set; }
         private Node2D RotationArea { get; set; } // the part of the component that rotates
         public Sprite2D OverlayBluePrint { get; set; }
-        public ComponentViewModel ViewModel { get; private set; }
         public new float RotationDegrees
         {
             get => RotationArea?.RotationDegrees ?? 0;
@@ -38,7 +38,11 @@ namespace ConnectAPIC.LayoutWindow.View
 
         public void OnResolved()
         {
+            // unregister the event to avoid double registration
+            GridViewModel.SelectionGroupManager.SelectedComponents.CollectionChanged -= SelectedComponents_CollectionChanged;
             GridViewModel.SelectionGroupManager.SelectedComponents.CollectionChanged += SelectedComponents_CollectionChanged;
+            // check if the place where the componentView was created is already selected (e.g. when DeleteCommand.Undo() is called)
+            SelectedComponents_CollectionChanged(GridViewModel.SelectionGroupManager.SelectedComponents, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
         private void SelectedComponents_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -59,21 +63,26 @@ namespace ConnectAPIC.LayoutWindow.View
                     Modulate = new Godot.Color(1, 1, 1);
                 }
             }
-            if (e.Action == NotifyCollectionChangedAction.Reset)
+            if(e.Action == NotifyCollectionChangedAction.Reset)
             {
-                Modulate = new Godot.Color(1, 1, 1);
+                if(GridViewModel.SelectionGroupManager.SelectedComponents.Contains(new IntVector(ViewModel.GridX, ViewModel.GridY)))
+                {
+                    Modulate = new Godot.Color(0, 1, 0);
+                }
             }
-
         }
 
         public ComponentView()
         {
-            ViewModel = new ComponentViewModel();
-            ViewModel.PropertyChanged += ViewModel_PropertyChanged;
-            SliderManager = new SliderManager(ViewModel, this);
             OverlayManager = new OverlayManager(this);
         }
 
+        public void SetViewModel(ComponentViewModel viewModel)
+        {
+            this.ViewModel = viewModel;
+            ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+            SliderManager = new SliderManager(ViewModel, this);
+        }
         private void ViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(ComponentViewModel.RotationCC))
@@ -106,6 +115,17 @@ namespace ConnectAPIC.LayoutWindow.View
             }
         }
 
+        public override void _Input(InputEvent @event)
+        {
+            base._Input(@event);
+            if( @event is InputEventMouse mouseEvent)
+            {
+                if(mouseEvent.IsPressed())
+                {
+                    ViewModel.UpdateDragGuid();
+                }
+            }
+        }
         public override void _Ready()
         {
             base._Ready();
@@ -117,23 +137,20 @@ namespace ConnectAPIC.LayoutWindow.View
             this.WidthInTiles = widthInTiles;
             this.HeightInTiles = heightInTiles;
             OverlayManager.Initialize(animationSlotOverlays, WidthInTiles, HeightInTiles);
+            MakeComponentClickThroughForDragDrop();
         }
-
+        private void MakeComponentClickThroughForDragDrop()
+        {
+            foreach (var child in GetChildren())
+            {
+                if (child is Control node)
+                {
+                    node.MouseFilter = MouseFilterEnum.Ignore;
+                }
+            }
+        }
         public void HideLightVector() => OverlayManager.HideLightVector();
 
-        public virtual ComponentView Duplicate()
-        {
-            var copy = (ComponentView)base.Duplicate();
-            copy.Initialize(OverlayManager.AnimationSlotRawData, WidthInTiles, HeightInTiles);
-            copy._Ready();
-            copy.ViewModel = new ComponentViewModel();
-            copy.ViewModel.RotationCC = ViewModel.RotationCC; // give the new copy the proper RotationCC so that it has the correct rotation
-
-            // deep copy that list of sliders
-            List<SliderViewData> newSliderData = SliderManager.DuplicateSliders();
-            copy.ViewModel.InitializeComponent(ViewModel.TypeNumber, newSliderData, ViewModel.Logger);
-            return copy;
-        }
         public override void _ExitTree()
         {
             this.GridViewModel.SelectionGroupManager.SelectedComponents.CollectionChanged -= SelectedComponents_CollectionChanged;

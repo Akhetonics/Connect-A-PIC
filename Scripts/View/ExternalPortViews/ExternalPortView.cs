@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using ConnectAPIC.Scenes.RightClickMenu;
+using CAP_Core.ExternalPorts;
 
 
 namespace ConnectAPIC.Scenes.ExternalPorts
@@ -29,15 +30,24 @@ namespace ConnectAPIC.Scenes.ExternalPorts
         {
             ViewModel = viewModel;
 
-            currentTexture = GetChild<TextureRect>(0);
+            currentTexture = GetNode<TextureRect>("%CurrentTexture");//GetChild<TextureRect>(0);
             lightContainer = new List<PointLight2D>();
-            foreach (PointLight2D light in GetChild(1).GetChildren())
+            foreach (PointLight2D light in GetNode<Node2D>("%LightContainer").GetChildren())
             {
                 lightContainer.Add(light);
             }
-            InfoLabel = GetChild<RichTextLabel>(2);
+            InfoLabel = GetNode<RichTextLabel>("%Label");
 
             ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+
+            if (ViewModel.IsInput)
+            {
+                SetAsInput();
+            }
+            else
+            {
+                SetAsOutput();
+            }
         }
 
         public override void _Input(InputEvent @event)
@@ -78,9 +88,11 @@ namespace ConnectAPIC.Scenes.ExternalPorts
 
         public void SetLightColor(float alpha = 1)
         {
+            System.Drawing.Color color = ViewModel.Color.Color.ToColor();
+            float multiplier = ViewModel.Power.Length();
             foreach (var light in lightContainer)
             {
-                light.Color = new Color(ViewModel.Power.X, ViewModel.Power.Y, ViewModel.Power.Z, alpha);
+                light.Color = new Color(multiplier*color.R / 255, multiplier*color.G / 255, multiplier * color.B / 255, alpha);
             }
         }
 
@@ -111,7 +123,8 @@ namespace ConnectAPIC.Scenes.ExternalPorts
                     InfoLabel.Text = ViewModel.AllColorsPower();
                 }
             }
-            else if (e.PropertyName == nameof(ExternalPortViewModel.Power))
+            else if (e.PropertyName == nameof(ExternalPortViewModel.Power)
+                  || e.PropertyName == nameof(ExternalPortViewModel.Color))
             {
                 if (ViewModel.IsInput){
                     SetLightColor();
@@ -119,7 +132,7 @@ namespace ConnectAPIC.Scenes.ExternalPorts
                 else
                     InfoLabel.Text = ViewModel.AllColorsPower();
             }
-            else if (e.PropertyName == nameof(ExternalPortViewModel.IsInput))
+            else if (e.PropertyName == nameof(ExternalPortViewModel.PortModel))
             {
                 if (ViewModel.IsInput)
                 {

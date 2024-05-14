@@ -7,12 +7,15 @@ using CAP_Core.LightCalculation;
 using ConnectAPIC.Scripts.ViewModel;
 using ConnectAPic.LayoutWindow;
 using ConnectAPIC.Scenes.RightClickMenu;
+using ConnectAPIC.LayoutWindow.ViewModel;
+using ConnectAPIC.Scripts.ViewModel.CommandFactory;
 
 
 [SuperNode(typeof(Dependent))]
 public partial class PortsContainerView : Node2D
 {
     public override partial void _Notification(int what);
+    [Dependency] public GridViewModel GridViewModel => DependOn<GridViewModel>();
     [Dependency] public GridManager Grid => DependOn<GridManager>();
     [Dependency] public LightCalculationService LightCalculator => DependOn<LightCalculationService>();
 
@@ -20,18 +23,18 @@ public partial class PortsContainerView : Node2D
     [Export] public PackedScene RightClickMenuTemplate {  get; set; }
 
     public void OnResolved() {
-        InitializePortsAndControlMenuThenConnectThem();
+        InstantiatePortsAndControlMenus();
     }
 
-    private void InitializePortsAndControlMenuThenConnectThem()
+    private void InstantiatePortsAndControlMenus()
     {
-        // initialize ports (port views will be children of this, and they will be connected to view model properly)
+        // instantiate ports (port views will be children of this, and they will be connected to view model properly)
         var factory = new ExternalPortViewFactory(this, Grid, LightCalculator);
-        List<ExternalPortViewModel> ports = factory.InitializeExternalPortViewList();
+        List<ExternalPortViewModel> ports = factory.InstantiateExternalPortViews();
 
         // create control menu, it will be child of ports container as well
         ControlMenu controlMenu = RightClickMenuTemplate.Instantiate<ControlMenu>();
-        controlMenu.Initialize(Grid, LightCalculator);
+        controlMenu.Initialize(GridViewModel.ControlMenuViewModel);
         this.AddChild(controlMenu);
 
         // connect ports to control menu

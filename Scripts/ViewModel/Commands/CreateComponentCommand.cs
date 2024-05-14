@@ -3,60 +3,107 @@ using CAP_Core.Components.Creation;
 using CAP_Core.Grid;
 using ConnectAPIC.Scripts.ViewModel.Commands;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 {
 
-    public class CreateComponentCommand : ICommand
+    public class CreateComponentCommand : CommandBase<CreateComponentArgs>
     {
-        public event EventHandler CanExecuteChanged;
         private GridManager GridModel;
-        private readonly ComponentFactory ComponentFactory;
+        private readonly IComponentFactory ComponentFactory;
 
-        public CreateComponentCommand(GridManager mainGrid , ComponentFactory componentFactory)
+        public CreateComponentCommand(GridManager mainGrid , IComponentFactory componentFactory)
         {
             this.GridModel = mainGrid;
             this.ComponentFactory = componentFactory;
         }
         
-        public bool CanExecute(object parameter)
+        public override bool CanExecute(object parameter)
         {
             if( parameter is CreateComponentArgs args)
             {
-                var dimensions = ComponentFactory.GetDimensions(args.ComponentTypeNumber);
-                if (GridModel != null && !GridModel.ComponentMover.IsColliding(args.GridX, args.GridY, dimensions.X, dimensions.Y))
+                foreach(var componentDef in args.ComponentDefinitions)
+                {
+                    var dimensions = ComponentFactory.GetDimensions(componentDef.ComponentTypeNumber);
+                    if (GridModel == null ||
+                    GridModel.ComponentMover.IsColliding(componentDef.GridX, componentDef.GridY, dimensions.X, dimensions.Y))
+                    {
+                        return false;
+                    }
+                }
+            } else
+            {
+                return false;
+            }
+            return true;
+        }
+
+        internal override Task ExecuteAsyncCmd(CreateComponentArgs parameter)
+        {
+            foreach( var componentDef in parameter.ComponentDefinitions)
+            {
+                Component component = ComponentFactory.CreateComponent(componentDef.ComponentTypeNumber);
+                component.Rotation90CounterClock = componentDef.Rotation;
+                GridModel.ComponentMover.PlaceComponent(componentDef.GridX, componentDef.GridY, component);
+            }
+            return Task.CompletedTask;
+        }
+
+        public override void Undo()
+        {
+            if (ExecutionParams == null || ExecutionParams.ComponentDefinitions == null) return;
+            foreach (var componentDef in ExecutionParams.ComponentDefinitions)
+            {
+                GridModel.ComponentMover.UnregisterComponentAt(componentDef.GridX, componentDef.GridY);
+            }
+        }
+
+        public override bool CanMergeWith(ICommand other)
+        {
+            if (other is CreateComponentCommand createComponentCmd)
+            {
+                if (createComponentCmd.ExecutionParams.StrokeID == this.ExecutionParams.StrokeID )
                 {
                     return true;
                 }
             }
             return false;
         }
-
-        public Task ExecuteAsync(object parameter)
+        public override void MergeWith(ICommand other)
         {
-            if ( !CanExecute(parameter) ) return default;
-            var compParams = (CreateComponentArgs)parameter;
-            Component component = ComponentFactory.CreateComponent(compParams.ComponentTypeNumber);
-            component.Rotation90CounterClock = compParams.Rotation;
-            GridModel.ComponentMover.PlaceComponent(compParams.GridX, compParams.GridY, component);
-            return Task.CompletedTask;
-
+            ExecutionParams.ComponentDefinitions.AddRange(((CreateComponentCommand)other).ExecutionParams.ComponentDefinitions);
         }
     }
+
     public class CreateComponentArgs
     {
-        public readonly int ComponentTypeNumber;
-        public readonly int GridX;
-        public readonly int GridY;
-        public readonly DiscreteRotation Rotation;
+        public CreateComponentArgs(int componentTypeNumber, int gridX, int gridY, DiscreteRotation rotation, Guid StrokeID)
+        {
+            this.ComponentDefinitions = new()
+            {
+                new(componentTypeNumber,gridX,gridY,rotation)
+            };
+            this.StrokeID = StrokeID;
+        }
 
-        public CreateComponentArgs(int componentTypeNumber, int gridX, int gridY, DiscreteRotation rotation)
+        public List<ComponentDefinition> ComponentDefinitions { get; }
+        public Guid StrokeID { get; }
+    }
+    public class ComponentDefinition
+    {
+        public ComponentDefinition(int componentTypeNumber, int gridX, int gridY, DiscreteRotation rotation)
         {
             this.ComponentTypeNumber = componentTypeNumber;
             this.GridX = gridX;
             this.GridY = gridY;
             this.Rotation = rotation;
         }
+
+        public int ComponentTypeNumber { get; }
+        public int GridX { get; }
+        public int GridY { get; }
+        public DiscreteRotation Rotation { get; }
     }
 }

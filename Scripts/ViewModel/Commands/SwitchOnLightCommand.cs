@@ -12,9 +12,10 @@ using System.Threading.Tasks;
 namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
 {
 
-    public class SwitchOnLightCommand : ICommand
+    public class SwitchOnLightCommand : CommandBase<bool>
     {
         public LightManager LightManager { get; }
+        public bool OldLightState { get; private set; }
 
         public event EventHandler CanExecuteChanged;
 
@@ -22,16 +23,16 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
         {
             LightManager = lightManager;
         }
-        
-        public bool CanExecute(object parameter)
+
+        internal override Task ExecuteAsyncCmd(bool parameter)
         {
-            return parameter is bool;
-        }
-        
-        public async Task ExecuteAsync(object parameter)
-        {
-            if (!CanExecute(parameter)) return;
+            OldLightState = LightManager.IsLightOn;
             LightManager.IsLightOn = (bool)parameter;
+            return Task.CompletedTask;
+        }
+        public override void Undo()
+        {
+            LightManager.IsLightOn = OldLightState;
         }
     }
 

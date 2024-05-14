@@ -4,7 +4,10 @@ using ConnectAPIC.LayoutWindow.View;
 using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scripts.Helpers;
+using ConnectAPIC.Scripts.ViewModel.CommandFactory;
+using ConnectAPIC.Scripts.ViewModel.Commands;
 using Godot;
+using System;
 using System.Linq;
 
 namespace ConnectAPIC.Scripts.View.ToolBox
@@ -39,26 +42,22 @@ namespace ConnectAPIC.Scripts.View.ToolBox
 
         private void UnselectAll()
         {
-            var parameterSelect = new BoxSelectComponentsArgs(new IntVector(0, 0), new IntVector(0, 0), AppendBehaviors.CreateNew);
-            var parameterRemove = new BoxSelectComponentsArgs(new IntVector(0, 0), new IntVector(0, 0), AppendBehaviors.Remove);
+            var parameterSelect = new BoxSelectComponentsArgs(new() { (GridStart : new IntVector(0, 0), GridEnd : new IntVector(0, 0)) }, AppendBehaviors.CreateNew);
+            var parameterRemove = new BoxSelectComponentsArgs(new() { (GridStart : new IntVector(0, 0), GridEnd : new IntVector(0, 0)) }, AppendBehaviors.Remove);
             SelectItems(parameterSelect);
             SelectItems(parameterRemove);
         }
 
         private void SelectItems(BoxSelectComponentsArgs parameter)
         {
-            if (GridViewModel.SelectionGroupManager.BoxSelectComponentsCommand.CanExecute(parameter))
-            {
-                GridViewModel.SelectionGroupManager.BoxSelectComponentsCommand.ExecuteAsync(parameter).Wait();
-            }
+            var command = GridViewModel.CommandFactory.CreateCommand(CommandType.BoxSelectComponent);
+            command.ExecuteAsync(parameter).Wait();
         }
         private void DeleteItems()
         {
-            var parameter = new DeleteComponentArgs(GridViewModel.SelectionGroupManager.SelectedComponents.ToList());
-            if (GridViewModel.DeleteComponentCommand.CanExecute(parameter))
-            {
-                GridViewModel.DeleteComponentCommand.ExecuteAsync(parameter).Wait();
-            }
+            var parameter = new DeleteComponentArgs(GridViewModel.SelectionGroupManager.SelectedComponents.ToHashSet(), Guid.NewGuid());
+            var deleteCommand = GridViewModel.CommandFactory.CreateCommand(CommandType.DeleteComponent);
+            deleteCommand.ExecuteAsync(parameter).Wait();
         }
 
         public override void _Process(double delta)
@@ -126,7 +125,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
                         {
                             AppendBehavior = AppendBehaviors.Remove;
                         }
-                        var parameter = new BoxSelectComponentsArgs(gridStart, gridEnd, AppendBehavior);
+                        var parameter = new BoxSelectComponentsArgs(new() { (GridStart: gridStart, GridEnd: gridEnd) }, AppendBehavior);
                         SelectItems(parameter);
                     }
                 }
@@ -148,7 +147,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
             }
 
             // Keyboard input
-            if (@event is InputEventKey eventKey)
+            if (@event is InputEventKey eventKey && eventKey.Pressed)
             {
                 switch(eventKey.Keycode)
                 {
@@ -167,10 +166,8 @@ namespace ConnectAPIC.Scripts.View.ToolBox
         private void TryRotateComponent(Vector2I componentPos)
         {
             var args = new RotateComponentArgs(componentPos.X, componentPos.Y);
-            if (GridViewModel.RotateComponentCommand?.CanExecute(args) == true)
-            {
-                GridViewModel.RotateComponentCommand?.ExecuteAsync(args).Wait();
-            }
+            var rotateCmd = GridViewModel.CommandFactory.CreateCommand(CommandType.RotateComponent);
+            rotateCmd?.ExecuteAsync(args).Wait();
         }
         public static bool IsEditSelectionKeyPressed()
         {

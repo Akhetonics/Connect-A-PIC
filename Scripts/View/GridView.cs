@@ -6,10 +6,13 @@ using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scripts.Helpers;
 using ConnectAPIC.Scripts.View.ComponentViews;
+using ConnectAPIC.Scripts.ViewModel;
+using ConnectAPIC.Scripts.ViewModel.CommandFactory;
 using ConnectAPIC.Scripts.ViewModel.Commands;
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -34,6 +37,12 @@ namespace ConnectAPIC.LayoutWindow.View
         public override void _Ready()
         {
             base._Ready();
+            AppDomain.CurrentDomain.UnhandledException += (sender, args) =>
+            {
+                Exception ex = (Exception)args.ExceptionObject;
+                Logger.PrintErr("Unhandled Exception: " + ex.Message);
+            };
+
             this.CheckForNull(x => DragDropProxy, Logger);
             this.CheckForNull(x => ComponentViewFactory, Logger);
             this.CheckForNull(x => LightOnTexture, Logger);
@@ -63,7 +72,8 @@ namespace ConnectAPIC.LayoutWindow.View
             };
             viewModel.ComponentCreated += async (Component component, int gridX, int gridY) =>
             {
-                CreateComponentView(gridX, gridY, component.Rotation90CounterClock, component.TypeNumber, component.GetAllSliders());
+                var cmpViewModel = new ComponentViewModel(component, viewModel);
+                CreateComponentView(cmpViewModel, gridX, gridY, component.Rotation90CounterClock, component.TypeNumber, component.GetAllSliders());
                 await RecalculateLightIfOn();
             };
             viewModel.ComponentRemoved += async (Component component, int gridX, int gridY) => {
@@ -123,32 +133,50 @@ namespace ConnectAPIC.LayoutWindow.View
             }
         }
 
-        public ComponentView CreateComponentView(int gridX, int gridY, DiscreteRotation rotationCounterClockwise, int componentTypeNumber, List<Slider> slidersInUse)
+        public ComponentView CreateComponentView(ComponentViewModel cmpViewModel , int gridX, int gridY, DiscreteRotation rotationCounterClockwise, int componentTypeNumber, List<Slider> slidersInUse)
         {
-            var ComponentView = ComponentViewFactory.CreateComponentView(componentTypeNumber);
+            var ComponentView = ComponentViewFactory.CreateComponentView(componentTypeNumber, cmpViewModel);
+
             ComponentView.ViewModel.RegisterInGrid(ViewModel.Grid, gridX, gridY, rotationCounterClockwise);
-            ComponentView.ViewModel.SliderChanged += async (int sliderNumber, double newVal) => {
-                await ViewModel.MoveSliderCommand.ExecuteAsync(new MoveSliderCommandArgs(ComponentView.ViewModel.GridX, ComponentView.ViewModel.GridY, sliderNumber, newVal));
+            ComponentView.ViewModel.SliderModelChanged += async (int sliderNumber, double newVal) =>
+            {
                 await RecalculateLightIfOn();
             };
             RegisterComponentViewInGridView(ComponentView);
             DragDropProxy.AddChild(ComponentView); // it has to be the child of the DragDropArea to be displayed
-                                                            // set sliders initial values
-            List<SliderViewData> SliderInitialData = slidersInUse.Select(s => {
-                var vmSlider = ComponentView.ViewModel.SliderData.Single(data => data.Number == s.Number);
-                return new SliderViewData(
-                    vmSlider.GodotSliderLabelName, vmSlider.GodotSliderName, s.MinValue, s.MaxValue, s.Value, vmSlider.Steps, s.Number);
-            }).ToList();
-            foreach (var slider in SliderInitialData)
-            {
-                ComponentView.ViewModel.SetSliderValue(slider.Number, slider.Value, true);
-            }
+                                                   // set sliders initial values
+            SetInitialSliderValueInVM(slidersInUse, ComponentView);
+
             return ComponentView;
+        }
+
+        private static void SetInitialSliderValueInVM(List<Slider> slidersInUse, ComponentView ComponentView)
+        {
+            slidersInUse.ForEach(s =>
+            {
+                var vmSlider = ComponentView.ViewModel.SliderData.Single(data => data.Number == s.Number);
+                vmSlider.MinVal = s.MinValue;
+                vmSlider.MaxVal = s.MaxValue;
+                vmSlider.Value = s.Value;
+            });
         }
 
         public void SetLightButtonOn(bool isLightButtonOn)
         {
             LightOnButton.ButtonPressed = isLightButtonOn;
+        }
+
+        public override void _Input(InputEvent @event)
+        {
+            if (@event.IsActionPressed("ui_undo"))
+            {
+                _on_btn_undo_pressed();
+                @event.Dispose(); // this event should not be propagated any further
+            } else if (@event.IsActionPressed("ui_redo"))
+            {
+                _on_btn_redo_pressed();
+                @event.Dispose();
+            }
         }
 
         private void _on_btn_export_nazca_pressed()
@@ -157,7 +185,7 @@ namespace ConnectAPIC.LayoutWindow.View
             {
                 try
                 {
-                    ViewModel.ExportToNazcaCommand.ExecuteAsync(new ExportNazcaParameters(path));
+                    ViewModel.CommandFactory.CreateCommand(CommandType.ExportNazca).ExecuteAsync(new ExportNazcaParameters(path)).Wait();
                     NotificationManager.Instance.Notify("Successfully saved file");
                 }
                 catch (Exception ex)
@@ -168,9 +196,17 @@ namespace ConnectAPIC.LayoutWindow.View
             });
         }
 
+        private void _on_btn_undo_pressed()
+        {
+            ViewModel.CommandFactory.Undo();
+        }
+        private void _on_btn_redo_pressed()
+        {
+            ViewModel.CommandFactory.Redo();
+        }
         private void _on_btn_show_light_propagation_toggled(bool button_pressed)
         {
-            ViewModel.SwitchOnLightCommand.ExecuteAsync(button_pressed).Wait();
+            ViewModel.CommandFactory.CreateCommand(CommandType.SwitchOnLight).ExecuteAsync(button_pressed).Wait();
             if (button_pressed)
             {
                 LightOnButton.Icon = LightOnTexture;
@@ -187,7 +223,7 @@ namespace ConnectAPIC.LayoutWindow.View
             {
                 try
                 {
-                    await ViewModel.SaveGridCommand.ExecuteAsync(new SaveGridParameters(path));
+                    await ViewModel.CommandFactory.CreateCommand(CommandType.SaveGrid).ExecuteAsync(new SaveGridParameters(path));
                     NotificationManager.Instance.Notify("Successfully saved file");
                 }
                 catch (Exception ex)
@@ -204,7 +240,7 @@ namespace ConnectAPIC.LayoutWindow.View
             {
                 try
                 {
-                    await ViewModel.LoadGridCommand.ExecuteAsync(new LoadGridParameters(path));
+                    await ViewModel.CommandFactory.CreateCommand(CommandType.LoadGrid).ExecuteAsync(new LoadGridParameters(path));
                     NotificationManager.Instance.Notify("Successfully loaded file");
                 }
                 catch (Exception ex)
