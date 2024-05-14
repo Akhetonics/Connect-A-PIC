@@ -5,12 +5,12 @@
 
 [node name="InfoSection" type="Control"]
 texture_filter = 1
-custom_minimum_size = Vector2(0, 20)
+custom_minimum_size = Vector2(0, 25)
 layout_mode = 3
 anchors_preset = 0
 mouse_filter = 1
 script = ExtResource("1_jjdpd")
-metadata/_edit_vertical_guides_ = [200.0]
+metadata/_edit_vertical_guides_ = [200.0, 4.0]
 metadata/_edit_horizontal_guides_ = [4.0]
 
 [node name="Title" type="Control" parent="."]
@@ -26,11 +26,12 @@ layout_mode = 1
 anchors_preset = 4
 anchor_top = 0.5
 anchor_bottom = 0.5
-offset_top = -8.0
-offset_right = 50.0
-offset_bottom = 8.0
+offset_left = -1.0
+offset_top = -7.0
+offset_right = 84.0
+offset_bottom = 9.0
 grow_vertical = 2
-scale = Vector2(0.8, 0.8)
+scale = Vector2(0.7, 0.7)
 theme_override_constants/margin_left = 5
 
 [node name="Title" type="Label" parent="Title/MarginContainer"]
@@ -44,18 +45,15 @@ text = "Title"
 
 [node name="MarginContainer2" type="MarginContainer" parent="Title"]
 layout_mode = 1
-anchors_preset = 6
-anchor_left = 1.0
+anchors_preset = 4
 anchor_top = 0.5
-anchor_right = 1.0
 anchor_bottom = 0.5
-offset_left = -58.0
-offset_top = -8.0
-offset_right = 14.0
-offset_bottom = 8.0
-grow_horizontal = 0
+offset_left = 3.0
+offset_top = 4.0
+offset_right = 75.0
+offset_bottom = 20.0
 grow_vertical = 2
-scale = Vector2(0.8, 0.8)
+scale = Vector2(0.7, 0.7)
 theme_override_constants/margin_right = 10
 
 [node name="Value" type="Label" parent="Title/MarginContainer2"]

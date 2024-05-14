@@ -75,8 +75,8 @@ namespace ConnectAPIC.Scripts.ViewModel
             } 
         }
 
-        private float _phase;
-        public float Phase {
+        private Vector3 _phase;
+        public Vector3 Phase {
             get => _phase;
             set {
                 _phase = value;
@@ -149,9 +149,24 @@ namespace ConnectAPIC.Scripts.ViewModel
                 return;
             };
             var fieldOut = e.LightFieldVector[(Guid)touchingPin].Magnitude;
-            Phase = Mathf.RadToDeg((float)e.LightFieldVector[(Guid)touchingPin].Phase + 2*Mathf.Pi)%360;
+            SetNewPhaseShift((Guid)touchingPin, e);
             UpdateInputPowerAndColorUsingLaserType(e.LaserInUse, (float)(fieldOut * fieldOut));
         }
+
+        private void SetNewPhaseShift(Guid touchingPin, LightCalculationUpdated e)
+        {
+            float red = Phase.X;
+            float green = Phase.Y;
+            float blue = Phase.Z;
+            float phaseVal = Mathf.RadToDeg((float)e.LightFieldVector[touchingPin].Phase + 2 * Mathf.Pi) % 360;
+
+            if (e.LaserInUse == LaserType.Red) red = phaseVal;
+            else if (e.LaserInUse == LaserType.Green) green = phaseVal;
+            else blue = phaseVal;
+
+            Phase = new Vector3(red, green, blue);
+        }
+
 
         private void Model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             //only external inputs gives away meaningful property change signals

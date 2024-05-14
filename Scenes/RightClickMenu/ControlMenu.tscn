@@ -190,15 +190,18 @@ mouse_filter = 1
 
 [node name="Power" parent="ControlMenu/SectionContainer/OutputMenu" instance=ExtResource("5_50guf")]
 layout_mode = 2
-offset_right = 200.0
-offset_bottom = 20.0
+offset_left = 2.0
+offset_top = -10.0
+offset_right = 202.0
+offset_bottom = 15.0
 metadata/_edit_vertical_guides_ = [237.0]
 
 [node name="PhaseShift" parent="ControlMenu/SectionContainer/OutputMenu" instance=ExtResource("5_50guf")]
 layout_mode = 2
-offset_top = 20.0
-offset_right = 200.0
-offset_bottom = 40.0
+offset_left = 3.0
+offset_top = 16.0
+offset_right = 203.0
+offset_bottom = 41.0
 metadata/_edit_vertical_guides_ = [237.0]
 
 [node name="PointerToPort" type="Line2D" parent="ControlMenu/SectionContainer/OutputMenu"]
