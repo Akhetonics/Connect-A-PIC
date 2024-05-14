@@ -9,6 +9,7 @@ using ConnectAPIC.Scripts.ViewModel.Commands;
 using ConnectAPIC.Scripts.ViewModel.Commands.ExternalPorts;
 using Godot;
 using System;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace ConnectAPIC.Scenes.RightClickMenu
@@ -141,8 +142,23 @@ namespace ConnectAPIC.Scenes.RightClickMenu
             OutputMenu.Visible = !isInput;
         }
         private void SetInfoSectionValues(ExternalPortViewModel port) {
-            powerInfo.Value = port.Power.Length().ToString("0.00");
-            phaseInfo.Value = port.Phase.ToString("0.00") + "°";
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append("⚡(");
+            sb.Append(port.Power.X.ToString("0.00") + ", ");
+            sb.Append(port.Power.Y.ToString("0.00") + ", ");
+            sb.Append(port.Power.Z.ToString("0.00") + ")");
+
+            powerInfo.Value = sb.ToString();
+            powerInfo.Title = "";
+
+            sb.Clear();
+            sb.Append("(");
+            sb.Append(port.Phase.X.ToString("0.00") + "°, ");
+            sb.Append(port.Phase.Y.ToString("0.00") + "°, ");
+            sb.Append(port.Phase.Z.ToString("0.00") + "°)");
+
+            phaseInfo.Value = sb.ToString();
         }
 
         private async void HandlePortTypeSwitchingRadioButtonPressed(BaseButton button)

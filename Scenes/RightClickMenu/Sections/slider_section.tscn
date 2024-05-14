@@ -27,9 +27,10 @@ mouse_filter = 1
 
 [node name="MarginContainer" type="MarginContainer" parent="VBoxContainer/Title"]
 layout_mode = 1
-offset_right = 156.0
-offset_bottom = 8.0
-scale = Vector2(0.8, 0.8)
+offset_top = 4.0
+offset_right = 197.0
+offset_bottom = 20.0
+scale = Vector2(0.7, 0.7)
 theme_override_constants/margin_left = 5
 
 [node name="Title" type="Label" parent="VBoxContainer/Title/MarginContainer"]
@@ -50,10 +51,9 @@ mouse_filter = 1
 unique_name_in_owner = true
 layout_mode = 2
 offset_left = 6.0
-offset_top = -4.0
-offset_right = 46.0
-offset_bottom = 4.0
-scale = Vector2(0.8, 0.8)
+offset_right = 86.0
+offset_bottom = 16.0
+scale = Vector2(0.7, 0.7)
 mouse_filter = 1
 theme = ExtResource("1_4u8fb")
 theme_override_font_sizes/font_size = 16
