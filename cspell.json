@@ -28,7 +28,8 @@
     "*.json",
     "*.md",
     "*.psd",
-    "*.ogv"
+    "*.ogv",
+    "*.aip"
   ],
 "words": [
     "Behaviour",
@@ -97,6 +98,7 @@
     "vulkan",
     "Xunit",
     "Nunit",
+    "msiexec",
     "Undoable"
 ]
 }

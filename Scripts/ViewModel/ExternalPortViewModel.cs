@@ -16,7 +16,7 @@ namespace ConnectAPIC.Scripts.ViewModel
     public class ExternalPortViewModel : INotifyPropertyChanged
     {
         public event EventHandler Clicked;
-        public void InvokeClicked() => Clicked.Invoke(this, EventArgs.Empty);
+        public void InvokeClicked() => Clicked?.Invoke(this, EventArgs.Empty);
 
         public GridManager Grid { get; }
         public LightCalculationService LightCalculator { get; }

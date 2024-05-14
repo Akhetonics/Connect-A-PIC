@@ -29,6 +29,7 @@ mouse_filter = 1
 layout_mode = 1
 offset_right = 156.0
 offset_bottom = 8.0
+scale = Vector2(0.8, 0.8)
 theme_override_constants/margin_left = 5
 
 [node name="Title" type="Label" parent="VBoxContainer/Title/MarginContainer"]
@@ -37,7 +38,7 @@ layout_mode = 2
 size_flags_horizontal = 0
 mouse_filter = 1
 theme = ExtResource("1_4u8fb")
-theme_override_font_sizes/font_size = 8
+theme_override_font_sizes/font_size = 16
 text = "Input Power:"
 
 [node name="Body" type="Control" parent="VBoxContainer"]
@@ -52,12 +53,10 @@ offset_left = 6.0
 offset_top = -4.0
 offset_right = 46.0
 offset_bottom = 4.0
-scale = Vector2(1.5, 1.5)
+scale = Vector2(0.8, 0.8)
 mouse_filter = 1
 theme = ExtResource("1_4u8fb")
-theme_override_colors/font_color = Color(0.588235, 0.588235, 0.588235, 0.811765)
-theme_override_colors/font_shadow_color = Color(0.137255, 0.137255, 0.137255, 0.784314)
-theme_override_font_sizes/font_size = 8
+theme_override_font_sizes/font_size = 16
 text = "Value"
 
 [node name="Slider" type="HSlider" parent="VBoxContainer/Body"]

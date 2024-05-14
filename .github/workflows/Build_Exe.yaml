@@ -43,13 +43,13 @@ jobs:
           include-templates: true
 
       - name: Create Build Directory
-        run: mkdir -p $GITHUB_WORKSPACE/Release
+        run: mkdir -p ${{ github.workspace }}/Release
 
       - name: Extract Version from Project File and store it for publishing
         id: project_version
         run: |
           version=$(grep '<Version>' Connect-A-PIC.csproj | sed -e 's/<[^>]*>//g' | xargs)
-          echo $version > $GITHUB_WORKSPACE/Release/version.txt
+          echo $version > ${{ github.workspace }}/Release/version.txt
 
       - name: 🧑‍🔬 Generate .NET Bindings
         run: godot --headless --build-solutions --quit || exit 0
@@ -63,7 +63,8 @@ jobs:
           fi
       # list files in release folder
       - name: List files in Release directory
-        run: ls -la $GITHUB_WORKSPACE/Release
+        run: ls -la ${{ github.workspace }}/Release
+        #/Release
 
       - name: Upload EXE as artifact
         uses: actions/upload-artifact@v4
@@ -127,34 +128,111 @@ jobs:
         with:
           name: Connect-A-PIC-EXE-SIGNED
           path: ./Release/Connect-A-PIC.exe
-
-  publish_signed:
-    name: Publish signed Exe
+  
+  create_installer:
+    name: Create Installer
     needs: sign_windows_exe
+    runs-on: windows-latest
+    steps:
+      - name: 🧾 Checkout
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+          submodules: 'recursive'
+      
+      - name: Download release folder from artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: Connect-A-PIC-RELEASE-FOLDER
+          path: ${{ github.workspace }}/Release
+  
+      - name: Download signed EXE from artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: Connect-A-PIC-EXE-SIGNED
+          path: ${{ github.workspace }}/Release
+  
+      - name: Read version from file
+        id: read_version
+        run: |
+          $version = Get-Content -Path "${{ github.workspace }}/Release/Version.txt"
+          Write-Output "::set-output name=version::$version"
+
+      - name: Build AIP
+        uses: caphyon/advinst-github-action@main
+        with:
+          advinst-version: '21.6'
+          advinst-enable-automation: 'true'
+          aip-path: ${{ github.workspace }}\Connect-A-PIC.aip
+          aip-build-name: DefaultBuild
+          aip-package-name: Connect_A_PIC_Setup.msi
+          aip-output-dir: ${{ github.workspace }}\Release
+          aip-commands: |
+            SetVersion ${{ steps.read_version.outputs.version }}
+            AddFile APPDIR ${{ github.workspace }}\Release\Connect-A-PIC.exe
+            AddFolder APPDIR ${{ github.workspace }}\Release\data_Connect-A-PIC_windows_x86_64
+            NewShortcut -name Connect_A_PIC -dir DesktopFolder -target APPDIR/Connect-A-PIC.exe
+
+      # signing part
+      - name: Setup Certificate
+        run: |
+          echo ${{ secrets.SM_CLIENT_CERT_FILE_B64 }} | base64 --decode > /d/Certificate_pkcs12.p12
+        shell: bash
+
+      # Set environment variables and paths for the code signing process
+      - name: Set variables for Code Signing
+        run: |
+          echo "SM_HOST=${{ secrets.SM_HOST }}" >> $GITHUB_ENV
+          echo "SM_API_KEY=${{ secrets.SM_API_KEY }}" >> $GITHUB_ENV
+          echo "SM_CLIENT_CERT_FILE=D:\\Certificate_pkcs12.p12" >> "$GITHUB_ENV" 
+          echo "SM_CLIENT_CERT_PASSWORD=${{ secrets.SM_CLIENT_CERT_PASSWORD }}" >> $GITHUB_ENV
+          echo "C:\Program Files (x86)\Windows Kits\10\App Certification Kit" >> $GITHUB_PATH 
+          echo "C:\Program Files (x86)\Microsoft SDKs\Windows\v10.0A\bin\NETFX 4.8 Tools" >> $GITHUB_PATH 
+          echo "C:\Program Files\DigiCert\DigiCert One Signing Manager Tools" >> $GITHUB_PATH 
+        shell: bash
+
+      - name: Setup SSM KSP on windows latest 
+        run: | 
+          curl -X GET  https://one.digicert.com/signingmanager/api-ui/v1/releases/smtools-windows-x64.msi/download -H "x-api-key:%SM_API_KEY%" -o smtools-windows-x64.msi 
+          msiexec /i smtools-windows-x64.msi /quiet /qn 
+          smksp_registrar.exe list 
+          smctl.exe keypair ls 
+          C:\Windows\System32\certutil.exe -csp "DigiCert Signing Manager KSP" -key -user 
+          smksp_cert_sync.exe 
+        shell: cmd 
+
+      - name: Signing using Signtool
+        run: | 
+          signtool.exe sign /sha1 ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 "${{ github.workspace }}/Release/Connect_A_PIC_Setup.msi" 
+          signtool.exe verify /v /pa "${{ github.workspace }}/Release/Connect_A_PIC_Setup.msi" 
+        shell: cmd
+
+      - name: Publish setup artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Connect-A-PIC-Setup
+          path: ${{ github.workspace }}/Release/Connect_A_PIC_Setup.msi
+
+  publish_installer:
+    name: Publish installer
+    needs: create_installer
     runs-on: ubuntu-latest
     steps:
+      - name: Download setup file from artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: Connect-A-PIC-Setup
+          path: ./Release
+          
       - name: Download release folder from artifact
         uses: actions/download-artifact@v4
         with:
           name: Connect-A-PIC-RELEASE-FOLDER
           path: ./Release
-
-      - name: Download signed EXE from artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: Connect-A-PIC-EXE-SIGNED
-          path: ./Release
-
-      - name: Zip Release Build
-        run: |
-          cd ${{ github.workspace }}/Release
-          zip -r ../ConnectAPIC.zip .
-          echo "zip_path=${{ github.workspace }}/ConnectAPIC.zip" >> $GITHUB_ENV
-          cd ..
-
+          
       - name: List files in Release Directory
         run: |
-          releaseDir="$GITHUB_WORKSPACE/Release"
+          releaseDir="${{ github.workspace }}/Release"
           echo "Checking files in folder $releaseDir"
           if [ -z "$(ls -A $releaseDir)" ]; then
             echo "Error: No files found in the Release directory."
@@ -170,8 +248,6 @@ jobs:
 
       - name: Print extracted Project version
         run: echo "The extracted Godot version is $PROJECTVERSION"
-
-
 
       - name: Create GitHub Release
         id: create_release
@@ -191,7 +267,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ${{ env.zip_path }}
-          asset_name: ConnectAPIC.zip
-          asset_content_type: application/zip
-      
+          asset_path: ./Release/Connect_A_PIC_Setup.msi
+          asset_name: Connect-A-PIC_${{ env.PROJECTVERSION }}.msi
+          asset_content_type: application/octet-stream

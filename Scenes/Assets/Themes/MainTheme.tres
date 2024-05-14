@@ -1,13 +1,79 @@
-[gd_resource type="Theme" format=3 uid="uid://b2f4xgnx0xy5e"]
+[gd_resource type="Theme" load_steps=5 format=3 uid="uid://b2f4xgnx0xy5e"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_dc7fk"]
+bg_color = Color(0.490196, 0.490196, 0.490196, 1)
+border_width_bottom = 5
+border_color = Color(0.0980392, 0.0980392, 0.0980392, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
+shadow_size = 3
+shadow_offset = Vector2(3, 4)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tiu4v"]
+bg_color = Color(0.282353, 0.592157, 0.498039, 1)
+border_width_bottom = 5
+border_color = Color(0.145098, 0.341176, 0.282353, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
+shadow_size = 3
+shadow_offset = Vector2(3, 4)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_8fjfr"]
+bg_color = Color(0.282353, 0.592157, 0.498039, 1)
+border_width_bottom = 5
+border_color = Color(0.145098, 0.341176, 0.282353, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
+shadow_size = 3
+shadow_offset = Vector2(3, 4)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_lds40"]
+bg_color = Color(0.282353, 0.592157, 0.498039, 1)
+border_width_bottom = 3
+border_color = Color(0.145098, 0.341176, 0.282353, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+expand_margin_left = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
+shadow_size = 1
+shadow_offset = Vector2(1, 2)
+anti_aliasing = false
 
 [resource]
+Button/styles/disabled = SubResource("StyleBoxFlat_dc7fk")
+Button/styles/hover = SubResource("StyleBoxFlat_tiu4v")
+Button/styles/normal = SubResource("StyleBoxFlat_8fjfr")
+Button/styles/pressed = SubResource("StyleBoxFlat_lds40")
 Label/colors/font_shadow_color = Color(0, 0, 0, 1)
 Label/constants/shadow_offset_x = 1
 Label/constants/shadow_offset_y = 1
 Label/constants/shadow_outline_size = 2
 Label/font_sizes/font_size = 16
 RichTextLabel/colors/font_shadow_color = Color(0, 0, 0, 1)
-RichTextLabel/constants/shadow_offset_x = 3
-RichTextLabel/constants/shadow_offset_y = 3
-RichTextLabel/constants/shadow_outline_size = 25
-RichTextLabel/font_sizes/normal_font_size = 150
+RichTextLabel/constants/shadow_offset_x = 1
+RichTextLabel/constants/shadow_offset_y = 1
+RichTextLabel/constants/shadow_outline_size = 2

@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <RootNamespace>ConnectAPIC</RootNamespace>
-    <Version>0.0.65</Version>
+    <Version>0.0.66</Version>
     <StartAction>Program</StartAction>
     <StartProgram>C:\Program Files\Godot_v4.1\Godot_v4.1\Godot_v4.1.exe</StartProgram>
     <StartArguments>--path C:\dev\Akhetonics\Connect-A-PIC\</StartArguments>
@@ -13,6 +13,8 @@
     <!-- Test dependencies go here! -->
     <PackageReference Include="Chickensoft.AutoInject" Version="1.5.0" />
     <PackageReference Include="Chickensoft.GodotTestDriver" Version="3.0.0" />
+    <PackageReference Include="GithubReleaseDownloader" Version="1.0.0" />
+    <PackageReference Include="Octokit" Version="10.0.0" />
     <PackageReference Include="Shouldly" Version="4.2.1" />
     <PackageReference Include="Moq" Version="4.20.70" />
   </ItemGroup>

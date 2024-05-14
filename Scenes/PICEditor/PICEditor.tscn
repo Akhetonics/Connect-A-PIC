@@ -1,5 +1,5 @@
-[gd_scene load_steps=26 format=3 uid="uid://cu6wqy6xwjfo1"]
 
+[gd_scene load_steps=32 format=3 uid="uid://cu6wqy6xwjfo1"]
 [ext_resource type="Script" path="res://Scripts/GameManager.cs" id="1_c0scx"]
 [ext_resource type="Script" path="res://Scripts/View/ComponentFactory/ComponentViewFactory.cs" id="2_7hjmy"]
 [ext_resource type="PackedScene" uid="uid://duapw8umf7gnn" path="res://Scenes/ExternalPorts/external_port.tscn" id="2_dn85u"]
@@ -13,24 +13,35 @@
 [ext_resource type="PackedScene" uid="uid://bscqmaslppyt8" path="res://Scenes/NotificationBox.tscn" id="10_06t00"]
 [ext_resource type="PackedScene" uid="uid://dx13abdux2230" path="res://Scenes/RightClickMenu/ControlMenu.tscn" id="11_ylcdl"]
 [ext_resource type="PackedScene" uid="uid://bd8isg4mddv21" path="res://Scenes/InGameConsole/InGameConsole.tscn" id="16_7rcst"]
+
 [ext_resource type="Texture2D" uid="uid://btlonrwsn36cw" path="res://Scenes/MenuBar/UndoIcon.png" id="17_mtqba"]
+[ext_resource type="Texture2D" uid="uid://d2c2xf2ifsfsu" path="res://Scenes/MenuBar/Redo.png" id="18_cnnar"]
+[ext_resource type="Texture2D" uid="uid://cu2g33qrkfgp7" path="res://Scenes/UpdateView/updateMenu.png" id="17_mvbv8"]
 [ext_resource type="Texture2D" uid="uid://djdwbxfnvfvfb" path="res://Scenes/MenuBar/SaveIcon.png" id="17_q4e7w"]
 [ext_resource type="Texture2D" uid="uid://qtdana7kc4y" path="res://Scenes/MenuBar/LoadIcon.png" id="18_17x6l"]
-[ext_resource type="Texture2D" uid="uid://d2c2xf2ifsfsu" path="res://Scenes/MenuBar/Redo.png" id="18_cnnar"]
+[ext_resource type="Script" path="res://Scenes/UpdateView/UpdateButton.cs" id="18_ym7mj"]
+[ext_resource type="Texture2D" uid="uid://dsx57ylk77tbb" path="res://Scenes/UpdateView/Completed.png" id="19_0hfky"]
+[ext_resource type="Texture2D" uid="uid://d2b1fbponf6oh" path="res://Scenes/UpdateView/updateMenu45.png" id="19_pc4y3"]
 [ext_resource type="Script" path="res://Scripts/View/GUIControls/MainCamera.cs" id="19_tfkoi"]
+[ext_resource type="Texture2D" uid="uid://c4lt2yoajif1y" path="res://Scenes/UpdateView/updateMenu90.png" id="19_w60kc"]
 [ext_resource type="Texture2D" uid="uid://cwxymtqs0hclu" path="res://Scripts/View/ToolBox/CollapseButton.png" id="19_wkq3d"]
 [ext_resource type="Texture2D" uid="uid://bpf4xfrmslfao" path="res://Scripts/View/ToolBox/CollapseButtonToggledOn.png" id="20_8i2ba"]
+[ext_resource type="Texture2D" uid="uid://dj6fyqfvyhjtu" path="res://Scenes/UpdateView/updateMenu135.png" id="21_bc703"]
 [ext_resource type="PackedScene" uid="uid://dfrjm1onsjusf" path="res://Scripts/View/ToolBox/Tool_box.tscn" id="21_cjovy"]
 [ext_resource type="PackedScene" uid="uid://cpu4bmee8crlg" path="res://Scenes/PopUpWindow/PopUpWindow.tscn" id="21_u0shi"]
 [ext_resource type="PackedScene" uid="uid://cfnwmdequraf3" path="res://Scenes/ExternalPortContainer/PortsContainer.tscn" id="22_75h2p"]
 [ext_resource type="Texture2D" uid="uid://dnku8c3qddqif" path="res://Scenes/MenuBar/HelpIcon.png" id="23_oxlnq"]
 [ext_resource type="Script" path="res://Scripts/View/GUIControls/ToolBoxCollapseControl.cs" id="25_35kfa"]
+[ext_resource type="Script" path="res://Scripts/UpdateSystem/UpdateManager.cs" id="25_cr0be"]
+[ext_resource type="PackedScene" uid="uid://ckp2oek7mdfdr" path="res://Scenes/UpdateView/UpdateWindow.tscn" id="26_ihjn2"]
 
 [node name="GameManager" type="Node" node_paths=PackedStringArray("InGameConsole")]
 script = ExtResource("1_c0scx")
 GridViewPath = NodePath("GridView")
 ToolBoxPath = NodePath("GUILayer/ToolboxControl/MarginContainer/VBoxContainer/ToolBox")
 InGameConsole = NodePath("GUILayer/InGameConsole")
+metadata/_edit_vertical_guides_ = [512.0]
+metadata/_edit_horizontal_guides_ = [384.0]
 
 [node name="ComponentViewFactory" type="Node" parent="."]
 script = ExtResource("2_7hjmy")
@@ -100,6 +111,7 @@ pivot_offset = Vector2(4, 4)
 [node name="btnSave" type="Button" parent="GUILayer/MenuBar/HBoxContainer"]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
+focus_mode = 0
 toggle_mode = true
 icon = ExtResource("17_q4e7w")
 expand_icon = true
@@ -108,6 +120,7 @@ metadata/_edit_use_anchors_ = true
 [node name="btnLoad" type="Button" parent="GUILayer/MenuBar/HBoxContainer"]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
+focus_mode = 0
 toggle_mode = true
 icon = ExtResource("18_17x6l")
 expand_icon = true
@@ -116,6 +129,7 @@ metadata/_edit_use_anchors_ = true
 [node name="btnHelp" type="Button" parent="GUILayer/MenuBar/HBoxContainer"]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
+focus_mode = 0
 toggle_mode = true
 icon = ExtResource("23_oxlnq")
 expand_icon = true
@@ -124,6 +138,7 @@ metadata/_edit_use_anchors_ = true
 [node name="btnShowLightPropagation" type="Button" parent="GUILayer/MenuBar/HBoxContainer"]
 custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
+focus_mode = 0
 toggle_mode = true
 icon = ExtResource("7_5wc4w")
 expand_icon = true
@@ -131,9 +146,11 @@ metadata/_edit_use_anchors_ = true
 
 [node name="btnExportNazca" type="Button" parent="GUILayer/MenuBar/HBoxContainer"]
 layout_mode = 2
+focus_mode = 0
 theme_override_font_sizes/font_size = 16
 text = "Export Nazca"
 metadata/_edit_use_anchors_ = true
+
 
 [node name="btnUndo" type="Button" parent="GUILayer/MenuBar/HBoxContainer"]
 custom_minimum_size = Vector2(50, 50)
@@ -147,6 +164,17 @@ custom_minimum_size = Vector2(50, 50)
 layout_mode = 2
 icon = ExtResource("18_cnnar")
 expand_icon = true
+
+[node name="btnUpdate" type="Button" parent="GUILayer/MenuBar/HBoxContainer"]
+custom_minimum_size = Vector2(50, 50)
+layout_mode = 2
+focus_mode = 0
+icon = ExtResource("17_mvbv8")
+expand_icon = true
+script = ExtResource("18_ym7mj")
+CompletedTexture = ExtResource("19_0hfky")
+AnimationFrames = Array[Texture2D]([ExtResource("17_mvbv8"), ExtResource("19_pc4y3"), ExtResource("19_w60kc"), ExtResource("21_bc703")])
+
 metadata/_edit_use_anchors_ = true
 
 [node name="ToolboxControl" type="Control" parent="GUILayer"]
@@ -212,12 +240,24 @@ ToggleButton = NodePath("../MenuBar/HBoxContainer/btnHelp")
 script = ExtResource("9_gj54m")
 NotificationBoxScene = ExtResource("10_06t00")
 
+[node name="UpdateWindow" parent="GUILayer" instance=ExtResource("26_ihjn2")]
+offset_left = -309.0
+offset_top = -133.0
+offset_right = 117.0
+offset_bottom = 51.0
+scale = Vector2(1.45, 1.45)
+
+[node name="UpdateManager" type="Node" parent="."]
+script = ExtResource("25_cr0be")
+
 [connection signal="pressed" from="GUILayer/MenuBar/HBoxContainer/btnSave" to="GridView" method="_on_btn_save_pressed"]
 [connection signal="pressed" from="GUILayer/MenuBar/HBoxContainer/btnLoad" to="GridView" method="_on_btn_load_pressed"]
 [connection signal="toggled" from="GUILayer/MenuBar/HBoxContainer/btnShowLightPropagation" to="GridView" method="_on_btn_show_light_propagation_toggled"]
 [connection signal="pressed" from="GUILayer/MenuBar/HBoxContainer/btnExportNazca" to="GridView" method="_on_btn_export_nazca_pressed"]
+
 [connection signal="pressed" from="GUILayer/MenuBar/HBoxContainer/btnUndo" to="GridView" method="_on_btn_undo_pressed"]
 [connection signal="pressed" from="GUILayer/MenuBar/HBoxContainer/btnRedo" to="GridView" method="_on_btn_redo_pressed"]
+[connection signal="pressed" from="GUILayer/MenuBar/HBoxContainer/btnUpdate" to="GUILayer/UpdateWindow" method="OnUpdateButtonPressed"]
 [connection signal="toggled" from="GUILayer/ToolboxControl/MarginContainer/VBoxContainer/HideToggle" to="GUILayer/ToolboxControl" method="OnToggleButtonPressed"]
 [connection signal="WindowClosed" from="GUILayer/HelpWindow" to="MainCamera" method="OnMouseExitedTutorialWindow"]
 [connection signal="mouse_entered" from="GUILayer/HelpWindow" to="MainCamera" method="OnMouseEnteredTutorialWindow"]
