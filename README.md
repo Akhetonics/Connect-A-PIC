@@ -9,10 +9,9 @@ Gamification of PIC Design (PIC = Photonic integrated circuit)
 Version: <!--version-->0.0.67<!--version-->
 [![image](https://github.com/Akhetonics/Connect-A-PIC/assets/18228325/f9357590-9a9b-48b4-80ff-cff0dce72aa8)](https://github.com/Akhetonics/Connect-A-PIC/releases)
 
-## Downloads
-
-You can download the newest releases [here](https://github.com/Akhetonics/Connect-A-PIC/releases).
-
+## [DOWNLOAD](https://github.com/Akhetonics/Connect-A-PIC/releases)
+ 
+## [JOIN OUR DISCORD](https://discord.gg/EyKhcM3)
 # About Connect a PIC
 
 This software aims to simplify the design of optical circuits on a chip, which can then be printed using our Nazca-Python export function.
@@ -128,7 +127,7 @@ All tests for the Model or "CAP-Core" can be found here, simply use Visual Studi
 We welcome contributions to this project. If you're interested in helping, you can [contribute in the following ways](https://github.com/Akhetonics/Connect-A-PIC/wiki/CONTRIBUTING):
 
 1. **Pull Requests:** 
-    - For any changes or improvements, please submit a pull request. 
+    - For any changes or improvements, please submit a pull r**equest. 
     - Ensure that each pull request addresses a specific issue or feature. Avoid combining multiple changes into a single request to facilitate review and integration.
     - Please provide a clear and detailed description of your changes and the purpose behind them.
 
@@ -143,6 +142,10 @@ We welcome contributions to this project. If you're interested in helping, you c
 
 Your contributions are greatly appreciated and will help to further develop this innovative project!
 
+5. **Join our Discord Channel**
+   - [Click here](https://discord.gg/EyKhcM3) to join our Developer Discord for professional discussion, fun and support within the community
+      
+     
 # License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
