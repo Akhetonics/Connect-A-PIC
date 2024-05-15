@@ -7,7 +7,7 @@
     "**/*.import",
     "badges/**/*.*",
     "coverage/**/*.*",
-    "*.godot/**/*.*",
+    ".godot/**/*.*",
     "**/*.tres",
     "**/*.resx",
     "*.Designer.cs",
@@ -29,7 +29,8 @@
     "*.md",
     "*.psd",
     "*.ogv",
-    "*.aip"
+    "*.aip",
+    "*.godot"
   ],
 "words": [
     "Behaviour",
