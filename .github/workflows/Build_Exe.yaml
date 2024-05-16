@@ -210,7 +210,7 @@ jobs:
       - name: Publish setup artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Connect-A-PIC-Setup
+          name: Connect-A-PIC-Setup-SIGNED
           path: ${{ github.workspace }}/Release/Connect_A_PIC_Setup.msi
 
   publish_installer:
@@ -221,7 +221,7 @@ jobs:
       - name: Download setup file from artifact
         uses: actions/download-artifact@v4
         with:
-          name: Connect-A-PIC-Setup
+          name: Connect-A-PIC-Setup-SIGNED
           path: ./Release
           
       - name: Download release folder from artifact
@@ -249,17 +249,17 @@ jobs:
       - name: Print extracted Project version
         run: echo "The extracted Godot version is $PROJECTVERSION"
 
-      - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: v${{ env.PROJECTVERSION }}
-          release_name: Release v${{ env.PROJECTVERSION }}
-          draft: false
-          prerelease: false
-          body: "Automatically generated release"
+      # - name: Create GitHub Release
+      #   id: create_release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     tag_name: v${{ env.PROJECTVERSION }}
+      #     release_name: Release v${{ env.PROJECTVERSION }}
+      #     draft: false
+      #     prerelease: false
+      #     body: "Automatically generated release"
 
       # - name: Upload Release Asset
       #   uses: actions/upload-release-asset@v1
