@@ -65,21 +65,20 @@ jobs:
         id: build
         uses: manleydev/build-godot-action@v1.4.1
         with:
-          name: example
-          preset: win32
-          debugMode: "false"
-          output: "Release"
+          name: Connect-A-PIC-EXE
+          preset: win64
+          package: true
           
       # list files in release folder
       - name: List files in Release directory
         run: ls -la ${{ github.workspace }}/Release
         #/Release
 
-      - name: Upload EXE as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: Connect-A-PIC-EXE
-          path: ${{ github.workspace }}/Release/Connect-A-PIC.exe
+      # - name: Upload EXE as artifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: Connect-A-PIC-EXE
+      #     path: ${{ github.workspace }}/Release/Connect-A-PIC.exe
       
       # also upload all the files BUT the exe for the zipping later on.
       - name: Upload Release directory as artifact
