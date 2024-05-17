@@ -126,7 +126,6 @@
     <ROW Feature_="MainFeature" Component_="ProductInformation"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiIconsComponent">
-    <ROW Name="APPDIRConnectAPIC.exe" SourcePath="..\..\icon.ico" Index="0"/>
     <ROW Name="APPDIRConnectAPIC_1.exe" SourcePath="..\..\download.ico" Index="0"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiInstExSeqComponent">
@@ -160,7 +159,7 @@
     <ROW Registry="Version" Root="-1" Key="Software\[Manufacturer]\[ProductName]" Name="Version" Value="[ProductVersion]" Component_="ProductInformation"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiShortsComponent">
-    <ROW Shortcut="APPDIRConnectAPIC.exe" Directory_="DesktopFolder" Name="CONNEC~1|Connect-A-PIC" Component_="APPDIR" Target="[APPDIR]Connect-A-PIC.exe" Hotkey="0" Icon_="APPDIRConnectAPIC.exe" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
+    <ROW Shortcut="APPDIRConnectAPIC.exe" Directory_="DesktopFolder" Name="CONNEC~1|Connect-A-PIC" Component_="APPDIR" Target="[APPDIR]Connect-A-PIC.exe" Hotkey="0" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
     <ROW Shortcut="APPDIRConnectAPIC.exe_1" Directory_="StartMenuFolder" Name="CONNEC~1|Connect-A-PIC" Component_="APPDIR" Target="[APPDIR]Connect-A-PIC.exe" Hotkey="0" Icon_="APPDIRConnectAPIC_1.exe" IconIndex="0" ShowCmd="1" WkDir="APPDIR"/>
   </COMPONENT>
   <COMPONENT cid="caphyon.advinst.msicomp.MsiThemeComponent">
