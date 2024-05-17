@@ -44,7 +44,7 @@ jobs:
 
       - name: Create Build Directory
         run: mkdir -p ${{ github.workspace }}/Release
-        
+
       - name: Extract Version from Project File and store it for publishing
         id: project_version
         run: |
@@ -61,7 +61,6 @@ jobs:
             echo "Build failed with exit code $?"
             exit 1
           fi
-          
       # list files in release folder
       - name: List files in Release directory
         run: ls -la ${{ github.workspace }}/Release
