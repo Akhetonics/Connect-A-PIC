@@ -144,18 +144,18 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: Connect-A-PIC-RELEASE-FOLDER
-          path: ./Release
+          path: ${{ github.workspace }}\Release
   
       - name: Download signed EXE from artifact
         uses: actions/download-artifact@v4
         with:
           name: Connect-A-PIC-EXE-SIGNED
-          path: ./Release
+          path: ${{ github.workspace }}\Release
   
       - name: Read version from file
         id: read_version
         run: |
-          $version = Get-Content -Path "./Release/Version.txt"
+          $version = Get-Content -Path "${{ github.workspace }}\Release/Version.txt"
           Write-Output "::set-output name=version::$version"
 
       - name: Build AIP
@@ -171,7 +171,7 @@ jobs:
             SetVersion ${{ steps.read_version.outputs.version }}
             AddFile APPDIR ${{ github.workspace }}\Release\Connect-A-PIC.exe
             AddFolder APPDIR ${{ github.workspace }}\Release\data_Connect-A-PIC_windows_x86_64
-            AddFile [APPDIR] ./icon.ico
+            AddFile [APPDIR] ${{ github.workspace }}\icon.ico
             NewShortcut -name Connect-A-PIC-123 -dir [DesktopFolder] -target [APPDIR]Connect-A-PIC.exe -icon [APPDIR]icon.ico 
 
       # signing part
@@ -204,15 +204,15 @@ jobs:
 
       - name: Signing using Signtool
         run: | 
-          signtool.exe sign /sha1 ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 "./Release/Connect_A_PIC_Setup.msi" 
-          signtool.exe verify /v /pa "./Release/Connect_A_PIC_Setup.msi" 
+          signtool.exe sign /sha1 ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 "${{ github.workspace }}/Release/Connect_A_PIC_Setup.msi" 
+          signtool.exe verify /v /pa "${{ github.workspace }}\Release/Connect_A_PIC_Setup.msi" 
         shell: cmd
 
       - name: Publish setup artifact
         uses: actions/upload-artifact@v4
         with:
           name: Connect-A-PIC-Setup-SIGNED
-          path: ./Release/Connect_A_PIC_Setup.msi
+          path: ${{ github.workspace }}\Release/Connect_A_PIC_Setup.msi
 
   publish_installer:
     name: Publish installer
