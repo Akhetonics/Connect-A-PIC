@@ -166,7 +166,7 @@ jobs:
           aip-path: ./Connect-A-PIC.aip
           aip-build-name: DefaultBuild
           aip-package-name: Connect_A_PIC_Setup.msi
-          aip-output-dir: ./Release
+          aip-output-dir: $GITHUB_WORKSPACE/Release
           aip-commands: |
             SetVersion ${{ steps.read_version.outputs.version }}
             AddFile [APPDIR] ./Release/Connect-A-PIC.exe
