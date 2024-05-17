@@ -29,7 +29,8 @@
     "*.md",
     "*.psd",
     "*.ogv",
-    "*.aip"
+    "*.aip",
+    "*.godot"
   ],
 "words": [
     "Behaviour",
