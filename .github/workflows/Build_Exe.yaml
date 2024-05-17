@@ -20,6 +20,17 @@ jobs:
           lfs: true
           submodules: 'recursive'
 
+
+      - name: Build
+        id: build
+        uses: manleydev/build-godot-action@v1.5.0
+        with:
+          name: Connect-A-PIC-EXE
+          preset: "Windows Desktop"
+          subdirectory: ""
+          package: true
+          projectDir: ${{ github.workspace }}
+
       - name: 💽 Setup .NET SDK
         uses: actions/setup-dotnet@v3
         with:
@@ -61,15 +72,6 @@ jobs:
       #       echo "Build failed with exit code $?"
       #       exit 1
       #     fi
-      - name: Build
-        id: build
-        uses: manleydev/build-godot-action@v1.5.0
-        with:
-          name: Connect-A-PIC-EXE
-          preset: "Windows Desktop"
-          subdirectory: ""
-          package: true
-          projectDir: ${{ github.workspace }}
           
       # list files in release folder
       - name: List files in Release directory
