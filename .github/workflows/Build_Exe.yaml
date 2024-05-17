@@ -63,7 +63,7 @@ jobs:
       #     fi
       - name: Build
         id: build
-        uses: manleydev/build-godot-action@v1.4.1
+        uses: manleydev/build-godot-action@v1.5.0
         with:
           name: Connect-A-PIC-EXE
           preset: Windows Desktop
