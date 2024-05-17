@@ -11,7 +11,7 @@ on:
 jobs:
   build_windows_exe:
     name: Build Windows EXE
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: 🧾 Checkout
