@@ -9,28 +9,6 @@ on:
       - '**/Connect-A-PIC.csproj'
 
 jobs:
-  Godot:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        platform: [windows]
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          lfs: true
-      - name: Build
-        id: build
-        uses: manleydev/build-godot-action@v1.4.1
-        with:
-          name: example
-          preset: ${{ matrix.platform }}
-          debugMode: "true"
-      - name: Upload Artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: Client - ${{ matrix.platform }}
-          path: ${{ github.workspace }}/${{ steps.build.outputs.build }}
-
   build_windows_exe:
     name: Build Windows EXE
     runs-on: ubuntu-latest
@@ -41,17 +19,6 @@ jobs:
         with:
           lfs: true
           submodules: 'recursive'
-
-
-      - name: Build
-        id: build
-        uses: manleydev/build-godot-action@v1.5.0
-        with:
-          name: Connect-A-PIC-EXE
-          preset: "Windows Desktop"
-          subdirectory: ""
-          package: true
-          projectDir: ${{ github.workspace }}
 
       - name: 💽 Setup .NET SDK
         uses: actions/setup-dotnet@v3
@@ -87,24 +54,24 @@ jobs:
       - name: 🧑‍🔬 Generate .NET Bindings
         run: godot --headless --build-solutions --quit || exit 0
 
-      # - name: Build Windows EXE
-      #   run: |
-      #     godot --headless --export-release "Windows Desktop"
-      #     if [ $? -ne 0 ]; then
-      #       echo "Build failed with exit code $?"
-      #       exit 1
-      #     fi
+      - name: Build Windows EXE
+        run: |
+          godot --headless --export-release "Windows Desktop"
+          if [ $? -ne 0 ]; then
+            echo "Build failed with exit code $?"
+            exit 1
+          fi
           
       # list files in release folder
       - name: List files in Release directory
         run: ls -la ${{ github.workspace }}/Release
         #/Release
 
-      # - name: Upload EXE as artifact
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: Connect-A-PIC-EXE
-      #     path: ${{ github.workspace }}/Release/Connect-A-PIC.exe
+      - name: Upload EXE as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Connect-A-PIC-EXE
+          path: ${{ github.workspace }}/Release/Connect-A-PIC.exe
       
       # also upload all the files BUT the exe for the zipping later on.
       - name: Upload Release directory as artifact
