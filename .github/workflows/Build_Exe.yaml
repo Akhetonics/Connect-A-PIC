@@ -11,73 +11,71 @@ on:
 jobs:
   build_windows_exe:
     name: Build Windows EXE
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
-      - name: 🧾 Checkout
-        uses: actions/checkout@v4
-        with:
-          lfs: true
-          submodules: 'recursive'
+    - name: 🧾 Checkout
+      uses: actions/checkout@v4
+      with:
+        lfs: true
+        submodules: 'recursive'
 
-      - name: 💽 Setup .NET SDK
-        uses: actions/setup-dotnet@v3
-        with:
-          # Use the .NET SDK from global.json in the root of the repository.
-          global-json-file: global.json
+    - name: 💽 Setup .NET SDK
+      uses: actions/setup-dotnet@v3
+      with:
+        # Use the .NET SDK from global.json in the root of the repository.
+        global-json-file: global.json
 
-      - name: 📦 Restore Dependencies
-        run: dotnet restore
+    - name: 📦 Restore Dependencies
+      run: dotnet restore
 
-      - name: 🤖 Setup Godot
-        uses: chickensoft-games/setup-godot@v1
-        with:
-          # In this case, we are using the version from global.json.
-          #
-          # This allows checks on renovatebot PR's to succeed whenever
-          # renovatebot updates the Godot SDK version.
-          version: global.json
-          # Use .NET-enabled version of Godot (the default is also true).
-          use-dotnet: true
-          # Include the Godot Export Templtes (the default is false).
-          include-templates: true
+    - name: 🤖 Setup Godot
+      uses: chickensoft-games/setup-godot@v1
+      with:
+        # In this case, we are using the version from global.json.
+        #
+        # This allows checks on renovatebot PR's to succeed whenever
+        # renovatebot updates the Godot SDK version.
+        version: global.json
+        # Use .NET-enabled version of Godot (the default is also true).
+        use-dotnet: true
+        # Include the Godot Export Templates (the default is false).
+        include-templates: true
 
-      - name: Create Build Directory
-        run: mkdir -p ${{ github.workspace }}/Release
+    - name: Create Build Directory
+      run: New-Item -Path $env:GITHUB_WORKSPACE\Release -ItemType Directory
 
-      - name: Extract Version from Project File and store it for publishing
-        id: project_version
-        run: |
-          version=$(grep '<Version>' Connect-A-PIC.csproj | sed -e 's/<[^>]*>//g' | xargs)
-          echo $version > ${{ github.workspace }}/Release/version.txt
+    - name: Extract Version from Project File and store it for publishing
+      id: project_version
+      run: |
+        $version = (Select-String -Path Connect-A-PIC.csproj -Pattern '<Version>' | ForEach-Object { $_ -replace '<[^>]*>', '' }).Trim()
+        $version | Out-File -FilePath $env:GITHUB_WORKSPACE\Release\version.txt
 
-      - name: 🧑‍🔬 Generate .NET Bindings
-        run: godot --headless --build-solutions --quit || exit 0
+    - name: 🧑‍🔬 Generate .NET Bindings
+      run: godot --headless --build-solutions --quit || exit 0
 
-      - name: Build Windows EXE
-        run: |
-          godot --headless --export-release "Windows Desktop"
-          if [ $? -ne 0 ]; then
-            echo "Build failed with exit code $?"
-            exit 1
-          fi
-      # list files in release folder
-      - name: List files in Release directory
-        run: ls -la ${{ github.workspace }}/Release
-        #/Release
+    - name: Build Windows EXE
+      run: |
+        godot --headless --export-release "Windows Desktop"
+        if ($LASTEXITCODE -ne 0) {
+          Write-Host "Build failed with exit code $LASTEXITCODE"
+          exit 1
+        }
 
-      - name: Upload EXE as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: Connect-A-PIC-EXE
-          path: ${{ github.workspace }}/Release/Connect-A-PIC.exe
-      
-      # also upload all the files BUT the exe for the zipping later on.
-      - name: Upload Release directory as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: Connect-A-PIC-RELEASE-FOLDER
-          path: ${{ github.workspace }}/Release/
+    - name: List files in Release directory
+      run: Get-ChildItem -Path $env:GITHUB_WORKSPACE\Release
+
+    - name: Upload EXE as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Connect-A-PIC-EXE
+        path: ${{ github.workspace }}\Release\Connect-A-PIC.exe
+
+    - name: Upload Release directory as artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Connect-A-PIC-RELEASE-FOLDER
+        path: ${{ github.workspace }}\Release\
 
   sign_windows_exe:
     name: Sign Windows Exe
@@ -163,15 +161,14 @@ jobs:
         with:
           advinst-version: '21.6'
           advinst-enable-automation: 'true'
-          aip-path: ${{ github.workspace }}\Connect-A-PIC.aip
+          aip-path: ${{ github.workspace }}/Connect-A-PIC.aip
           aip-build-name: DefaultBuild
           aip-package-name: Connect_A_PIC_Setup.msi
-          aip-output-dir: ${{ github.workspace }}\Release
+          aip-output-dir: ${{ github.workspace }}/Release
           aip-commands: |
             SetVersion ${{ steps.read_version.outputs.version }}
             AddFile APPDIR ${{ github.workspace }}\Release\Connect-A-PIC.exe
             AddFolder APPDIR ${{ github.workspace }}\Release\data_Connect-A-PIC_windows_x86_64
-            NewShortcut -name Connect_A_PIC -dir DesktopFolder -target APPDIR/Connect-A-PIC.exe
 
       # signing part
       - name: Setup Certificate
@@ -267,6 +264,6 @@ jobs:
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       #   with:
       #     upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./Release/Connect_A_PIC_Setup.msi
-          asset_name: Connect-A-PIC_${{ env.PROJECTVERSION }}.msi
-          asset_content_type: application/octet-stream
+      #     asset_path: ./Release/Connect_A_PIC_Setup.msi
+      #     asset_name: Connect-A-PIC_${{ env.PROJECTVERSION }}.msi
+      #     asset_content_type: application/octet-stream
