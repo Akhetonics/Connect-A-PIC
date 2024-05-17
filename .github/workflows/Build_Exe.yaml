@@ -56,7 +56,7 @@ jobs:
 
       - name: Build Windows EXE
         run: |
-          godot --headless --export-release "Windows Desktop"
+          godot --headless --export-release "win64"
           if [ $? -ne 0 ]; then
             echo "Build failed with exit code $?"
             exit 1
