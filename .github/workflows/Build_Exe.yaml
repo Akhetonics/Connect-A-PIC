@@ -70,7 +70,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: Connect-A-PIC-EXE
-          path: ${{ github.workspace }}/Connect-A-PIC.exe
+          path: ${{ github.workspace }}/Release/Connect-A-PIC.exe
       
       # also upload all the files BUT the exe for the zipping later on.
       - name: Upload Release directory as artifact
@@ -155,7 +155,7 @@ jobs:
       - name: Read version from file
         id: read_version
         run: |
-          $version = Get-Content -Path "${{ github.workspace }}\Release/Version.txt"
+          $version = Get-Content -Path "${{ github.workspace }}/Release/Version.txt"
           Write-Output "::set-output name=version::$version"
 
       - name: Build AIP
