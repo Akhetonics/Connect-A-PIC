@@ -44,7 +44,7 @@ jobs:
 
       - name: Create Build Directory
         run: mkdir -p ${{ github.workspace }}/Release
-
+        
       - name: Extract Version from Project File and store it for publishing
         id: project_version
         run: |
@@ -54,13 +54,22 @@ jobs:
       - name: 🧑‍🔬 Generate .NET Bindings
         run: godot --headless --build-solutions --quit || exit 0
 
-      - name: Build Windows EXE
-        run: |
-          godot --headless --export-release "Windows Desktop"
-          if [ $? -ne 0 ]; then
-            echo "Build failed with exit code $?"
-            exit 1
-          fi
+      # - name: Build Windows EXE
+      #   run: |
+      #     godot --headless --export-release "Windows Desktop"
+      #     if [ $? -ne 0 ]; then
+      #       echo "Build failed with exit code $?"
+      #       exit 1
+      #     fi
+      - name: Build
+        id: build
+        uses: manleydev/build-godot-action@v1.4.1
+        with:
+          name: example
+          preset: win32
+          debugMode: "false"
+          output: "Release"
+          
       # list files in release folder
       - name: List files in Release directory
         run: ls -la ${{ github.workspace }}/Release
