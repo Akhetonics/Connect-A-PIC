@@ -249,24 +249,24 @@ jobs:
       - name: Print extracted Project version
         run: echo "The extracted Godot version is $PROJECTVERSION"
 
-      - name: Create GitHub Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: v${{ env.PROJECTVERSION }}
-          release_name: Release v${{ env.PROJECTVERSION }}
-          draft: false
-          prerelease: false
-          body: "Automatically generated release"
+      # - name: Create GitHub Release
+      #   id: create_release
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     tag_name: v${{ env.PROJECTVERSION }}
+      #     release_name: Release v${{ env.PROJECTVERSION }}
+      #     draft: false
+      #     prerelease: false
+      #     body: "Automatically generated release"
 
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./Release/Connect_A_PIC_Setup.msi
-          asset_name: Connect-A-PIC_${{ env.PROJECTVERSION }}.msi
-          asset_content_type: application/octet-stream
+      # - name: Upload Release Asset
+      #   uses: actions/upload-release-asset@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     upload_url: ${{ steps.create_release.outputs.upload_url }}
+      #     asset_path: ./Release/Connect_A_PIC_Setup.msi
+      #     asset_name: Connect-A-PIC_${{ env.PROJECTVERSION }}.msi
+      #     asset_content_type: application/octet-stream
