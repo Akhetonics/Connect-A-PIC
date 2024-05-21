@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://bd8isg4mddv21"]
+[gd_scene load_steps=5 format=3 uid="uid://bd8isg4mddv21"]
 
 [ext_resource type="Script" path="res://Scenes/InGameConsole/GameConsole.cs" id="1_fpfmq"]
+[ext_resource type="FontFile" uid="uid://ckdxvawpni0bt" path="res://Scenes/Assets/Fonts/FreePixel.ttf" id="2_b0k2e"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jfvjg"]
 content_margin_left = 4.0
@@ -24,11 +25,11 @@ shadow_color = Color(0.0588235, 0.0588235, 0.0588235, 0.733333)
 [node name="InGameConsole" type="ScrollContainer" node_paths=PackedStringArray("LoggingParent", "InfoTextTemplate", "ErrorTextTemplate")]
 top_level = true
 texture_filter = 1
-anchors_preset = 12
+anchors_preset = -1
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -336.0
+offset_top = -261.0
 grow_horizontal = 2
 grow_vertical = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_jfvjg")
@@ -47,7 +48,8 @@ theme = SubResource("Theme_76st6")
 visible = false
 layout_mode = 2
 theme_override_colors/default_color = Color(1, 0.137255, 0.192157, 1)
-theme_override_font_sizes/normal_font_size = 0
+theme_override_fonts/normal_font = ExtResource("2_b0k2e")
+theme_override_font_sizes/normal_font_size = 32
 text = "test text in your est"
 fit_content = true
 scroll_active = false
@@ -56,7 +58,8 @@ scroll_active = false
 visible = false
 layout_mode = 2
 theme_override_colors/default_color = Color(0, 0.792157, 0.317647, 1)
-theme_override_font_sizes/normal_font_size = 0
+theme_override_fonts/normal_font = ExtResource("2_b0k2e")
+theme_override_font_sizes/normal_font_size = 32
 text = "test text in your est"
 fit_content = true
 scroll_active = false

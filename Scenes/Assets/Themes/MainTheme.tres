@@ -75,5 +75,5 @@ Label/constants/shadow_outline_size = 2
 Label/font_sizes/font_size = 16
 RichTextLabel/colors/font_shadow_color = Color(0, 0, 0, 1)
 RichTextLabel/constants/shadow_offset_x = 0
-RichTextLabel/constants/shadow_offset_y = 10
-RichTextLabel/constants/shadow_outline_size = 20
+RichTextLabel/constants/shadow_offset_y = 3
+RichTextLabel/constants/shadow_outline_size = 1

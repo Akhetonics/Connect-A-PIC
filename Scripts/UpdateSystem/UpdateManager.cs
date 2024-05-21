@@ -114,8 +114,11 @@ public partial class UpdateManager : Node
 
     private static void RenameInstallerFile() {
         var newInstallerName = $"{RepoName}_{LatestVersion}.msi";
-        if (installerName == newInstallerName) return;
-
+        if (installerName == newInstallerName)
+        {
+            InstallerReady?.Invoke(null, EventArgs.Empty);
+            return;
+        }
         string newFilePath = Path.Combine(InstallerPath, newInstallerName);
 
         File.Move(Path.Combine(InstallerPath, installerName), newFilePath);
