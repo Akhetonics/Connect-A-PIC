@@ -56,7 +56,7 @@ jobs:
 
       - name: Build Windows EXE
         run: |
-          godot --headless --export-release "Windows Desktop"
+          godot --headless --export-release "win64"
           if [ $? -ne 0 ]; then
             echo "Build failed with exit code $?"
             exit 1
@@ -144,13 +144,13 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: Connect-A-PIC-RELEASE-FOLDER
-          path: ${{ github.workspace }}/Release
+          path: ${{ github.workspace }}\Release
   
       - name: Download signed EXE from artifact
         uses: actions/download-artifact@v4
         with:
           name: Connect-A-PIC-EXE-SIGNED
-          path: ${{ github.workspace }}/Release
+          path: ${{ github.workspace }}\Release
   
       - name: Read version from file
         id: read_version
@@ -171,7 +171,8 @@ jobs:
             SetVersion ${{ steps.read_version.outputs.version }}
             AddFile APPDIR ${{ github.workspace }}\Release\Connect-A-PIC.exe
             AddFolder APPDIR ${{ github.workspace }}\Release\data_Connect-A-PIC_windows_x86_64
-            NewShortcut -name Connect_A_PIC -dir DesktopFolder -target APPDIR/Connect-A-PIC.exe
+            AddFile APPDIR ${{ github.workspace }}\icon.ico
+            NewShortcut -name Connect-A-PIC -dir DesktopFolder -target APPDIR\Connect-A-PIC.exe -icon ${{ github.workspace }}\icon.ico 
 
       # signing part
       - name: Setup Certificate
@@ -204,14 +205,14 @@ jobs:
       - name: Signing using Signtool
         run: | 
           signtool.exe sign /sha1 ${{ secrets.SM_CODE_SIGNING_CERT_SHA1_HASH }} /tr http://timestamp.digicert.com /td SHA256 /fd SHA256 "${{ github.workspace }}/Release/Connect_A_PIC_Setup.msi" 
-          signtool.exe verify /v /pa "${{ github.workspace }}/Release/Connect_A_PIC_Setup.msi" 
+          signtool.exe verify /v /pa "${{ github.workspace }}\Release/Connect_A_PIC_Setup.msi" 
         shell: cmd
 
       - name: Publish setup artifact
         uses: actions/upload-artifact@v4
         with:
           name: Connect-A-PIC-Setup-SIGNED
-          path: ${{ github.workspace }}/Release/Connect_A_PIC_Setup.msi
+          path: ${{ github.workspace }}\Release/Connect_A_PIC_Setup.msi
 
   publish_installer:
     name: Publish installer
