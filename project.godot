@@ -13,6 +13,9 @@ config_version=5
 config/name="Connect-A-PIC"
 run/main_scene="res://Scenes/Main.tscn"
 config/features=PackedStringArray("4.2", "C#", "GL Compatibility")
+boot_splash/bg_color=Color(0.105882, 0.160784, 0.254902, 1)
+boot_splash/image="res://Scenes/Assets/Sprites/Logo Akhetonics.png"
+boot_splash/fullsize=false
 config/icon="res://icon.svg"
 config/windows_native_icon="res://icon.ico"
 
