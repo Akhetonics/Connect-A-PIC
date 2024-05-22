@@ -223,7 +223,7 @@ namespace ConnectAPIC.test.src
                 float newValue = 0.45f * SliderLengthInPixels;
                 float approximateValue = newValue / SliderLengthInPixels;
                 var sliderPosition = MyControlMenu.GlobalPosition + SliderKnobLocalPosition;
-                await MoveAndClickMouseAndWaitAsync(sliderPosition);
+                await MoveAndClickMouseAndWaitAsync(sliderPosition, framesAfterClick: 5, framesAfterMove: 5);
 
                 float zeroedSliderValue = port.ViewModel.Power.Length();
                 sliderPosition += DragOffset;
@@ -248,7 +248,7 @@ namespace ConnectAPIC.test.src
         public async Task MoveAndClickMouseAndWaitAsync(Vector2 position, MouseButton mouseButton = MouseButton.Left, int framesAfterMove = 1, int framesAfterClick = 1)
         {
             TestScene.GetViewport().MoveMouseTo(position + DragOffset);
-            await TestScene.GetTree().NextFrame(framesAfterClick);
+            await TestScene.GetTree().NextFrame(framesAfterMove);
             TestScene.GetViewport().ClickMouseAt(position + DragOffset, mouseButton);
             await TestScene.GetTree().NextFrame(framesAfterClick);
         }
