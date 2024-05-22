@@ -12,7 +12,7 @@ public partial class MainCamera : Camera2D
 
     public bool noZoomingOrMoving = false;
 
-    public override void _Input(InputEvent @event)
+    public override void _UnhandledInput(InputEvent @event)
     {
         if (noZoomingOrMoving) return;
 

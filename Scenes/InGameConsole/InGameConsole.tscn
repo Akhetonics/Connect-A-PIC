@@ -25,13 +25,14 @@ shadow_color = Color(0.0588235, 0.0588235, 0.0588235, 0.733333)
 [node name="InGameConsole" type="ScrollContainer" node_paths=PackedStringArray("LoggingParent", "InfoTextTemplate", "ErrorTextTemplate")]
 top_level = true
 texture_filter = 1
-anchors_preset = -1
+anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_top = -261.0
 grow_horizontal = 2
 grow_vertical = 0
+mouse_filter = 0
 theme_override_styles/panel = SubResource("StyleBoxFlat_jfvjg")
 script = ExtResource("1_fpfmq")
 LoggingParent = NodePath("VBoxContainer")
@@ -42,6 +43,7 @@ ErrorTextTemplate = NodePath("VBoxContainer/ErrorText")
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
+mouse_filter = 0
 theme = SubResource("Theme_76st6")
 
 [node name="ErrorText" type="RichTextLabel" parent="VBoxContainer"]
@@ -49,17 +51,16 @@ visible = false
 layout_mode = 2
 theme_override_colors/default_color = Color(1, 0.137255, 0.192157, 1)
 theme_override_fonts/normal_font = ExtResource("2_b0k2e")
-theme_override_font_sizes/normal_font_size = 32
+theme_override_font_sizes/normal_font_size = 16
 text = "test text in your est"
 fit_content = true
 scroll_active = false
 
 [node name="InfoText" type="RichTextLabel" parent="VBoxContainer"]
-visible = false
 layout_mode = 2
 theme_override_colors/default_color = Color(0, 0.792157, 0.317647, 1)
 theme_override_fonts/normal_font = ExtResource("2_b0k2e")
-theme_override_font_sizes/normal_font_size = 32
+theme_override_font_sizes/normal_font_size = 16
 text = "test text in your est"
 fit_content = true
 scroll_active = false

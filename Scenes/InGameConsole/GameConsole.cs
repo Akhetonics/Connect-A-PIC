@@ -91,6 +91,6 @@ namespace ConnectAPIC.Scenes.InGameConsole
 					Print("Version: " + GameManager.Version);
 				}
 			}
-		}
+        }
 	}
 }
