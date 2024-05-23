@@ -40,6 +40,7 @@ namespace ConnectAPIC.Scripts.ViewModel
                 OnPropertyChanged();
             }
         }
+        public bool IsLeftPort {  get; private set; }
         public bool IsInput => PortModel is ExternalInput;
         public int TilePositionY { get; private set; } = -1;
 
@@ -86,7 +87,7 @@ namespace ConnectAPIC.Scripts.ViewModel
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public ExternalPortViewModel(GridManager grid, ExternalPort externalPort, LightCalculationService lightCalculator)
+        public ExternalPortViewModel(GridManager grid, ExternalPort externalPort, LightCalculationService lightCalculator, bool isLeftPort = true)
         {
             LightCalculator = lightCalculator;
             PortModel = externalPort;
@@ -104,6 +105,7 @@ namespace ConnectAPIC.Scripts.ViewModel
             };
 
             lightCalculator.LightCalculationUpdated += ResetPowerMeterDisplay;
+            IsLeftPort = isLeftPort;
         }
 
 
@@ -135,14 +137,21 @@ namespace ConnectAPIC.Scripts.ViewModel
         private void ResetPowerMeterDisplay(object sender, LightCalculationUpdated e)
         {
             if (PortModel is ExternalInput) return;
-            var touchingComponent = Grid.ComponentMover.GetComponentAt(0, PortModel.TilePositionY);
+            var x_coord = IsLeftPort ? 0 : Grid.TileManager.Width - 1;
+            var touchingComponent = Grid.ComponentMover.GetComponentAt(x_coord, PortModel.TilePositionY);
             if (touchingComponent == null)
             {
                 ResetPowers();
                 return;
             };
             var offsetY = PortModel.TilePositionY - touchingComponent.GridYMainTile;
-            var touchingPin = touchingComponent.PinIdLeftOut(0, offsetY);
+            Guid? touchingPin;
+
+            if (IsLeftPort)
+                touchingPin = touchingComponent.PinIdLeftOut(x_coord, offsetY);
+            else
+                touchingPin = touchingComponent.PinIdRightOut(x_coord, offsetY);
+
             if (touchingPin == null)
             {
                 ResetPowers();

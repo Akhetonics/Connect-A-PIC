@@ -1,10 +1,8 @@
+using CAP_Core.ExternalPorts;
 using ConnectAPIC.Scripts.ViewModel;
 using Godot;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using ConnectAPIC.Scenes.RightClickMenu;
-using CAP_Core.ExternalPorts;
 
 
 namespace ConnectAPIC.Scenes.ExternalPorts
@@ -16,10 +14,10 @@ namespace ConnectAPIC.Scenes.ExternalPorts
         [Export] public Texture2D OutputTexture { set; get; }
 
         public ExternalPortViewModel ViewModel { get; set; }
-
         List<PointLight2D> lightContainer;
         TextureRect currentTexture;
         RichTextLabel InfoLabel;
+        Control FlipContainer;
         bool pulsate = false;
         float pulseValue = 0;
         float minPulseEnergy = 0.8f;
@@ -30,7 +28,8 @@ namespace ConnectAPIC.Scenes.ExternalPorts
         {
             ViewModel = viewModel;
 
-            currentTexture = GetNode<TextureRect>("%CurrentTexture");//GetChild<TextureRect>(0);
+            currentTexture = GetNode<TextureRect>("%CurrentTexture");
+            FlipContainer = GetNode<TextureRect>("%FlipContainer");
             lightContainer = new List<PointLight2D>();
             foreach (PointLight2D light in GetNode<Node2D>("%LightContainer").GetChildren())
             {
@@ -69,12 +68,27 @@ namespace ConnectAPIC.Scenes.ExternalPorts
             }
         }
 
+        public void SetSide()
+        {
+            if (ViewModel.IsLeftPort)
+            {
+                FlipContainer.Scale = new Vector2(1, 1);
+                InfoLabel.TextDirection = Control.TextDirection.Ltr;
+            }
+            else
+            {
+                FlipContainer.Scale = new Vector2(-1, 1);
+                InfoLabel.TextDirection = Control.TextDirection.Rtl;
+            }
+        }
+
         public void SetAsOutput()
         {
             currentTexture.Texture = OutputTexture;
             InfoLabel.Text = ViewModel.AllColorsPower();
             InfoLabel.Visible = true;
             SetLight(false);
+            SetSide();
         }
 
         public void SetAsInput(float alpha = 1)
@@ -84,6 +98,7 @@ namespace ConnectAPIC.Scenes.ExternalPorts
             InfoLabel.Visible = false;
             SetLightColor(alpha);
             SetLight(ViewModel.IsLightOn);
+            SetSide();
         }
 
         public void SetLightColor(float alpha = 1)
@@ -92,7 +107,7 @@ namespace ConnectAPIC.Scenes.ExternalPorts
             float multiplier = ViewModel.Power.Length();
             foreach (var light in lightContainer)
             {
-                light.Color = new Color(multiplier*color.R / 255, multiplier*color.G / 255, multiplier * color.B / 255, alpha);
+                light.Color = new Color(multiplier * color.R / 255, multiplier * color.G / 255, multiplier * color.B / 255, alpha);
             }
         }
 
@@ -126,7 +141,8 @@ namespace ConnectAPIC.Scenes.ExternalPorts
             else if (e.PropertyName == nameof(ExternalPortViewModel.Power)
                   || e.PropertyName == nameof(ExternalPortViewModel.Color))
             {
-                if (ViewModel.IsInput){
+                if (ViewModel.IsInput)
+                {
                     SetLightColor();
                 }
                 else
