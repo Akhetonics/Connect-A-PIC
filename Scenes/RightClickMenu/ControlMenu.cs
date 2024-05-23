@@ -26,7 +26,9 @@ namespace ConnectAPIC.Scenes.RightClickMenu
         [Export] public ButtonGroup ButtonGroup { get; set; }
         [Export] public Curve animationCurve { get; set; }
 
-        public static float X_OFFSET = -120;    //Menus offset on X axis
+        public static float LEFT_CENTER_LINE = -120;
+        public static float RIGHT_CENTER_LINE = 1807;
+
         public static float TRAVEL_TIME = 0.3f; //Time needed for menu to travel from one port to another
 
         public ControlMenuViewModel ViewModel { get; set; }
@@ -41,6 +43,7 @@ namespace ConnectAPIC.Scenes.RightClickMenu
 
         private Godot.Collections.Array<BaseButton> portModeButtons;
         private ExternalPortViewModel portViewModel;
+        private float currentXCoordinate = LEFT_CENTER_LINE;
         private bool mouseOutsideClickArea = true;
         private bool spawnInstantly = true;
         private float targetOffsetY = -1;
@@ -112,7 +115,7 @@ namespace ConnectAPIC.Scenes.RightClickMenu
             targetOffsetY = (GameManager.TilePixelSize) * portViewModel.PortModel.TilePositionY;
 
             if (spawnInstantly) {
-                Position = new Vector2(X_OFFSET, targetOffsetY);
+                Position = new Vector2(currentXCoordinate, targetOffsetY);
             }
 
             spawnInstantly = false;
@@ -126,8 +129,8 @@ namespace ConnectAPIC.Scenes.RightClickMenu
             portViewModel = null;
         }
 
-        public void SetSide(bool leftSideMode = true){
-            LeftSideMode = true;
+        public void SetSide(bool leftSideMode = true) {
+            LeftSideMode = leftSideMode;
 
             // set left and right side exclusive element visibility
             var leftElements = GetTree().GetNodesInGroup("LeftSideGroup");
@@ -137,18 +140,23 @@ namespace ConnectAPIC.Scenes.RightClickMenu
             foreach (var element in rightElements) (element as Node2D).Visible = !LeftSideMode;
 
             // set offset sign
-            var baseOffset = Mathf.Abs(X_OFFSET);
             if (leftSideMode)
-                X_OFFSET = baseOffset;
+            {
+                currentXCoordinate = LEFT_CENTER_LINE;
+            }
             else
-                X_OFFSET = -baseOffset;
+            {
+                currentXCoordinate = RIGHT_CENTER_LINE;
+            }
+
+            
         }
 
         private void MoveToTargetOffsetIfNotThere(double delta) {
             if (time_tracked < TRAVEL_TIME) {
                 float step = animationCurve.Sample((float)time_tracked / TRAVEL_TIME);
                 float yOffset = (float)Mathf.Lerp(Position.Y, targetOffsetY, step);
-                Position = new Vector2(X_OFFSET, yOffset);
+                Position = new Vector2(currentXCoordinate, yOffset);
                 time_tracked += delta;
             }
         }

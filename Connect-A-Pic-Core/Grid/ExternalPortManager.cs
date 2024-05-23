@@ -18,7 +18,7 @@ namespace CAP_Core.Grid
                     new ExternalInput("io0",LaserType.Red, 2,1),
                     new ExternalInput("io1",LaserType.Green, 3, 1),
                     new ExternalInput("io2",LaserType.Blue , 4, 1),
-                    new ExternalOutput("io3",5),
+                    new ExternalOutput("io3",5, false),
                     new ExternalOutput("io4",6),
                     new ExternalOutput("io5",7),
                     new ExternalOutput("io6",8),

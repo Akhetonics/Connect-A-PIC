@@ -238,6 +238,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="RightPointer" type="Line2D" parent="ControlBody/SectionContainer/InputMenu" groups=["LeftSideGroup"]]
+visible = false
 z_as_relative = false
 position = Vector2(200, -49)
 points = PackedVector2Array(0, 1, 11, 1, 29, 17)
@@ -245,7 +246,6 @@ width = 6.0
 default_color = Color(0.760784, 0.658824, 0.254902, 1)
 
 [node name="LeftPointer" type="Line2D" parent="ControlBody/SectionContainer/InputMenu" groups=["RightSideGroup"]]
-visible = false
 z_as_relative = false
 position = Vector2(0, -49)
 scale = Vector2(-1, 1)

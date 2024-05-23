@@ -33,6 +33,7 @@ offset_top = -261.0
 grow_horizontal = 2
 grow_vertical = 0
 mouse_filter = 0
+mouse_force_pass_scroll_events = false
 theme_override_styles/panel = SubResource("StyleBoxFlat_jfvjg")
 script = ExtResource("1_fpfmq")
 LoggingParent = NodePath("VBoxContainer")

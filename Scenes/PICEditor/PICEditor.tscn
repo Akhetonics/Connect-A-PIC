@@ -72,12 +72,6 @@ metadata/_edit_use_anchors_ = true
 ExternalPortViewTemplate = ExtResource("2_dn85u")
 RightClickMenuTemplate = ExtResource("11_ylcdl")
 
-[node name="Control" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
-
 [node name="MainCamera" type="Camera2D" parent="."]
 anchor_mode = 0
 drag_left_margin = 0.0

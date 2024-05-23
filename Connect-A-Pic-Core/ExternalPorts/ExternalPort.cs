@@ -11,14 +11,16 @@ namespace CAP_Core.ExternalPorts
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        public ExternalPort(string pinName, int tilePositionY)
+        public ExternalPort(string pinName, int tilePositionY, bool isLeftPort = true)
         {
             PinName = pinName;
             TilePositionY = tilePositionY;
+            IsLeftPort = isLeftPort;
         }
 
         public string PinName { get; }
         public int TilePositionY { get; }
+        public bool IsLeftPort { get; }
 
        
     }

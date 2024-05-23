@@ -29,7 +29,7 @@ namespace ConnectAPIC.Scenes.ExternalPorts
             ViewModel = viewModel;
 
             currentTexture = GetNode<TextureRect>("%CurrentTexture");
-            FlipContainer = GetNode<TextureRect>("%FlipContainer");
+            FlipContainer = GetNode<Control>("%FlipContainer");
             lightContainer = new List<PointLight2D>();
             foreach (PointLight2D light in GetNode<Node2D>("%LightContainer").GetChildren())
             {
