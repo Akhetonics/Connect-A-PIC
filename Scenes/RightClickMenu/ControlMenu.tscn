@@ -78,7 +78,8 @@ script = ExtResource("1_52xip")
 ButtonGroup = ExtResource("4_p1asi")
 animationCurve = SubResource("Curve_dlfrx")
 
-[node name="ControlMenu" type="Control" parent="."]
+[node name="ControlBody" type="Control" parent="."]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 100)
 layout_mode = 1
 anchors_preset = 1
@@ -88,12 +89,12 @@ offset_left = -200.0
 offset_bottom = 100.0
 grow_horizontal = 0
 
-[node name="Body" type="NinePatchRect" parent="ControlMenu"]
+[node name="Body" type="NinePatchRect" parent="ControlBody"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -13.0
+offset_left = -10.0
 offset_top = -10.0
 offset_right = 9.0
 offset_bottom = 12.0
@@ -107,7 +108,7 @@ patch_margin_top = 44
 patch_margin_right = 100
 patch_margin_bottom = 60
 
-[node name="SectionContainer" type="VBoxContainer" parent="ControlMenu"]
+[node name="SectionContainer" type="VBoxContainer" parent="ControlBody"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -116,12 +117,12 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_constants/separation = 0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="ControlMenu/SectionContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="ControlBody/SectionContainer"]
 layout_mode = 2
 theme_override_constants/separation = 2
 alignment = 1
 
-[node name="Red" type="Button" parent="ControlMenu/SectionContainer/HBoxContainer"]
+[node name="Red" type="Button" parent="ControlBody/SectionContainer/HBoxContainer"]
 layout_mode = 2
 focus_mode = 0
 mouse_filter = 1
@@ -137,7 +138,7 @@ button_group = ExtResource("4_p1asi")
 icon = ExtResource("4_dyqqw")
 icon_alignment = 1
 
-[node name="Green" type="Button" parent="ControlMenu/SectionContainer/HBoxContainer"]
+[node name="Green" type="Button" parent="ControlBody/SectionContainer/HBoxContainer"]
 layout_mode = 2
 focus_mode = 0
 mouse_filter = 1
@@ -152,7 +153,7 @@ toggle_mode = true
 button_group = ExtResource("4_p1asi")
 icon = ExtResource("5_aecc8")
 
-[node name="Blue" type="Button" parent="ControlMenu/SectionContainer/HBoxContainer"]
+[node name="Blue" type="Button" parent="ControlBody/SectionContainer/HBoxContainer"]
 layout_mode = 2
 focus_mode = 0
 mouse_filter = 1
@@ -167,7 +168,7 @@ toggle_mode = true
 button_group = ExtResource("4_p1asi")
 icon = ExtResource("6_hkhch")
 
-[node name="Input" type="Button" parent="ControlMenu/SectionContainer/HBoxContainer"]
+[node name="Input" type="Button" parent="ControlBody/SectionContainer/HBoxContainer"]
 layout_mode = 2
 focus_mode = 0
 mouse_filter = 1
@@ -182,13 +183,14 @@ toggle_mode = true
 button_group = ExtResource("4_p1asi")
 icon = ExtResource("4_bggqw")
 
-[node name="OutputMenu" type="Control" parent="ControlMenu/SectionContainer"]
+[node name="OutputMenu" type="Control" parent="ControlBody/SectionContainer"]
 unique_name_in_owner = true
+visible = false
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 mouse_filter = 1
 
-[node name="Power" parent="ControlMenu/SectionContainer/OutputMenu" instance=ExtResource("5_50guf")]
+[node name="Power" parent="ControlBody/SectionContainer/OutputMenu" instance=ExtResource("5_50guf")]
 layout_mode = 2
 offset_left = 2.0
 offset_top = -10.0
@@ -196,7 +198,7 @@ offset_right = 202.0
 offset_bottom = 15.0
 metadata/_edit_vertical_guides_ = [237.0]
 
-[node name="PhaseShift" parent="ControlMenu/SectionContainer/OutputMenu" instance=ExtResource("5_50guf")]
+[node name="PhaseShift" parent="ControlBody/SectionContainer/OutputMenu" instance=ExtResource("5_50guf")]
 layout_mode = 2
 offset_left = 3.0
 offset_top = 16.0
@@ -204,21 +206,29 @@ offset_right = 203.0
 offset_bottom = 41.0
 metadata/_edit_vertical_guides_ = [237.0]
 
-[node name="PointerToPort" type="Line2D" parent="ControlMenu/SectionContainer/OutputMenu"]
+[node name="RightPointer" type="Line2D" parent="ControlBody/SectionContainer/OutputMenu" groups=["LeftSideGroup"]]
 z_as_relative = false
 position = Vector2(200, -49)
 points = PackedVector2Array(0, 1, 7, 1, 17, 10)
 width = 6.0
 default_color = Color(0.760784, 0.658824, 0.254902, 1)
 
-[node name="InputMenu" type="Control" parent="ControlMenu/SectionContainer"]
-unique_name_in_owner = true
+[node name="LeftPointer" type="Line2D" parent="ControlBody/SectionContainer/OutputMenu" groups=["RightSideGroup"]]
 visible = false
+z_as_relative = false
+position = Vector2(0, -49)
+scale = Vector2(-1, 1)
+points = PackedVector2Array(0, 1, 7, 1, 17, 10)
+width = 6.0
+default_color = Color(0.760784, 0.658824, 0.254902, 1)
+
+[node name="InputMenu" type="Control" parent="ControlBody/SectionContainer"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 mouse_filter = 1
 
-[node name="SliderSection" parent="ControlMenu/SectionContainer/InputMenu" instance=ExtResource("4_lktol")]
+[node name="SliderSection" parent="ControlBody/SectionContainer/InputMenu" instance=ExtResource("4_lktol")]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = -0.125
@@ -227,12 +237,21 @@ anchor_bottom = 1.125
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="PointerToPort" type="Line2D" parent="ControlMenu/SectionContainer/InputMenu"]
+[node name="RightPointer" type="Line2D" parent="ControlBody/SectionContainer/InputMenu" groups=["LeftSideGroup"]]
 z_as_relative = false
 position = Vector2(200, -49)
 points = PackedVector2Array(0, 1, 11, 1, 29, 17)
 width = 6.0
 default_color = Color(0.760784, 0.658824, 0.254902, 1)
 
-[connection signal="mouse_entered" from="ControlMenu" to="." method="OnMouseEntered"]
-[connection signal="mouse_exited" from="ControlMenu" to="." method="OnMouseExited"]
+[node name="LeftPointer" type="Line2D" parent="ControlBody/SectionContainer/InputMenu" groups=["RightSideGroup"]]
+visible = false
+z_as_relative = false
+position = Vector2(0, -49)
+scale = Vector2(-1, 1)
+points = PackedVector2Array(0, 1, 11, 1, 29, 17)
+width = 6.0
+default_color = Color(0.760784, 0.658824, 0.254902, 1)
+
+[connection signal="mouse_entered" from="ControlBody" to="." method="OnMouseEntered"]
+[connection signal="mouse_exited" from="ControlBody" to="." method="OnMouseExited"]

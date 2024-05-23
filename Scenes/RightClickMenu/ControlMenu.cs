@@ -31,6 +31,8 @@ namespace ConnectAPIC.Scenes.RightClickMenu
 
         public ControlMenuViewModel ViewModel { get; set; }
 
+        public bool LeftSideMode { get; set; } = true;
+
         public Control InputMenu { get; set; }
         private SliderSection sliderSection;
         public Control OutputMenu { get; set; }
@@ -94,10 +96,15 @@ namespace ConnectAPIC.Scenes.RightClickMenu
             }
 
             if (this.portViewModel != null) {
+                if (this.portViewModel.IsLeftPort != portViewModel.IsLeftPort)
+                    spawnInstantly = true; //to move from left/right without animation
+
                 DisconnectFromPort();
             }
 
             this.portViewModel = portViewModel;
+            SetSide(this.portViewModel.IsLeftPort);
+
 
             SetPortTypeSwitchingRadioButton(portViewModel);
             SetSectionsVisibility(portViewModel.IsInput);
@@ -117,6 +124,24 @@ namespace ConnectAPIC.Scenes.RightClickMenu
             portViewModel.PropertyChanged -= Port_PropertyChanged;
             sliderSection.PropertyChanged -= SliderSection_PropertyChanged;
             portViewModel = null;
+        }
+
+        public void SetSide(bool leftSideMode = true){
+            LeftSideMode = true;
+
+            // set left and right side exclusive element visibility
+            var leftElements = GetTree().GetNodesInGroup("LeftSideGroup");
+            var rightElements = GetTree().GetNodesInGroup("RightSideGroup");
+
+            foreach (var element in leftElements) (element as Node2D).Visible = LeftSideMode;
+            foreach (var element in rightElements) (element as Node2D).Visible = !LeftSideMode;
+
+            // set offset sign
+            var baseOffset = Mathf.Abs(X_OFFSET);
+            if (leftSideMode)
+                X_OFFSET = baseOffset;
+            else
+                X_OFFSET = -baseOffset;
         }
 
         private void MoveToTargetOffsetIfNotThere(double delta) {
