@@ -148,9 +148,9 @@ namespace ConnectAPIC.Scripts.ViewModel
             Guid? touchingPin;
 
             if (IsLeftPort)
-                touchingPin = touchingComponent.PinIdLeftOut(x_coord, offsetY);
+                touchingPin = touchingComponent.PinIdLeftOut(0, offsetY);
             else
-                touchingPin = touchingComponent.PinIdRightOut(x_coord, offsetY);
+                touchingPin = touchingComponent.PinIdRightOut(0, offsetY);
 
             if (touchingPin == null)
             {
