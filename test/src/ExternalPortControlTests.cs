@@ -8,12 +8,10 @@ using ConnectAPic.LayoutWindow;
 using ConnectAPIC.Scenes.ExternalPorts;
 using ConnectAPIC.Scenes.RightClickMenu;
 using Godot;
-using JetBrains.Annotations;
 using Shouldly;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using NUnit.Framework;
 
 namespace ConnectAPIC.test.src
 {
@@ -266,7 +264,8 @@ namespace ConnectAPIC.test.src
             }
         }
 
-        public async Task MoveAndClickMouseAndWaitAsync(Vector2 position, MouseButton mouseButton = MouseButton.Left, int framesAfterMove = 1, int framesAfterClick = 1){
+        public async Task MoveAndClickMouseAndWaitAsync(Vector2 position, MouseButton mouseButton = MouseButton.Left, int framesAfterMove = 1, int framesAfterClick = 1)
+        {
             await MoveAndClickMouseAndWaitAsync(position, LeftDragOffset, mouseButton, framesAfterMove, framesAfterClick);
         }
 
