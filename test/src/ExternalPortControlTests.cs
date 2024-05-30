@@ -89,7 +89,6 @@ namespace ConnectAPIC.test.src
             for (int i = 0; i < MyLeftExternalPorts.Count; i++)
             {
                 var result = await ExternalPortTest(MyLeftExternalPorts[i], i != 0);
-                await MoveAndClickMouseAndWaitAsync(new(200, 200));
                 if (!result.Success)
                 {
                     results.Add($"Port {i}: {result.Message}");
