@@ -1,6 +1,10 @@
-[gd_scene load_steps=2 format=3 uid="uid://cfnwmdequraf3"]
+[gd_scene load_steps=4 format=3 uid="uid://cfnwmdequraf3"]
 
 [ext_resource type="Script" path="res://Scenes/ExternalPortContainer/PortsContainerView.cs" id="1_1kojt"]
+[ext_resource type="PackedScene" uid="uid://duapw8umf7gnn" path="res://Scenes/ExternalPorts/external_port.tscn" id="2_02k7g"]
+[ext_resource type="PackedScene" uid="uid://dx13abdux2230" path="res://Scenes/RightClickMenu/ControlMenu.tscn" id="3_3v0bx"]
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_1kojt")
+ExternalPortViewTemplate = ExtResource("2_02k7g")
+RightClickMenuTemplate = ExtResource("3_3v0bx")

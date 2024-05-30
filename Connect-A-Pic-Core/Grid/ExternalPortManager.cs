@@ -16,7 +16,8 @@ namespace CAP_Core.Grid
             TileManager = tileManager;
             ExternalPorts = new ObservableCollection<ExternalPort>() {
                     new ExternalInput("io0",LaserType.Red, 2,1),
-                    new ExternalInput("io1",LaserType.Green, 3, 1),
+                    new ExternalOutput("io1",3),
+                    //new ExternalInput("io1",LaserType.Green, 3, 1),
                     new ExternalInput("io2",LaserType.Blue , 4, 1),
                     new ExternalOutput("io3",5),
                     new ExternalOutput("io4",6),
