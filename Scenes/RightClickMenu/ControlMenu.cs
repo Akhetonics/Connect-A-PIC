@@ -26,10 +26,14 @@ namespace ConnectAPIC.Scenes.RightClickMenu
         [Export] public ButtonGroup ButtonGroup { get; set; }
         [Export] public Curve animationCurve { get; set; }
 
-        public static float X_OFFSET = -120;    //Menus offset on X axis
+        public static float LEFT_CENTER_LINE = -120;
+        public static float RIGHT_CENTER_LINE = 1807;
+
         public static float TRAVEL_TIME = 0.3f; //Time needed for menu to travel from one port to another
 
         public ControlMenuViewModel ViewModel { get; set; }
+
+        public bool LeftSideMode { get; set; } = true;
 
         public Control InputMenu { get; set; }
         private SliderSection sliderSection;
@@ -39,6 +43,7 @@ namespace ConnectAPIC.Scenes.RightClickMenu
 
         private Godot.Collections.Array<BaseButton> portModeButtons;
         private ExternalPortViewModel portViewModel;
+        private float currentXCoordinate = LEFT_CENTER_LINE;
         private bool mouseOutsideClickArea = true;
         private bool spawnInstantly = true;
         private float targetOffsetY = -1;
@@ -94,10 +99,15 @@ namespace ConnectAPIC.Scenes.RightClickMenu
             }
 
             if (this.portViewModel != null) {
+                if (this.portViewModel.IsLeftPort != portViewModel.IsLeftPort)
+                    spawnInstantly = true; //to move from left/right without animation
+
                 DisconnectFromPort();
             }
 
             this.portViewModel = portViewModel;
+            SetSide(this.portViewModel.IsLeftPort);
+
 
             SetPortTypeSwitchingRadioButton(portViewModel);
             SetSectionsVisibility(portViewModel.IsInput);
@@ -105,7 +115,7 @@ namespace ConnectAPIC.Scenes.RightClickMenu
             targetOffsetY = (GameManager.TilePixelSize) * portViewModel.PortModel.TilePositionY;
 
             if (spawnInstantly) {
-                Position = new Vector2(X_OFFSET, targetOffsetY);
+                Position = new Vector2(currentXCoordinate, targetOffsetY);
             }
 
             spawnInstantly = false;
@@ -119,11 +129,34 @@ namespace ConnectAPIC.Scenes.RightClickMenu
             portViewModel = null;
         }
 
+        public void SetSide(bool leftSideMode = true) {
+            LeftSideMode = leftSideMode;
+
+            // set left and right side exclusive element visibility
+            var leftElements = GetTree().GetNodesInGroup("LeftSideGroup");
+            var rightElements = GetTree().GetNodesInGroup("RightSideGroup");
+
+            foreach (var element in leftElements) (element as Node2D).Visible = LeftSideMode;
+            foreach (var element in rightElements) (element as Node2D).Visible = !LeftSideMode;
+
+            // set offset sign
+            if (leftSideMode)
+            {
+                currentXCoordinate = LEFT_CENTER_LINE;
+            }
+            else
+            {
+                currentXCoordinate = RIGHT_CENTER_LINE;
+            }
+
+            
+        }
+
         private void MoveToTargetOffsetIfNotThere(double delta) {
             if (time_tracked < TRAVEL_TIME) {
                 float step = animationCurve.Sample((float)time_tracked / TRAVEL_TIME);
                 float yOffset = (float)Mathf.Lerp(Position.Y, targetOffsetY, step);
-                Position = new Vector2(X_OFFSET, yOffset);
+                Position = new Vector2(currentXCoordinate, yOffset);
                 time_tracked += delta;
             }
         }

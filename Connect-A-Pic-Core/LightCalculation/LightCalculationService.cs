@@ -37,7 +37,7 @@ namespace CAP_Core.LightCalculation
         {
             LightInputs = grid.ExternalPortManager.GetAllExternalInputs();
 
-            grid.ExternalPortManager.ExternalPorts.CollectionChanged += async (object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) => {
+            grid.ExternalPortManager. ExternalPorts.CollectionChanged += async (object? sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e) => {
                 LightInputs = grid.ExternalPortManager.GetAllExternalInputs();
                 if (grid.LightManager.IsLightOn)
                 {

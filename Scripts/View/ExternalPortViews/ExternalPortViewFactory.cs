@@ -31,7 +31,7 @@ namespace ConnectAPic.LayoutWindow
         private ExternalPortViewModel InstantiateExternalPortView(ExternalPort externalPort)
         {
             ExternalPortView portView = PortsContainerView.ExternalPortViewTemplate.Instantiate<ExternalPortView>();
-            ExternalPortViewModel portViewModel = new(Grid, externalPort, LightCalculator);
+            ExternalPortViewModel portViewModel = new(Grid, externalPort, LightCalculator, externalPort.IsLeftPort);
 
             portView.Initialize(portViewModel);
 
@@ -52,7 +52,8 @@ namespace ConnectAPic.LayoutWindow
             }
     
             portView.Visible = true;
-            portView.Position = new Vector2(0, (GameManager.TilePixelSize) * externalPort.TilePositionY);
+            var posX = externalPort.IsLeftPort ? 0 : (GameManager.TilePixelSize) * Grid.TileManager.Width;
+            portView.Position = new Vector2(posX, (GameManager.TilePixelSize) * externalPort.TilePositionY);
             PortsContainerView.AddChild(portView);
             return portViewModel;
         }

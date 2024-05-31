@@ -24,63 +24,69 @@ script = ExtResource("1_k7enb")
 InputTexture = ExtResource("2_hbsyq")
 OutputTexture = ExtResource("3_0hsmo")
 
-[node name="CurrentTexture" type="TextureRect" parent="."]
+[node name="FlipContainer" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+mouse_filter = 1
+
+[node name="CurrentTexture" type="TextureRect" parent="FlipContainer"]
 unique_name_in_owner = true
 texture_filter = 1
+layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -111.0
+offset_left = -151.0
+offset_right = -40.0
 offset_bottom = 62.0
 grow_horizontal = 0
+mouse_filter = 2
 texture = ExtResource("2_hbsyq")
-metadata/_edit_use_anchors_ = true
 
-[node name="LightContainer" type="Node2D" parent="."]
+[node name="LightContainer" type="Node2D" parent="FlipContainer"]
 unique_name_in_owner = true
 
-[node name="OverallLight" type="PointLight2D" parent="LightContainer"]
+[node name="OverallLight" type="PointLight2D" parent="FlipContainer/LightContainer"]
 z_index = 1
 position = Vector2(-77, 32)
 color = Color(1, 0, 0, 1)
 energy = 0.5
 texture = SubResource("GradientTexture2D_abdqc")
 
-[node name="ArrowLight" type="PointLight2D" parent="LightContainer"]
+[node name="ArrowLight" type="PointLight2D" parent="FlipContainer/LightContainer"]
 position = Vector2(-50, 32)
 color = Color(1, 0, 0, 1)
 energy = 16.0
 texture = ExtResource("3_7qx73")
 
-[node name="InnerLight" type="PointLight2D" parent="LightContainer"]
+[node name="InnerLight" type="PointLight2D" parent="FlipContainer/LightContainer"]
 position = Vector2(-77, 32)
 color = Color(1, 0, 0, 1)
 energy = 16.0
 texture = ExtResource("4_08arr")
 
+[node name="RightClickDetector" type="Area2D" parent="FlipContainer"]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="FlipContainer/RightClickDetector"]
+position = Vector2(-51, 31)
+shape = SubResource("RectangleShape2D_6unpb")
+
 [node name="Label" type="RichTextLabel" parent="."]
 unique_name_in_owner = true
 modulate = Color(2, 2, 2, 1)
-offset_left = -144.0
-offset_right = 1296.0
-offset_bottom = 640.0
-scale = Vector2(0.1, 0.1)
+texture_filter = 1
+offset_left = -127.0
+offset_right = 127.0
+offset_bottom = 63.0
 mouse_filter = 1
 theme = ExtResource("6_o1h0x")
-theme_override_constants/shadow_offset_y = 10
-theme_override_constants/shadow_outline_size = 10
-theme_override_font_sizes/normal_font_size = 150
+theme_override_font_sizes/normal_font_size = 16
 bbcode_enabled = true
-text = "HelloWorld"
 fit_content = true
 scroll_active = false
 tab_size = 3
 
-[node name="RightClickDetector" type="Area2D" parent="."]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RightClickDetector"]
-position = Vector2(-51, 31)
-shape = SubResource("RectangleShape2D_6unpb")
-
-[connection signal="mouse_entered" from="RightClickDetector" to="." method="OnMouseEnteredRightClickArea"]
-[connection signal="mouse_exited" from="RightClickDetector" to="." method="OnMouseExitedRightClickArea"]
+[connection signal="mouse_entered" from="FlipContainer/RightClickDetector" to="." method="OnMouseEnteredRightClickArea"]
+[connection signal="mouse_exited" from="FlipContainer/RightClickDetector" to="." method="OnMouseExitedRightClickArea"]

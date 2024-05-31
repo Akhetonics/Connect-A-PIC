@@ -23,6 +23,14 @@ namespace CAP_Core.Grid
                     new ExternalOutput("io5",7),
                     new ExternalOutput("io6",8),
                     new ExternalOutput("io7",9),
+                    new ExternalInput("io8",LaserType.Red, 2,1, false),
+                    new ExternalInput("io9",LaserType.Green, 3, 1, false),
+                    new ExternalInput("io10",LaserType.Blue , 4, 1, false),
+                    new ExternalOutput("io11",5, false),
+                    new ExternalOutput("io12",6, false),
+                    new ExternalOutput("io13",7, false),
+                    new ExternalOutput("io14",8, false),
+                    new ExternalOutput("io15",9, false),
                 };
         }
         public ConcurrentBag<ExternalInput> GetAllExternalInputs()
@@ -47,12 +55,14 @@ namespace CAP_Core.Grid
                 if (port is ExternalInput input)
                 {
                     var inputY = input.TilePositionY;
-                    if (TileManager.IsInGrid(0, inputY) == false) continue;
-                    if (TileManager.Tiles[0, inputY] == null) continue;
-                    if (TileManager.Tiles[0, inputY].Component == null) continue;
-                    var connectedPartOfComponent = TileManager.Tiles[0, inputY].Component.GetPartAtGridXY(0, inputY);
+                    var inputX = port.IsLeftPort ? 0 : TileManager.Width - 1;
+
+                    if (TileManager.IsInGrid(inputX, inputY) == false) continue;
+                    if (TileManager.Tiles[inputX, inputY] == null) continue;
+                    if (TileManager.Tiles[inputX, inputY].Component == null) continue;
+                    var connectedPartOfComponent = TileManager.Tiles[inputX, inputY].Component.GetPartAtGridXY(inputX, inputY);
                     if (connectedPartOfComponent == null) continue;
-                    Pin componentPin = connectedPartOfComponent.GetPinAt(RectSide.Left);
+                    Pin componentPin = connectedPartOfComponent.GetPinAt(port.IsLeftPort ? RectSide.Left : RectSide.Right);
                     if (componentPin?.MatterType != MatterType.Light) continue; // if the component does not have a connected pin, then we ignore it.
                     Guid pinId = componentPin.IDInFlow;
 
