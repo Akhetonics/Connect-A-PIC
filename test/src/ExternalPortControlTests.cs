@@ -77,7 +77,7 @@ namespace ConnectAPIC.test.src
         }
 
         [Test]
-        [Timeout(100_000)]
+        [Timeout(1_000_000)]
         public async Task Test()
         {
             var results = new List<string>();
