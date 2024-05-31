@@ -23,7 +23,6 @@ namespace CAP_Core.Grid
                     new ExternalOutput("io5",7),
                     new ExternalOutput("io6",8),
                     new ExternalOutput("io7",9),
-                    //TODO: how will io naming work for exporting? needs to be discussed
                     new ExternalInput("io8",LaserType.Red, 2,1, false),
                     new ExternalInput("io9",LaserType.Green, 3, 1, false),
                     new ExternalInput("io10",LaserType.Blue , 4, 1, false),
