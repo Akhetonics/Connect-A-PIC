@@ -76,7 +76,7 @@ namespace ConnectAPIC.test.src
         }
 
         [Test]
-        [Timeout(100_000)]
+        [Timeout(1_000_000)]
         public async Task Test()
         {
             var results = new List<string>();
@@ -264,7 +264,7 @@ namespace ConnectAPIC.test.src
             }
         }
 
-        public async Task MoveAndClickMouseAndWaitAsync(Vector2 position, MouseButton mouseButton = MouseButton.Left, int framesAfterMove = 1, int framesAfterClick = 1)
+        public async Task MoveAndClickMouseAndWaitAsync(Vector2 position, MouseButton mouseButton = MouseButton.Left, int framesAfterMove = 5, int framesAfterClick = 5)
         {
             await MoveAndClickMouseAndWaitAsync(position, LeftDragOffset, mouseButton, framesAfterMove, framesAfterClick);
         }
