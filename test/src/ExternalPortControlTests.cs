@@ -19,6 +19,7 @@ namespace ConnectAPIC.test.src
     [Sequential]
     public class ExternalPortControlTests : TestClass
     {
+        private const int DefaultAwaitedFrames = 10;
         private readonly ILog _log = new GDLog(nameof(ExternalPortControlTests));
 
         private static readonly Vector2 SliderKnobLocalPosition = new(-193, 90); // Offset of slider knob from control menu position
@@ -87,22 +88,24 @@ namespace ConnectAPIC.test.src
             for (int i = 0; i < MyLeftExternalPorts.Count; i++)
             {
                 var result = await ExternalPortTest(MyLeftExternalPorts[i], i != 0);
+                await TestScene.GetTree().NextFrame(DefaultAwaitedFrames);
                 if (!result.Success)
                 {
-                    results.Add($"Port {i}: {result.Message}");
+                    results.Add($"Left Port {i}: {result.Message}");
                 }
             }
 
             // Drag to show right ports
             TestScene.GetViewport().DragMouse(DragPoint, DragPoint + RightDragOffset, MouseButton.Right);
-            await TestScene.GetTree().NextFrame(2);
+            await TestScene.GetTree().NextFrame(DefaultAwaitedFrames);
 
             for (int i = 0; i < MyRightExternalPorts.Count; i++)
             {
                 var result = await ExternalPortTest(MyRightExternalPorts[i], i != 0, false);
+                await TestScene.GetTree().NextFrame(DefaultAwaitedFrames);
                 if (!result.Success)
                 {
-                    results.Add($"Port {i}: {result.Message}");
+                    results.Add($"Right Port {i}: {result.Message}");
                 }
             }
 
@@ -242,7 +245,7 @@ namespace ConnectAPIC.test.src
                 float newValue = 0.45f * SliderLengthInPixels;
                 float approximateValue = newValue / SliderLengthInPixels;
                 var sliderPosition = MyControlMenu.GlobalPosition + SliderKnobLocalPosition;
-                await MoveAndClickMouseAndWaitAsync(sliderPosition, LeftDragOffset + (leftPort ? Vector2.Zero : RightDragOffset), framesAfterClick: 5, framesAfterMove: 5);
+                await MoveAndClickMouseAndWaitAsync(sliderPosition, LeftDragOffset + (leftPort ? Vector2.Zero : RightDragOffset), framesAfterClick: DefaultAwaitedFrames, framesAfterMove: DefaultAwaitedFrames);
 
                 float zeroedSliderValue = port.ViewModel.Power.Length();
                 sliderPosition += LeftDragOffset + (leftPort ? Vector2.Zero : RightDragOffset);
@@ -264,12 +267,7 @@ namespace ConnectAPIC.test.src
             }
         }
 
-        public async Task MoveAndClickMouseAndWaitAsync(Vector2 position, MouseButton mouseButton = MouseButton.Left, int framesAfterMove = 1, int framesAfterClick = 1)
-        {
-            await MoveAndClickMouseAndWaitAsync(position, LeftDragOffset, mouseButton, framesAfterMove, framesAfterClick);
-        }
-
-        public async Task MoveAndClickMouseAndWaitAsync(Vector2 position, Vector2 offset, MouseButton mouseButton = MouseButton.Left, int framesAfterMove = 1, int framesAfterClick = 1)
+        public async Task MoveAndClickMouseAndWaitAsync(Vector2 position, Vector2 offset, MouseButton mouseButton = MouseButton.Left, int framesAfterMove = DefaultAwaitedFrames, int framesAfterClick = DefaultAwaitedFrames)
         {
             TestScene.GetViewport().MoveMouseTo(position + offset);
             await TestScene.GetTree().NextFrame(framesAfterMove);
