@@ -1,7 +1,8 @@
-[gd_scene load_steps=5 format=3 uid="uid://bd8isg4mddv21"]
+[gd_scene load_steps=7 format=3 uid="uid://bd8isg4mddv21"]
 
 [ext_resource type="Script" path="res://Scenes/InGameConsole/GameConsole.cs" id="1_fpfmq"]
 [ext_resource type="FontFile" uid="uid://ckdxvawpni0bt" path="res://Scenes/Assets/Fonts/FreePixel.ttf" id="2_b0k2e"]
+[ext_resource type="Script" path="res://Scenes/InteractionOverlay/OverlayElement.cs" id="2_ppeju"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jfvjg"]
 content_margin_left = 4.0
@@ -22,15 +23,18 @@ shadow_color = Color(0.0588235, 0.0588235, 0.0588235, 0.733333)
 
 [sub_resource type="Theme" id="Theme_76st6"]
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_x61jp"]
+size = Vector2(1179, 1226)
+
 [node name="InGameConsole" type="ScrollContainer" node_paths=PackedStringArray("LoggingParent", "InfoTextTemplate", "ErrorTextTemplate")]
 top_level = true
 texture_filter = 1
-anchors_preset = 12
-anchor_top = 1.0
+anchors_preset = -1
+anchor_top = 0.658
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -261.0
-grow_horizontal = 2
+offset_top = -0.344055
+offset_right = -1.0
 grow_vertical = 0
 mouse_filter = 0
 mouse_force_pass_scroll_events = false
@@ -39,6 +43,12 @@ script = ExtResource("1_fpfmq")
 LoggingParent = NodePath("VBoxContainer")
 InfoTextTemplate = NodePath("VBoxContainer/InfoText")
 ErrorTextTemplate = NodePath("VBoxContainer/ErrorText")
+metadata/_edit_use_anchors_ = true
+
+[node name="OverlayElement" type="Node2D" parent="." node_paths=PackedStringArray("InteractionAreas")]
+position = Vector2(0, -245)
+script = ExtResource("2_ppeju")
+InteractionAreas = [null]
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
@@ -65,3 +75,10 @@ theme_override_font_sizes/normal_font_size = 16
 text = "test text in your est"
 fit_content = true
 scroll_active = false
+
+[node name="Area2D" type="Area2D" parent="."]
+position = Vector2(0, -752)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(588.5, 612)
+shape = SubResource("RectangleShape2D_x61jp")

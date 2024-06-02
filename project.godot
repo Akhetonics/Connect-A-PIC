@@ -19,6 +19,10 @@ boot_splash/fullsize=false
 config/icon="res://icon.svg"
 config/windows_native_icon="res://icon.ico"
 
+[autoload]
+
+OverlayController="*res://Scenes/InteractionOverlay/InteractionOverlayController.cs"
+
 [debug]
 
 file_logging/enable_file_logging=true
