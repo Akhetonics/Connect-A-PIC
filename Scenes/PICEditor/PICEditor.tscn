@@ -78,14 +78,6 @@ script = ExtResource("19_tfkoi")
 
 [node name="GUILayer" type="CanvasLayer" parent="."]
 
-[node name="InGameConsole" parent="GUILayer" instance=ExtResource("16_7rcst")]
-visible = false
-anchors_preset = -1
-anchor_top = 0.559
-anchor_right = 0.61
-offset_top = -0.231995
-offset_right = 0.279968
-
 [node name="MenuBar" type="MenuBar" parent="GUILayer"]
 pivot_offset = Vector2(2.655, 0)
 size_flags_horizontal = 2
@@ -233,6 +225,14 @@ offset_top = -133.0
 offset_right = 117.0
 offset_bottom = 51.0
 scale = Vector2(1.45, 1.45)
+
+[node name="InGameConsole" parent="GUILayer" instance=ExtResource("16_7rcst")]
+visible = false
+anchors_preset = -1
+anchor_top = 0.559
+anchor_right = 0.61
+offset_top = -0.231995
+offset_right = 0.279968
 
 [node name="UpdateManager" type="Node" parent="."]
 script = ExtResource("25_cr0be")

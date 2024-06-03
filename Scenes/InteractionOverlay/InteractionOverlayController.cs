@@ -30,7 +30,7 @@ namespace ConnectAPIC.Scenes.InteractionOverlay
         private static bool IsMaxIndexSet { set; get; } = false;
         private static int CurrentMaxZIndex { set; get; } = int.MinValue;
 
-        private static List<OverlayElement> ObservedElements { set; get; }
+        private static List<OverlayElement> ObservedElements { set; get; } = new();
         private static Dictionary<int, int> ScrollingPremissionByZIndex { set; get; } = new();
         private static Dictionary<int, int> ClickingPremissionByZIndex { set; get; } = new();
 
@@ -59,7 +59,7 @@ namespace ConnectAPIC.Scenes.InteractionOverlay
                 CurrentMaxZIndex = element.OverlayZIndex;
                 IsMaxIndexSet = true;
             }
-
+            GD.Print("AVOIEEE!");
             ApplyMouseBehaviourByMaxIndex();
         }
 
@@ -67,6 +67,7 @@ namespace ConnectAPIC.Scenes.InteractionOverlay
         {
             RemovePremissionValuesOfElement(element);
             SetNewMaxIndex();
+            GD.Print("OIAKATAA!");
             ApplyMouseBehaviourByMaxIndex();
         }
 

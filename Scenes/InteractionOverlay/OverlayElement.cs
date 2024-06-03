@@ -27,7 +27,7 @@ public partial class OverlayElement : Node2D
     /// List of areas defining interaction area of this component
     /// </summary>
     [Export]
-    public Godot.Collections.Array<Area2D> InteractionAreas { get; set; }
+    public Godot.Collections.Array<Control> InteractionAreas { get; set; }
 
     /// <summary>
     /// Defines if mouse is inside any of the Interaction Areas
@@ -46,12 +46,13 @@ public partial class OverlayElement : Node2D
 
 	public override void _Ready()
 	{
-        foreach (Area2D area in InteractionAreas){
+        foreach (Control area in InteractionAreas){
             area.MouseEntered += Area_MouseEntered;
             area.MouseExited += Area_MouseExited;
         }
-
+        InteractionOverlayController.Connect(this);
         this.VisibilityChanged += ActivationStatusChanged;
+
 	}
 
     private void ActivationStatusChanged()
