@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace ConnectAPIC.Scenes.InteractionOverlay
 {
-    public static class InteractionOverlayController
+    public partial class InteractionOverlayController : Node
     {
         /// <summary>
         /// Default value for scrolling (this value will be chosen if mouse cursor is outside of every element,
@@ -59,7 +59,7 @@ namespace ConnectAPIC.Scenes.InteractionOverlay
                 CurrentMaxZIndex = element.OverlayZIndex;
                 IsMaxIndexSet = true;
             }
-            GD.Print("AVOIEEE!");
+            GD.Print("Entered!");
             ApplyMouseBehaviourByMaxIndex();
         }
 
@@ -67,7 +67,7 @@ namespace ConnectAPIC.Scenes.InteractionOverlay
         {
             RemovePremissionValuesOfElement(element);
             SetNewMaxIndex();
-            GD.Print("OIAKATAA!");
+            GD.Print("Exited!");
             ApplyMouseBehaviourByMaxIndex();
         }
 
