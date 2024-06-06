@@ -44,8 +44,8 @@ public partial class OverlayElement : Node2D
     /// </summary>
     public event EventHandler<OverlayElement> AreaExited;
 
-	public override void _Ready()
-	{
+    public override void _Ready()
+    {
         foreach (Control area in InteractionAreas){
             area.MouseEntered += Area_MouseEntered;
             area.MouseExited += Area_MouseExited;
@@ -53,7 +53,7 @@ public partial class OverlayElement : Node2D
         InteractionOverlayController.Connect(this);
         this.VisibilityChanged += ActivationStatusChanged;
 
-	}
+    }
 
     private void ActivationStatusChanged()
     {

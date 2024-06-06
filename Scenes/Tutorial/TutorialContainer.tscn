@@ -1,0 +1,204 @@
+[gd_scene load_steps=10 format=3 uid="uid://62ttjwpc0g0a"]
+
+[ext_resource type="Texture2D" uid="uid://bskt8xmas4b1b" path="res://Scenes/Assets/Sprites/Background.png" id="1_2w183"]
+[ext_resource type="Theme" uid="uid://wmwls4twubhj" path="res://Scenes/Assets/Themes/TutorialTheme.tres" id="2_0ilsf"]
+[ext_resource type="Theme" uid="uid://b2f4xgnx0xy5e" path="res://Scenes/Assets/Themes/MainTheme.tres" id="3_1en8x"]
+[ext_resource type="StyleBox" uid="uid://2isxejv4i0gq" path="res://Scenes/Assets/Styles/RedButtonNormal.tres" id="4_dt0v5"]
+[ext_resource type="StyleBox" uid="uid://drsxpwqtwkesm" path="res://Scenes/Assets/Styles/RedButtonPressed.tres" id="5_wwhyf"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w2aj2"]
+bg_color = Color(0.792157, 0.196078, 0.270588, 1)
+border_width_bottom = 5
+border_color = Color(0.596078, 0.12549, 0.188235, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
+shadow_size = 3
+shadow_offset = Vector2(3, 4)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ccq3g"]
+bg_color = Color(0.839216, 0.698039, 0.235294, 1)
+border_width_bottom = 5
+border_color = Color(0.337255, 0.286275, 0.0823529, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
+shadow_size = 3
+shadow_offset = Vector2(3, 4)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ffmjl"]
+bg_color = Color(0.933333, 0.733333, 0.333333, 1)
+border_width_bottom = 5
+border_color = Color(0.458824, 0.392157, 0.12549, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
+shadow_size = 3
+shadow_offset = Vector2(3, 4)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_38dt3"]
+bg_color = Color(0.933333, 0.733333, 0.333333, 1)
+border_width_bottom = 3
+border_color = Color(0.458824, 0.392157, 0.12549, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+expand_margin_left = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
+shadow_size = 1
+shadow_offset = Vector2(1, 2)
+anti_aliasing = false
+
+[node name="TutorialContainer" type="Control"]
+texture_filter = 1
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Tutorial popup" type="Control" parent="."]
+layout_mode = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -510.0
+offset_bottom = 221.0
+grow_horizontal = 0
+
+[node name="NinePatchRect" type="NinePatchRect" parent="Tutorial popup"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_2w183")
+patch_margin_left = 27
+patch_margin_top = 44
+patch_margin_right = 27
+patch_margin_bottom = 48
+
+[node name="MarginContainer" type="MarginContainer" parent="Tutorial popup"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Tutorial popup/MarginContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Tutorial popup/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_bottom = 10
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Tutorial popup/MarginContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+theme = ExtResource("2_0ilsf")
+theme_override_colors/default_color = Color(0.933333, 0.733333, 0.333333, 1)
+bbcode_enabled = true
+text = "Tutorial Name"
+fit_content = true
+scroll_active = false
+
+[node name="MarginContainer2" type="MarginContainer" parent="Tutorial popup/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Tutorial popup/MarginContainer/VBoxContainer/MarginContainer2"]
+layout_mode = 2
+theme = ExtResource("2_0ilsf")
+bbcode_enabled = true
+text = "[center]test tutorial text which might be multiple lines[/center]"
+fit_content = true
+scroll_active = false
+
+[node name="MarginContainer3" type="MarginContainer" parent="Tutorial popup/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Tutorial popup/MarginContainer/VBoxContainer/MarginContainer3"]
+layout_mode = 2
+
+[node name="CheckButton" type="CheckButton" parent="Tutorial popup/MarginContainer/VBoxContainer/MarginContainer3/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+focus_mode = 0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="Tutorial popup/MarginContainer/VBoxContainer/MarginContainer3/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+text = "Don't show again"
+fit_content = true
+scroll_active = false
+text_direction = 1
+
+[node name="MarginContainer4" type="MarginContainer" parent="Tutorial popup/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Tutorial popup/MarginContainer/VBoxContainer/MarginContainer4"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Tutorial popup/MarginContainer/VBoxContainer/MarginContainer4/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 90
+theme_override_constants/margin_bottom = 0
+
+[node name="Button" type="Button" parent="Tutorial popup/MarginContainer/VBoxContainer/MarginContainer4/HBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("3_1en8x")
+theme_override_styles/normal = ExtResource("4_dt0v5")
+theme_override_styles/hover = SubResource("StyleBoxFlat_w2aj2")
+theme_override_styles/pressed = ExtResource("5_wwhyf")
+text = "Cancel"
+
+[node name="MarginContainer2" type="MarginContainer" parent="Tutorial popup/MarginContainer/VBoxContainer/MarginContainer4/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/margin_left = 90
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 0
+
+[node name="Button" type="Button" parent="Tutorial popup/MarginContainer/VBoxContainer/MarginContainer4/HBoxContainer/MarginContainer2"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("3_1en8x")
+theme_override_styles/normal = SubResource("StyleBoxFlat_ccq3g")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ffmjl")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_38dt3")
+text = "Skip"

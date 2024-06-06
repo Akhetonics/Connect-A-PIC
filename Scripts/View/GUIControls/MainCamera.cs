@@ -23,7 +23,7 @@ public partial class MainCamera : Camera2D
 
         if(@event is InputEventMouseButton)
         {
-            if( ((InputEventMouseButton)@event).ButtonIndex == MouseButton.WheelUp)
+            if (((InputEventMouseButton)@event).ButtonIndex == MouseButton.WheelUp)
             {
                 ZoomCamera(1);
             }
