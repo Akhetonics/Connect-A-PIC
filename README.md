@@ -11,7 +11,7 @@ Version: <!--version-->0.0.72<!--version-->
 
 ## [DOWNLOAD](https://github.com/Akhetonics/Connect-A-PIC/releases)
  
-## [JOIN OUR DISCORD](https://discord.gg/EyKhcM3)
+## [JOIN OUR DISCORD](https://discord.gg/YgU63bjn64)
 # About Connect a PIC
 
 This software aims to simplify the design of optical circuits on a chip, which can then be printed using our Nazca-Python export function.
