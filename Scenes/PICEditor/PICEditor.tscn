@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=3 uid="uid://cu6wqy6xwjfo1"]
+[gd_scene load_steps=33 format=3 uid="uid://cu6wqy6xwjfo1"]
 
 [ext_resource type="Script" path="res://Scripts/GameManager.cs" id="1_c0scx"]
 [ext_resource type="Script" path="res://Scripts/View/ComponentFactory/ComponentViewFactory.cs" id="2_7hjmy"]
@@ -31,6 +31,7 @@
 [ext_resource type="Script" path="res://Scripts/View/GUIControls/ToolBoxCollapseControl.cs" id="25_35kfa"]
 [ext_resource type="Script" path="res://Scripts/UpdateSystem/UpdateManager.cs" id="25_cr0be"]
 [ext_resource type="PackedScene" uid="uid://ckp2oek7mdfdr" path="res://Scenes/UpdateView/UpdateWindow.tscn" id="26_ihjn2"]
+[ext_resource type="PackedScene" uid="uid://62ttjwpc0g0a" path="res://Scenes/Tutorial/TutorialContainer.tscn" id="31_8yjdu"]
 
 [node name="GameManager" type="Node" node_paths=PackedStringArray("InGameConsole")]
 script = ExtResource("1_c0scx")
@@ -67,6 +68,7 @@ script = ExtResource("8_h35r3")
 metadata/_edit_use_anchors_ = true
 
 [node name="PortContainer" parent="GridView" instance=ExtResource("22_75h2p")]
+unique_name_in_owner = true
 
 [node name="MainCamera" type="Camera2D" parent="."]
 anchor_mode = 0
@@ -219,6 +221,7 @@ script = ExtResource("9_gj54m")
 NotificationBoxScene = ExtResource("10_06t00")
 
 [node name="UpdateWindow" parent="GUILayer" instance=ExtResource("26_ihjn2")]
+visible = false
 offset_left = -309.0
 offset_top = -133.0
 offset_right = 117.0
@@ -231,6 +234,8 @@ anchor_top = 0.559
 anchor_right = 0.61
 offset_top = -0.231995
 offset_right = 0.279968
+
+[node name="TutorialContainer" parent="GUILayer" instance=ExtResource("31_8yjdu")]
 
 [node name="UpdateManager" type="Node" parent="."]
 script = ExtResource("25_cr0be")

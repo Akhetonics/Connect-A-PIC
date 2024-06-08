@@ -1,3 +1,4 @@
+using ConnectAPIC.Scenes.InteractionOverlay;
 using Godot;
 using JetBrains.Annotations;
 using System;
@@ -16,12 +17,12 @@ public partial class MainCamera : Camera2D
     {
         if (noZoomingOrMoving) return;
 
-        if(@event is InputEventMouseMotion && Input.IsMouseButtonPressed(MouseButton.Right))
+        if(@event is InputEventMouseMotion && Input.IsMouseButtonPressed(MouseButton.Right) && InteractionOverlayController.ClickingAllowed)
         {
             Position -= ((InputEventMouseMotion)@event).Relative * PanSensitivity / Zoom;
         }
 
-        if(@event is InputEventMouseButton)
+        if(@event is InputEventMouseButton && InteractionOverlayController.ScrollingAllowed)
         {
             if (((InputEventMouseButton)@event).ButtonIndex == MouseButton.WheelUp)
             {
