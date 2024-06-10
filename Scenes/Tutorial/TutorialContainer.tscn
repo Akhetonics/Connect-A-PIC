@@ -107,7 +107,7 @@ shadow_size = 1
 shadow_offset = Vector2(1, 2)
 anti_aliasing = false
 
-[node name="TutorialContainer" type="Control" node_paths=PackedStringArray("DarkeningArea", "ExclusionZoneContainer", "ExclusionCircle", "ExclusionSquare")]
+[node name="TutorialContainer" type="Control" node_paths=PackedStringArray("TutorialPopup", "DarkeningArea", "ExclusionZoneContainer", "ExclusionCircle", "ExclusionSquare")]
 texture_filter = 1
 layout_mode = 3
 anchors_preset = 15
@@ -115,8 +115,10 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+size_flags_horizontal = 4
 mouse_filter = 2
 script = ExtResource("1_jqrti")
+TutorialPopup = NodePath("TutorialPopup")
 DarkeningArea = NodePath("DarkeningArea")
 ExclusionZoneContainer = NodePath("ExclusionZone")
 ExclusionCircle = NodePath("ExclusionZone/ExclusionCircle")
@@ -148,6 +150,7 @@ grow_horizontal = 2
 grow_vertical = 2
 
 [node name="ExclusionSquare" type="TextureRect" parent="ExclusionZone"]
+visible = false
 material = SubResource("ShaderMaterial_irq5l")
 layout_mode = 1
 anchors_preset = 3
@@ -155,8 +158,10 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -100.0
-offset_top = -100.0
+offset_left = -887.0
+offset_top = -756.0
+offset_right = -787.0
+offset_bottom = -656.0
 grow_horizontal = 0
 grow_vertical = 0
 texture = ExtResource("9_xd8wb")
@@ -171,10 +176,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -463.0
-offset_top = -318.0
-offset_right = 537.0
-offset_bottom = 682.0
+offset_left = -502.0
+offset_top = -373.0
+offset_right = 498.0
+offset_bottom = 627.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(0.1, 0.1)
@@ -278,6 +283,7 @@ offset_right = 295.0
 offset_bottom = 119.0
 grow_horizontal = 2
 grow_vertical = 2
+metadata/_edit_use_anchors_ = true
 
 [node name="NinePatchRect" type="NinePatchRect" parent="TutorialPopup"]
 layout_mode = 1
@@ -312,7 +318,8 @@ layout_mode = 2
 theme_override_constants/margin_top = 5
 theme_override_constants/margin_bottom = 5
 
-[node name="RichTextLabel" type="RichTextLabel" parent="TutorialPopup/MarginContainer/VBoxContainer/MarginContainer"]
+[node name="Title" type="RichTextLabel" parent="TutorialPopup/MarginContainer/VBoxContainer/MarginContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("2_0ilsf")
 theme_override_colors/default_color = Color(0.933333, 0.733333, 0.333333, 1)
@@ -330,7 +337,8 @@ layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 6
 
-[node name="RichTextLabel" type="RichTextLabel" parent="TutorialPopup/MarginContainer/VBoxContainer/ScrollContainer/MarginContainer2"]
+[node name="Body" type="RichTextLabel" parent="TutorialPopup/MarginContainer/VBoxContainer/ScrollContainer/MarginContainer2"]
+unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("2_0ilsf")
 bbcode_enabled = true
@@ -344,6 +352,7 @@ layout_mode = 2
 layout_mode = 2
 
 [node name="CheckButton" type="CheckButton" parent="TutorialPopup/MarginContainer/VBoxContainer/MarginContainer3/HBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 0
 focus_mode = 0
@@ -357,13 +366,15 @@ fit_content = true
 scroll_active = false
 text_direction = 1
 
-[node name="YesNoButtons" type="MarginContainer" parent="TutorialPopup/MarginContainer/VBoxContainer"]
+[node name="YesNoConfiguration" type="MarginContainer" parent="TutorialPopup/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="TutorialPopup/MarginContainer/VBoxContainer/YesNoButtons"]
+[node name="HBoxContainer" type="HBoxContainer" parent="TutorialPopup/MarginContainer/VBoxContainer/YesNoConfiguration"]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="TutorialPopup/MarginContainer/VBoxContainer/YesNoButtons/HBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="TutorialPopup/MarginContainer/VBoxContainer/YesNoConfiguration/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
@@ -372,7 +383,7 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 55
 theme_override_constants/margin_bottom = 0
 
-[node name="Button" type="Button" parent="TutorialPopup/MarginContainer/VBoxContainer/YesNoButtons/HBoxContainer/MarginContainer"]
+[node name="NoBtn" type="Button" parent="TutorialPopup/MarginContainer/VBoxContainer/YesNoConfiguration/HBoxContainer/MarginContainer"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 focus_mode = 0
@@ -382,7 +393,7 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_w2aj2")
 theme_override_styles/pressed = ExtResource("5_wwhyf")
 text = "No"
 
-[node name="MarginContainer2" type="MarginContainer" parent="TutorialPopup/MarginContainer/VBoxContainer/YesNoButtons/HBoxContainer"]
+[node name="MarginContainer2" type="MarginContainer" parent="TutorialPopup/MarginContainer/VBoxContainer/YesNoConfiguration/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
@@ -391,21 +402,21 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 55
 theme_override_constants/margin_bottom = 0
 
-[node name="Button" type="Button" parent="TutorialPopup/MarginContainer/VBoxContainer/YesNoButtons/HBoxContainer/MarginContainer2"]
+[node name="YesBtn" type="Button" parent="TutorialPopup/MarginContainer/VBoxContainer/YesNoConfiguration/HBoxContainer/MarginContainer2"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 focus_mode = 0
 theme = ExtResource("3_1en8x")
 text = "Yes!"
 
-[node name="SkipQuitNextButtons" type="MarginContainer" parent="TutorialPopup/MarginContainer/VBoxContainer"]
-visible = false
+[node name="QuitSkipNextConfiguration" type="MarginContainer" parent="TutorialPopup/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 
-[node name="HBoxContainer" type="HBoxContainer" parent="TutorialPopup/MarginContainer/VBoxContainer/SkipQuitNextButtons"]
+[node name="HBoxContainer" type="HBoxContainer" parent="TutorialPopup/MarginContainer/VBoxContainer/QuitSkipNextConfiguration"]
 layout_mode = 2
 
-[node name="MarginContainer" type="MarginContainer" parent="TutorialPopup/MarginContainer/VBoxContainer/SkipQuitNextButtons/HBoxContainer"]
+[node name="MarginContainer" type="MarginContainer" parent="TutorialPopup/MarginContainer/VBoxContainer/QuitSkipNextConfiguration/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
@@ -414,7 +425,7 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 90
 theme_override_constants/margin_bottom = 0
 
-[node name="Button" type="Button" parent="TutorialPopup/MarginContainer/VBoxContainer/SkipQuitNextButtons/HBoxContainer/MarginContainer"]
+[node name="QuitBtn" type="Button" parent="TutorialPopup/MarginContainer/VBoxContainer/QuitSkipNextConfiguration/HBoxContainer/MarginContainer"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 focus_mode = 0
@@ -424,7 +435,8 @@ theme_override_styles/hover = SubResource("StyleBoxFlat_w2aj2")
 theme_override_styles/pressed = ExtResource("5_wwhyf")
 text = "Quit"
 
-[node name="MarginContainer2" type="MarginContainer" parent="TutorialPopup/MarginContainer/VBoxContainer/SkipQuitNextButtons/HBoxContainer"]
+[node name="NextContainer" type="MarginContainer" parent="TutorialPopup/MarginContainer/VBoxContainer/QuitSkipNextConfiguration/HBoxContainer"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
@@ -433,9 +445,24 @@ theme_override_constants/margin_top = 10
 theme_override_constants/margin_right = 30
 theme_override_constants/margin_bottom = 0
 
-[node name="Skip" type="Button" parent="TutorialPopup/MarginContainer/VBoxContainer/SkipQuitNextButtons/HBoxContainer/MarginContainer2"]
+[node name="NextBtn" type="Button" parent="TutorialPopup/MarginContainer/VBoxContainer/QuitSkipNextConfiguration/HBoxContainer/NextContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("3_1en8x")
+text = "Next"
+
+[node name="SkipContainer" type="MarginContainer" parent="TutorialPopup/MarginContainer/VBoxContainer/QuitSkipNextConfiguration/HBoxContainer"]
 unique_name_in_owner = true
-visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/margin_left = 90
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 0
+
+[node name="SkipBtn" type="Button" parent="TutorialPopup/MarginContainer/VBoxContainer/QuitSkipNextConfiguration/HBoxContainer/SkipContainer"]
 custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 focus_mode = 0
@@ -444,12 +471,3 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_ccq3g")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ffmjl")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_38dt3")
 text = "Skip"
-
-[node name="Next" type="Button" parent="TutorialPopup/MarginContainer/VBoxContainer/SkipQuitNextButtons/HBoxContainer/MarginContainer2"]
-unique_name_in_owner = true
-visible = false
-custom_minimum_size = Vector2(0, 30)
-layout_mode = 2
-focus_mode = 0
-theme = ExtResource("3_1en8x")
-text = "Next"

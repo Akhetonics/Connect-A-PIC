@@ -3,6 +3,8 @@ using System;
 
 public partial class TutorialSystem : Control
 {
+    [Export] Control TutorialPopup { get; set; }
+   
     [Export] TextureRect DarkeningArea { get; set; }
     [Export] Control ExclusionZoneContainer { get; set; }
     [Export] TextureRect ExclusionCircle { get; set; }
@@ -11,6 +13,16 @@ public partial class TutorialSystem : Control
     [Export] Node2D PortContainer { get; set; }
     [Export] Control MenuBar { get; set; }
     [Export] Control ToolBoxContainer { get; set; }
+
+
+    private RichTextLabel Title;
+    private RichTextLabel Body;
+
+    private Control YesNoConfiguration;
+    private Control QuitSkipNextConfig;
+    private Control SkipContainer;
+    private Control NextContainer;
+
 
     private int portContainerOffset = 124;
     private int portsWidth = 120;
@@ -46,18 +58,23 @@ public partial class TutorialSystem : Control
                     ClearExclusionZones();
                     HighlightControlNodeWithCustomSize(PortContainer, customXOffset: -portsWidth, customYOffset: portContainerOffset, customXSize: portsWidth, customYSize: portHeight * 8);
                     i++;
+                    SetTutorialPopupCenter();
+                    SetYesNoConfiguration();
                 }
                 else if (i == 1)
                 {
                     ClearExclusionZones();
                     HighlightControlNode(MenuBar, allMargins:3f);
                     i++;
+                    SetTutorialPopupTopRight();
+                    SetQuitNextConfiguration();
                 }
                 else
                 {
                     ClearExclusionZones();
                     HighlightControlNode(ToolBoxContainer);
                     i = 0;
+                    SetQuitSkipConfiguration();
                 }
             }
         }
@@ -65,6 +82,14 @@ public partial class TutorialSystem : Control
 
     public override void _Ready()
     {
+        Title = GetNode<RichTextLabel>("%Title");
+        Body  = GetNode<RichTextLabel>("%Body");
+
+        YesNoConfiguration = GetNode<Control>("%YesNoConfiguration");
+        QuitSkipNextConfig = GetNode<Control>("%QuitSkipNextConfiguration");
+        SkipContainer      = GetNode<Control>("%SkipContainer");
+        NextContainer      = GetNode<Control>("%NextContainer");
+
         ExclusionZoneContainer.RemoveChild(ExclusionCircle);
         ExclusionZoneContainer.RemoveChild(ExclusionSquare);
     }
@@ -74,12 +99,53 @@ public partial class TutorialSystem : Control
 
     }
 
+
+    private void SetTitleText(string text)
+    {
+        Title.Text = $"[center]{text}[/center]";
+    }
+    private void SetBodyText(string text)
+    {
+        Body.Text = $"[center]{text}[/center]";
+    }
+
+    private void SetTutorialPopupCenter()
+    {
+        TutorialPopup.SetAnchorsAndOffsetsPreset(LayoutPreset.Center,LayoutPresetMode.KeepSize);
+    }
+    private void SetTutorialPopupTopRight()
+    {
+        TutorialPopup.SetAnchorsAndOffsetsPreset(LayoutPreset.TopRight, LayoutPresetMode.KeepSize);
+    }
+
+    private void SetQuitSkipConfiguration()
+    {
+        YesNoConfiguration.Visible = false;
+        NextContainer.Visible = false;
+
+        QuitSkipNextConfig.Visible = true;
+        SkipContainer.Visible = true;
+
+    }
+    private void SetQuitNextConfiguration()
+    {
+        YesNoConfiguration.Visible = false;
+        SkipContainer.Visible = false;
+
+        QuitSkipNextConfig.Visible = true;
+        NextContainer.Visible = true;
+    }
+    private void SetYesNoConfiguration()
+    {
+        YesNoConfiguration.Visible = true;
+        QuitSkipNextConfig.Visible = false;
+    }
+
     private void HighlightControlNode(Control control,
         float allMargins, float customXOffset = 0, float customYOffset = 0)
     {
         HighlightControlNode(control, allMargins, allMargins, allMargins, allMargins, customXOffset, customYOffset);
     }
-
     private void HighlightControlNode(Control control,
         float marginTop = 0, float marginRight = 0, float marginBotton = 0, float marginLeft = 0,
         float customXOffset = 0, float customYOffset = 0)
@@ -89,7 +155,6 @@ public partial class TutorialSystem : Control
             customXOffset, customYOffset,
             control.Size.X, control.Size.Y);
     }
-
     private void HighlightControlNodeWithCustomSize(Control control,
         float marginTop = 0, float marginRight = 0, float marginBotton = 0, float marginLeft = 0,
         float customXOffset = 0, float customYOffset = 0,
@@ -114,7 +179,6 @@ public partial class TutorialSystem : Control
         exclusionZone.Size = new Vector2(customXSize + marginLeft + marginRight, customYSize + marginTop + marginBotton);
         exclusionZone.Visible = true;
     }
-
     private void HighlightControlNodeWithCustomSize(Node2D control,
         float marginTop = 0, float marginRight = 0, float marginBotton = 0, float marginLeft = 0,
         float customXOffset = 0, float customYOffset = 0,
@@ -148,4 +212,27 @@ public partial class TutorialSystem : Control
         }
 
     }
+
+
+    private void OnYesButtonPress()
+    {
+        // Replace with function body.
+    }
+    private void OnNoButtonPress()
+    {
+        // Replace with function body.
+    }
+    private void OnQuitButtonPress()
+    {
+        // Replace with function body.
+    }
+    private void OnNextButtonPress()
+    {
+        // Replace with function body.
+    }
+    private void OnSkipButtonPress()
+    {
+        // Replace with function body.
+    }
+
 }

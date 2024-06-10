@@ -14,7 +14,13 @@ namespace CAP_Core.Grid
         public IComponentRelationshipManager ComponentRelationshipManager { get; }
         public LightManager LightManager { get; }
 
-        public GridManager(ITileManager tileManager, IComponentMover componentMover, IExternalPortManager externalPortManager, IComponentRotator componentRotator, IComponentRelationshipManager componentRelationshipManager, LightManager lightManager)
+        public GridManager(
+            ITileManager tileManager,
+            IComponentMover componentMover,
+            IExternalPortManager externalPortManager,
+            IComponentRotator componentRotator,
+            IComponentRelationshipManager componentRelationshipManager,
+            LightManager lightManager)
         {
             TileManager = tileManager;
             ComponentMover = componentMover;
