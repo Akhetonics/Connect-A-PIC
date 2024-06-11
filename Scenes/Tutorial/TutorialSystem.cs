@@ -1,5 +1,6 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 
 public partial class TutorialSystem : Control
 {
@@ -14,6 +15,14 @@ public partial class TutorialSystem : Control
     [Export] Control MenuBar { get; set; }
     [Export] Control ToolBoxContainer { get; set; }
 
+
+    /// <summary>
+    /// Describes tutorial scenario, tutorial starts from 0th element to the end
+    /// each tutorial state defines tutorial stage
+    /// </summary>
+    public List<TutorialState> TutorialScenario { get; set; }
+
+    private int currentStateIndex = 0;
 
     private RichTextLabel Title;
     private RichTextLabel Body;
@@ -43,6 +52,9 @@ public partial class TutorialSystem : Control
     /// </summary>
     private Vector2 menuButtonPosition = Vector2.Zero;
 
+
+
+    //TODO: needs to be removed after debugging
     int i = 0;
 
     public override void _Input(InputEvent @event)
@@ -82,6 +94,8 @@ public partial class TutorialSystem : Control
 
     public override void _Ready()
     {
+        Visible = false;
+
         Title = GetNode<RichTextLabel>("%Title");
         Body  = GetNode<RichTextLabel>("%Body");
 
@@ -92,11 +106,84 @@ public partial class TutorialSystem : Control
 
         ExclusionZoneContainer.RemoveChild(ExclusionCircle);
         ExclusionZoneContainer.RemoveChild(ExclusionSquare);
+
+        DarkeningArea.MouseFilter = MouseFilterEnum.Ignore;
+
+        // TODO: check if don't show again was marked
     }
 
     public override void _Process(double delta)
     {
 
+    }
+
+    private void GoToNextState()
+    {
+        if (TutorialScenario.Count == 0)
+            throw new Exception("Tutorial scenario not defined!");
+
+        if (currentStateIndex == TutorialScenario.Count - 1)
+        {
+            QuitTutorial();
+            return;
+        }
+
+        currentStateIndex++;
+
+        var newTutorialState = TutorialScenario[currentStateIndex];
+
+        SetupTutorialFrom(newTutorialState);
+    }
+
+    private void QuitTutorial()
+    {
+        //TODO: check if don't show again is marked and if it is then write in app data so that it won't be shown again
+    }
+
+    private void SetupTutorialFrom(TutorialState state)
+    {
+        Title.Text = state.Title;
+        Body.Text = state.Body;
+
+        switch (state.WindowPlacement)
+        {
+            case WindowPlacement.Center: SetTutorialPopupCenter(); break;
+            case WindowPlacement.TopRight: SetTutorialPopupTopRight(); break;
+        }
+
+        switch (state.ButtonsArrangement)
+        {
+            case ButtonsArrangement.YesNo: SetYesNoConfiguration(); break;
+            case ButtonsArrangement.QuitSkip: SetQuitSkipConfiguration(); break;
+            case ButtonsArrangement.QuitNext: SetQuitNextConfiguration(); break;
+        }
+
+        ClearExclusionZones();
+
+        foreach (var higlitedControl in state.HiglitedControls)
+        {
+            if(higlitedControl.customXSize == 0 && higlitedControl.customYSize == 0)
+            {
+                HighlightControlNode(higlitedControl.HiglitedNode,
+                    higlitedControl.marginTop, higlitedControl.marginRight, higlitedControl.marginBottom, higlitedControl.marginBottom,
+                    higlitedControl.XOffset, higlitedControl.YOffset);
+            }
+            else
+            {
+                HighlightControlNodeWithCustomSize(higlitedControl.HiglitedNode,
+                    higlitedControl.marginTop, higlitedControl.marginRight, higlitedControl.marginBottom, higlitedControl.marginBottom,
+                    higlitedControl.XOffset, higlitedControl.YOffset,
+                    higlitedControl.customXSize, higlitedControl.customYSize);
+            }
+        }
+
+        foreach (var higlitedNode in state.HiglitedNodes)
+        {
+            HighlightControlNodeWithCustomSize(higlitedNode.HiglitedNode,
+                higlitedNode.marginTop, higlitedNode.marginRight, higlitedNode.marginBottom, higlitedNode.marginBottom,
+                higlitedNode.XOffset, higlitedNode.YOffset,
+                higlitedNode.customXSize, higlitedNode.customYSize);
+        }
     }
 
 
@@ -216,23 +303,23 @@ public partial class TutorialSystem : Control
 
     private void OnYesButtonPress()
     {
-        // Replace with function body.
+        // TODO: goes to next slide or if end of the line quits
     }
     private void OnNoButtonPress()
     {
-        // Replace with function body.
+        // TODO: quits tutorial
     }
     private void OnQuitButtonPress()
     {
-        // Replace with function body.
+        // TODO: quits tutorial
     }
     private void OnNextButtonPress()
     {
-        // Replace with function body.
+        // TODO: checks completion condition and if competed goes to next one
     }
     private void OnSkipButtonPress()
     {
-        // Replace with function body.
+        // TODO: 
     }
 
 }
