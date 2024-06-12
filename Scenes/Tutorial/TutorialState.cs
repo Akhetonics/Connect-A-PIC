@@ -44,10 +44,25 @@ public class TutorialState
 
     public string Title { get; set; }
     public string Body { get; set; }
+
+    /// <summary>
+    /// Function defining condition for transition when next is pressed
+    /// (so if condition is true tutorial will progress to next state)
+    /// </summary>
     public Func<bool> CompletionCondition { get; set; }
 
-    public List<Highlited<Control>> HiglitedControls { get; set; }
-    public List<Highlited<Node2D>> HiglitedNodes { get; set; }
+    /// <summary>
+    /// Function which runs when loading tutorial state
+    /// </summary>
+    public Action FunctionWhenLoading { get; set; }
+
+    /// <summary>
+    /// Function which runs when unloading tutorial state
+    /// </summary>
+    public Action FunctionWhenUnloading { get; set; }
+
+    public List<Highlited<Control>> HiglitedControls { get; set; } = new();
+    public List<Highlited<Node2D>> HiglitedNodes { get; set; } = new();
 
     public TutorialState(
         WindowPlacement windowPlacement,
@@ -57,10 +72,73 @@ public class TutorialState
         Func<bool> completionCondition
     )
     {
+        BasicSetup(windowPlacement, buttonsArrangement, title, body, completionCondition);
+    }
+
+    public TutorialState(
+        WindowPlacement windowPlacement,
+        ButtonsArrangement buttonsArrangement,
+        string title,
+        string body,
+        Func<bool> completionCondition,
+        List<Highlited<Control>> higlitedControls
+        )
+    {
+        BasicSetup(windowPlacement, buttonsArrangement, title, body, completionCondition);
+        HiglitedControls = higlitedControls;
+    }
+
+    public TutorialState(
+    WindowPlacement windowPlacement,
+    ButtonsArrangement buttonsArrangement,
+    string title,
+    string body,
+    Func<bool> completionCondition,
+    List<Highlited<Node2D>> higlitedNodes
+    )
+    {
+
+        BasicSetup(windowPlacement, buttonsArrangement, title, body, completionCondition);
+        HiglitedNodes = higlitedNodes;
+    }
+
+    public TutorialState(
+    WindowPlacement windowPlacement,
+    ButtonsArrangement buttonsArrangement,
+        string title,
+        string body,
+        Func<bool> completionCondition,
+        List<Highlited<Control>> higlitedControls,
+        List<Highlited<Node2D>> higlitedNodes
+        )
+    {
+        BasicSetup(windowPlacement, buttonsArrangement, title, body, completionCondition);
+        HiglitedControls = higlitedControls;
+        HiglitedNodes = higlitedNodes;
+    }
+
+
+
+    public void RunSetupFunction()
+    {
+        if (FunctionWhenLoading != null)
+            FunctionWhenLoading.Invoke();
+    }
+
+    public void RunUnloadFunction()
+    {
+        if (FunctionWhenUnloading != null)
+            FunctionWhenUnloading.Invoke();
+    }
+
+
+    private void BasicSetup(WindowPlacement windowPlacement, ButtonsArrangement buttonsArrangement, string title, string body, Func<bool> completionCondition)
+    {
         WindowPlacement = windowPlacement;
         ButtonsArrangement = buttonsArrangement;
-        Title = title;
-        Body = body;
+        Title = $"[center]{title}[/center]";
+        Body = $"[center]{body}[/center]";
         CompletionCondition = completionCondition;
     }
+
 }

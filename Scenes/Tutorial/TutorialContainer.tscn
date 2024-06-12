@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://62ttjwpc0g0a"]
+[gd_scene load_steps=20 format=3 uid="uid://62ttjwpc0g0a"]
 
 [ext_resource type="Texture2D" uid="uid://bskt8xmas4b1b" path="res://Scenes/Assets/Sprites/Background.png" id="1_2w183"]
 [ext_resource type="Script" path="res://Scenes/Tutorial/TutorialSystem.cs" id="1_jqrti"]
@@ -7,6 +7,7 @@
 [ext_resource type="StyleBox" uid="uid://2isxejv4i0gq" path="res://Scenes/Assets/Styles/RedButtonNormal.tres" id="4_dt0v5"]
 [ext_resource type="StyleBox" uid="uid://drsxpwqtwkesm" path="res://Scenes/Assets/Styles/RedButtonPressed.tres" id="5_wwhyf"]
 [ext_resource type="Shader" path="res://Scenes/Tutorial/DarkeningOverlay.gdshader" id="6_c62t0"]
+[ext_resource type="FontFile" uid="uid://d4esbv2uixhnb" path="res://Scenes/Assets/Fonts/easvhs.ttf" id="8_1cah1"]
 [ext_resource type="Texture2D" uid="uid://opoxilg8nwju" path="res://Scenes/Tutorial/1000x1000 circle.png" id="8_eluo0"]
 [ext_resource type="Texture2D" uid="uid://16n54w4t1lkl" path="res://Scenes/Tutorial/100x100 square.png" id="9_xd8wb"]
 [ext_resource type="Script" path="res://Scenes/InteractionOverlay/OverlayElement.cs" id="10_lrvuu"]
@@ -123,6 +124,8 @@ DarkeningArea = NodePath("DarkeningArea")
 ExclusionZoneContainer = NodePath("ExclusionZone")
 ExclusionCircle = NodePath("ExclusionZone/ExclusionCircle")
 ExclusionSquare = NodePath("ExclusionZone/ExclusionSquare")
+metadata/_edit_vertical_guides_ = [512.0]
+metadata/_edit_horizontal_guides_ = [384.0]
 
 [node name="Node2D" type="Node2D" parent="." node_paths=PackedStringArray("InteractionAreas")]
 visible = false
@@ -146,6 +149,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = 18.0
+offset_right = 20.0
+offset_bottom = 18.0
 grow_horizontal = 2
 grow_vertical = 2
 
@@ -277,13 +284,13 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -295.0
-offset_top = -119.0
-offset_right = 295.0
-offset_bottom = 119.0
+offset_left = -321.0
+offset_top = -136.0
+offset_right = 324.0
+offset_bottom = 137.0
 grow_horizontal = 2
 grow_vertical = 2
-metadata/_edit_use_anchors_ = true
+metadata/_edit_group_ = true
 
 [node name="NinePatchRect" type="NinePatchRect" parent="TutorialPopup"]
 layout_mode = 1
@@ -341,6 +348,8 @@ size_flags_vertical = 6
 unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("2_0ilsf")
+theme_override_fonts/normal_font = ExtResource("8_1cah1")
+theme_override_font_sizes/normal_font_size = 22
 bbcode_enabled = true
 text = "[center]Want to go through the tutorial?[/center]"
 fit_content = true
@@ -368,7 +377,6 @@ text_direction = 1
 
 [node name="YesNoConfiguration" type="MarginContainer" parent="TutorialPopup/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
-visible = false
 layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="TutorialPopup/MarginContainer/VBoxContainer/YesNoConfiguration"]
@@ -411,6 +419,7 @@ text = "Yes!"
 
 [node name="QuitSkipNextConfiguration" type="MarginContainer" parent="TutorialPopup/MarginContainer/VBoxContainer"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 
 [node name="HBoxContainer" type="HBoxContainer" parent="TutorialPopup/MarginContainer/VBoxContainer/QuitSkipNextConfiguration"]
@@ -471,3 +480,9 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_ccq3g")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ffmjl")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_38dt3")
 text = "Skip"
+
+[connection signal="pressed" from="TutorialPopup/MarginContainer/VBoxContainer/YesNoConfiguration/HBoxContainer/MarginContainer/NoBtn" to="." method="OnNoButtonPress"]
+[connection signal="pressed" from="TutorialPopup/MarginContainer/VBoxContainer/YesNoConfiguration/HBoxContainer/MarginContainer2/YesBtn" to="." method="OnYesButtonPress"]
+[connection signal="pressed" from="TutorialPopup/MarginContainer/VBoxContainer/QuitSkipNextConfiguration/HBoxContainer/MarginContainer/QuitBtn" to="." method="OnQuitButtonPress"]
+[connection signal="pressed" from="TutorialPopup/MarginContainer/VBoxContainer/QuitSkipNextConfiguration/HBoxContainer/NextContainer/NextBtn" to="." method="OnNextButtonPress"]
+[connection signal="pressed" from="TutorialPopup/MarginContainer/VBoxContainer/QuitSkipNextConfiguration/HBoxContainer/SkipContainer/SkipBtn" to="." method="OnSkipButtonPress"]

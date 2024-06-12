@@ -1,3 +1,4 @@
+using ConnectAPIC.Scenes.InteractionOverlay;
 using Godot;
 using System;
 using System.Collections.Generic;
@@ -5,7 +6,7 @@ using System.Collections.Generic;
 public partial class TutorialSystem : Control
 {
     [Export] Control TutorialPopup { get; set; }
-   
+
     [Export] TextureRect DarkeningArea { get; set; }
     [Export] Control ExclusionZoneContainer { get; set; }
     [Export] TextureRect ExclusionCircle { get; set; }
@@ -20,9 +21,9 @@ public partial class TutorialSystem : Control
     /// Describes tutorial scenario, tutorial starts from 0th element to the end
     /// each tutorial state defines tutorial stage
     /// </summary>
-    public List<TutorialState> TutorialScenario { get; set; }
+    public List<TutorialState> TutorialScenario { get; set; } = new List<TutorialState>();
 
-    private int currentStateIndex = 0;
+    private int currentStateIndex = -1;
 
     private RichTextLabel Title;
     private RichTextLabel Body;
@@ -109,6 +110,8 @@ public partial class TutorialSystem : Control
 
         DarkeningArea.MouseFilter = MouseFilterEnum.Ignore;
 
+        SetupSampleTutorial();
+        Visible = true;
         // TODO: check if don't show again was marked
     }
 
@@ -117,6 +120,77 @@ public partial class TutorialSystem : Control
 
     }
 
+
+    private void SetupSampleTutorial()
+    {
+        var welcome = new TutorialState(
+            WindowPlacement.Center,
+            ButtonsArrangement.YesNo,
+            "Welcome to Connect-A-PIC",
+            "Would you like to go throgh a tutorial?",
+            () => true
+            );
+
+        welcome.FunctionWhenLoading = () =>
+        {
+            InteractionOverlayController.ClickingAllowed = false;
+            InteractionOverlayController.ScrollingAllowed = false;
+        };
+
+        TutorialScenario.Add(welcome);
+
+
+        var explanation = new TutorialState(
+            WindowPlacement.Center,
+            ButtonsArrangement.QuitNext,
+            "What is Connect-A-PIC",
+            "Connect-A-PIC (photonic integrated circuits) aims to simplify the design of optical circuits on a chip",
+            () => true
+            );
+
+        explanation.FunctionWhenLoading = () =>
+        {
+            InteractionOverlayController.ClickingAllowed = false;
+            InteractionOverlayController.ScrollingAllowed = false;
+        };
+
+        TutorialScenario.Add(explanation);
+
+        var workingArea = new TutorialState(
+            WindowPlacement.TopRight,
+            ButtonsArrangement.QuitNext,
+            "Main Circuit",
+            "This is your main workspace, where you can design and build your own photonic circuits",
+            () => true
+            );
+
+        workingArea.HiglitedNodes.Add(new Highlited<Node2D>
+        {
+            HiglitedNode = PortContainer,
+            customXSize = 1500,
+            customYSize = 743
+        });
+
+        workingArea.FunctionWhenLoading = () =>
+        {
+            InteractionOverlayController.ClickingAllowed = false;
+            InteractionOverlayController.ScrollingAllowed = false;
+            (ToolBoxContainer as ToolBoxCollapseControl)?.SetToolBoxToggleState(true);
+        };
+
+        workingArea.FunctionWhenUnloading = () =>
+        {
+            InteractionOverlayController.ClickingAllowed = true;
+            InteractionOverlayController.ScrollingAllowed = true;
+            (ToolBoxContainer as ToolBoxCollapseControl)?.SetToolBoxToggleState(false);
+        };
+
+        TutorialScenario.Add(workingArea);
+
+        GoToNextState();
+    }
+
+
     private void GoToNextState()
     {
         if (TutorialScenario.Count == 0)
@@ -124,8 +198,16 @@ public partial class TutorialSystem : Control
 
         if (currentStateIndex == TutorialScenario.Count - 1)
         {
+            var curentState = TutorialScenario[currentStateIndex];
+            curentState.RunUnloadFunction();
             QuitTutorial();
             return;
+        }
+
+        if (currentStateIndex > 0)
+        {
+            var curentState = TutorialScenario[currentStateIndex];
+            curentState.RunUnloadFunction();
         }
 
         currentStateIndex++;
@@ -138,10 +220,13 @@ public partial class TutorialSystem : Control
     private void QuitTutorial()
     {
         //TODO: check if don't show again is marked and if it is then write in app data so that it won't be shown again
+        this.Visible = false;
     }
 
     private void SetupTutorialFrom(TutorialState state)
     {
+        state.RunSetupFunction();
+
         Title.Text = state.Title;
         Body.Text = state.Body;
 
@@ -184,6 +269,7 @@ public partial class TutorialSystem : Control
                 higlitedNode.XOffset, higlitedNode.YOffset,
                 higlitedNode.customXSize, higlitedNode.customYSize);
         }
+
     }
 
 
@@ -226,6 +312,26 @@ public partial class TutorialSystem : Control
     {
         YesNoConfiguration.Visible = true;
         QuitSkipNextConfig.Visible = false;
+    }
+
+    private void HighlightGrid()
+    {
+        HighlightControlNodeWithCustomSize(PortContainer, customXSize: 1500, customYSize: 743);
+    }
+
+    private void HighlightLeftPorts()
+    {
+        HighlightControlNodeWithCustomSize(PortContainer, customXOffset: -portsWidth, customYOffset: portContainerOffset, customXSize: portsWidth, customYSize: portHeight * 8);
+    }
+
+    private void HighlightMenu()
+    {
+        HighlightControlNode(MenuBar, allMargins: 3f);
+    }
+
+    private void HighlightToolbox()
+    {
+        HighlightControlNode(ToolBoxContainer);
     }
 
     private void HighlightControlNode(Control control,
@@ -301,25 +407,52 @@ public partial class TutorialSystem : Control
     }
 
 
+    private bool GetNextCondition()
+    {
+        var currentState = TutorialScenario[currentStateIndex];
+        return currentState.CompletionCondition.Invoke();
+    }
+
     private void OnYesButtonPress()
     {
+        if (GetNextCondition())
+        {
+            GoToNextState();
+        }
+        else
+        {
+            //TODO: do something to indicate that condition isn't reached like highlight yes red or something
+        }
+            
         // TODO: goes to next slide or if end of the line quits
     }
     private void OnNoButtonPress()
     {
+        QuitTutorial();
         // TODO: quits tutorial
     }
     private void OnQuitButtonPress()
     {
+        QuitTutorial();
         // TODO: quits tutorial
     }
     private void OnNextButtonPress()
     {
+        if (GetNextCondition())
+        {
+            GoToNextState();
+        }
+        else
+        {
+            //TODO: do something to indicate that condition isn't reached like highlight next red or something
+        }
         // TODO: checks completion condition and if competed goes to next one
     }
     private void OnSkipButtonPress()
     {
-        // TODO: 
+        GoToNextState();
     }
 
 }
+
+ 

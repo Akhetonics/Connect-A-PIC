@@ -43,7 +43,7 @@ enabled=PackedStringArray()
 
 [gui]
 
-theme/custom_font="res://Scenes/Assets/Fonts/04B_11__.TTF"
+theme/custom_font="res://Scenes/Assets/Fonts/easvhs.ttf"
 
 [input]
 

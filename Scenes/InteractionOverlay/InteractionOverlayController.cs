@@ -24,8 +24,8 @@ namespace ConnectAPIC.Scenes.InteractionOverlay
         /// </summary>
         public static bool DefaultClickValue { set; get; } = true;
 
-        public static bool ScrollingAllowed { set; get; }
-        public static bool ClickingAllowed { set; get; }
+        public static bool ScrollingAllowed { set; get; } = true;
+        public static bool ClickingAllowed { set; get; } = true;
 
         private static bool IsMaxIndexSet { set; get; } = false;
         private static int CurrentMaxZIndex { set; get; } = int.MinValue;

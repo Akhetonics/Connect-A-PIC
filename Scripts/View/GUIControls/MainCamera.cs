@@ -11,7 +11,9 @@ public partial class MainCamera : Camera2D
     [Export] public float MaxZoomIn { get; set; } = 2.7f;
     [Export] public float PanSensitivity { get; set; } = 1f;
 
+    //TODO: probably needs to be removed
     public bool noZoomingOrMoving = false;
+
 
     public override void _UnhandledInput(InputEvent @event)
     {
@@ -39,7 +41,6 @@ public partial class MainCamera : Camera2D
     {
         Zoom = new Vector2(InitialZoom, InitialZoom);
     }
-    
     
     public void ZoomCamera(int direction){
         //if (noZoomingOrMoving) return;
