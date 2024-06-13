@@ -55,7 +55,7 @@ namespace ConnectAPIC.Scenes.InteractionOverlay
         }
 
         public static void MouseEnteredElement(object sender, OverlayElement element){
-            AddPremissionValuesOfElement(element);
+            AddPermissionValuesOfElement(element);
 
             if (CurrentMaxZIndex < element.OverlayZIndex)
             {
@@ -67,14 +67,14 @@ namespace ConnectAPIC.Scenes.InteractionOverlay
 
         public static void MouseExitedElement(object sender, OverlayElement element)
         {
-            RemovePremissionValuesOfElement(element);
+            RemovePermissionValuesOfElement(element);
             SetNewMaxIndex();
             GD.Print("Exited!");
         }
 
         private static void SetNewMaxIndex()
         {
-            if (ScrollingPermissionByZIndex.Count == 0) // scrolling and clicking premission dictionaries are equal in size
+            if (ScrollingPermissionByZIndex.Count == 0) // scrolling and clicking permission dictionaries are equal in size
             {
                 IsMaxIndexSet = false;
                 CurrentMaxZIndex = int.MinValue;
@@ -88,7 +88,7 @@ namespace ConnectAPIC.Scenes.InteractionOverlay
         }
 
 
-        private static void AddPremissionValuesOfElement(OverlayElement element){
+        private static void AddPermissionValuesOfElement(OverlayElement element){
             var zIndex = element.OverlayZIndex;
 
             if (!ScrollingPermissionByZIndex.ContainsKey(zIndex))
@@ -102,7 +102,7 @@ namespace ConnectAPIC.Scenes.InteractionOverlay
             ClickingPermissionByZIndex[zIndex] += (element.Clicking ? 1 : -1);
         }
 
-        private static void RemovePremissionValuesOfElement(OverlayElement element)
+        private static void RemovePermissionValuesOfElement(OverlayElement element)
         {
             var zIndex = element.OverlayZIndex;
 

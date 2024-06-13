@@ -64,7 +64,7 @@ public partial class TutorialSystem : Control
 
     /// <summary>
     /// Used to determine if tutorial needs to be shown on startup again
-    /// when file with this name is present in appdata folder of user then tutorial shouldn't be shown again
+    /// when file with this name is present in app data folder of user then tutorial shouldn't be shown again
     /// </summary>
     string doNotShowAgainMark = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData), RepoOwnerName, RepoName, "doNotShowTutorial");
 
@@ -121,7 +121,7 @@ public partial class TutorialSystem : Control
             WindowPlacement.Center,
             ButtonsArrangement.YesNo,
             "Welcome to Connect-A-PIC",
-            "Would you like to go throgh a tutorial?",
+            "Want to go through a tutorial?",
             () => true
             );
 
@@ -155,9 +155,9 @@ public partial class TutorialSystem : Control
             () => true
             );
 
-        workingArea.HiglitedNodes.Add(new Higlighted<Node2D>
+        workingArea.HighlightedNodes.Add(new Highlighted<Node2D>
         {
-            HiglitedNode = PortContainer,
+            HighlightedNode = PortContainer,
             XOffset = 2,
             customXSize = 1485,
             customYSize = 743
@@ -204,9 +204,9 @@ public partial class TutorialSystem : Control
         //    () => !PortContainer.GetChild<ExternalPortView>(0).ViewModel.IsInput
         //    );
 
-        //ChangingPorts.HiglitedNodes.Add(new Highlighted<Node2D>
+        //ChangingPorts.HighlightedNodes.Add(new Highlighted<Node2D>
         //{
-        //    HiglitedNode  = PortContainer,
+        //    HighlightedNode  = PortContainer,
         //    XOffset       = -portsWidth,
         //    YOffset       = portContainerOffset,
         //    customXSize   = portsWidth,
@@ -223,7 +223,7 @@ public partial class TutorialSystem : Control
         //    ControlMenu.VisibilityChanged += () => {
         //        if (ControlMenu.Visible)
         //        {
-        //            HighlightControlNode(ControlMenu.GetChild(0) as Control, marginTop: 10, marginRight: 20, marginBotton: 20, marginLeft: 10);
+        //            HighlightControlNode(ControlMenu.GetChild(0) as Control, marginTop: 10, marginRight: 20, marginBottom: 20, marginLeft: 10);
         //        }
         //    };
         //};
@@ -239,9 +239,9 @@ public partial class TutorialSystem : Control
             () => true
             );
 
-        InputPorts.HiglitedNodes.Add(new Higlighted<Node2D>
+        InputPorts.HighlightedNodes.Add(new Highlighted<Node2D>
         {
-            HiglitedNode = PortContainer,
+            HighlightedNode = PortContainer,
             XOffset      = -portsWidth,
             YOffset      = portContainerOffset,
             customXSize  = portsWidth,
@@ -259,9 +259,9 @@ public partial class TutorialSystem : Control
             () => true
             );
 
-        OutputPorts.HiglitedNodes.Add(new Higlighted<Node2D>
+        OutputPorts.HighlightedNodes.Add(new Highlighted<Node2D>
         {
-            HiglitedNode = PortContainer,
+            HighlightedNode = PortContainer,
             XOffset = -portsWidth,
             YOffset = portContainerOffset + portHeight * 3,
             customXSize = portsWidth,
@@ -346,7 +346,7 @@ public partial class TutorialSystem : Control
             ButtonsArrangement.Finish,
             "Tutorial Completed!",
             "Congratulations you've completed tutorial!\n" +
-            "[color=FFD700]to open cheatsheet for controls press \"?\" on menu bar[/color]",
+            "[color=FFD700]to open cheat sheet for controls press \"?\" on menu bar[/color]",
             () => true
             );
 
@@ -427,29 +427,29 @@ public partial class TutorialSystem : Control
 
         ClearExclusionZones();
 
-        foreach (var higlitedControl in state.HiglitedControls)
+        foreach (var HighlightedControl in state.HighlightedControls)
         {
-            if(higlitedControl.customXSize == 0 && higlitedControl.customYSize == 0)
+            if(HighlightedControl.customXSize == 0 && HighlightedControl.customYSize == 0)
             {
-                HighlightControlNode(higlitedControl.HiglitedNode,
-                    higlitedControl.marginTop, higlitedControl.marginRight, higlitedControl.marginBottom, higlitedControl.marginBottom,
-                    higlitedControl.XOffset, higlitedControl.YOffset);
+                HighlightControlNode(HighlightedControl.HighlightedNode,
+                    HighlightedControl.marginTop, HighlightedControl.marginRight, HighlightedControl.marginBottom, HighlightedControl.marginBottom,
+                    HighlightedControl.XOffset, HighlightedControl.YOffset);
             }
             else
             {
-                HighlightControlNodeWithCustomSize(higlitedControl.HiglitedNode,
-                    higlitedControl.marginTop, higlitedControl.marginRight, higlitedControl.marginBottom, higlitedControl.marginBottom,
-                    higlitedControl.XOffset, higlitedControl.YOffset,
-                    higlitedControl.customXSize, higlitedControl.customYSize);
+                HighlightControlNodeWithCustomSize(HighlightedControl.HighlightedNode,
+                    HighlightedControl.marginTop, HighlightedControl.marginRight, HighlightedControl.marginBottom, HighlightedControl.marginBottom,
+                    HighlightedControl.XOffset, HighlightedControl.YOffset,
+                    HighlightedControl.customXSize, HighlightedControl.customYSize);
             }
         }
 
-        foreach (var higlitedNode in state.HiglitedNodes)
+        foreach (var HighlightedNode in state.HighlightedNodes)
         {
-            HighlightControlNodeWithCustomSize(higlitedNode.HiglitedNode,
-                higlitedNode.marginTop, higlitedNode.marginRight, higlitedNode.marginBottom, higlitedNode.marginBottom,
-                higlitedNode.XOffset, higlitedNode.YOffset,
-                higlitedNode.customXSize, higlitedNode.customYSize);
+            HighlightControlNodeWithCustomSize(HighlightedNode.HighlightedNode,
+                HighlightedNode.marginTop, HighlightedNode.marginRight, HighlightedNode.marginBottom, HighlightedNode.marginBottom,
+                HighlightedNode.XOffset, HighlightedNode.YOffset,
+                HighlightedNode.customXSize, HighlightedNode.customYSize);
         }
 
         state.RunSetupFunction();
@@ -535,16 +535,16 @@ public partial class TutorialSystem : Control
         HighlightControlNode(control, allMargins, allMargins, allMargins, allMargins, customXOffset, customYOffset);
     }
     private void HighlightControlNode(Control control,
-        float marginTop = 0, float marginRight = 0, float marginBotton = 0, float marginLeft = 0,
+        float marginTop = 0, float marginRight = 0, float marginBottom = 0, float marginLeft = 0,
         float customXOffset = 0, float customYOffset = 0)
     {
         HighlightControlNodeWithCustomSize(control,
-            marginTop, marginRight, marginBotton, marginLeft,
+            marginTop, marginRight, marginBottom, marginLeft,
             customXOffset, customYOffset,
             control.Size.X, control.Size.Y);
     }
     private void HighlightControlNodeWithCustomSize(Control control,
-        float marginTop = 0, float marginRight = 0, float marginBotton = 0, float marginLeft = 0,
+        float marginTop = 0, float marginRight = 0, float marginBottom = 0, float marginLeft = 0,
         float customXOffset = 0, float customYOffset = 0,
         float customXSize = 0, float customYSize = 0)
     {
@@ -567,11 +567,11 @@ public partial class TutorialSystem : Control
 
         exclusionZone.GlobalPosition = position;
 
-        exclusionZone.Size = new Vector2(customXSize + marginLeft + marginRight, customYSize + marginTop + marginBotton);
+        exclusionZone.Size = new Vector2(customXSize + marginLeft + marginRight, customYSize + marginTop + marginBottom);
         exclusionZone.Visible = true;
     }
     private void HighlightControlNodeWithCustomSize(Node2D control,
-        float marginTop = 0, float marginRight = 0, float marginBotton = 0, float marginLeft = 0,
+        float marginTop = 0, float marginRight = 0, float marginBottom = 0, float marginLeft = 0,
         float customXOffset = 0, float customYOffset = 0,
         float customXSize = 0, float customYSize = 0)
     {
@@ -594,7 +594,7 @@ public partial class TutorialSystem : Control
 
         exclusionZone.GlobalPosition = position;
 
-        exclusionZone.Size = new Vector2(customXSize + marginLeft + marginRight, customYSize + marginTop + marginBotton);
+        exclusionZone.Size = new Vector2(customXSize + marginLeft + marginRight, customYSize + marginTop + marginBottom);
         exclusionZone.Visible = true;
     }
 

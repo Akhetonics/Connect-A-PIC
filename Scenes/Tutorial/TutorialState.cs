@@ -22,9 +22,9 @@ public enum ButtonsArrangement
 }
 
 
-public class Higlighted<T>
+public class Highlighted<T>
 {
-    public T HiglitedNode;
+    public T HighlightedNode;
 
     public float marginTop = 0;
     public float marginLeft = 0;
@@ -62,8 +62,8 @@ public class TutorialState
     /// </summary>
     public Action FunctionWhenUnloading { get; set; }
 
-    public List<Higlighted<Control>> HiglitedControls { get; set; } = new();
-    public List<Higlighted<Node2D>> HiglitedNodes { get; set; } = new();
+    public List<Highlighted<Control>> HighlightedControls { get; set; } = new();
+    public List<Highlighted<Node2D>> HighlightedNodes { get; set; } = new();
 
     public TutorialState(
         WindowPlacement windowPlacement,
@@ -82,11 +82,11 @@ public class TutorialState
         string title,
         string body,
         Func<bool> completionCondition,
-        List<Higlighted<Control>> higlitedControls
+        List<Highlighted<Control>> HighlightedControls
         )
     {
         BasicSetup(windowPlacement, buttonsArrangement, title, body, completionCondition);
-        HiglitedControls = higlitedControls;
+        this.HighlightedControls = HighlightedControls;
     }
 
     public TutorialState(
@@ -95,12 +95,12 @@ public class TutorialState
     string title,
     string body,
     Func<bool> completionCondition,
-    List<Higlighted<Node2D>> higlitedNodes
+    List<Highlighted<Node2D>> HighlightedNodes
     )
     {
 
         BasicSetup(windowPlacement, buttonsArrangement, title, body, completionCondition);
-        HiglitedNodes = higlitedNodes;
+        this.HighlightedNodes = HighlightedNodes;
     }
 
     public TutorialState(
@@ -109,13 +109,13 @@ public class TutorialState
         string title,
         string body,
         Func<bool> completionCondition,
-        List<Higlighted<Control>> higlitedControls,
-        List<Higlighted<Node2D>> higlitedNodes
+        List<Highlighted<Control>> HighlightedControls,
+        List<Highlighted<Node2D>> HighlightedNodes
         )
     {
         BasicSetup(windowPlacement, buttonsArrangement, title, body, completionCondition);
-        HiglitedControls = higlitedControls;
-        HiglitedNodes = higlitedNodes;
+        this.HighlightedControls = HighlightedControls;
+        this.HighlightedNodes = HighlightedNodes;
     }
 
 
