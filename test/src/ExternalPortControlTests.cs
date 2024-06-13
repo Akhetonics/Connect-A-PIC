@@ -109,9 +109,6 @@ namespace ConnectAPIC.test.src
                     results.Add($"Right Port {i}: {result.Message}");
                 }
             }
-            results.Clear();
-            string doNotRun = System.Environment.GetEnvironmentVariable("DO_NOT_RUN_TUTORIAL");
-            results.Add(doNotRun);
 
             results.ShouldBeEmpty();
         }
