@@ -3,6 +3,9 @@ on:
   push:
   pull_request:
 
+env:
+  DO_NOT_RUN_TUTORIAL: 0
+
 jobs:
   visual_tests:
     name: 🖼 Visual Tests with ${{ matrix.render-driver }}
