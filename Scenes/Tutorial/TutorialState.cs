@@ -22,7 +22,7 @@ public enum ButtonsArrangement
 }
 
 
-public class Highlited<T>
+public class Higlighted<T>
 {
     public T HiglitedNode;
 
@@ -62,8 +62,8 @@ public class TutorialState
     /// </summary>
     public Action FunctionWhenUnloading { get; set; }
 
-    public List<Highlited<Control>> HiglitedControls { get; set; } = new();
-    public List<Highlited<Node2D>> HiglitedNodes { get; set; } = new();
+    public List<Higlighted<Control>> HiglitedControls { get; set; } = new();
+    public List<Higlighted<Node2D>> HiglitedNodes { get; set; } = new();
 
     public TutorialState(
         WindowPlacement windowPlacement,
@@ -82,7 +82,7 @@ public class TutorialState
         string title,
         string body,
         Func<bool> completionCondition,
-        List<Highlited<Control>> higlitedControls
+        List<Higlighted<Control>> higlitedControls
         )
     {
         BasicSetup(windowPlacement, buttonsArrangement, title, body, completionCondition);
@@ -95,7 +95,7 @@ public class TutorialState
     string title,
     string body,
     Func<bool> completionCondition,
-    List<Highlited<Node2D>> higlitedNodes
+    List<Higlighted<Node2D>> higlitedNodes
     )
     {
 
@@ -109,8 +109,8 @@ public class TutorialState
         string title,
         string body,
         Func<bool> completionCondition,
-        List<Highlited<Control>> higlitedControls,
-        List<Highlited<Node2D>> higlitedNodes
+        List<Higlighted<Control>> higlitedControls,
+        List<Higlighted<Node2D>> higlitedNodes
         )
     {
         BasicSetup(windowPlacement, buttonsArrangement, title, body, completionCondition);

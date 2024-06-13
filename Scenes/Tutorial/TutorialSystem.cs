@@ -9,7 +9,7 @@ using System.IO;
 public partial class TutorialSystem : Control
 {
     [Export] Control TutorialPopup { get; set; }
-    [Export] Button DontShowAgainCheckButton {  get; set; }
+    [Export] Button DoNotShowAgainCheckButton {  get; set; }
     [Export] TextureRect DarkeningArea { get; set; }
     [Export] Control ExclusionZoneContainer { get; set; }
     [Export] TextureRect ExclusionCircle { get; set; }
@@ -66,7 +66,7 @@ public partial class TutorialSystem : Control
     /// Used to determine if tutorial needs to be shown on startup again
     /// when file with this name is present in appdata folder of user then tutorial shouldn't be shown again
     /// </summary>
-    string dontShowAgainMark = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData), RepoOwnerName, RepoName, "dontShowTutorial");
+    string doNotShowAgainMark = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData), RepoOwnerName, RepoName, "doNotShowTutorial");
 
 
     public override void _Input(InputEvent @event)
@@ -99,7 +99,7 @@ public partial class TutorialSystem : Control
 
         DarkeningArea.MouseFilter = MouseFilterEnum.Stop;
 
-        if (DontShowAgainWasChecked()) return;
+        if (DoNotShowAgainWasChecked()) return;
 
         SetupSampleTutorial();
         Visible = true;
@@ -127,7 +127,7 @@ public partial class TutorialSystem : Control
 
         welcome.FunctionWhenLoading = () =>
         {
-            DontShowAgainCheckButton.ButtonPressed = true;
+            DoNotShowAgainCheckButton.ButtonPressed = true;
             Camera.autoCenterWhenResizing = true;
             Camera.noZoomingOrMoving = true;
             ExclusionZoneContainer.MouseFilter = MouseFilterEnum.Stop;
@@ -155,7 +155,7 @@ public partial class TutorialSystem : Control
             () => true
             );
 
-        workingArea.HiglitedNodes.Add(new Highlited<Node2D>
+        workingArea.HiglitedNodes.Add(new Higlighted<Node2D>
         {
             HiglitedNode = PortContainer,
             XOffset = 2,
@@ -204,7 +204,7 @@ public partial class TutorialSystem : Control
         //    () => !PortContainer.GetChild<ExternalPortView>(0).ViewModel.IsInput
         //    );
 
-        //ChangingPorts.HiglitedNodes.Add(new Highlited<Node2D>
+        //ChangingPorts.HiglitedNodes.Add(new Highlighted<Node2D>
         //{
         //    HiglitedNode  = PortContainer,
         //    XOffset       = -portsWidth,
@@ -239,7 +239,7 @@ public partial class TutorialSystem : Control
             () => true
             );
 
-        InputPorts.HiglitedNodes.Add(new Highlited<Node2D>
+        InputPorts.HiglitedNodes.Add(new Higlighted<Node2D>
         {
             HiglitedNode = PortContainer,
             XOffset      = -portsWidth,
@@ -259,7 +259,7 @@ public partial class TutorialSystem : Control
             () => true
             );
 
-        OutputPorts.HiglitedNodes.Add(new Highlited<Node2D>
+        OutputPorts.HiglitedNodes.Add(new Higlighted<Node2D>
         {
             HiglitedNode = PortContainer,
             XOffset = -portsWidth,
@@ -376,8 +376,8 @@ public partial class TutorialSystem : Control
 
         if (currentStateIndex > 0)
         {
-            var curentState = TutorialScenario[currentStateIndex];
-            curentState.RunUnloadFunction();
+            var currentState = TutorialScenario[currentStateIndex];
+            currentState.RunUnloadFunction();
         }
 
         currentStateIndex++;
@@ -389,17 +389,17 @@ public partial class TutorialSystem : Control
 
     private void QuitTutorial()
     {
-        var curentState = TutorialScenario[currentStateIndex];
-        curentState.RunUnloadFunction();
+        var currentState = TutorialScenario[currentStateIndex];
+        currentState.RunUnloadFunction();
 
         Camera.autoCenterWhenResizing = false;
         Camera.noZoomingOrMoving = false;
 
         currentStateIndex = -1;
 
-        if (DontShowAgainCheckButton.ButtonPressed)
+        if (DoNotShowAgainCheckButton.ButtonPressed)
         {
-            SaveDontShowAgain();
+            SaveDoNotShowAgain();
         }
 
         this.Visible = false;
@@ -609,15 +609,15 @@ public partial class TutorialSystem : Control
 
     #endregion
 
-    private bool DontShowAgainWasChecked()
+    private bool DoNotShowAgainWasChecked()
     {
-        return File.Exists(dontShowAgainMark);
+        return File.Exists(doNotShowAgainMark);
     }
 
-    private void SaveDontShowAgain()
+    private void SaveDoNotShowAgain()
     {
-        if (!File.Exists(dontShowAgainMark))
-            File.Create(dontShowAgainMark).Dispose();
+        if (!File.Exists(doNotShowAgainMark))
+            File.Create(doNotShowAgainMark).Dispose();
     }
 
     private bool GetNextCondition()

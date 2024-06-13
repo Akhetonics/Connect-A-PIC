@@ -26,15 +26,15 @@ namespace ConnectAPIC.Scenes.InteractionOverlay
 
         public static bool UseOnlyDefaults = false;
 
-        public static bool ScrollingAllowed { get => IsMaxIndexSet && !UseOnlyDefaults ? ScrollingPremissionByZIndex[CurrentMaxZIndex] > 0 : DefaultScrollValue; }
-        public static bool ClickingAllowed { get => IsMaxIndexSet && !UseOnlyDefaults ? ClickingPremissionByZIndex[CurrentMaxZIndex] > 0 : DefaultClickValue; }
+        public static bool ScrollingAllowed { get => IsMaxIndexSet && !UseOnlyDefaults ? ScrollingPermissionByZIndex[CurrentMaxZIndex] > 0 : DefaultScrollValue; }
+        public static bool ClickingAllowed { get => IsMaxIndexSet && !UseOnlyDefaults ? ClickingPermissionByZIndex[CurrentMaxZIndex] > 0 : DefaultClickValue; }
 
         private static bool IsMaxIndexSet { set; get; } = false;
         private static int CurrentMaxZIndex { set; get; } = int.MinValue;
 
         private static List<OverlayElement> ObservedElements { set; get; } = new();
-        private static Dictionary<int, int> ScrollingPremissionByZIndex { set; get; } = new();
-        private static Dictionary<int, int> ClickingPremissionByZIndex { set; get; } = new();
+        private static Dictionary<int, int> ScrollingPermissionByZIndex { set; get; } = new();
+        private static Dictionary<int, int> ClickingPermissionByZIndex { set; get; } = new();
 
 
         public static void Connect(OverlayElement element){
@@ -74,16 +74,16 @@ namespace ConnectAPIC.Scenes.InteractionOverlay
 
         private static void SetNewMaxIndex()
         {
-            if (ScrollingPremissionByZIndex.Count == 0) // scroling and clicking premission dictionaries are equal in size
+            if (ScrollingPermissionByZIndex.Count == 0) // scrolling and clicking premission dictionaries are equal in size
             {
                 IsMaxIndexSet = false;
                 CurrentMaxZIndex = int.MinValue;
                 return;
             }
 
-            var zIndecies = ScrollingPremissionByZIndex.Keys;
+            var zIndexes = ScrollingPermissionByZIndex.Keys;
 
-            CurrentMaxZIndex = zIndecies.Max();
+            CurrentMaxZIndex = zIndexes.Max();
             IsMaxIndexSet = true;
         }
 
@@ -91,31 +91,31 @@ namespace ConnectAPIC.Scenes.InteractionOverlay
         private static void AddPremissionValuesOfElement(OverlayElement element){
             var zIndex = element.OverlayZIndex;
 
-            if (!ScrollingPremissionByZIndex.ContainsKey(zIndex))
-                ScrollingPremissionByZIndex[zIndex] = 0;
+            if (!ScrollingPermissionByZIndex.ContainsKey(zIndex))
+                ScrollingPermissionByZIndex[zIndex] = 0;
 
-            ScrollingPremissionByZIndex[zIndex] += (element.Scrolling ? 1 : -1);
+            ScrollingPermissionByZIndex[zIndex] += (element.Scrolling ? 1 : -1);
 
-            if (!ClickingPremissionByZIndex.ContainsKey(zIndex))
-                ClickingPremissionByZIndex[zIndex] = 0;
+            if (!ClickingPermissionByZIndex.ContainsKey(zIndex))
+                ClickingPermissionByZIndex[zIndex] = 0;
 
-            ClickingPremissionByZIndex[zIndex] += (element.Clicking ? 1 : -1);
+            ClickingPermissionByZIndex[zIndex] += (element.Clicking ? 1 : -1);
         }
 
         private static void RemovePremissionValuesOfElement(OverlayElement element)
         {
             var zIndex = element.OverlayZIndex;
 
-            if (ScrollingPremissionByZIndex.ContainsKey(zIndex)){
-                ScrollingPremissionByZIndex[zIndex] -= (element.Scrolling ? 1 : -1);
-                if (ScrollingPremissionByZIndex[zIndex] == 0)
-                    ScrollingPremissionByZIndex.Remove(zIndex);
+            if (ScrollingPermissionByZIndex.ContainsKey(zIndex)){
+                ScrollingPermissionByZIndex[zIndex] -= (element.Scrolling ? 1 : -1);
+                if (ScrollingPermissionByZIndex[zIndex] == 0)
+                    ScrollingPermissionByZIndex.Remove(zIndex);
             }
 
-            if (ClickingPremissionByZIndex.ContainsKey(zIndex)){
-                ClickingPremissionByZIndex[zIndex] -= (element.Clicking ? 1 : -1);
-                if (ClickingPremissionByZIndex[zIndex] == 0)
-                    ClickingPremissionByZIndex.Remove(zIndex);
+            if (ClickingPermissionByZIndex.ContainsKey(zIndex)){
+                ClickingPermissionByZIndex[zIndex] -= (element.Clicking ? 1 : -1);
+                if (ClickingPermissionByZIndex[zIndex] == 0)
+                    ClickingPermissionByZIndex.Remove(zIndex);
             }
         }
     }

@@ -131,7 +131,7 @@ public partial class UpdateManager : Node
 
     private static void ResetTutorial()
     {
-        var tutorialResetFile = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData), RepoOwnerName, RepoName, "dontShowTutorial");
+        var tutorialResetFile = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData), RepoOwnerName, RepoName, "doNotShowTutorial");
 
         if(File.Exists(tutorialResetFile))
             File.Delete(tutorialResetFile);
