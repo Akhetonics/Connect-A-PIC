@@ -42,7 +42,7 @@ public partial class MainCamera : Camera2D
 
     public override void _Ready()
     {
-        RecenterCamera();
+        if (autoCenterWhenResizing) RecenterCamera();
 
         Zoom = new Vector2(InitialZoom, InitialZoom);
 

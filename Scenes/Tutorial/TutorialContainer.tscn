@@ -100,7 +100,7 @@ shadow_size = 1
 shadow_offset = Vector2(1, 2)
 anti_aliasing = false
 
-[node name="TutorialContainer" type="Control" node_paths=PackedStringArray("TutorialPopup", "DontShowAgainCheckButton", "DarkeningArea", "ExclusionZoneContainer", "ExclusionCircle", "ExclusionSquare")]
+[node name="TutorialContainer" type="Control" node_paths=PackedStringArray("TutorialPopup", "DoNotShowAgainCheckButton", "DarkeningArea", "ExclusionZoneContainer", "ExclusionCircle", "ExclusionSquare")]
 texture_filter = 1
 layout_mode = 3
 anchors_preset = 15
@@ -112,7 +112,7 @@ size_flags_horizontal = 4
 mouse_filter = 2
 script = ExtResource("1_jqrti")
 TutorialPopup = NodePath("TutorialPopup")
-DontShowAgainCheckButton = NodePath("TutorialPopup/MarginContainer/VBoxContainer/MarginContainer3/HBoxContainer/CheckButton")
+DoNotShowAgainCheckButton = NodePath("TutorialPopup/MarginContainer/VBoxContainer/MarginContainer3/HBoxContainer/CheckButton")
 DarkeningArea = NodePath("DarkeningArea")
 ExclusionZoneContainer = NodePath("ExclusionZone")
 ExclusionCircle = NodePath("ExclusionZone/ExclusionCircle")

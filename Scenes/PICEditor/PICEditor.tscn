@@ -204,6 +204,7 @@ size_flags_horizontal = 8
 size_flags_vertical = 2
 
 [node name="TutorialLaunchWindow" parent="GUILayer" node_paths=PackedStringArray("ToggleButton", "TutorialSystem") instance=ExtResource("27_1h30m")]
+visible = false
 offset_left = -397.0
 offset_top = -272.0
 offset_right = 133.0

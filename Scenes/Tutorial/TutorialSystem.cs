@@ -99,6 +99,10 @@ public partial class TutorialSystem : Control
 
         DarkeningArea.MouseFilter = MouseFilterEnum.Stop;
 
+        string doNotRun = System.Environment.GetEnvironmentVariable("DO_NOT_RUN_TUTORIAL");
+        if (doNotRun != null) return;
+
+
         if (DoNotShowAgainWasChecked()) return;
 
         SetupSampleTutorial();
@@ -507,7 +511,7 @@ public partial class TutorialSystem : Control
         FinishConfig.Visible = true;
     }
 
-    #region Higlight control
+    #region Highlight control
 
     private void HighlightGrid()
     {
