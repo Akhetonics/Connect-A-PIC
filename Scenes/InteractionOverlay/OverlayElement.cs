@@ -46,13 +46,14 @@ public partial class OverlayElement : Node2D
 
     public override void _Ready()
     {
+
         foreach (Control area in InteractionAreas){
+            if (area == null) continue;
             area.MouseEntered += Area_MouseEntered;
             area.MouseExited += Area_MouseExited;
         }
         InteractionOverlayController.Connect(this);
         this.VisibilityChanged += ActivationStatusChanged;
-
     }
 
     private void ActivationStatusChanged()
@@ -66,13 +67,13 @@ public partial class OverlayElement : Node2D
 
     private void Area_MouseExited()
     {
-        AreaEntered.Invoke(this, this);
-        MouseInsideAreas = true;
+        AreaExited.Invoke(this, this);
+        MouseInsideAreas = false;
     }
 
     private void Area_MouseEntered()
     {
-        AreaExited.Invoke(this, this);
-        MouseInsideAreas = false;
+        AreaEntered.Invoke(this, this);
+        MouseInsideAreas = true;
     }
 }

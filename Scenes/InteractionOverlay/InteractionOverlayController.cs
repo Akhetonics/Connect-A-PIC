@@ -24,8 +24,10 @@ namespace ConnectAPIC.Scenes.InteractionOverlay
         /// </summary>
         public static bool DefaultClickValue { set; get; } = true;
 
-        public static bool ScrollingAllowed { set; get; } = true;
-        public static bool ClickingAllowed { set; get; } = true;
+        public static bool UseOnlyDefaults = false;
+
+        public static bool ScrollingAllowed { get => IsMaxIndexSet && !UseOnlyDefaults ? ScrollingPremissionByZIndex[CurrentMaxZIndex] > 0 : DefaultScrollValue; }
+        public static bool ClickingAllowed { get => IsMaxIndexSet && !UseOnlyDefaults ? ClickingPremissionByZIndex[CurrentMaxZIndex] > 0 : DefaultClickValue; }
 
         private static bool IsMaxIndexSet { set; get; } = false;
         private static int CurrentMaxZIndex { set; get; } = int.MinValue;
@@ -42,6 +44,7 @@ namespace ConnectAPIC.Scenes.InteractionOverlay
             element.AreaExited += MouseExitedElement;
             if (element.MouseInsideAreas)
                 MouseEnteredElement(element, element);
+
         }
 
         public static void Disconnect(OverlayElement element){
@@ -60,7 +63,6 @@ namespace ConnectAPIC.Scenes.InteractionOverlay
                 IsMaxIndexSet = true;
             }
             GD.Print("Entered!");
-            ApplyMouseBehaviourByMaxIndex();
         }
 
         public static void MouseExitedElement(object sender, OverlayElement element)
@@ -68,7 +70,6 @@ namespace ConnectAPIC.Scenes.InteractionOverlay
             RemovePremissionValuesOfElement(element);
             SetNewMaxIndex();
             GD.Print("Exited!");
-            ApplyMouseBehaviourByMaxIndex();
         }
 
         private static void SetNewMaxIndex()
@@ -86,26 +87,6 @@ namespace ConnectAPIC.Scenes.InteractionOverlay
             IsMaxIndexSet = true;
         }
 
-        private static void ApplyMouseBehaviourByMaxIndex()
-        {
-            if (!IsMaxIndexSet)
-            {
-                ScrollingAllowed = DefaultScrollValue;
-                ClickingAllowed = DefaultClickValue;
-                return;
-            }
-
-            var scrollVal = ScrollingPremissionByZIndex[CurrentMaxZIndex];
-            var clickVal = ClickingPremissionByZIndex[CurrentMaxZIndex];
-
-            if (scrollVal > 0) ScrollingAllowed = true;
-            else if (scrollVal < 0) ScrollingAllowed = false;
-            else ScrollingAllowed = DefaultScrollValue;
-
-            if (clickVal > 0) ClickingAllowed = true;
-            else if (clickVal < 0) ClickingAllowed = false;
-            else ClickingAllowed = DefaultClickValue;
-        }
 
         private static void AddPremissionValuesOfElement(OverlayElement element){
             var zIndex = element.OverlayZIndex;

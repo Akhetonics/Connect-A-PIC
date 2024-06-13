@@ -17,7 +17,8 @@ public enum ButtonsArrangement
 {
     YesNo,
     QuitSkip,
-    QuitNext
+    QuitNext,
+    Finish
 }
 
 

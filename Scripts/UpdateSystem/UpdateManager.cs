@@ -106,6 +106,8 @@ public partial class UpdateManager : Node
         if (string.IsNullOrEmpty(installerPath))
             installerPath = Path.Combine(InstallerPath, installerName);
 
+        ResetTutorial();
+
         Process p = new Process();
         p.StartInfo.FileName = "msiexec";
         p.StartInfo.Arguments = "/i " + Path.Combine(installerPath);
@@ -125,5 +127,13 @@ public partial class UpdateManager : Node
         installerName = newInstallerName;
 
         InstallerReady?.Invoke(null, EventArgs.Empty);
+    }
+
+    private static void ResetTutorial()
+    {
+        var tutorialResetFile = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData), RepoOwnerName, RepoName, "dontShowTutorial");
+
+        if(File.Exists(tutorialResetFile))
+            File.Delete(tutorialResetFile);
     }
 }

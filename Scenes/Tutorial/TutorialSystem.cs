@@ -1,17 +1,21 @@
+using ConnectAPIC.Scenes.ExternalPorts;
 using ConnectAPIC.Scenes.InteractionOverlay;
+using ConnectAPIC.Scenes.RightClickMenu;
 using Godot;
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 public partial class TutorialSystem : Control
 {
     [Export] Control TutorialPopup { get; set; }
-
+    [Export] Button DontShowAgainCheckButton {  get; set; }
     [Export] TextureRect DarkeningArea { get; set; }
     [Export] Control ExclusionZoneContainer { get; set; }
     [Export] TextureRect ExclusionCircle { get; set; }
     [Export] TextureRect ExclusionSquare { get; set; }
 
+    [Export] MainCamera Camera { get; set; }
     [Export] Node2D PortContainer { get; set; }
     [Export] Control MenuBar { get; set; }
     [Export] Control ToolBoxContainer { get; set; }
@@ -30,6 +34,7 @@ public partial class TutorialSystem : Control
 
     private Control YesNoConfiguration;
     private Control QuitSkipNextConfig;
+    private Control FinishConfig;
     private Control SkipContainer;
     private Control NextContainer;
 
@@ -53,43 +58,26 @@ public partial class TutorialSystem : Control
     /// </summary>
     private Vector2 menuButtonPosition = Vector2.Zero;
 
+    //TODO: need to move this somewhere where update manager can also access it
+    private static string RepoOwnerName = "Akhetonics";
+    private static string RepoName = "Connect-A-PIC";
 
+    /// <summary>
+    /// Used to determine if tutorial needs to be shown on startup again
+    /// when file with this name is present in appdata folder of user then tutorial shouldn't be shown again
+    /// </summary>
+    string dontShowAgainMark = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData), RepoOwnerName, RepoName, "dontShowTutorial");
 
-    //TODO: needs to be removed after debugging
-    int i = 0;
 
     public override void _Input(InputEvent @event)
     {
-        if (@event is InputEventKey eventKey)
+        if (Input.IsActionJustPressed("ui_accept"))
         {
-            // Check if the space key is pressed
-            if (eventKey.Pressed && eventKey.Keycode == Key.Space)
-            {
-                //TODO: debugging code remove afterwards
-                if (i == 0)
-                {
-                    ClearExclusionZones();
-                    HighlightControlNodeWithCustomSize(PortContainer, customXOffset: -portsWidth, customYOffset: portContainerOffset, customXSize: portsWidth, customYSize: portHeight * 8);
-                    i++;
-                    SetTutorialPopupCenter();
-                    SetYesNoConfiguration();
-                }
-                else if (i == 1)
-                {
-                    ClearExclusionZones();
-                    HighlightControlNode(MenuBar, allMargins:3f);
-                    i++;
-                    SetTutorialPopupTopRight();
-                    SetQuitNextConfiguration();
-                }
-                else
-                {
-                    ClearExclusionZones();
-                    HighlightControlNode(ToolBoxContainer);
-                    i = 0;
-                    SetQuitSkipConfiguration();
-                }
-            }
+            GoToNextState();
+        }
+        else if (Input.IsActionJustPressed("ui_cancel"))
+        {
+            QuitTutorial();
         }
     }
 
@@ -102,24 +90,30 @@ public partial class TutorialSystem : Control
 
         YesNoConfiguration = GetNode<Control>("%YesNoConfiguration");
         QuitSkipNextConfig = GetNode<Control>("%QuitSkipNextConfiguration");
+        FinishConfig       = GetNode<Control>("%FinishConfiguration");
         SkipContainer      = GetNode<Control>("%SkipContainer");
         NextContainer      = GetNode<Control>("%NextContainer");
 
         ExclusionZoneContainer.RemoveChild(ExclusionCircle);
         ExclusionZoneContainer.RemoveChild(ExclusionSquare);
 
-        DarkeningArea.MouseFilter = MouseFilterEnum.Ignore;
+        DarkeningArea.MouseFilter = MouseFilterEnum.Stop;
+
+        if (DontShowAgainWasChecked()) return;
 
         SetupSampleTutorial();
         Visible = true;
-        // TODO: check if don't show again was marked
     }
 
-    public override void _Process(double delta)
+
+    public void StartTutorial()
     {
-
+        TutorialScenario.Clear();
+        currentStateIndex = -1;
+        Camera.RecenterCamera();
+        SetupSampleTutorial();
+        Visible = true;
     }
-
 
     private void SetupSampleTutorial()
     {
@@ -133,9 +127,12 @@ public partial class TutorialSystem : Control
 
         welcome.FunctionWhenLoading = () =>
         {
-            InteractionOverlayController.ClickingAllowed = false;
-            InteractionOverlayController.ScrollingAllowed = false;
+            DontShowAgainCheckButton.ButtonPressed = true;
+            Camera.autoCenterWhenResizing = true;
+            Camera.noZoomingOrMoving = true;
+            ExclusionZoneContainer.MouseFilter = MouseFilterEnum.Stop;
         };
+
 
         TutorialScenario.Add(welcome);
 
@@ -147,12 +144,6 @@ public partial class TutorialSystem : Control
             "Connect-A-PIC (photonic integrated circuits) aims to simplify the design of optical circuits on a chip",
             () => true
             );
-
-        explanation.FunctionWhenLoading = () =>
-        {
-            InteractionOverlayController.ClickingAllowed = false;
-            InteractionOverlayController.ScrollingAllowed = false;
-        };
 
         TutorialScenario.Add(explanation);
 
@@ -167,29 +158,210 @@ public partial class TutorialSystem : Control
         workingArea.HiglitedNodes.Add(new Highlited<Node2D>
         {
             HiglitedNode = PortContainer,
-            customXSize = 1500,
+            XOffset = 2,
+            customXSize = 1485,
             customYSize = 743
         });
 
         workingArea.FunctionWhenLoading = () =>
-        {
-            InteractionOverlayController.ClickingAllowed = false;
-            InteractionOverlayController.ScrollingAllowed = false;
+        { 
             (ToolBoxContainer as ToolBoxCollapseControl)?.SetToolBoxToggleState(true);
         };
 
         workingArea.FunctionWhenUnloading = () =>
         {
-            InteractionOverlayController.ClickingAllowed = true;
-            InteractionOverlayController.ScrollingAllowed = true;
             (ToolBoxContainer as ToolBoxCollapseControl)?.SetToolBoxToggleState(false);
         };
 
+
         TutorialScenario.Add(workingArea);
+
+        #region ports explanation
+
+        var InputOutputs = new TutorialState(
+            WindowPlacement.TopRight,
+            ButtonsArrangement.QuitNext,
+            "Input Output Ports",
+            "Both sides of the main board have input/output ports, this is where you get and read the photonic signal" +
+            "\n[color=FFD700]You can left click ports to open control menu where you can change their properties[/color]",
+            () => true
+            );
+
+        InputOutputs.FunctionWhenLoading = () =>
+        {
+            HighlightLeftPorts();
+        };
+
+        TutorialScenario.Add(InputOutputs);
+
+        #region this is scrapped for now
+        //var ChangingPorts = new TutorialState(
+        //    WindowPlacement.TopRight,
+        //    ButtonsArrangement.QuitNext,
+        //    "Port Changing",
+        //    "You can customize ports to suit your needs by simply clicking on them and selecting the desired configuration\n" +
+        //    "[color=FFD700]Left click first port and change its type to output[/color]",
+        //    () => !PortContainer.GetChild<ExternalPortView>(0).ViewModel.IsInput
+        //    );
+
+        //ChangingPorts.HiglitedNodes.Add(new Highlited<Node2D>
+        //{
+        //    HiglitedNode  = PortContainer,
+        //    XOffset       = -portsWidth,
+        //    YOffset       = portContainerOffset,
+        //    customXSize   = portsWidth,
+        //    customYSize   = portHeight
+        //});
+
+        //ChangingPorts.FunctionWhenLoading = () =>
+        //{
+        //    ExclusionZoneContainer.MouseFilter = MouseFilterEnum.Ignore;
+        //    DarkeningArea.MouseFilter = MouseFilterEnum.Stop;
+
+        //    ControlMenu = PortContainer.FindChild("ControlMenu", true, false) as ControlMenu;
+
+        //    ControlMenu.VisibilityChanged += () => {
+        //        if (ControlMenu.Visible)
+        //        {
+        //            HighlightControlNode(ControlMenu.GetChild(0) as Control, marginTop: 10, marginRight: 20, marginBotton: 20, marginLeft: 10);
+        //        }
+        //    };
+        //};
+
+        //TutorialScenario.Add(ChangingPorts);
+        #endregion
+
+        var InputPorts = new TutorialState(
+            WindowPlacement.TopRight,
+            ButtonsArrangement.QuitNext,
+            "Input Ports",
+            "The [color=FFD700]Input Ports[/color] provide you with the photonic signal, think of them as power sources",
+            () => true
+            );
+
+        InputPorts.HiglitedNodes.Add(new Highlited<Node2D>
+        {
+            HiglitedNode = PortContainer,
+            XOffset      = -portsWidth,
+            YOffset      = portContainerOffset,
+            customXSize  = portsWidth,
+            customYSize  = portHeight*3
+        });
+
+        TutorialScenario.Add(InputPorts);
+
+
+        var OutputPorts = new TutorialState(
+            WindowPlacement.TopRight,
+            ButtonsArrangement.QuitNext,
+            "Output Ports",
+            "The [color=FFD700]Output Ports[/color] give you the ability to read signal strength and phase shift, think of them as power meters",
+            () => true
+            );
+
+        OutputPorts.HiglitedNodes.Add(new Highlited<Node2D>
+        {
+            HiglitedNode = PortContainer,
+            XOffset = -portsWidth,
+            YOffset = portContainerOffset + portHeight * 3,
+            customXSize = portsWidth,
+            customYSize = portHeight * 5
+        });
+
+        TutorialScenario.Add(OutputPorts);
+
+        #endregion
+
+        #region tool box explanation
+
+        var ToolBox = new TutorialState(
+            WindowPlacement.TopRight,
+            ButtonsArrangement.QuitNext,
+            "Tool Box",
+            "Toolbox offers a wide range of components, you can left-click to select component, and left-click (or left-click and drag) to place it on the working grid",
+            () => true
+            );
+
+        ToolBox.FunctionWhenLoading = () =>
+        {
+            TextureRect exclusionZone = ExclusionSquare.Duplicate() as TextureRect;
+
+            if (exclusionZone == null) return;
+
+            Vector2 position = new Vector2(GetViewport().GetVisibleRect().Size.X - ToolBoxContainer.Size.X, GetViewport().GetVisibleRect().Size.Y - ToolBoxContainer.Size.Y);
+
+            GetViewport().SizeChanged += () => {
+                Vector2 position = new Vector2(GetViewport().GetVisibleRect().Size.X - ToolBoxContainer.Size.X, GetViewport().GetVisibleRect().Size.Y - ToolBoxContainer.Size.Y);
+                exclusionZone.GlobalPosition = position;
+            };
+            ExclusionZoneContainer.AddChild(exclusionZone);
+
+            exclusionZone.GlobalPosition = position;
+
+            exclusionZone.Size = new Vector2(ToolBoxContainer.Size.X, ToolBoxContainer.Size.Y);
+            exclusionZone.Visible = true;
+        };
+
+        TutorialScenario.Add(ToolBox);
+
+        #endregion
+
+        #region menu bar explanation
+
+        var Menu = new TutorialState(
+            WindowPlacement.TopRight,
+            ButtonsArrangement.QuitNext,
+            "Menu Bar",
+            "From the menu bar you can export/import your circuit, turn on/off your circuit, export your circuit to NAZCA and undo/redo your actions, also updates will appear here if available",
+            () => true
+            );
+
+        Menu.FunctionWhenLoading = () =>
+        {
+            TextureRect exclusionZone = ExclusionSquare.Duplicate() as TextureRect;
+
+            if (exclusionZone == null) return;
+
+            Vector2 position = new Vector2(Camera.Offset.X - 3, Camera.Offset.Y - 3);
+                  
+            GetViewport().SizeChanged += () => {
+                Vector2 position = new Vector2(Camera.Offset.X - 3, Camera.Offset.Y - 3);
+                exclusionZone.GlobalPosition = position;
+            };
+
+            ExclusionZoneContainer.AddChild(exclusionZone);
+
+            exclusionZone.GlobalPosition = position;
+
+            exclusionZone.Size = new Vector2(MenuBar.Size.X + 6, MenuBar.Size.Y + 6);
+            exclusionZone.Visible = true;
+        };
+
+        TutorialScenario.Add(Menu);
+
+        #endregion
+
+        var Finished = new TutorialState(
+            WindowPlacement.Center,
+            ButtonsArrangement.Finish,
+            "Tutorial Completed!",
+            "Congratulations you've completed tutorial!\n" +
+            "[color=FFD700]to open cheatsheet for controls press \"?\" on menu bar[/color]",
+            () => true
+            );
+
+
+        TutorialScenario.Add(Finished);
+
+        //TODO: last function should release clicking and scrolling I guess
+        Finished.FunctionWhenUnloading = () =>
+        {
+            Camera.autoCenterWhenResizing = false;
+            Camera.noZoomingOrMoving = false;
+        };
 
         GoToNextState();
     }
-
 
     private void GoToNextState()
     {
@@ -198,8 +370,6 @@ public partial class TutorialSystem : Control
 
         if (currentStateIndex == TutorialScenario.Count - 1)
         {
-            var curentState = TutorialScenario[currentStateIndex];
-            curentState.RunUnloadFunction();
             QuitTutorial();
             return;
         }
@@ -219,28 +389,40 @@ public partial class TutorialSystem : Control
 
     private void QuitTutorial()
     {
-        //TODO: check if don't show again is marked and if it is then write in app data so that it won't be shown again
+        var curentState = TutorialScenario[currentStateIndex];
+        curentState.RunUnloadFunction();
+
+        Camera.autoCenterWhenResizing = false;
+        Camera.noZoomingOrMoving = false;
+
+        currentStateIndex = -1;
+
+        if (DontShowAgainCheckButton.ButtonPressed)
+        {
+            SaveDontShowAgain();
+        }
+
         this.Visible = false;
     }
 
     private void SetupTutorialFrom(TutorialState state)
     {
-        state.RunSetupFunction();
-
         Title.Text = state.Title;
         Body.Text = state.Body;
 
         switch (state.WindowPlacement)
         {
-            case WindowPlacement.Center: SetTutorialPopupCenter(); break;
+            case WindowPlacement.Center:   SetTutorialPopupCenter();   break;
             case WindowPlacement.TopRight: SetTutorialPopupTopRight(); break;
+
         }
 
         switch (state.ButtonsArrangement)
         {
-            case ButtonsArrangement.YesNo: SetYesNoConfiguration(); break;
+            case ButtonsArrangement.YesNo:    SetYesNoConfiguration();    break;
             case ButtonsArrangement.QuitSkip: SetQuitSkipConfiguration(); break;
             case ButtonsArrangement.QuitNext: SetQuitNextConfiguration(); break;
+            case ButtonsArrangement.Finish:   SetFinishConfiguration();   break;
         }
 
         ClearExclusionZones();
@@ -270,6 +452,7 @@ public partial class TutorialSystem : Control
                 higlitedNode.customXSize, higlitedNode.customYSize);
         }
 
+        state.RunSetupFunction();
     }
 
 
@@ -293,6 +476,7 @@ public partial class TutorialSystem : Control
 
     private void SetQuitSkipConfiguration()
     {
+        FinishConfig.Visible = false;
         YesNoConfiguration.Visible = false;
         NextContainer.Visible = false;
 
@@ -302,6 +486,7 @@ public partial class TutorialSystem : Control
     }
     private void SetQuitNextConfiguration()
     {
+        FinishConfig.Visible = false;
         YesNoConfiguration.Visible = false;
         SkipContainer.Visible = false;
 
@@ -312,7 +497,17 @@ public partial class TutorialSystem : Control
     {
         YesNoConfiguration.Visible = true;
         QuitSkipNextConfig.Visible = false;
+        FinishConfig.Visible = false;
     }
+
+    private void SetFinishConfiguration()
+    {
+        YesNoConfiguration.Visible = false;
+        QuitSkipNextConfig.Visible = false;
+        FinishConfig.Visible = true;
+    }
+
+    #region Higlight control
 
     private void HighlightGrid()
     {
@@ -360,10 +555,13 @@ public partial class TutorialSystem : Control
         ExclusionZoneContainer.AddChild(exclusionZone);
 
         Vector2 position = new Vector2(
-                control.GlobalPosition.X - marginLeft + customXOffset,
-                control.GlobalPosition.Y - marginTop + customYOffset);
+                control.GlobalPosition.X - marginLeft + customXOffset - Camera.Position.X,
+                control.GlobalPosition.Y - marginTop + customYOffset - Camera.Position.Y);
 
         GetViewport().SizeChanged += () => {
+            Vector2 position = new Vector2(
+                control.GlobalPosition.X - marginLeft + customXOffset - Camera.Position.X,
+                control.GlobalPosition.Y - marginTop + customYOffset - Camera.Position.Y);
             exclusionZone.GlobalPosition = position;
         };
 
@@ -384,10 +582,13 @@ public partial class TutorialSystem : Control
         ExclusionZoneContainer.AddChild(exclusionZone);
 
         Vector2 position = new Vector2(
-                control.GlobalPosition.X - marginLeft + customXOffset,
-                control.GlobalPosition.Y - marginTop + customYOffset);
+                control.GlobalPosition.X - marginLeft + customXOffset - Camera.Position.X,
+                control.GlobalPosition.Y - marginTop + customYOffset - Camera.Position.Y);
 
         GetViewport().SizeChanged += () => {
+            Vector2 position = new Vector2(
+                control.GlobalPosition.X - marginLeft + customXOffset - Camera.Position.X,
+                control.GlobalPosition.Y - marginTop + customYOffset - Camera.Position.Y);
             exclusionZone.GlobalPosition = position;
         };
 
@@ -406,6 +607,18 @@ public partial class TutorialSystem : Control
 
     }
 
+    #endregion
+
+    private bool DontShowAgainWasChecked()
+    {
+        return File.Exists(dontShowAgainMark);
+    }
+
+    private void SaveDontShowAgain()
+    {
+        if (!File.Exists(dontShowAgainMark))
+            File.Create(dontShowAgainMark).Dispose();
+    }
 
     private bool GetNextCondition()
     {
@@ -429,12 +642,10 @@ public partial class TutorialSystem : Control
     private void OnNoButtonPress()
     {
         QuitTutorial();
-        // TODO: quits tutorial
     }
     private void OnQuitButtonPress()
     {
         QuitTutorial();
-        // TODO: quits tutorial
     }
     private void OnNextButtonPress()
     {
@@ -446,13 +657,19 @@ public partial class TutorialSystem : Control
         {
             //TODO: do something to indicate that condition isn't reached like highlight next red or something
         }
-        // TODO: checks completion condition and if competed goes to next one
     }
     private void OnSkipButtonPress()
     {
         GoToNextState();
     }
+    
+    private void OnFinishButtonPressed()
+    {
+        QuitTutorial();
+    }
 
 }
 
  
+
+

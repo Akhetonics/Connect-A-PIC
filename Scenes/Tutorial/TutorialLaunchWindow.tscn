@@ -1,0 +1,207 @@
+[gd_scene load_steps=9 format=3 uid="uid://b0rnvgo3f3djj"]
+
+[ext_resource type="Texture2D" uid="uid://bskt8xmas4b1b" path="res://Scenes/Assets/Sprites/Background.png" id="1_2tkrj"]
+[ext_resource type="Script" path="res://Scenes/Tutorial/TutorialLaunchWindow.cs" id="1_pkynf"]
+[ext_resource type="Theme" uid="uid://b2f4xgnx0xy5e" path="res://Scenes/Assets/Themes/MainTheme.tres" id="2_cvhwl"]
+[ext_resource type="StyleBox" uid="uid://2isxejv4i0gq" path="res://Scenes/Assets/Styles/RedButtonNormal.tres" id="3_devab"]
+[ext_resource type="StyleBox" uid="uid://drsxpwqtwkesm" path="res://Scenes/Assets/Styles/RedButtonPressed.tres" id="4_5yk18"]
+[ext_resource type="Theme" uid="uid://wmwls4twubhj" path="res://Scenes/Assets/Themes/TutorialTheme.tres" id="5_pw4ki"]
+[ext_resource type="FontFile" uid="uid://d4esbv2uixhnb" path="res://Scenes/Assets/Fonts/easvhs.ttf" id="6_4uhsx"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mdva6"]
+bg_color = Color(0.792157, 0.196078, 0.270588, 1)
+border_width_bottom = 5
+border_color = Color(0.596078, 0.12549, 0.188235, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
+shadow_size = 3
+shadow_offset = Vector2(3, 4)
+anti_aliasing = false
+
+[node name="TutorialLaunchWindow" type="Control"]
+texture_filter = 1
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -265.0
+offset_top = -181.5
+offset_right = 265.0
+offset_bottom = 181.5
+grow_horizontal = 2
+grow_vertical = 2
+mouse_force_pass_scroll_events = false
+script = ExtResource("1_pkynf")
+
+[node name="NinePatchRect" type="NinePatchRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("1_2tkrj")
+patch_margin_left = 27
+patch_margin_top = 44
+patch_margin_right = 27
+patch_margin_bottom = 48
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_top = -92.0
+grow_horizontal = 2
+grow_vertical = 0
+metadata/_edit_group_ = true
+
+[node name="MarginContainer" type="MarginContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/margin_left = 70
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 70
+theme_override_constants/margin_bottom = 0
+
+[node name="CloseBtn" type="Button" parent="HBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("2_cvhwl")
+theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = ExtResource("3_devab")
+theme_override_styles/hover = SubResource("StyleBoxFlat_mdva6")
+theme_override_styles/pressed = ExtResource("4_5yk18")
+text = "Close"
+
+[node name="MarginContainer2" type="MarginContainer" parent="HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/margin_left = 70
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 70
+theme_override_constants/margin_bottom = 0
+
+[node name="TutorialBtn" type="Button" parent="HBoxContainer/MarginContainer2"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("2_cvhwl")
+theme_override_font_sizes/font_size = 17
+text = "Tutorial"
+
+[node name="MarginContainer4" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 22.5
+offset_right = 16.0
+offset_bottom = 107.5
+grow_horizontal = 2
+scale = Vector2(1.2, 1.2)
+mouse_filter = 2
+theme_override_constants/margin_left = 15
+
+[node name="Title" type="RichTextLabel" parent="MarginContainer4"]
+layout_mode = 2
+theme = ExtResource("5_pw4ki")
+theme_override_colors/default_color = Color(0.933333, 0.733333, 0.333333, 1)
+theme_override_font_sizes/normal_font_size = 17
+bbcode_enabled = true
+text = "About"
+fit_content = true
+scroll_active = false
+
+[node name="MarginContainer3" type="MarginContainer" parent="."]
+offset_left = 10.0
+offset_top = 44.5
+offset_right = 512.0
+offset_bottom = 160.5
+size_flags_horizontal = 3
+size_flags_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_right = 15
+
+[node name="Body" type="RichTextLabel" parent="MarginContainer3"]
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme = ExtResource("5_pw4ki")
+theme_override_fonts/normal_font = ExtResource("6_4uhsx")
+theme_override_font_sizes/normal_font_size = 17
+bbcode_enabled = true
+text = "Connect A PIC is a Gamification of PIC Design 
+(PIC = Photonic integrated circuit) 
+we aim to simplify the design of optical circuits on a chip, which can then be printed using our Nazca-Python export function. 
+
+"
+fit_content = true
+
+[node name="MarginContainer2" type="MarginContainer" parent="."]
+layout_mode = 2
+offset_left = 10.0
+offset_top = 171.5
+offset_right = 512.0
+offset_bottom = 325.5
+size_flags_horizontal = 3
+size_flags_vertical = 2
+mouse_filter = 2
+theme_override_constants/margin_left = 15
+theme_override_constants/margin_right = 15
+
+[node name="Body" type="RichTextLabel" parent="MarginContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+mouse_filter = 2
+theme = ExtResource("5_pw4ki")
+theme_override_fonts/normal_font = ExtResource("6_4uhsx")
+theme_override_font_sizes/normal_font_size = 17
+bbcode_enabled = true
+text = "LMB - Select or place component (Drag to affect multiple)
+RMB - Rotate component (Drag to move)
+MMB - Delete component (Scroll to zoom)
+Esc - Deselect component
+Ctrl + Z/Y - Undo/Redo
+
+
+"
+fit_content = true
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+offset_left = -1.0
+offset_top = 151.5
+offset_right = 476.0
+offset_bottom = 172.5
+scale = Vector2(1.2, 1.2)
+mouse_filter = 2
+theme_override_constants/margin_left = 15
+
+[node name="Title" type="RichTextLabel" parent="MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("5_pw4ki")
+theme_override_colors/default_color = Color(0.933333, 0.733333, 0.333333, 1)
+theme_override_font_sizes/normal_font_size = 17
+bbcode_enabled = true
+text = "Control cheat sheet"
+fit_content = true
+scroll_active = false
+
+[connection signal="pressed" from="HBoxContainer/MarginContainer/CloseBtn" to="." method="OnCloseButtonPressed"]
+[connection signal="pressed" from="HBoxContainer/MarginContainer2/TutorialBtn" to="." method="OnTutorialButtonPressed"]

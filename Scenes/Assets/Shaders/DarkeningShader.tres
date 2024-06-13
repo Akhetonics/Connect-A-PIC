@@ -1,0 +1,9 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://wsj5y00jqprc"]
+
+[ext_resource type="Shader" path="res://Scenes/Tutorial/DarkeningOverlay.gdshader" id="1_nboqc"]
+
+[resource]
+shader = ExtResource("1_nboqc")
+shader_parameter/brightness = 0.5
+shader_parameter/contrast = 1.0
+shader_parameter/saturation = 1.0

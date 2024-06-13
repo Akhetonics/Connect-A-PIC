@@ -5,13 +5,16 @@ using System;
 
 public partial class MainCamera : Camera2D
 {
+    [Export] public Node2D CenteringPoint {  get; set; }
+
     [Export] public float InitialZoom { get; set; } = 1;
     [Export] public float ZoomSpeed { get; set; } = 0.1f;
     [Export] public float MinZoomIn { get; set; } = 0.5f;
     [Export] public float MaxZoomIn { get; set; } = 2.7f;
     [Export] public float PanSensitivity { get; set; } = 1f;
 
-    //TODO: probably needs to be removed
+    public bool autoCenterWhenResizing = false;
+
     public bool noZoomingOrMoving = false;
 
 
@@ -39,16 +42,33 @@ public partial class MainCamera : Camera2D
 
     public override void _Ready()
     {
+        RecenterCamera();
+
         Zoom = new Vector2(InitialZoom, InitialZoom);
+
+        GetViewport().SizeChanged += () =>
+        {
+            if (autoCenterWhenResizing)
+            {
+                RecenterCamera();
+            }
+        };
     }
-    
+
+    public void RecenterCamera()
+    {
+        var X = GetViewport().GetVisibleRect().Size.X;
+        var Y = GetViewport().GetVisibleRect().Size.Y;
+        Position = CenteringPoint.Position - new Vector2(X / 2, Y / 2);
+    }
+
     public void ZoomCamera(int direction){
         //if (noZoomingOrMoving) return;
         Vector2 previousMousePosition = GetLocalMousePosition();
         
         Zoom += Zoom * ZoomSpeed * direction;
         Zoom = Zoom.Clamp(new Vector2(MinZoomIn, MinZoomIn), new Vector2(MaxZoomIn, MaxZoomIn));
-        
+            
         Offset += previousMousePosition - GetLocalMousePosition();
     }
 

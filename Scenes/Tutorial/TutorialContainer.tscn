@@ -1,24 +1,16 @@
-[gd_scene load_steps=20 format=3 uid="uid://62ttjwpc0g0a"]
+[gd_scene load_steps=18 format=3 uid="uid://62ttjwpc0g0a"]
 
 [ext_resource type="Texture2D" uid="uid://bskt8xmas4b1b" path="res://Scenes/Assets/Sprites/Background.png" id="1_2w183"]
 [ext_resource type="Script" path="res://Scenes/Tutorial/TutorialSystem.cs" id="1_jqrti"]
 [ext_resource type="Theme" uid="uid://wmwls4twubhj" path="res://Scenes/Assets/Themes/TutorialTheme.tres" id="2_0ilsf"]
 [ext_resource type="Theme" uid="uid://b2f4xgnx0xy5e" path="res://Scenes/Assets/Themes/MainTheme.tres" id="3_1en8x"]
+[ext_resource type="Material" uid="uid://wsj5y00jqprc" path="res://Scenes/Assets/Shaders/DarkeningShader.tres" id="3_sorsx"]
 [ext_resource type="StyleBox" uid="uid://2isxejv4i0gq" path="res://Scenes/Assets/Styles/RedButtonNormal.tres" id="4_dt0v5"]
 [ext_resource type="StyleBox" uid="uid://drsxpwqtwkesm" path="res://Scenes/Assets/Styles/RedButtonPressed.tres" id="5_wwhyf"]
-[ext_resource type="Shader" path="res://Scenes/Tutorial/DarkeningOverlay.gdshader" id="6_c62t0"]
 [ext_resource type="FontFile" uid="uid://d4esbv2uixhnb" path="res://Scenes/Assets/Fonts/easvhs.ttf" id="8_1cah1"]
 [ext_resource type="Texture2D" uid="uid://opoxilg8nwju" path="res://Scenes/Tutorial/1000x1000 circle.png" id="8_eluo0"]
 [ext_resource type="Texture2D" uid="uid://16n54w4t1lkl" path="res://Scenes/Tutorial/100x100 square.png" id="9_xd8wb"]
 [ext_resource type="Script" path="res://Scenes/InteractionOverlay/OverlayElement.cs" id="10_lrvuu"]
-
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_xof72"]
-shader = ExtResource("6_c62t0")
-shader_parameter/brightness = 0.5
-shader_parameter/contrast = 1.0
-shader_parameter/saturation = 1.0
-
-[sub_resource type="CanvasTexture" id="CanvasTexture_55qyt"]
 
 [sub_resource type="Shader" id="Shader_gcxy7"]
 code = "shader_type canvas_item;
@@ -108,7 +100,7 @@ shadow_size = 1
 shadow_offset = Vector2(1, 2)
 anti_aliasing = false
 
-[node name="TutorialContainer" type="Control" node_paths=PackedStringArray("TutorialPopup", "DarkeningArea", "ExclusionZoneContainer", "ExclusionCircle", "ExclusionSquare")]
+[node name="TutorialContainer" type="Control" node_paths=PackedStringArray("TutorialPopup", "DontShowAgainCheckButton", "DarkeningArea", "ExclusionZoneContainer", "ExclusionCircle", "ExclusionSquare")]
 texture_filter = 1
 layout_mode = 3
 anchors_preset = 15
@@ -120,6 +112,7 @@ size_flags_horizontal = 4
 mouse_filter = 2
 script = ExtResource("1_jqrti")
 TutorialPopup = NodePath("TutorialPopup")
+DontShowAgainCheckButton = NodePath("TutorialPopup/MarginContainer/VBoxContainer/MarginContainer3/HBoxContainer/CheckButton")
 DarkeningArea = NodePath("DarkeningArea")
 ExclusionZoneContainer = NodePath("ExclusionZone")
 ExclusionCircle = NodePath("ExclusionZone/ExclusionCircle")
@@ -127,37 +120,37 @@ ExclusionSquare = NodePath("ExclusionZone/ExclusionSquare")
 metadata/_edit_vertical_guides_ = [512.0]
 metadata/_edit_horizontal_guides_ = [384.0]
 
-[node name="Node2D" type="Node2D" parent="." node_paths=PackedStringArray("InteractionAreas")]
-visible = false
+[node name="DarkeningAreaOverlay" type="Node2D" parent="." node_paths=PackedStringArray("InteractionAreas")]
 script = ExtResource("10_lrvuu")
 InteractionAreas = [NodePath("../DarkeningArea")]
 
+[node name="ExclusionAreaOverlay" type="Node2D" parent="." node_paths=PackedStringArray("InteractionAreas")]
+visible = false
+script = ExtResource("10_lrvuu")
+Scrolling = true
+Clicking = true
+OverlayZIndex = 0
+InteractionAreas = [NodePath("")]
+
 [node name="DarkeningArea" type="TextureRect" parent="."]
-material = SubResource("ShaderMaterial_xof72")
+material = ExtResource("3_sorsx")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-mouse_filter = 2
-texture = SubResource("CanvasTexture_55qyt")
+mouse_filter = 0
+texture = ExtResource("9_xd8wb")
 
 [node name="ExclusionZone" type="Control" parent="."]
 unique_name_in_owner = true
 layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_left = 20.0
-offset_top = 18.0
-offset_right = 20.0
-offset_bottom = 18.0
-grow_horizontal = 2
-grow_vertical = 2
+anchors_preset = 0
+mouse_filter = 1
+mouse_force_pass_scroll_events = false
 
 [node name="ExclusionSquare" type="TextureRect" parent="ExclusionZone"]
-visible = false
 material = SubResource("ShaderMaterial_irq5l")
 layout_mode = 1
 anchors_preset = 3
@@ -165,17 +158,16 @@ anchor_left = 1.0
 anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_left = -887.0
-offset_top = -756.0
-offset_right = -787.0
-offset_bottom = -656.0
+offset_left = 137.0
+offset_top = 12.0
+offset_right = 237.0
+offset_bottom = 112.0
 grow_horizontal = 0
 grow_vertical = 0
 texture = ExtResource("9_xd8wb")
 expand_mode = 1
 
 [node name="ExclusionCircle" type="TextureRect" parent="ExclusionZone"]
-visible = false
 material = SubResource("ShaderMaterial_irq5l")
 layout_mode = 1
 anchors_preset = 8
@@ -183,14 +175,13 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -502.0
-offset_top = -373.0
-offset_right = 498.0
-offset_bottom = 627.0
+offset_left = 10.0
+offset_top = 11.0
+offset_right = 1010.0
+offset_bottom = 1011.0
 grow_horizontal = 2
 grow_vertical = 2
 scale = Vector2(0.1, 0.1)
-mouse_filter = 2
 texture = ExtResource("8_eluo0")
 
 [node name="Deprecated" type="Control" parent="."]
@@ -284,13 +275,13 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -321.0
-offset_top = -136.0
-offset_right = 324.0
-offset_bottom = 137.0
+offset_left = -322.0
+offset_top = -156.0
+offset_right = 323.0
+offset_bottom = 157.0
 grow_horizontal = 2
 grow_vertical = 2
-metadata/_edit_group_ = true
+mouse_force_pass_scroll_events = false
 
 [node name="NinePatchRect" type="NinePatchRect" parent="TutorialPopup"]
 layout_mode = 1
@@ -349,7 +340,7 @@ unique_name_in_owner = true
 layout_mode = 2
 theme = ExtResource("2_0ilsf")
 theme_override_fonts/normal_font = ExtResource("8_1cah1")
-theme_override_font_sizes/normal_font_size = 22
+theme_override_font_sizes/normal_font_size = 25
 bbcode_enabled = true
 text = "[center]Want to go through the tutorial?[/center]"
 fit_content = true
@@ -370,6 +361,7 @@ focus_mode = 0
 layout_mode = 2
 size_flags_horizontal = 3
 size_flags_vertical = 4
+theme_override_font_sizes/normal_font_size = 17
 text = "Don't show again"
 fit_content = true
 scroll_active = false
@@ -396,6 +388,7 @@ custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 focus_mode = 0
 theme = ExtResource("3_1en8x")
+theme_override_font_sizes/font_size = 17
 theme_override_styles/normal = ExtResource("4_dt0v5")
 theme_override_styles/hover = SubResource("StyleBoxFlat_w2aj2")
 theme_override_styles/pressed = ExtResource("5_wwhyf")
@@ -415,6 +408,7 @@ custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 focus_mode = 0
 theme = ExtResource("3_1en8x")
+theme_override_font_sizes/font_size = 17
 text = "Yes!"
 
 [node name="QuitSkipNextConfiguration" type="MarginContainer" parent="TutorialPopup/MarginContainer/VBoxContainer"]
@@ -439,6 +433,7 @@ custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 focus_mode = 0
 theme = ExtResource("3_1en8x")
+theme_override_font_sizes/font_size = 17
 theme_override_styles/normal = ExtResource("4_dt0v5")
 theme_override_styles/hover = SubResource("StyleBoxFlat_w2aj2")
 theme_override_styles/pressed = ExtResource("5_wwhyf")
@@ -459,6 +454,7 @@ custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 focus_mode = 0
 theme = ExtResource("3_1en8x")
+theme_override_font_sizes/font_size = 17
 text = "Next"
 
 [node name="SkipContainer" type="MarginContainer" parent="TutorialPopup/MarginContainer/VBoxContainer/QuitSkipNextConfiguration/HBoxContainer"]
@@ -476,13 +472,40 @@ custom_minimum_size = Vector2(0, 30)
 layout_mode = 2
 focus_mode = 0
 theme = ExtResource("3_1en8x")
+theme_override_font_sizes/font_size = 17
 theme_override_styles/normal = SubResource("StyleBoxFlat_ccq3g")
 theme_override_styles/hover = SubResource("StyleBoxFlat_ffmjl")
 theme_override_styles/pressed = SubResource("StyleBoxFlat_38dt3")
 text = "Skip"
+
+[node name="FinishConfiguration" type="MarginContainer" parent="TutorialPopup/MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TutorialPopup/MarginContainer/VBoxContainer/FinishConfiguration"]
+layout_mode = 2
+
+[node name="NextContainer" type="MarginContainer" parent="TutorialPopup/MarginContainer/VBoxContainer/FinishConfiguration/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/margin_left = 220
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 220
+theme_override_constants/margin_bottom = 0
+
+[node name="FinishBtn" type="Button" parent="TutorialPopup/MarginContainer/VBoxContainer/FinishConfiguration/HBoxContainer/NextContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("3_1en8x")
+theme_override_font_sizes/font_size = 17
+text = "Finish"
 
 [connection signal="pressed" from="TutorialPopup/MarginContainer/VBoxContainer/YesNoConfiguration/HBoxContainer/MarginContainer/NoBtn" to="." method="OnNoButtonPress"]
 [connection signal="pressed" from="TutorialPopup/MarginContainer/VBoxContainer/YesNoConfiguration/HBoxContainer/MarginContainer2/YesBtn" to="." method="OnYesButtonPress"]
 [connection signal="pressed" from="TutorialPopup/MarginContainer/VBoxContainer/QuitSkipNextConfiguration/HBoxContainer/MarginContainer/QuitBtn" to="." method="OnQuitButtonPress"]
 [connection signal="pressed" from="TutorialPopup/MarginContainer/VBoxContainer/QuitSkipNextConfiguration/HBoxContainer/NextContainer/NextBtn" to="." method="OnNextButtonPress"]
 [connection signal="pressed" from="TutorialPopup/MarginContainer/VBoxContainer/QuitSkipNextConfiguration/HBoxContainer/SkipContainer/SkipBtn" to="." method="OnSkipButtonPress"]
+[connection signal="pressed" from="TutorialPopup/MarginContainer/VBoxContainer/FinishConfiguration/HBoxContainer/NextContainer/FinishBtn" to="." method="OnFinishButtonPressed"]
