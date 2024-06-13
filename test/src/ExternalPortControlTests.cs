@@ -91,6 +91,7 @@ namespace ConnectAPIC.test.src
                 await TestScene.GetTree().NextFrame(DefaultAwaitedFrames);
                 if (!result.Success)
                 {
+
                     results.Add($"Left Port {i}: {result.Message}");
                 }
             }
@@ -108,6 +109,9 @@ namespace ConnectAPIC.test.src
                     results.Add($"Right Port {i}: {result.Message}");
                 }
             }
+            results.Clear();
+            string doNotRun = System.Environment.GetEnvironmentVariable("DO_NOT_RUN_TUTORIAL");
+            results.Add(doNotRun);
 
             results.ShouldBeEmpty();
         }

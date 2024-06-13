@@ -102,7 +102,6 @@ public partial class TutorialSystem : Control
         string doNotRun = System.Environment.GetEnvironmentVariable("DO_NOT_RUN_TUTORIAL");
         if (doNotRun != null) return;
 
-
         if (DoNotShowAgainWasChecked()) return;
 
         SetupSampleTutorial();
