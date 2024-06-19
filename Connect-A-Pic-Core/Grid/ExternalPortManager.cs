@@ -15,22 +15,22 @@ namespace CAP_Core.Grid
         {
             TileManager = tileManager;
             ExternalPorts = new ObservableCollection<ExternalPort>() {
-                    new ExternalInput("io0",LaserType.Red, 2,1),
-                    new ExternalInput("io1",LaserType.Green, 3, 1),
-                    new ExternalInput("io2",LaserType.Blue , 4, 1),
-                    new ExternalOutput("io3",5),
-                    new ExternalOutput("io4",6),
-                    new ExternalOutput("io5",7),
-                    new ExternalOutput("io6",8),
-                    new ExternalOutput("io7",9),
-                    new ExternalInput("io8",LaserType.Red, 2,1, false),
-                    new ExternalInput("io9",LaserType.Green, 3, 1, false),
-                    new ExternalInput("io10",LaserType.Blue , 4, 1, false),
-                    new ExternalOutput("io11",5, false),
-                    new ExternalOutput("io12",6, false),
-                    new ExternalOutput("io13",7, false),
-                    new ExternalOutput("io14",8, false),
-                    new ExternalOutput("io15",9, false),
+                    new ExternalInput("eio0",LaserType.Red, 2,1),
+                    new ExternalInput("eio1",LaserType.Green, 3, 1),
+                    new ExternalInput("eio2",LaserType.Blue , 4, 1),
+                    new ExternalOutput("eio3",5),
+                    new ExternalOutput("eio4",6),
+                    new ExternalOutput("eio5",7),
+                    new ExternalOutput("eio6",8),
+                    new ExternalOutput("eio7",9),
+                    new ExternalInput("wio1",LaserType.Red, 2,1, false),
+                    new ExternalInput("wio2",LaserType.Green, 3, 1, false),
+                    new ExternalInput("wio3",LaserType.Blue , 4, 1, false),
+                    new ExternalOutput("wio4",5, false),
+                    new ExternalOutput("wio5",6, false),
+                    new ExternalOutput("wio6",7, false),
+                    new ExternalOutput("wio7",8, false),
+                    new ExternalOutput("wio8",9, false),
                 };
         }
         public ConcurrentBag<ExternalInput> GetAllExternalInputs()
