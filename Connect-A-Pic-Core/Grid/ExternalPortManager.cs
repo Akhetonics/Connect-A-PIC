@@ -23,14 +23,14 @@ namespace CAP_Core.Grid
                     new ExternalOutput("eio5",7),
                     new ExternalOutput("eio6",8),
                     new ExternalOutput("eio7",9),
-                    new ExternalInput("wio1",LaserType.Red, 2,1, false),
-                    new ExternalInput("wio2",LaserType.Green, 3, 1, false),
-                    new ExternalInput("wio3",LaserType.Blue , 4, 1, false),
-                    new ExternalOutput("wio4",5, false),
-                    new ExternalOutput("wio5",6, false),
-                    new ExternalOutput("wio6",7, false),
-                    new ExternalOutput("wio7",8, false),
-                    new ExternalOutput("wio8",9, false),
+                    new ExternalInput("wio0",LaserType.Red, 2,1, false),
+                    new ExternalInput("wio1",LaserType.Green, 3, 1, false),
+                    new ExternalInput("wio2",LaserType.Blue , 4, 1, false),
+                    new ExternalOutput("wio3",5, false),
+                    new ExternalOutput("wio4",6, false),
+                    new ExternalOutput("wio5",7, false),
+                    new ExternalOutput("wio6",8, false),
+                    new ExternalOutput("wio7",9, false),
                 };
         }
         public ConcurrentBag<ExternalInput> GetAllExternalInputs()
