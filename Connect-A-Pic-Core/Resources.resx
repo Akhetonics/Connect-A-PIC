@@ -130,8 +130,11 @@
   <data name="NazcaPDKName" xml:space="preserve">
     <value>CAPICPDK</value>
   </data>
-  <data name="NazcaStandardInputCellName" xml:space="preserve">
-    <value>grating</value>
+  <data name="NazcaStandardLeftInputCellName" xml:space="preserve">
+    <value>grating1</value>
+  </data>
+  <data name="NazcaStandardRightInputCellName" xml:space="preserve">
+    <value>grating2</value>
   </data>
   <data name="PDK" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\PDK.txt;System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089;Windows-1252</value>
