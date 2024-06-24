@@ -50,6 +50,7 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands.ExternalPorts
 
         private void RestartLight()
         {
+            if (!Grid.LightManager.IsLightOn) return;
             Grid.LightManager.IsLightOn = !Grid.LightManager.IsLightOn;
             Grid.LightManager.IsLightOn = !Grid.LightManager.IsLightOn;
         }
