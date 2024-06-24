@@ -1,14 +1,11 @@
-[gd_scene load_steps=18 format=3 uid="uid://62ttjwpc0g0a"]
+[gd_scene load_steps=11 format=3 uid="uid://62ttjwpc0g0a"]
 
 [ext_resource type="Texture2D" uid="uid://bskt8xmas4b1b" path="res://Scenes/Assets/Sprites/Background.png" id="1_2w183"]
 [ext_resource type="Script" path="res://Scenes/Tutorial/TutorialSystem.cs" id="1_jqrti"]
-[ext_resource type="Theme" uid="uid://wmwls4twubhj" path="res://Scenes/Assets/Themes/TutorialTheme.tres" id="2_0ilsf"]
-[ext_resource type="Theme" uid="uid://b2f4xgnx0xy5e" path="res://Scenes/Assets/Themes/MainTheme.tres" id="3_1en8x"]
+[ext_resource type="Theme" path="res://Scenes/Assets/Themes/TutorialTheme.tres" id="2_0ilsf"]
 [ext_resource type="Material" uid="uid://wsj5y00jqprc" path="res://Scenes/Assets/Shaders/DarkeningShader.tres" id="3_sorsx"]
-[ext_resource type="StyleBox" uid="uid://2isxejv4i0gq" path="res://Scenes/Assets/Styles/RedButtonNormal.tres" id="4_dt0v5"]
-[ext_resource type="StyleBox" uid="uid://drsxpwqtwkesm" path="res://Scenes/Assets/Styles/RedButtonPressed.tres" id="5_wwhyf"]
-[ext_resource type="FontFile" uid="uid://d4esbv2uixhnb" path="res://Scenes/Assets/Fonts/easvhs.ttf" id="8_1cah1"]
 [ext_resource type="Texture2D" uid="uid://opoxilg8nwju" path="res://Scenes/Tutorial/1000x1000 circle.png" id="8_eluo0"]
+[ext_resource type="PackedScene" uid="uid://ro67mc8ymwg" path="res://Scenes/Tutorial/TutorialPopup.tscn" id="8_odysu"]
 [ext_resource type="Texture2D" uid="uid://16n54w4t1lkl" path="res://Scenes/Tutorial/100x100 square.png" id="9_xd8wb"]
 [ext_resource type="Script" path="res://Scenes/InteractionOverlay/OverlayElement.cs" id="10_lrvuu"]
 
@@ -37,69 +34,6 @@ shader_parameter/brightness = 1.0
 shader_parameter/contrast = 1.0
 shader_parameter/saturation = 1.0
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w2aj2"]
-bg_color = Color(0.792157, 0.196078, 0.270588, 1)
-border_width_bottom = 5
-border_color = Color(0.596078, 0.12549, 0.188235, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-expand_margin_left = 2.0
-expand_margin_top = 2.0
-expand_margin_right = 2.0
-expand_margin_bottom = 2.0
-shadow_size = 3
-shadow_offset = Vector2(3, 4)
-anti_aliasing = false
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ccq3g"]
-bg_color = Color(0.839216, 0.698039, 0.235294, 1)
-border_width_bottom = 5
-border_color = Color(0.337255, 0.286275, 0.0823529, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-expand_margin_left = 2.0
-expand_margin_top = 2.0
-expand_margin_right = 2.0
-expand_margin_bottom = 2.0
-shadow_size = 3
-shadow_offset = Vector2(3, 4)
-anti_aliasing = false
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ffmjl"]
-bg_color = Color(0.933333, 0.733333, 0.333333, 1)
-border_width_bottom = 5
-border_color = Color(0.458824, 0.392157, 0.12549, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-expand_margin_left = 2.0
-expand_margin_top = 2.0
-expand_margin_right = 2.0
-expand_margin_bottom = 2.0
-shadow_size = 3
-shadow_offset = Vector2(3, 4)
-anti_aliasing = false
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_38dt3"]
-bg_color = Color(0.933333, 0.733333, 0.333333, 1)
-border_width_bottom = 3
-border_color = Color(0.458824, 0.392157, 0.12549, 1)
-corner_radius_top_left = 5
-corner_radius_top_right = 5
-corner_radius_bottom_right = 5
-corner_radius_bottom_left = 5
-expand_margin_left = 2.0
-expand_margin_right = 2.0
-expand_margin_bottom = 2.0
-shadow_size = 1
-shadow_offset = Vector2(1, 2)
-anti_aliasing = false
-
 [node name="TutorialContainer" type="Control" node_paths=PackedStringArray("TutorialPopup", "DoNotShowAgainCheckButton", "DarkeningArea", "ExclusionZoneContainer", "ExclusionCircle", "ExclusionSquare")]
 texture_filter = 1
 layout_mode = 3
@@ -111,8 +45,8 @@ grow_vertical = 2
 size_flags_horizontal = 4
 mouse_filter = 2
 script = ExtResource("1_jqrti")
-TutorialPopup = NodePath("TutorialPopup")
-DoNotShowAgainCheckButton = NodePath("TutorialPopup/MarginContainer/VBoxContainer/MarginContainer3/HBoxContainer/CheckButton")
+TutorialPopup = NodePath("")
+DoNotShowAgainCheckButton = NodePath("")
 DarkeningArea = NodePath("DarkeningArea")
 ExclusionZoneContainer = NodePath("ExclusionZone")
 ExclusionCircle = NodePath("ExclusionZone/ExclusionCircle")
@@ -130,7 +64,7 @@ script = ExtResource("10_lrvuu")
 Scrolling = true
 Clicking = true
 OverlayZIndex = 0
-InteractionAreas = [NodePath("")]
+InteractionAreas = [null]
 
 [node name="DarkeningArea" type="TextureRect" parent="."]
 material = ExtResource("3_sorsx")
@@ -267,245 +201,5 @@ fit_content = true
 scroll_active = false
 text_direction = 1
 
-[node name="TutorialPopup" type="Control" parent="."]
-texture_filter = 1
+[node name="TutorialPopup" parent="." instance=ExtResource("8_odysu")]
 layout_mode = 1
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -322.0
-offset_top = -156.0
-offset_right = 323.0
-offset_bottom = 157.0
-grow_horizontal = 2
-grow_vertical = 2
-mouse_force_pass_scroll_events = false
-
-[node name="NinePatchRect" type="NinePatchRect" parent="TutorialPopup"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-texture = ExtResource("1_2w183")
-patch_margin_left = 27
-patch_margin_top = 44
-patch_margin_right = 27
-patch_margin_bottom = 48
-
-[node name="MarginContainer" type="MarginContainer" parent="TutorialPopup"]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_constants/margin_left = 25
-theme_override_constants/margin_top = 25
-theme_override_constants/margin_right = 25
-theme_override_constants/margin_bottom = 25
-
-[node name="VBoxContainer" type="VBoxContainer" parent="TutorialPopup/MarginContainer"]
-layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="TutorialPopup/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_constants/margin_top = 5
-theme_override_constants/margin_bottom = 5
-
-[node name="Title" type="RichTextLabel" parent="TutorialPopup/MarginContainer/VBoxContainer/MarginContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-theme = ExtResource("2_0ilsf")
-theme_override_colors/default_color = Color(0.933333, 0.733333, 0.333333, 1)
-bbcode_enabled = true
-text = "[center]Tutorial![/center]"
-fit_content = true
-scroll_active = false
-
-[node name="ScrollContainer" type="ScrollContainer" parent="TutorialPopup/MarginContainer/VBoxContainer"]
-layout_mode = 2
-size_flags_vertical = 3
-
-[node name="MarginContainer2" type="MarginContainer" parent="TutorialPopup/MarginContainer/VBoxContainer/ScrollContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 6
-
-[node name="Body" type="RichTextLabel" parent="TutorialPopup/MarginContainer/VBoxContainer/ScrollContainer/MarginContainer2"]
-unique_name_in_owner = true
-layout_mode = 2
-theme = ExtResource("2_0ilsf")
-theme_override_fonts/normal_font = ExtResource("8_1cah1")
-theme_override_font_sizes/normal_font_size = 25
-bbcode_enabled = true
-text = "[center]Want to go through the tutorial?[/center]"
-fit_content = true
-
-[node name="MarginContainer3" type="MarginContainer" parent="TutorialPopup/MarginContainer/VBoxContainer"]
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="TutorialPopup/MarginContainer/VBoxContainer/MarginContainer3"]
-layout_mode = 2
-
-[node name="CheckButton" type="CheckButton" parent="TutorialPopup/MarginContainer/VBoxContainer/MarginContainer3/HBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 0
-focus_mode = 0
-
-[node name="RichTextLabel" type="RichTextLabel" parent="TutorialPopup/MarginContainer/VBoxContainer/MarginContainer3/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
-theme_override_font_sizes/normal_font_size = 17
-text = "Don't show again"
-fit_content = true
-scroll_active = false
-text_direction = 1
-
-[node name="YesNoConfiguration" type="MarginContainer" parent="TutorialPopup/MarginContainer/VBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="TutorialPopup/MarginContainer/VBoxContainer/YesNoConfiguration"]
-layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="TutorialPopup/MarginContainer/VBoxContainer/YesNoConfiguration/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
-theme_override_constants/margin_left = 55
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 55
-theme_override_constants/margin_bottom = 0
-
-[node name="NoBtn" type="Button" parent="TutorialPopup/MarginContainer/VBoxContainer/YesNoConfiguration/HBoxContainer/MarginContainer"]
-custom_minimum_size = Vector2(0, 30)
-layout_mode = 2
-focus_mode = 0
-theme = ExtResource("3_1en8x")
-theme_override_font_sizes/font_size = 17
-theme_override_styles/normal = ExtResource("4_dt0v5")
-theme_override_styles/hover = SubResource("StyleBoxFlat_w2aj2")
-theme_override_styles/pressed = ExtResource("5_wwhyf")
-text = "No"
-
-[node name="MarginContainer2" type="MarginContainer" parent="TutorialPopup/MarginContainer/VBoxContainer/YesNoConfiguration/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
-theme_override_constants/margin_left = 55
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 55
-theme_override_constants/margin_bottom = 0
-
-[node name="YesBtn" type="Button" parent="TutorialPopup/MarginContainer/VBoxContainer/YesNoConfiguration/HBoxContainer/MarginContainer2"]
-custom_minimum_size = Vector2(0, 30)
-layout_mode = 2
-focus_mode = 0
-theme = ExtResource("3_1en8x")
-theme_override_font_sizes/font_size = 17
-text = "Yes!"
-
-[node name="QuitSkipNextConfiguration" type="MarginContainer" parent="TutorialPopup/MarginContainer/VBoxContainer"]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="TutorialPopup/MarginContainer/VBoxContainer/QuitSkipNextConfiguration"]
-layout_mode = 2
-
-[node name="MarginContainer" type="MarginContainer" parent="TutorialPopup/MarginContainer/VBoxContainer/QuitSkipNextConfiguration/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
-theme_override_constants/margin_left = 30
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 90
-theme_override_constants/margin_bottom = 0
-
-[node name="QuitBtn" type="Button" parent="TutorialPopup/MarginContainer/VBoxContainer/QuitSkipNextConfiguration/HBoxContainer/MarginContainer"]
-custom_minimum_size = Vector2(0, 30)
-layout_mode = 2
-focus_mode = 0
-theme = ExtResource("3_1en8x")
-theme_override_font_sizes/font_size = 17
-theme_override_styles/normal = ExtResource("4_dt0v5")
-theme_override_styles/hover = SubResource("StyleBoxFlat_w2aj2")
-theme_override_styles/pressed = ExtResource("5_wwhyf")
-text = "Quit"
-
-[node name="NextContainer" type="MarginContainer" parent="TutorialPopup/MarginContainer/VBoxContainer/QuitSkipNextConfiguration/HBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
-theme_override_constants/margin_left = 90
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 30
-theme_override_constants/margin_bottom = 0
-
-[node name="NextBtn" type="Button" parent="TutorialPopup/MarginContainer/VBoxContainer/QuitSkipNextConfiguration/HBoxContainer/NextContainer"]
-custom_minimum_size = Vector2(0, 30)
-layout_mode = 2
-focus_mode = 0
-theme = ExtResource("3_1en8x")
-theme_override_font_sizes/font_size = 17
-text = "Next"
-
-[node name="SkipContainer" type="MarginContainer" parent="TutorialPopup/MarginContainer/VBoxContainer/QuitSkipNextConfiguration/HBoxContainer"]
-unique_name_in_owner = true
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
-theme_override_constants/margin_left = 90
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 30
-theme_override_constants/margin_bottom = 0
-
-[node name="SkipBtn" type="Button" parent="TutorialPopup/MarginContainer/VBoxContainer/QuitSkipNextConfiguration/HBoxContainer/SkipContainer"]
-custom_minimum_size = Vector2(0, 30)
-layout_mode = 2
-focus_mode = 0
-theme = ExtResource("3_1en8x")
-theme_override_font_sizes/font_size = 17
-theme_override_styles/normal = SubResource("StyleBoxFlat_ccq3g")
-theme_override_styles/hover = SubResource("StyleBoxFlat_ffmjl")
-theme_override_styles/pressed = SubResource("StyleBoxFlat_38dt3")
-text = "Skip"
-
-[node name="FinishConfiguration" type="MarginContainer" parent="TutorialPopup/MarginContainer/VBoxContainer"]
-unique_name_in_owner = true
-visible = false
-layout_mode = 2
-
-[node name="HBoxContainer" type="HBoxContainer" parent="TutorialPopup/MarginContainer/VBoxContainer/FinishConfiguration"]
-layout_mode = 2
-
-[node name="NextContainer" type="MarginContainer" parent="TutorialPopup/MarginContainer/VBoxContainer/FinishConfiguration/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 3
-size_flags_vertical = 4
-theme_override_constants/margin_left = 220
-theme_override_constants/margin_top = 10
-theme_override_constants/margin_right = 220
-theme_override_constants/margin_bottom = 0
-
-[node name="FinishBtn" type="Button" parent="TutorialPopup/MarginContainer/VBoxContainer/FinishConfiguration/HBoxContainer/NextContainer"]
-custom_minimum_size = Vector2(0, 30)
-layout_mode = 2
-focus_mode = 0
-theme = ExtResource("3_1en8x")
-theme_override_font_sizes/font_size = 17
-text = "Finish"
-
-[connection signal="pressed" from="TutorialPopup/MarginContainer/VBoxContainer/YesNoConfiguration/HBoxContainer/MarginContainer/NoBtn" to="." method="OnNoButtonPress"]
-[connection signal="pressed" from="TutorialPopup/MarginContainer/VBoxContainer/YesNoConfiguration/HBoxContainer/MarginContainer2/YesBtn" to="." method="OnYesButtonPress"]
-[connection signal="pressed" from="TutorialPopup/MarginContainer/VBoxContainer/QuitSkipNextConfiguration/HBoxContainer/MarginContainer/QuitBtn" to="." method="OnQuitButtonPress"]
-[connection signal="pressed" from="TutorialPopup/MarginContainer/VBoxContainer/QuitSkipNextConfiguration/HBoxContainer/NextContainer/NextBtn" to="." method="OnNextButtonPress"]
-[connection signal="pressed" from="TutorialPopup/MarginContainer/VBoxContainer/QuitSkipNextConfiguration/HBoxContainer/SkipContainer/SkipBtn" to="." method="OnSkipButtonPress"]
-[connection signal="pressed" from="TutorialPopup/MarginContainer/VBoxContainer/FinishConfiguration/HBoxContainer/NextContainer/FinishBtn" to="." method="OnFinishButtonPressed"]

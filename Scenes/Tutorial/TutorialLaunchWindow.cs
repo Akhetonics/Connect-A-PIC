@@ -43,12 +43,6 @@ public partial class TutorialLaunchWindow : Control
         ToggleButton.ButtonPressed = false;
         EmitSignal(SignalName.WindowClosed);
     }
-
-
-
-
-
-
 }
 
 

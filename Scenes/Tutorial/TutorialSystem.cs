@@ -8,8 +8,7 @@ using System.IO;
 
 public partial class TutorialSystem : Control
 {
-    [Export] Control TutorialPopup { get; set; }
-    [Export] Button DoNotShowAgainCheckButton {  get; set; }
+    [Export] TutorialPopupView TutorialPopup { get; set; }
     [Export] TextureRect DarkeningArea { get; set; }
     [Export] Control ExclusionZoneContainer { get; set; }
     [Export] TextureRect ExclusionCircle { get; set; }
@@ -28,16 +27,6 @@ public partial class TutorialSystem : Control
     public List<TutorialState> TutorialScenario { get; set; } = new List<TutorialState>();
 
     private int currentStateIndex = -1;
-
-    private RichTextLabel Title;
-    private RichTextLabel Body;
-
-    private Control YesNoConfiguration;
-    private Control QuitSkipNextConfig;
-    private Control FinishConfig;
-    private Control SkipContainer;
-    private Control NextContainer;
-
 
     private int portContainerOffset = 124;
     private int portsWidth = 120;
@@ -68,7 +57,6 @@ public partial class TutorialSystem : Control
     /// </summary>
     string doNotShowAgainMark = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData), RepoOwnerName, RepoName, "doNotShowTutorial");
 
-
     public override void _Input(InputEvent @event)
     {
         if (Input.IsActionJustPressed("ui_accept"))
@@ -85,14 +73,15 @@ public partial class TutorialSystem : Control
     {
         Visible = false;
 
-        Title = GetNode<RichTextLabel>("%Title");
-        Body  = GetNode<RichTextLabel>("%Body");
+        TutorialPopup.SkipPressed += GoToNextState;
 
-        YesNoConfiguration = GetNode<Control>("%YesNoConfiguration");
-        QuitSkipNextConfig = GetNode<Control>("%QuitSkipNextConfiguration");
-        FinishConfig       = GetNode<Control>("%FinishConfiguration");
-        SkipContainer      = GetNode<Control>("%SkipContainer");
-        NextContainer      = GetNode<Control>("%NextContainer");
+        TutorialPopup.YesPressed += GoToNextIfNextConditionSatisfied;
+        TutorialPopup.NextPressed += GoToNextIfNextConditionSatisfied;
+
+        TutorialPopup.NoPressed += QuitTutorial;
+        TutorialPopup.QuitPressed += QuitTutorial;
+        TutorialPopup.FinishPressed += QuitTutorial;
+
 
         ExclusionZoneContainer.RemoveChild(ExclusionCircle);
         ExclusionZoneContainer.RemoveChild(ExclusionSquare);
@@ -122,7 +111,7 @@ public partial class TutorialSystem : Control
     {
         var welcome = new TutorialState(
             WindowPlacement.Center,
-            ButtonsArrangement.YesNo,
+            ButtonsConfiguration.YesNo,
             "Welcome to Connect-A-PIC",
             "Want to go through a tutorial?",
             () => true
@@ -130,19 +119,18 @@ public partial class TutorialSystem : Control
 
         welcome.FunctionWhenLoading = () =>
         {
-            DoNotShowAgainCheckButton.ButtonPressed = true;
+            TutorialPopup.DoNotShowAgain = true;
             Camera.autoCenterWhenResizing = true;
             Camera.noZoomingOrMoving = true;
             ExclusionZoneContainer.MouseFilter = MouseFilterEnum.Stop;
         };
-
 
         TutorialScenario.Add(welcome);
 
 
         var explanation = new TutorialState(
             WindowPlacement.Center,
-            ButtonsArrangement.QuitNext,
+            ButtonsConfiguration.QuitNext,
             "What is Connect-A-PIC",
             "Connect-A-PIC (photonic integrated circuits) aims to simplify the design of optical circuits on a chip",
             () => true
@@ -150,15 +138,16 @@ public partial class TutorialSystem : Control
 
         TutorialScenario.Add(explanation);
 
+
         var workingArea = new TutorialState(
             WindowPlacement.TopRight,
-            ButtonsArrangement.QuitNext,
+            ButtonsConfiguration.QuitNext,
             "Main Circuit",
             "This is your main workspace, where you can design and build your own photonic circuits",
             () => true
             );
 
-        workingArea.HighlightedNodes.Add(new Highlighted<Node2D>
+        workingArea.HighlightedNodes.Add(new HighlightedElement<Node2D>
         {
             HighlightedNode = PortContainer,
             XOffset = 2,
@@ -176,14 +165,13 @@ public partial class TutorialSystem : Control
             (ToolBoxContainer as ToolBoxCollapseControl)?.SetToolBoxToggleState(false);
         };
 
-
         TutorialScenario.Add(workingArea);
 
         #region ports explanation
 
         var InputOutputs = new TutorialState(
             WindowPlacement.TopRight,
-            ButtonsArrangement.QuitNext,
+            ButtonsConfiguration.QuitNext,
             "Input Output Ports",
             "Both sides of the main board have input/output ports, this is where you get and read the photonic signal" +
             "\n[color=FFD700]You can left click ports to open control menu where you can change their properties[/color]",
@@ -236,13 +224,13 @@ public partial class TutorialSystem : Control
 
         var InputPorts = new TutorialState(
             WindowPlacement.TopRight,
-            ButtonsArrangement.QuitNext,
+            ButtonsConfiguration.QuitNext,
             "Input Ports",
             "The [color=FFD700]Input Ports[/color] provide you with the photonic signal, think of them as power sources",
             () => true
             );
 
-        InputPorts.HighlightedNodes.Add(new Highlighted<Node2D>
+        InputPorts.HighlightedNodes.Add(new HighlightedElement<Node2D>
         {
             HighlightedNode = PortContainer,
             XOffset      = -portsWidth,
@@ -256,13 +244,13 @@ public partial class TutorialSystem : Control
 
         var OutputPorts = new TutorialState(
             WindowPlacement.TopRight,
-            ButtonsArrangement.QuitNext,
+            ButtonsConfiguration.QuitNext,
             "Output Ports",
             "The [color=FFD700]Output Ports[/color] give you the ability to read signal strength and phase shift, think of them as power meters",
             () => true
             );
 
-        OutputPorts.HighlightedNodes.Add(new Highlighted<Node2D>
+        OutputPorts.HighlightedNodes.Add(new HighlightedElement<Node2D>
         {
             HighlightedNode = PortContainer,
             XOffset = -portsWidth,
@@ -279,7 +267,7 @@ public partial class TutorialSystem : Control
 
         var ToolBox = new TutorialState(
             WindowPlacement.TopRight,
-            ButtonsArrangement.QuitNext,
+            ButtonsConfiguration.QuitNext,
             "Tool Box",
             "Toolbox offers a wide range of components, you can left-click to select component, and left-click (or left-click and drag) to place it on the working grid",
             () => true
@@ -313,7 +301,7 @@ public partial class TutorialSystem : Control
 
         var Menu = new TutorialState(
             WindowPlacement.TopRight,
-            ButtonsArrangement.QuitNext,
+            ButtonsConfiguration.QuitNext,
             "Menu Bar",
             "From the menu bar you can export/import your circuit, turn on/off your circuit, export your circuit to NAZCA and undo/redo your actions, also updates will appear here if available",
             () => true
@@ -346,7 +334,7 @@ public partial class TutorialSystem : Control
 
         var Finished = new TutorialState(
             WindowPlacement.Center,
-            ButtonsArrangement.Finish,
+            ButtonsConfiguration.Finish,
             "Tutorial Completed!",
             "Congratulations you've completed tutorial!\n" +
             "[color=FFD700]to open cheat sheet for controls press \"?\" on menu bar[/color]",
@@ -356,7 +344,7 @@ public partial class TutorialSystem : Control
 
         TutorialScenario.Add(Finished);
 
-        //TODO: last function should release clicking and scrolling I guess
+        //last function should releases clicking and scrolling
         Finished.FunctionWhenUnloading = () =>
         {
             Camera.autoCenterWhenResizing = false;
@@ -365,6 +353,7 @@ public partial class TutorialSystem : Control
 
         GoToNextState();
     }
+
 
     private void GoToNextState()
     {
@@ -400,7 +389,7 @@ public partial class TutorialSystem : Control
 
         currentStateIndex = -1;
 
-        if (DoNotShowAgainCheckButton.ButtonPressed)
+        if (TutorialPopup.DoNotShowAgain)
         {
             SaveDoNotShowAgain();
         }
@@ -410,23 +399,10 @@ public partial class TutorialSystem : Control
 
     private void SetupTutorialFrom(TutorialState state)
     {
-        Title.Text = state.Title;
-        Body.Text = state.Body;
-
-        switch (state.WindowPlacement)
-        {
-            case WindowPlacement.Center:   SetTutorialPopupCenter();   break;
-            case WindowPlacement.TopRight: SetTutorialPopupTopRight(); break;
-
-        }
-
-        switch (state.ButtonsArrangement)
-        {
-            case ButtonsArrangement.YesNo:    SetYesNoConfiguration();    break;
-            case ButtonsArrangement.QuitSkip: SetQuitSkipConfiguration(); break;
-            case ButtonsArrangement.QuitNext: SetQuitNextConfiguration(); break;
-            case ButtonsArrangement.Finish:   SetFinishConfiguration();   break;
-        }
+        TutorialPopup.SetTitleText(state.Title);
+        TutorialPopup.SetBodyText(state.Body);
+        TutorialPopup.SetWindowPlacement(state.WindowPlacement);
+        TutorialPopup.SetButtonConfiguration(state.ButtonsConfiguration);
 
         ClearExclusionZones();
 
@@ -440,7 +416,7 @@ public partial class TutorialSystem : Control
             }
             else
             {
-                HighlightControlNodeWithCustomSize(HighlightedControl.HighlightedNode,
+                HighlightControlNode(HighlightedControl.HighlightedNode,
                     HighlightedControl.marginTop, HighlightedControl.marginRight, HighlightedControl.marginBottom, HighlightedControl.marginBottom,
                     HighlightedControl.XOffset, HighlightedControl.YOffset,
                     HighlightedControl.customXSize, HighlightedControl.customYSize);
@@ -449,7 +425,7 @@ public partial class TutorialSystem : Control
 
         foreach (var HighlightedNode in state.HighlightedNodes)
         {
-            HighlightControlNodeWithCustomSize(HighlightedNode.HighlightedNode,
+            HighlightControlNode(HighlightedNode.HighlightedNode,
                 HighlightedNode.marginTop, HighlightedNode.marginRight, HighlightedNode.marginBottom, HighlightedNode.marginBottom,
                 HighlightedNode.XOffset, HighlightedNode.YOffset,
                 HighlightedNode.customXSize, HighlightedNode.customYSize);
@@ -458,95 +434,65 @@ public partial class TutorialSystem : Control
         state.RunSetupFunction();
     }
 
-
-    private void SetTitleText(string text)
-    {
-        Title.Text = $"[center]{text}[/center]";
-    }
-    private void SetBodyText(string text)
-    {
-        Body.Text = $"[center]{text}[/center]";
-    }
-
-    private void SetTutorialPopupCenter()
-    {
-        TutorialPopup.SetAnchorsAndOffsetsPreset(LayoutPreset.Center,LayoutPresetMode.KeepSize);
-    }
-    private void SetTutorialPopupTopRight()
-    {
-        TutorialPopup.SetAnchorsAndOffsetsPreset(LayoutPreset.TopRight, LayoutPresetMode.KeepSize);
-    }
-
-    private void SetQuitSkipConfiguration()
-    {
-        FinishConfig.Visible = false;
-        YesNoConfiguration.Visible = false;
-        NextContainer.Visible = false;
-
-        QuitSkipNextConfig.Visible = true;
-        SkipContainer.Visible = true;
-
-    }
-    private void SetQuitNextConfiguration()
-    {
-        FinishConfig.Visible = false;
-        YesNoConfiguration.Visible = false;
-        SkipContainer.Visible = false;
-
-        QuitSkipNextConfig.Visible = true;
-        NextContainer.Visible = true;
-    }
-    private void SetYesNoConfiguration()
-    {
-        YesNoConfiguration.Visible = true;
-        QuitSkipNextConfig.Visible = false;
-        FinishConfig.Visible = false;
-    }
-
-    private void SetFinishConfiguration()
-    {
-        YesNoConfiguration.Visible = false;
-        QuitSkipNextConfig.Visible = false;
-        FinishConfig.Visible = true;
-    }
-
     #region Highlight control
 
     private void HighlightGrid()
     {
-        HighlightControlNodeWithCustomSize(PortContainer, customXSize: 1500, customYSize: 743);
+        HighlightControlNode(PortContainer, customXSize: 1500, customYSize: 743);
     }
-
     private void HighlightLeftPorts()
     {
-        HighlightControlNodeWithCustomSize(PortContainer, customXOffset: -portsWidth, customYOffset: portContainerOffset, customXSize: portsWidth, customYSize: portHeight * 8);
+        HighlightControlNode(PortContainer, customXOffset: -portsWidth, customYOffset: portContainerOffset, customXSize: portsWidth, customYSize: portHeight * 8);
     }
-
     private void HighlightMenu()
     {
         HighlightControlNode(MenuBar, allMargins: 3f);
     }
-
     private void HighlightToolbox()
     {
         HighlightControlNode(ToolBoxContainer);
     }
 
+
     private void HighlightControlNode(Control control,
-        float allMargins, float customXOffset = 0, float customYOffset = 0)
+        float allMargins,
+        float customXOffset = 0, float customYOffset = 0,
+        float customXSize = 0, float customYSize = 0)
     {
         HighlightControlNode(control, allMargins, allMargins, allMargins, allMargins, customXOffset, customYOffset);
     }
+
     private void HighlightControlNode(Control control,
         float marginTop = 0, float marginRight = 0, float marginBottom = 0, float marginLeft = 0,
-        float customXOffset = 0, float customYOffset = 0)
+        float customXOffset = 0, float customYOffset = 0,
+        float customXSize = 0, float customYSize = 0)
     {
-        HighlightControlNodeWithCustomSize(control,
-            marginTop, marginRight, marginBottom, marginLeft,
-            customXOffset, customYOffset,
-            control.Size.X, control.Size.Y);
+        if (customXSize == 0) customXSize = control.Size.X;
+        if (customYSize == 0) customYSize = control.Size.Y;
+
+        TextureRect exclusionZone = ExclusionSquare.Duplicate() as TextureRect;
+
+        if (exclusionZone == null) return;
+
+        ExclusionZoneContainer.AddChild(exclusionZone);
+
+        Vector2 position = new Vector2(
+                control.GlobalPosition.X - marginLeft + customXOffset - Camera.Position.X,
+                control.GlobalPosition.Y - marginTop + customYOffset - Camera.Position.Y);
+
+        GetViewport().SizeChanged += () => {
+            Vector2 position = new Vector2(
+                control.GlobalPosition.X - marginLeft + customXOffset - Camera.Position.X,
+                control.GlobalPosition.Y - marginTop + customYOffset - Camera.Position.Y);
+            exclusionZone.GlobalPosition = position;
+        };
+
+        exclusionZone.GlobalPosition = position;
+
+        exclusionZone.Size = new Vector2(customXSize + marginLeft + marginRight, customYSize + marginTop + marginBottom);
+        exclusionZone.Visible = true;
     }
-    private void HighlightControlNodeWithCustomSize(Control control,
+    private void HighlightControlNode(Node2D control,
         float marginTop = 0, float marginRight = 0, float marginBottom = 0, float marginLeft = 0,
         float customXOffset = 0, float customYOffset = 0,
         float customXSize = 0, float customYSize = 0)
@@ -573,33 +519,7 @@ public partial class TutorialSystem : Control
         exclusionZone.Size = new Vector2(customXSize + marginLeft + marginRight, customYSize + marginTop + marginBottom);
         exclusionZone.Visible = true;
     }
-    private void HighlightControlNodeWithCustomSize(Node2D control,
-        float marginTop = 0, float marginRight = 0, float marginBottom = 0, float marginLeft = 0,
-        float customXOffset = 0, float customYOffset = 0,
-        float customXSize = 0, float customYSize = 0)
-    {
-        TextureRect exclusionZone = ExclusionSquare.Duplicate() as TextureRect;
 
-        if (exclusionZone == null) return;
-
-        ExclusionZoneContainer.AddChild(exclusionZone);
-
-        Vector2 position = new Vector2(
-                control.GlobalPosition.X - marginLeft + customXOffset - Camera.Position.X,
-                control.GlobalPosition.Y - marginTop + customYOffset - Camera.Position.Y);
-
-        GetViewport().SizeChanged += () => {
-            Vector2 position = new Vector2(
-                control.GlobalPosition.X - marginLeft + customXOffset - Camera.Position.X,
-                control.GlobalPosition.Y - marginTop + customYOffset - Camera.Position.Y);
-            exclusionZone.GlobalPosition = position;
-        };
-
-        exclusionZone.GlobalPosition = position;
-
-        exclusionZone.Size = new Vector2(customXSize + marginLeft + marginRight, customYSize + marginTop + marginBottom);
-        exclusionZone.Visible = true;
-    }
 
     private void ClearExclusionZones()
     {
@@ -607,7 +527,6 @@ public partial class TutorialSystem : Control
         {
             child.QueueFree();
         }
-
     }
 
     #endregion
@@ -629,7 +548,7 @@ public partial class TutorialSystem : Control
         return currentState.CompletionCondition.Invoke();
     }
 
-    private void OnYesButtonPress()
+    private void GoToNextIfNextConditionSatisfied()
     {
         if (GetNextCondition())
         {
@@ -639,37 +558,8 @@ public partial class TutorialSystem : Control
         {
             //TODO: do something to indicate that condition isn't reached like highlight yes red or something
         }
-            
-        // TODO: goes to next slide or if end of the line quits
     }
-    private void OnNoButtonPress()
-    {
-        QuitTutorial();
-    }
-    private void OnQuitButtonPress()
-    {
-        QuitTutorial();
-    }
-    private void OnNextButtonPress()
-    {
-        if (GetNextCondition())
-        {
-            GoToNextState();
-        }
-        else
-        {
-            //TODO: do something to indicate that condition isn't reached like highlight next red or something
-        }
-    }
-    private void OnSkipButtonPress()
-    {
-        GoToNextState();
-    }
-    
-    private void OnFinishButtonPressed()
-    {
-        QuitTutorial();
-    }
+
 
 }
 

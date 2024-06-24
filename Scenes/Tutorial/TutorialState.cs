@@ -5,15 +5,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-
-
 public enum WindowPlacement
 {
     TopRight,
     Center
 }
 
-public enum ButtonsArrangement
+public enum ButtonsConfiguration
 {
     YesNo,
     QuitSkip,
@@ -22,26 +20,10 @@ public enum ButtonsArrangement
 }
 
 
-public class Highlighted<T>
-{
-    public T HighlightedNode;
-
-    public float marginTop = 0;
-    public float marginLeft = 0;
-    public float marginRight = 0;
-    public float marginBottom = 0;
-
-    public float XOffset = 0;
-    public float YOffset = 0;
-
-    public float customXSize = 0;
-    public float customYSize = 0;
-}
-
 public class TutorialState
 {
     public WindowPlacement WindowPlacement {  get; set; }
-    public ButtonsArrangement ButtonsArrangement {  get; set; } 
+    public ButtonsConfiguration ButtonsConfiguration {  get; set; } 
 
     public string Title { get; set; }
     public string Body { get; set; }
@@ -62,62 +44,27 @@ public class TutorialState
     /// </summary>
     public Action FunctionWhenUnloading { get; set; }
 
-    public List<Highlighted<Control>> HighlightedControls { get; set; } = new();
-    public List<Highlighted<Node2D>> HighlightedNodes { get; set; } = new();
+    public List<HighlightedElement<Control>> HighlightedControls { get; set; } = new();
+    public List<HighlightedElement<Node2D>> HighlightedNodes { get; set; } = new();
 
     public TutorialState(
         WindowPlacement windowPlacement,
-        ButtonsArrangement buttonsArrangement,
-        string title,
-        string body,
-        Func<bool> completionCondition
-    )
-    {
-        BasicSetup(windowPlacement, buttonsArrangement, title, body, completionCondition);
-    }
-
-    public TutorialState(
-        WindowPlacement windowPlacement,
-        ButtonsArrangement buttonsArrangement,
+        ButtonsConfiguration buttonsArrangement,
         string title,
         string body,
         Func<bool> completionCondition,
-        List<Highlighted<Control>> HighlightedControls
-        )
-    {
-        BasicSetup(windowPlacement, buttonsArrangement, title, body, completionCondition);
-        this.HighlightedControls = HighlightedControls;
-    }
-
-    public TutorialState(
-    WindowPlacement windowPlacement,
-    ButtonsArrangement buttonsArrangement,
-    string title,
-    string body,
-    Func<bool> completionCondition,
-    List<Highlighted<Node2D>> HighlightedNodes
+        List<HighlightedElement<Control>> HighlightedControls = null,
+        List<HighlightedElement<Node2D>> HighlightedNodes = null
     )
     {
-
         BasicSetup(windowPlacement, buttonsArrangement, title, body, completionCondition);
-        this.HighlightedNodes = HighlightedNodes;
-    }
 
-    public TutorialState(
-    WindowPlacement windowPlacement,
-    ButtonsArrangement buttonsArrangement,
-        string title,
-        string body,
-        Func<bool> completionCondition,
-        List<Highlighted<Control>> HighlightedControls,
-        List<Highlighted<Node2D>> HighlightedNodes
-        )
-    {
-        BasicSetup(windowPlacement, buttonsArrangement, title, body, completionCondition);
-        this.HighlightedControls = HighlightedControls;
-        this.HighlightedNodes = HighlightedNodes;
-    }
+        if ( HighlightedControls != null ) 
+            this.HighlightedControls = HighlightedControls;
 
+        if ( HighlightedNodes != null )
+            this.HighlightedNodes = HighlightedNodes;
+    }
 
 
     public void RunSetupFunction()
@@ -132,11 +79,10 @@ public class TutorialState
             FunctionWhenUnloading.Invoke();
     }
 
-
-    private void BasicSetup(WindowPlacement windowPlacement, ButtonsArrangement buttonsArrangement, string title, string body, Func<bool> completionCondition)
+    private void BasicSetup(WindowPlacement windowPlacement, ButtonsConfiguration buttonsArrangement, string title, string body, Func<bool> completionCondition)
     {
         WindowPlacement = windowPlacement;
-        ButtonsArrangement = buttonsArrangement;
+        ButtonsConfiguration = buttonsArrangement;
         Title = $"[center]{title}[/center]";
         Body = $"[center]{body}[/center]";
         CompletionCondition = completionCondition;
