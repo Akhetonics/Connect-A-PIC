@@ -13,9 +13,43 @@ public class HighlightedElement<T>
     public float marginRight = 0;
     public float marginBottom = 0;
 
-    public float XOffset = 0;
-    public float YOffset = 0;
+    public float OffsetX = 0;
+    public float OffsetY = 0;
 
-    public float customXSize = 0;
-    public float customYSize = 0;
+    public float customSizeX = 0;
+    public float customSizeY = 0;
+
+    public HighlightedElement(T highlightedNode)
+    {
+        HighlightedNode = highlightedNode;
+    }
+
+    public HighlightedElement<T> SetMargins(float marginLeft, float marginTop, float marginRight, float marginBottom)
+    {
+        this.marginLeft = marginLeft;
+        this.marginTop = marginTop;
+        this.marginRight = marginRight;
+        this.marginBottom = marginBottom;
+        return this;
+    }
+    public HighlightedElement<T> SetMargins(float allMargins)
+    {
+        this.marginLeft = allMargins;
+        this.marginTop = allMargins;
+        this.marginRight = allMargins;
+        this.marginBottom = allMargins;
+        return this;
+    }
+    public HighlightedElement<T> SetOffsets(float offsetX, float offsetY)
+    {
+        this.OffsetX = offsetX;
+        this.OffsetY = offsetY;
+        return this;
+    }
+    public HighlightedElement<T> SetSize(float sizeX, float sizeY)
+    {
+        this.customSizeX = sizeX;
+        this.customSizeY = sizeY;
+        return this;
+    }
 }

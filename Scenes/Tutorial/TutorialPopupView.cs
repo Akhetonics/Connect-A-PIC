@@ -3,7 +3,6 @@ using System;
 
 public partial class TutorialPopupView : Control
 {
-
     [Export] RichTextLabel Title;
     [Export] RichTextLabel Body;
     [Export] Button NoShowAgainBtn;
@@ -22,13 +21,14 @@ public partial class TutorialPopupView : Control
     [Signal] public delegate void SkipPressedEventHandler();
     [Signal] public delegate void NextPressedEventHandler();
 
-
     public bool DoNotShowAgain
     {
         get => NoShowAgainBtn.ButtonPressed;
         set => NoShowAgainBtn.ButtonPressed = value;
     }
 
+
+    private TutorialPopupViewModel viewModel = new();
 
     // Called when the node enters the scene tree for the first time.
     public override void _Ready()

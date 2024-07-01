@@ -9,10 +9,7 @@ using System.IO;
 public partial class TutorialSystem : Control
 {
     [Export] TutorialPopupView TutorialPopup { get; set; }
-    [Export] TextureRect DarkeningArea { get; set; }
-    [Export] Control ExclusionZoneContainer { get; set; }
-    [Export] TextureRect ExclusionCircle { get; set; }
-    [Export] TextureRect ExclusionSquare { get; set; }
+    [Export] ExclusionControl ExclusionControl { get; set; }
 
     [Export] MainCamera Camera { get; set; }
     [Export] Node2D PortContainer { get; set; }
@@ -83,11 +80,6 @@ public partial class TutorialSystem : Control
         TutorialPopup.FinishPressed += QuitTutorial;
 
 
-        ExclusionZoneContainer.RemoveChild(ExclusionCircle);
-        ExclusionZoneContainer.RemoveChild(ExclusionSquare);
-
-        DarkeningArea.MouseFilter = MouseFilterEnum.Stop;
-
         string doNotRun = System.Environment.GetEnvironmentVariable("DO_NOT_RUN_TUTORIAL");
         if (doNotRun != null) return;
 
@@ -96,7 +88,6 @@ public partial class TutorialSystem : Control
         SetupSampleTutorial();
         Visible = true;
     }
-
 
     public void StartTutorial()
     {
@@ -122,7 +113,6 @@ public partial class TutorialSystem : Control
             TutorialPopup.DoNotShowAgain = true;
             Camera.autoCenterWhenResizing = true;
             Camera.noZoomingOrMoving = true;
-            ExclusionZoneContainer.MouseFilter = MouseFilterEnum.Stop;
         };
 
         TutorialScenario.Add(welcome);
@@ -150,13 +140,13 @@ public partial class TutorialSystem : Control
         workingArea.HighlightedNodes.Add(new HighlightedElement<Node2D>
         {
             HighlightedNode = PortContainer,
-            XOffset = 2,
-            customXSize = 1485,
-            customYSize = 743
+            OffsetX = 2,
+            customSizeX = 1485,
+            customSizeY = 743
         });
 
         workingArea.FunctionWhenLoading = () =>
-        { 
+        {
             (ToolBoxContainer as ToolBoxCollapseControl)?.SetToolBoxToggleState(true);
         };
 
@@ -233,10 +223,10 @@ public partial class TutorialSystem : Control
         InputPorts.HighlightedNodes.Add(new HighlightedElement<Node2D>
         {
             HighlightedNode = PortContainer,
-            XOffset      = -portsWidth,
-            YOffset      = portContainerOffset,
-            customXSize  = portsWidth,
-            customYSize  = portHeight*3
+            OffsetX = -portsWidth,
+            OffsetY = portContainerOffset,
+            customSizeX = portsWidth,
+            customSizeY = portHeight * 3
         });
 
         TutorialScenario.Add(InputPorts);
@@ -253,10 +243,10 @@ public partial class TutorialSystem : Control
         OutputPorts.HighlightedNodes.Add(new HighlightedElement<Node2D>
         {
             HighlightedNode = PortContainer,
-            XOffset = -portsWidth,
-            YOffset = portContainerOffset + portHeight * 3,
-            customXSize = portsWidth,
-            customYSize = portHeight * 5
+            OffsetX = -portsWidth,
+            OffsetY = portContainerOffset + portHeight * 3,
+            customSizeX = portsWidth,
+            customSizeY = portHeight * 5
         });
 
         TutorialScenario.Add(OutputPorts);
@@ -275,22 +265,17 @@ public partial class TutorialSystem : Control
 
         ToolBox.FunctionWhenLoading = () =>
         {
-            TextureRect exclusionZone = ExclusionSquare.Duplicate() as TextureRect;
-
-            if (exclusionZone == null) return;
-
-            Vector2 position = new Vector2(GetViewport().GetVisibleRect().Size.X - ToolBoxContainer.Size.X, GetViewport().GetVisibleRect().Size.Y - ToolBoxContainer.Size.Y);
-
-            GetViewport().SizeChanged += () => {
-                Vector2 position = new Vector2(GetViewport().GetVisibleRect().Size.X - ToolBoxContainer.Size.X, GetViewport().GetVisibleRect().Size.Y - ToolBoxContainer.Size.Y);
-                exclusionZone.GlobalPosition = position;
-            };
-            ExclusionZoneContainer.AddChild(exclusionZone);
-
-            exclusionZone.GlobalPosition = position;
-
-            exclusionZone.Size = new Vector2(ToolBoxContainer.Size.X, ToolBoxContainer.Size.Y);
-            exclusionZone.Visible = true;
+            ExclusionControl.SetCustomHighlight(
+                    new Vector2(ToolBoxContainer.Size.X, ToolBoxContainer.Size.Y),
+                    new Vector2(
+                        GetViewport().GetVisibleRect().Size.X - ToolBoxContainer.Size.X,
+                        GetViewport().GetVisibleRect().Size.Y - ToolBoxContainer.Size.Y),
+                    () => {
+                        return new Vector2(
+                            GetViewport().GetVisibleRect().Size.X - ToolBoxContainer.Size.X,
+                            GetViewport().GetVisibleRect().Size.Y - ToolBoxContainer.Size.Y);
+                    }
+                );
         };
 
         TutorialScenario.Add(ToolBox);
@@ -309,23 +294,11 @@ public partial class TutorialSystem : Control
 
         Menu.FunctionWhenLoading = () =>
         {
-            TextureRect exclusionZone = ExclusionSquare.Duplicate() as TextureRect;
-
-            if (exclusionZone == null) return;
-
-            Vector2 position = new Vector2(Camera.Offset.X - 3, Camera.Offset.Y - 3);
-                  
-            GetViewport().SizeChanged += () => {
-                Vector2 position = new Vector2(Camera.Offset.X - 3, Camera.Offset.Y - 3);
-                exclusionZone.GlobalPosition = position;
-            };
-
-            ExclusionZoneContainer.AddChild(exclusionZone);
-
-            exclusionZone.GlobalPosition = position;
-
-            exclusionZone.Size = new Vector2(MenuBar.Size.X + 6, MenuBar.Size.Y + 6);
-            exclusionZone.Visible = true;
+            ExclusionControl.SetCustomHighlight(
+                    new Vector2(MenuBar.Size.X + 6, MenuBar.Size.Y + 6),
+                    new Vector2(Camera.Offset.X - 3, Camera.Offset.Y - 3),
+                    () => new Vector2(Camera.Offset.X - 3, Camera.Offset.Y - 3)
+                );
         };
 
         TutorialScenario.Add(Menu);
@@ -341,7 +314,6 @@ public partial class TutorialSystem : Control
             () => true
             );
 
-
         TutorialScenario.Add(Finished);
 
         //last function should releases clicking and scrolling
@@ -354,6 +326,19 @@ public partial class TutorialSystem : Control
         GoToNextState();
     }
 
+    private void SetupTutorialFrom(TutorialState state)
+    {
+        TutorialPopup.SetTitleText(state.Title);
+        TutorialPopup.SetBodyText(state.Body);
+        TutorialPopup.SetWindowPlacement(state.WindowPlacement);
+        TutorialPopup.SetButtonConfiguration(state.ButtonsConfiguration);
+
+        ExclusionControl.ClearExclusionZones();
+
+        ExclusionControl.HighlightFromTutorialState(state, Camera.Position);
+
+        state.RunSetupFunction();
+    }
 
     private void GoToNextState()
     {
@@ -378,7 +363,6 @@ public partial class TutorialSystem : Control
 
         SetupTutorialFrom(newTutorialState);
     }
-
     private void QuitTutorial()
     {
         var currentState = TutorialScenario[currentStateIndex];
@@ -396,161 +380,9 @@ public partial class TutorialSystem : Control
 
         this.Visible = false;
     }
-
-    private void SetupTutorialFrom(TutorialState state)
-    {
-        TutorialPopup.SetTitleText(state.Title);
-        TutorialPopup.SetBodyText(state.Body);
-        TutorialPopup.SetWindowPlacement(state.WindowPlacement);
-        TutorialPopup.SetButtonConfiguration(state.ButtonsConfiguration);
-
-        ClearExclusionZones();
-
-        foreach (var HighlightedControl in state.HighlightedControls)
-        {
-            if(HighlightedControl.customXSize == 0 && HighlightedControl.customYSize == 0)
-            {
-                HighlightControlNode(HighlightedControl.HighlightedNode,
-                    HighlightedControl.marginTop, HighlightedControl.marginRight, HighlightedControl.marginBottom, HighlightedControl.marginBottom,
-                    HighlightedControl.XOffset, HighlightedControl.YOffset);
-            }
-            else
-            {
-                HighlightControlNode(HighlightedControl.HighlightedNode,
-                    HighlightedControl.marginTop, HighlightedControl.marginRight, HighlightedControl.marginBottom, HighlightedControl.marginBottom,
-                    HighlightedControl.XOffset, HighlightedControl.YOffset,
-                    HighlightedControl.customXSize, HighlightedControl.customYSize);
-            }
-        }
-
-        foreach (var HighlightedNode in state.HighlightedNodes)
-        {
-            HighlightControlNode(HighlightedNode.HighlightedNode,
-                HighlightedNode.marginTop, HighlightedNode.marginRight, HighlightedNode.marginBottom, HighlightedNode.marginBottom,
-                HighlightedNode.XOffset, HighlightedNode.YOffset,
-                HighlightedNode.customXSize, HighlightedNode.customYSize);
-        }
-
-        state.RunSetupFunction();
-    }
-
-    #region Highlight control
-
-    private void HighlightGrid()
-    {
-        HighlightControlNode(PortContainer, customXSize: 1500, customYSize: 743);
-    }
-    private void HighlightLeftPorts()
-    {
-        HighlightControlNode(PortContainer, customXOffset: -portsWidth, customYOffset: portContainerOffset, customXSize: portsWidth, customYSize: portHeight * 8);
-    }
-    private void HighlightMenu()
-    {
-        HighlightControlNode(MenuBar, allMargins: 3f);
-    }
-    private void HighlightToolbox()
-    {
-        HighlightControlNode(ToolBoxContainer);
-    }
-
-
-    private void HighlightControlNode(Control control,
-        float allMargins,
-        float customXOffset = 0, float customYOffset = 0,
-        float customXSize = 0, float customYSize = 0)
-    {
-        HighlightControlNode(control, allMargins, allMargins, allMargins, allMargins, customXOffset, customYOffset);
-    }
-
-    private void HighlightControlNode(Control control,
-        float marginTop = 0, float marginRight = 0, float marginBottom = 0, float marginLeft = 0,
-        float customXOffset = 0, float customYOffset = 0,
-        float customXSize = 0, float customYSize = 0)
-    {
-        if (customXSize == 0) customXSize = control.Size.X;
-        if (customYSize == 0) customYSize = control.Size.Y;
-
-        TextureRect exclusionZone = ExclusionSquare.Duplicate() as TextureRect;
-
-        if (exclusionZone == null) return;
-
-        ExclusionZoneContainer.AddChild(exclusionZone);
-
-        Vector2 position = new Vector2(
-                control.GlobalPosition.X - marginLeft + customXOffset - Camera.Position.X,
-                control.GlobalPosition.Y - marginTop + customYOffset - Camera.Position.Y);
-
-        GetViewport().SizeChanged += () => {
-            Vector2 position = new Vector2(
-                control.GlobalPosition.X - marginLeft + customXOffset - Camera.Position.X,
-                control.GlobalPosition.Y - marginTop + customYOffset - Camera.Position.Y);
-            exclusionZone.GlobalPosition = position;
-        };
-
-        exclusionZone.GlobalPosition = position;
-
-        exclusionZone.Size = new Vector2(customXSize + marginLeft + marginRight, customYSize + marginTop + marginBottom);
-        exclusionZone.Visible = true;
-    }
-    private void HighlightControlNode(Node2D control,
-        float marginTop = 0, float marginRight = 0, float marginBottom = 0, float marginLeft = 0,
-        float customXOffset = 0, float customYOffset = 0,
-        float customXSize = 0, float customYSize = 0)
-    {
-        TextureRect exclusionZone = ExclusionSquare.Duplicate() as TextureRect;
-
-        if (exclusionZone == null) return;
-
-        ExclusionZoneContainer.AddChild(exclusionZone);
-
-        Vector2 position = new Vector2(
-                control.GlobalPosition.X - marginLeft + customXOffset - Camera.Position.X,
-                control.GlobalPosition.Y - marginTop + customYOffset - Camera.Position.Y);
-
-        GetViewport().SizeChanged += () => {
-            Vector2 position = new Vector2(
-                control.GlobalPosition.X - marginLeft + customXOffset - Camera.Position.X,
-                control.GlobalPosition.Y - marginTop + customYOffset - Camera.Position.Y);
-            exclusionZone.GlobalPosition = position;
-        };
-
-        exclusionZone.GlobalPosition = position;
-
-        exclusionZone.Size = new Vector2(customXSize + marginLeft + marginRight, customYSize + marginTop + marginBottom);
-        exclusionZone.Visible = true;
-    }
-
-
-    private void ClearExclusionZones()
-    {
-        foreach (var child in ExclusionZoneContainer.GetChildren())
-        {
-            child.QueueFree();
-        }
-    }
-
-    #endregion
-
-    private bool DoNotShowAgainWasChecked()
-    {
-        return File.Exists(doNotShowAgainMark);
-    }
-
-    private void SaveDoNotShowAgain()
-    {
-        if (!File.Exists(doNotShowAgainMark))
-            File.Create(doNotShowAgainMark).Dispose();
-    }
-
-    private bool GetNextCondition()
-    {
-        var currentState = TutorialScenario[currentStateIndex];
-        return currentState.CompletionCondition.Invoke();
-    }
-
     private void GoToNextIfNextConditionSatisfied()
     {
-        if (GetNextCondition())
+        if (IsNextConditionSatisfied())
         {
             GoToNextState();
         }
@@ -559,7 +391,21 @@ public partial class TutorialSystem : Control
             //TODO: do something to indicate that condition isn't reached like highlight yes red or something
         }
     }
+    private bool IsNextConditionSatisfied()
+    {
+        var currentState = TutorialScenario[currentStateIndex];
+        return currentState.CompletionCondition.Invoke();
+    }
 
+    private bool DoNotShowAgainWasChecked()
+    {
+        return File.Exists(doNotShowAgainMark);
+    }
+    private void SaveDoNotShowAgain()
+    {
+        if (!File.Exists(doNotShowAgainMark))
+            File.Create(doNotShowAgainMark).Dispose();
+    }
 
 }
 

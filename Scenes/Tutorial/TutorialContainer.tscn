@@ -34,7 +34,7 @@ shader_parameter/brightness = 1.0
 shader_parameter/contrast = 1.0
 shader_parameter/saturation = 1.0
 
-[node name="TutorialContainer" type="Control" node_paths=PackedStringArray("TutorialPopup", "DoNotShowAgainCheckButton", "DarkeningArea", "ExclusionZoneContainer", "ExclusionCircle", "ExclusionSquare")]
+[node name="TutorialContainer" type="Control" node_paths=PackedStringArray("DarkeningArea", "ExclusionZoneContainer", "ExclusionCircle", "ExclusionSquare")]
 texture_filter = 1
 layout_mode = 3
 anchors_preset = 15
@@ -45,8 +45,6 @@ grow_vertical = 2
 size_flags_horizontal = 4
 mouse_filter = 2
 script = ExtResource("1_jqrti")
-TutorialPopup = NodePath("")
-DoNotShowAgainCheckButton = NodePath("")
 DarkeningArea = NodePath("DarkeningArea")
 ExclusionZoneContainer = NodePath("ExclusionZone")
 ExclusionCircle = NodePath("ExclusionZone/ExclusionCircle")
