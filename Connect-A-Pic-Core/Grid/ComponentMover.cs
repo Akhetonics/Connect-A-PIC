@@ -39,7 +39,7 @@ namespace CAP_Core.Grid
 
         public bool IsColliding(int x, int y, int sizeX, int sizeY, Component? exception = null)
         {
-            if (!TileManager.IsInGrid(x, y, sizeX, sizeY))
+            if (!TileManager.IsCoordinatesInGrid(x, y, sizeX, sizeY))
             {
                 return true;
             }
@@ -82,10 +82,10 @@ namespace CAP_Core.Grid
                 {
                     int currentX = x + i;
                     int currentY = y + j;
-                    if (!TileManager.IsInGrid(currentX, currentY, 1, 1)) return null;
+                    if (!TileManager.IsCoordinatesInGrid(currentX, currentY, 1, 1)) return null;
 
                     var componentFound = TileManager.Tiles[currentX, currentY].Component;
-                    if (componentFound != null)
+                    if (componentFound != null && componentFound.IsPlacedInGrid)
                     {
                         return componentFound;
                     }

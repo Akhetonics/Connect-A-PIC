@@ -76,7 +76,7 @@ namespace CAP_Core.LightCalculation
             {
                 IntVector offset = side; // transforming the side to a vector that points towards the side
                 if (Grid.TileManager.Tiles[x, y].Component == null) continue;
-                if (!Grid.TileManager.IsInGrid(x + offset.X, y + offset.Y)) continue;
+                if (!Grid.TileManager.IsCoordinatesInGrid(x + offset.X, y + offset.Y)) continue;
                 var foreignTile = Grid.TileManager.Tiles[x + offset.X, y + offset.Y];
                 if (!IsComponentBorderEdge(x, y, foreignTile)) continue;
                 Pin currentPin = Grid.TileManager.Tiles[x, y].GetPinAt(side);

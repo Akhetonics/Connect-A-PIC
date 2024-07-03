@@ -46,7 +46,7 @@ namespace CAP_Core.CodeExporter
                 if (port is not ExternalInput input) continue;
                 var x = input.IsLeftPort ? 0 : grid.TileManager.Width - 1;
                 var y = input.TilePositionY;
-                if (!grid.TileManager.IsInGrid(x, y, 1, 1)) continue;
+                if (!grid.TileManager.IsCoordinatesInGrid(x, y, 1, 1)) continue;
                 var firstConnectedTile = grid.TileManager.Tiles[x, y];
                 if (firstConnectedTile.Component == null) continue;
                 if (firstConnectedTile.GetPinAt(input.IsLeftPort ? RectSide.Left : RectSide.Right)?.MatterType != MatterType.Light) continue;

@@ -56,8 +56,8 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             {
                 var component = grid.ComponentMover.GetComponentAt(displacement.Source.X , displacement.Source.Y);
                 if (component == null) return false;
-                if ( grid.TileManager.IsInGrid(displacement.Source.X, displacement.Source.Y, component.WidthInTiles, component.HeightInTiles) == false) return false;
-                if ( grid.TileManager.IsInGrid(displacement.Target.X, displacement.Target.Y, component.WidthInTiles, component.HeightInTiles) == false) return false;
+                if ( grid.TileManager.IsCoordinatesInGrid(displacement.Source.X, displacement.Source.Y, component.WidthInTiles, component.HeightInTiles) == false) return false;
+                if ( grid.TileManager.IsCoordinatesInGrid(displacement.Target.X, displacement.Target.Y, component.WidthInTiles, component.HeightInTiles) == false) return false;
             }
             return true;
         }
@@ -195,7 +195,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
                     {
                         var targetX = x + Target.X;
                         var targetY = y + Target.Y;
-                        if (grid.TileManager.IsInGrid(targetX, targetY) == false) continue;
+                        if (grid.TileManager.IsCoordinatesInGrid(targetX, targetY) == false) continue;
                         grid.ComponentMover.UnregisterComponentAt(targetX, targetY);
                     }
                 }

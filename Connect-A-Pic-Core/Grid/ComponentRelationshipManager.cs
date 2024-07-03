@@ -24,7 +24,7 @@ namespace CAP_Core.Grid
                 {
                     var compGridX = component.GridXMainTile + partX;
                     var compGridY = component.GridYMainTile + partY;
-                    if (!TileManager.IsInGrid(compGridX, compGridY, 1, 1)) continue;
+                    if (!TileManager.IsCoordinatesInGrid(compGridX, compGridY, 1, 1)) continue;
                     if (component.Parts[partX, partY] == null) continue;
                     var parentTile = TileManager.Tiles[component.GridXMainTile + partX, component.GridYMainTile + partY];
                     GetConnectedNeighborsOfSingleTile(parentTile)
@@ -45,7 +45,7 @@ namespace CAP_Core.Grid
                     if (x != 0 && y != 0 || y == 0 && x == 0) continue; // only compute Tiles that are "up down left right"
                     var neighborX = parent.GridX + x;
                     var neighborY = parent.GridY + y;
-                    if (!TileManager.IsInGrid(neighborX, neighborY, 1, 1)) continue;
+                    if (!TileManager.IsCoordinatesInGrid(neighborX, neighborY, 1, 1)) continue;
                     Tile neighbor = TileManager.Tiles[neighborX, neighborY];
                     var neighborComponent = neighbor?.Component;
                     if (parent.Component == neighborComponent || neighborComponent == null) continue;

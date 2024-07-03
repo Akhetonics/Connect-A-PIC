@@ -57,7 +57,7 @@ namespace CAP_Core.Grid
                     var inputY = input.TilePositionY;
                     var inputX = port.IsLeftPort ? 0 : TileManager.Width - 1;
 
-                    if (TileManager.IsInGrid(inputX, inputY) == false) continue;
+                    if (TileManager.IsCoordinatesInGrid(inputX, inputY) == false) continue;
                     if (TileManager.Tiles[inputX, inputY] == null) continue;
                     if (TileManager.Tiles[inputX, inputY].Component == null) continue;
                     var connectedPartOfComponent = TileManager.Tiles[inputX, inputY].Component.GetPartAtGridXY(inputX, inputY);

@@ -101,7 +101,7 @@ namespace ConnectAPIC.Scripts.View.ToolBox
                     if (mouseButtonEvent.Pressed)
                     {
                         SelectionStartMousePos = GridView.GetLocalMousePosition();
-                        bool isInGrid = GridViewModel.Grid.TileManager.IsInGrid(gridPosition.X, gridPosition.Y);
+                        bool isInGrid = GridViewModel.Grid.TileManager.IsCoordinatesInGrid(gridPosition.X, gridPosition.Y);
                         bool isColliding = GridViewModel.Grid.ComponentMover.IsColliding(gridPosition.X, gridPosition.Y, 1, 1);
                         if (isInGrid == true && isColliding && SelectionTool.IsEditSelectionKeyPressed() == false)
                         {

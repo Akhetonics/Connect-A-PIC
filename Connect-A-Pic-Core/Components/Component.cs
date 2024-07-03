@@ -16,7 +16,7 @@ namespace CAP_Core.Components
         public int HeightInTiles => Parts.GetLength(1);
         public int TypeNumber { get; set; }
         public string Identifier{ get; set; }
-        private bool IsPlacedInGrid { get; set; }
+        public bool IsPlacedInGrid { get; private set; }
         [JsonIgnore] public int GridXMainTile { get; protected set; }
         [JsonIgnore] public int GridYMainTile { get; protected set; }
         public Part[,] Parts { get; protected set; }
