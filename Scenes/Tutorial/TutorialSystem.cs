@@ -16,34 +16,6 @@ public partial class TutorialSystem : Control
     [Export] Control MenuBar { get; set; }
     [Export] Control ToolBoxContainer { get; set; }
 
-
-    /// <summary>
-    /// Describes tutorial scenario, tutorial starts from 0th element to the end
-    /// each tutorial state defines tutorial stage
-    /// </summary>
-    public List<TutorialState> TutorialScenario { get; set; } = new List<TutorialState>();
-
-    private int currentStateIndex = -1;
-
-    private int portContainerOffset = 124;
-    private int portsWidth = 120;
-    private int portHeight = 62;
-
-    /// <summary>
-    /// Represents height and width of a square tile in grid
-    /// </summary>
-    private int tileSize = 62;
-
-    /// <summary>
-    /// Represents global position of top left corner of the grid
-    /// </summary>
-    private Vector2 gridGlobalPosition;
-
-    /// <summary>
-    /// Represents the view port position of menu buttons (default left top corner)
-    /// </summary>
-    private Vector2 menuButtonPosition = Vector2.Zero;
-
     //TODO: need to move this somewhere where update manager can also access it
     private static string RepoOwnerName = "Akhetonics";
     private static string RepoName = "Connect-A-PIC";
@@ -324,20 +296,6 @@ public partial class TutorialSystem : Control
         };
 
         GoToNextState();
-    }
-
-    private void SetupTutorialFrom(TutorialState state)
-    {
-        TutorialPopup.SetTitleText(state.Title);
-        TutorialPopup.SetBodyText(state.Body);
-        TutorialPopup.SetWindowPlacement(state.WindowPlacement);
-        TutorialPopup.SetButtonConfiguration(state.ButtonsConfiguration);
-
-        ExclusionControl.ClearExclusionZones();
-
-        ExclusionControl.HighlightFromTutorialState(state, Camera.Position);
-
-        state.RunSetupFunction();
     }
 
     private void GoToNextState()

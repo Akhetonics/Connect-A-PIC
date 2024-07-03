@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 public partial class ExclusionControl : Node2D
 {
+    [Export] MainCamera Camera { get; set; }
     [Export] TextureRect DarkeningArea { get; set; }
     [Export] Control ExclusionZoneContainer { get; set; }
     [Export] TextureRect ExclusionCircle { get; set; }
@@ -17,34 +18,6 @@ public partial class ExclusionControl : Node2D
         ExclusionZoneContainer.RemoveChild(ExclusionSquare);
 
         DarkeningArea.MouseFilter = MouseFilterEnum.Stop;
-    }
-
-    public void HighlightFromTutorialState(TutorialState state, Vector2 cameraOffset)
-    {
-        foreach (var HighlightedControl in state.HighlightedControls)
-        {
-            if (HighlightedControl.customSizeX == 0 && HighlightedControl.customSizeY == 0)
-            {
-                HighlightControlNode(HighlightedControl.HighlightedNode,
-                    HighlightedControl.marginTop, HighlightedControl.marginRight, HighlightedControl.marginBottom, HighlightedControl.marginBottom,
-                    HighlightedControl.OffsetX - cameraOffset.X, HighlightedControl.OffsetY - cameraOffset.Y);
-            }
-            else
-            {
-                HighlightControlNode(HighlightedControl.HighlightedNode,
-                    HighlightedControl.marginTop, HighlightedControl.marginRight, HighlightedControl.marginBottom, HighlightedControl.marginBottom,
-                    HighlightedControl.OffsetX - cameraOffset.X, HighlightedControl.OffsetY - cameraOffset.Y,
-                    HighlightedControl.customSizeX, HighlightedControl.customSizeY);
-            }
-        }
-
-        foreach (var HighlightedNode in state.HighlightedNodes)
-        {
-            HighlightControlNode(HighlightedNode.HighlightedNode,
-                HighlightedNode.marginTop, HighlightedNode.marginRight, HighlightedNode.marginBottom, HighlightedNode.marginBottom,
-                HighlightedNode.OffsetX - cameraOffset.X, HighlightedNode.OffsetY - cameraOffset.Y,
-                HighlightedNode.customSizeX, HighlightedNode.customSizeY);
-        }
     }
 
     public void SetCustomHighlight(Vector2 size, Vector2 initialPosition, Func<Vector2> recalculatePosition)
@@ -103,6 +76,78 @@ public partial class ExclusionControl : Node2D
         exclusionZone.Visible = true;
     }
 
+    public void SetCustomHighlight(HighlightedElement<Node2D> highlighted)
+    {
+        float marginTop = highlighted.marginTop;
+        float marginRight = highlighted.marginRight;
+        float marginBottom = highlighted.marginBottom;
+        float marginLeft = highlighted.marginBottom;
+        float customXOffset = highlighted.OffsetX;
+        float customYOffset = highlighted.OffsetY;
+        float customXSize = highlighted.customSizeX;
+        float customYSize = highlighted.customSizeY;
+
+        TextureRect exclusionZone = ExclusionSquare.Duplicate() as TextureRect;
+
+        if (exclusionZone == null) return;
+
+        ExclusionZoneContainer.AddChild(exclusionZone);
+
+        GetViewport().SizeChanged += () =>
+        {
+            ReadjustPosition(exclusionZone,
+                () => highlighted.HighlightedNode.Position - new Vector2(Camera.Position.X, Camera.Position.Y),
+                marginTop, marginLeft, customXOffset, customYOffset);
+        };
+
+        ReadjustPosition(exclusionZone,
+            () => highlighted.HighlightedNode.Position - new Vector2(Camera.Position.X, Camera.Position.Y),
+            marginTop, marginLeft, customXOffset, customYOffset);
+
+        exclusionZone.Size = new Vector2(customXSize + marginLeft + marginRight, customYSize + marginTop + marginBottom);
+        exclusionZone.Visible = true;
+    }
+
+    public void SetCustomHighlight(HighlightedElement<Control> highlighted)
+    {
+        float marginTop = highlighted.marginTop;
+        float marginRight = highlighted.marginRight;
+        float marginBottom = highlighted.marginBottom;
+        float marginLeft = highlighted.marginBottom;
+        float customXOffset = highlighted.OffsetX;
+        float customYOffset = highlighted.OffsetY;
+        float customXSize = highlighted.customSizeX;
+        float customYSize = highlighted.customSizeY;
+
+        //control has size and if no custom size is set we use size of control
+        if (highlighted.customSizeX == 0 || highlighted.customSizeY == 0)
+        {
+            customXSize = highlighted.HighlightedNode.Size.X;
+            customYSize = highlighted.HighlightedNode.Size.Y;
+        }
+
+        TextureRect exclusionZone = ExclusionSquare.Duplicate() as TextureRect;
+
+        if (exclusionZone == null) return;
+
+        ExclusionZoneContainer.AddChild(exclusionZone);
+
+        GetViewport().SizeChanged += () =>
+        {
+            ReadjustPosition(exclusionZone,
+                () => highlighted.HighlightedNode.Position - new Vector2(Camera.Position.X, Camera.Position.Y),
+                marginTop, marginLeft, customXOffset, customYOffset);
+        };
+
+        ReadjustPosition(exclusionZone,
+            () => highlighted.HighlightedNode.Position - new Vector2(Camera.Position.X, Camera.Position.Y),
+            marginTop, marginLeft, customXOffset, customYOffset);
+
+        exclusionZone.Size = new Vector2(customXSize + marginLeft + marginRight, customYSize + marginTop + marginBottom);
+        exclusionZone.Visible = true;
+    }
+
+
     private static void ReadjustPosition(TextureRect exclusionZone, Func<Vector2> getPositionWithNoOffsets, float marginTop, float marginLeft, float customXOffset, float customYOffset)
     {
         Vector2 position = getPositionWithNoOffsets.Invoke();
@@ -134,13 +179,13 @@ public partial class ExclusionControl : Node2D
         ExclusionZoneContainer.AddChild(exclusionZone);
 
         Vector2 position = new Vector2(
-                control.GlobalPosition.X - marginLeft + customXOffset, // - Camera.Position.X,
-                control.GlobalPosition.Y - marginTop + customYOffset); //- Camera.Position.Y);
+                control.GlobalPosition.X - marginLeft + customXOffset - Camera.Position.X,
+                control.GlobalPosition.Y - marginTop + customYOffset - Camera.Position.Y);
 
         GetViewport().SizeChanged += () => {
             Vector2 position = new Vector2(
-                control.GlobalPosition.X - marginLeft + customXOffset,// - Camera.Position.X,
-                control.GlobalPosition.Y - marginTop + customYOffset); // - Camera.Position.Y);
+                control.GlobalPosition.X - marginLeft + customXOffset - Camera.Position.X,
+                control.GlobalPosition.Y - marginTop + customYOffset - Camera.Position.Y);
             exclusionZone.GlobalPosition = position;
         };
 
@@ -161,13 +206,13 @@ public partial class ExclusionControl : Node2D
         ExclusionZoneContainer.AddChild(exclusionZone);
 
         Vector2 position = new Vector2(
-                control.GlobalPosition.X - marginLeft + customXOffset,// - Camera.Position.X,
-                control.GlobalPosition.Y - marginTop + customYOffset);// - Camera.Position.Y);
+                control.GlobalPosition.X - marginLeft + customXOffset - Camera.Position.X,
+                control.GlobalPosition.Y - marginTop + customYOffset - Camera.Position.Y);
 
         GetViewport().SizeChanged += () => {
             Vector2 position = new Vector2(
-                control.GlobalPosition.X - marginLeft + customXOffset,// - Camera.Position.X,
-                control.GlobalPosition.Y - marginTop + customYOffset);// - Camera.Position.Y);
+                control.GlobalPosition.X - marginLeft + customXOffset - Camera.Position.X,
+                control.GlobalPosition.Y - marginTop + customYOffset - Camera.Position.Y);
             exclusionZone.GlobalPosition = position;
         };
 

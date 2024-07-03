@@ -67,6 +67,31 @@ public class TutorialState
     }
 
 
+    public bool AddHighlightedElemenet<T>(HighlightedElement<T> highlightedElement)
+    {
+        if (typeof(T) == typeof(Node2D) && highlightedElement as HighlightedElement<Node2D> != null )
+        {
+            if (HighlightedNodes == null)
+                HighlightedNodes = new();
+            
+            HighlightedNodes.Add(highlightedElement as HighlightedElement<Node2D>);
+        }
+        else if (typeof(T) == typeof(Control) && highlightedElement as HighlightedElement<Control> != null)
+        {
+            if (HighlightedControls == null)
+                HighlightedControls = new();
+
+            HighlightedControls.Add(highlightedElement as HighlightedElement<Control>);
+        }
+        else
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+
     public void RunSetupFunction()
     {
         if (FunctionWhenLoading != null)

@@ -12,6 +12,6 @@ interface ITutorialScenario
     public void QuitTutorial();
     public void ResetTutorial();
     public bool IsNextConditionSatisfied();
-    public void GoToNextIfNextConditionSatisfied();
+    public bool GoToNextIfNextConditionSatisfied();
 }
 
