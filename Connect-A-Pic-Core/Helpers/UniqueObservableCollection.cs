@@ -26,6 +26,13 @@ namespace CAP_Core.Helpers
             }
             return false;
         }
+        protected override void ClearItems()
+        {
+            while (Items.Count > 0)
+            {
+                RemoveItem(0);
+            }
+        }
 
         protected override void SetItem(int index, T item)
         {

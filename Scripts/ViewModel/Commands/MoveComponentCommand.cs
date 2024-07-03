@@ -154,6 +154,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
         private void SelectMovedComponents(HashSet<(Component component, IntVector Target)> componentAndTargets)
         {
             SelectionManager.Selections.Clear();
+            
             foreach (var componentAndTarget in componentAndTargets)
             {
                 SelectionManager.Selections.Add(new IntVector(componentAndTarget.component.GridXMainTile, componentAndTarget.component.GridYMainTile));
