@@ -32,7 +32,7 @@ namespace CAP_Core.CodeExporter
             this.grid = grid;
             AlreadyProcessedComponents = new List<Component>();
             StringBuilder NazcaCode = new();
-            NazcaCode.Append(PythonResources.CreateHeader(Resources.NazcaPDKName, Resources.NazcaStandardInputCellName));
+            NazcaCode.Append(PythonResources.CreateHeader(Resources.NazcaPDKName, Resources.NazcaStandardLeftInputCellName, Resources.NazcaStandardRightInputCellName));
             AddComponentsConnectedToStandardInputs(NazcaCode);
             AddOrphans(NazcaCode);
             NazcaCode.Append(PythonResources.CreateFooter());
@@ -44,12 +44,12 @@ namespace CAP_Core.CodeExporter
             foreach (ExternalPort port in grid.ExternalPortManager.ExternalPorts)
             {
                 if (port is not ExternalInput input) continue;
-                var x = 0;
+                var x = input.IsLeftPort ? 0 : grid.TileManager.Width - 1;
                 var y = input.TilePositionY;
-                if (!grid.TileManager.IsInGrid(x, y, 1, 1)) continue;
+                if (!grid.TileManager.IsCoordinatesInGrid(x, y, 1, 1)) continue;
                 var firstConnectedTile = grid.TileManager.Tiles[x, y];
                 if (firstConnectedTile.Component == null) continue;
-                if (firstConnectedTile.GetPinAt(RectSide.Left)?.MatterType != MatterType.Light) continue;
+                if (firstConnectedTile.GetPinAt(input.IsLeftPort ? RectSide.Left : RectSide.Right)?.MatterType != MatterType.Light) continue;
                 if (AlreadyProcessedComponents.Contains(firstConnectedTile.Component)) continue;
                 StartConnectingAtInput(NazcaCode, input, firstConnectedTile);
             }
@@ -98,7 +98,8 @@ namespace CAP_Core.CodeExporter
 
         private void StartConnectingAtInput(StringBuilder NazcaCode, ExternalInput input, Tile firstConnectedTile)
         {
-            NazcaCode.Append(firstConnectedTile.ExportToNazcaExtended(new IntVector(-1, input.TilePositionY), Resources.NazcaStandardInputCellName, input.PinName));
+            NazcaCode.Append(firstConnectedTile
+                .ExportToNazcaExtended(new IntVector(input.IsLeftPort ? -1 : grid.TileManager.Width, input.TilePositionY), input.IsLeftPort ? Resources.NazcaStandardLeftInputCellName : Resources.NazcaStandardRightInputCellName, input.PinName));
             AlreadyProcessedComponents.Add(firstConnectedTile.Component);
             ExportAllNeighbors(NazcaCode, firstConnectedTile);
         }

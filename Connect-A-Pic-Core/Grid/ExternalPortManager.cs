@@ -15,22 +15,22 @@ namespace CAP_Core.Grid
         {
             TileManager = tileManager;
             ExternalPorts = new ObservableCollection<ExternalPort>() {
-                    new ExternalInput("io0",LaserType.Red, 2,1),
-                    new ExternalInput("io1",LaserType.Green, 3, 1),
-                    new ExternalInput("io2",LaserType.Blue , 4, 1),
-                    new ExternalOutput("io3",5),
-                    new ExternalOutput("io4",6),
-                    new ExternalOutput("io5",7),
-                    new ExternalOutput("io6",8),
-                    new ExternalOutput("io7",9),
-                    new ExternalInput("io8",LaserType.Red, 2,1, false),
-                    new ExternalInput("io9",LaserType.Green, 3, 1, false),
-                    new ExternalInput("io10",LaserType.Blue , 4, 1, false),
-                    new ExternalOutput("io11",5, false),
-                    new ExternalOutput("io12",6, false),
-                    new ExternalOutput("io13",7, false),
-                    new ExternalOutput("io14",8, false),
-                    new ExternalOutput("io15",9, false),
+                    new ExternalInput("eio0",LaserType.Red, 2,1),
+                    new ExternalInput("eio1",LaserType.Green, 3, 1),
+                    new ExternalInput("eio2",LaserType.Blue , 4, 1),
+                    new ExternalOutput("eio3",5),
+                    new ExternalOutput("eio4",6),
+                    new ExternalOutput("eio5",7),
+                    new ExternalOutput("eio6",8),
+                    new ExternalOutput("eio7",9),
+                    new ExternalInput("wio0",LaserType.Red, 2,1, false),
+                    new ExternalInput("wio1",LaserType.Green, 3, 1, false),
+                    new ExternalInput("wio2",LaserType.Blue , 4, 1, false),
+                    new ExternalOutput("wio3",5, false),
+                    new ExternalOutput("wio4",6, false),
+                    new ExternalOutput("wio5",7, false),
+                    new ExternalOutput("wio6",8, false),
+                    new ExternalOutput("wio7",9, false),
                 };
         }
         public ConcurrentBag<ExternalInput> GetAllExternalInputs()
@@ -57,7 +57,7 @@ namespace CAP_Core.Grid
                     var inputY = input.TilePositionY;
                     var inputX = port.IsLeftPort ? 0 : TileManager.Width - 1;
 
-                    if (TileManager.IsInGrid(inputX, inputY) == false) continue;
+                    if (TileManager.IsCoordinatesInGrid(inputX, inputY) == false) continue;
                     if (TileManager.Tiles[inputX, inputY] == null) continue;
                     if (TileManager.Tiles[inputX, inputY].Component == null) continue;
                     var connectedPartOfComponent = TileManager.Tiles[inputX, inputY].Component.GetPartAtGridXY(inputX, inputY);

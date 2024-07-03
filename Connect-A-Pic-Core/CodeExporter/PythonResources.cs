@@ -2,11 +2,12 @@ namespace CAP_Core.CodeExporter
 {
     public class PythonResources
     {
-        public static string CreateHeader(string PDKName, string StandardInputCellName)
+        public static string CreateHeader(string PDKName, string StandardLeftInputCellName, string StandardRightInputCellName)
         {
             return Resources.NazcaHeader
                 .Replace("CAPICPDK", PDKName)
-                .Replace("grating", StandardInputCellName);
+                .Replace("grating1", StandardLeftInputCellName)
+                .Replace("grating2", StandardRightInputCellName);
         }
 
         public static string CreateFooter(string? layoutName = null, string? gdsFileName = null)

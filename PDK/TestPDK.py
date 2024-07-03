@@ -289,5 +289,48 @@ class TestPDK(object):
             nd.bend(angle=180, radius=self._CellSize * 0.5, width=self._WGWidth, layer=self._SiNLayer).put()
 
             for i in range(numIO):
-                nd.Pin('io' + str(i), width=self._WGWidth).put(0, -i * self._CellSize - self._CellSize * 2)
+                nd.Pin('eio' + str(i), width=self._WGWidth).put(0, -i * self._CellSize - self._CellSize * 2)
         return gratingEast
+
+    def placeGratingArray_West(self, numIO):
+        with nd.Cell(name='AkhetGratingWest') as gratingWest:
+            nd.text(text='Grating Coupler Array W', height=15, layer=self._TextLayer, align='lb').put(280, -50)
+            nd.Polygon(layer=self._BoxLayer, points=[(0, 20), (550, 20), (550, -(numIO + 3) * self._CellSize - 20),
+                                                     (0, -(numIO + 3) * self._CellSize - 20)]).put(0, 0)
+
+            gratingOffset = 150
+
+            # Grating Couplers
+            for k in range(numIO + 2):
+                # CORNERSTONE 1550nm Grating Couplers
+                nd.Polygon(layer=self._SiNLayer,
+                           points=[(0, -self._WGWidth * 0.5), (0, self._WGWidth * 0.5), (180, 5), (180, -5)]).put(
+                    gratingOffset, -self._CellSize * (k + 1), 0)
+
+                nd.Polygon(layer=self._SiNLayer, points=[(180, 5), (180, -5), (230, -5), (230, 5)]).put(gratingOffset, -self._CellSize * (k + 1), 0)
+
+                for i in range(22):
+                    nd.Polygon(layer=self._GratingLayer,
+                               points=[(191.62 + 1.32 * i, 5.5), (191.62 + 1.32 * i, -5.5), (192.28 + 1.32 * i, -5.5),
+                                       (192.28 + 1.32 * i, 5.5)]).put(gratingOffset, -self._CellSize * (k + 1), 0)
+
+                if k > 0 and k < (numIO + 1):
+                    nd.strt(length=gratingOffset, width=self._WGWidth, layer=self._SiNLayer).put(0, -self._CellSize * (k + 1), 0)
+
+            # Grating Coupler Locator
+            nd.bend(angle=-180, radius=self._CellSize * 0.5, width=self._WGWidth, layer=self._SiNLayer).put(gratingOffset, -self._CellSize * (1), 180)
+
+            nd.strt(length=self._CellSize, width=self._WGWidth, layer=self._SiNLayer).put()
+
+            nd.bend(angle=-90, radius=self._CellSize * 0.5, width=self._WGWidth, layer=self._SiNLayer).put()
+
+            nd.strt(length=self._CellSize * (numIO + 2), width=self._WGWidth, layer=self._SiNLayer).put()
+
+            nd.bend(angle=-90, radius=self._CellSize * 0.5, width=self._WGWidth, layer=self._SiNLayer).put()
+            nd.strt(length=self._CellSize, width=self._WGWidth, layer=self._SiNLayer).put()
+            nd.bend(angle=-180, radius=self._CellSize * 0.5, width=self._WGWidth, layer=self._SiNLayer).put()
+
+            for i in range(numIO):
+                nd.Pin('wio' + str(i), width=self._WGWidth).put(0, -i * self._CellSize - self._CellSize * 2, 180)
+        return gratingWest
+

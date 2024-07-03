@@ -4,6 +4,7 @@ from TestPDK import TestPDK
 CAPICPDK = TestPDK()
 
 def FullDesign(layoutName):
-    with nd.Cell(name=layoutName) as fullLayoutInner:       
+    with nd.Cell(name=layoutName) as fullLayoutInner:
 
-        grating = CAPICPDK.placeGratingArray_East(8).put(0, 0)
+        grating1 = CAPICPDK.placeGratingArray_East(8).put(0, 0)
+        grating2 = CAPICPDK.placeGratingArray_West(8).put(CAPICPDK._CellSize * 24, 0)
