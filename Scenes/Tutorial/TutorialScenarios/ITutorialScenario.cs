@@ -1,3 +1,4 @@
+using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -5,13 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-interface ITutorialScenario
+abstract partial class ITutorialScenario : Node
 {
-    public void SetupTutorial();
-    public void GoToNext();
-    public void QuitTutorial();
-    public void ResetTutorial();
-    public bool IsNextConditionSatisfied();
-    public bool GoToNextIfNextConditionSatisfied();
+    public abstract void SetupTutorial();
+    public abstract void GoToNext();
+    public abstract void QuitTutorial();
+    public abstract void ResetTutorial();
+    public abstract bool IsNextConditionSatisfied();
+    public abstract bool GoToNextIfNextConditionSatisfied();
 }
 

@@ -1,6 +1,6 @@
 [gd_scene load_steps=12 format=3 uid="uid://ro67mc8ymwg"]
 
-[ext_resource type="Script" path="res://Scenes/Tutorial/TutorialPopupView.cs" id="1_d0tp5"]
+[ext_resource type="Script" path="res://Scenes/Tutorial/TutorialPopup/TutorialPopup.cs" id="1_d0tp5"]
 [ext_resource type="Texture2D" uid="uid://bskt8xmas4b1b" path="res://Scenes/Assets/Sprites/Background.png" id="2_ae80b"]
 [ext_resource type="Theme" path="res://Scenes/Assets/Themes/TutorialTheme.tres" id="3_mhv0n"]
 [ext_resource type="FontFile" uid="uid://d4esbv2uixhnb" path="res://Scenes/Assets/Fonts/easvhs.ttf" id="4_awacn"]

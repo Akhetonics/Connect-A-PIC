@@ -51,6 +51,8 @@ namespace ConnectAPic.LayoutWindow
         [Export] public int FieldHeight { get; set; } = 12;
         [Export] public GameConsole InGameConsole { get; set; }
         private PCKLoader PCKLoader { get; set; }
+        public static string RepoOwnerName { get; private set; } = "Akhetonics";
+        public static string RepoName { get; private set; } = "Connect-A-PIC";
         public static int TilePixelSize { get; private set; } = 62; // the tile size including the border
         public static int TileBorderLeftDown { get; private set; } = 2;
         public GridView GridView { get; set; }

@@ -6,18 +6,15 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-partial class InitialTutorial : Node2D, ITutorialScenario
+partial class InitialTutorial : ITutorialScenario
 {
     [Export] MainCamera Camera { get; set; }
     [Export] Control MenuBar { get; set; }
     [Export] Node2D PortContainer { get; set; }
     [Export] Control ToolBoxContainer { get; set; }
+    [Export] TutorialPopup TutorialPopup { get; set; }
+    [Export] HighlightingAreaController ExclusionControl { get; set; }
 
-    event EventHandler TotorialEnded;
-    event EventHandler DoNotShowAgain;
-
-    private TutorialPopupView TutorialPopup { get; set; }
-    private ExclusionControl ExclusionControl { get; set; }
 
     /// <summary>
     /// Describes tutorial scenario, tutorial starts from 0th element to the end
@@ -32,11 +29,6 @@ partial class InitialTutorial : Node2D, ITutorialScenario
     private int portHeight = 62;
 
     /// <summary>
-    /// Represents height and width of a square tile in grid
-    /// </summary>
-    private int tileSize = 62;
-
-    /// <summary>
     /// Represents global position of top left corner of the grid
     /// </summary>
     private Vector2 gridGlobalPosition;
@@ -46,14 +38,14 @@ partial class InitialTutorial : Node2D, ITutorialScenario
     /// </summary>
     private Vector2 menuButtonPosition = Vector2.Zero;
 
-
-    public InitialTutorial(TutorialPopupView tutorialPopup, ExclusionControl exclusionControl)
+    public void Initialize(TutorialPopup tutorialPopup,
+        HighlightingAreaController exclusionControl)
     {
         TutorialPopup = tutorialPopup;
         ExclusionControl = exclusionControl;
     }
 
-    public void SetupTutorial()
+    public override void SetupTutorial()
     {
         var welcome = new TutorialState(
             WindowPlacement.Center,
@@ -62,16 +54,15 @@ partial class InitialTutorial : Node2D, ITutorialScenario
             "Want to go through a tutorial?",
             () => true
             );
-
         welcome.FunctionWhenLoading = () =>
         {
             TutorialPopup.DoNotShowAgain = true;
             Camera.autoCenterWhenResizing = true;
             Camera.noZoomingOrMoving = true;
+            Camera.RecenterCamera();
+
         };
-
         TutorialStates.Add(welcome);
-
 
         var explanation = new TutorialState(
             WindowPlacement.Center,
@@ -80,9 +71,7 @@ partial class InitialTutorial : Node2D, ITutorialScenario
             "Connect-A-PIC (photonic integrated circuits) aims to simplify the design of optical circuits on a chip",
             () => true
             );
-
         TutorialStates.Add(explanation);
-
 
         var workingArea = new TutorialState(
             WindowPlacement.TopRight,
@@ -91,21 +80,17 @@ partial class InitialTutorial : Node2D, ITutorialScenario
             "This is your main workspace, where you can design and build your own photonic circuits",
             () => true
             );
-
         workingArea.AddHighlightedElemenet(
             new HighlightedElement<Node2D>(PortContainer)
             .SetOffsets(2, 0).SetSize(1485, 743)); //TODO: move magic numbers out
-
         workingArea.FunctionWhenLoading = () =>
         {
             (ToolBoxContainer as ToolBoxCollapseControl)?.SetToolBoxToggleState(true);
         };
-
         workingArea.FunctionWhenUnloading = () =>
         {
             (ToolBoxContainer as ToolBoxCollapseControl)?.SetToolBoxToggleState(false);
         };
-
         TutorialStates.Add(workingArea);
 
         #region ports explanation
@@ -118,12 +103,10 @@ partial class InitialTutorial : Node2D, ITutorialScenario
             "\n[color=FFD700]You can left click ports to open control menu where you can change their properties[/color]",
             () => true
             );
-
         InputOutputs.FunctionWhenLoading = () =>
         {
             HighlightLeftPorts();
         };
-
         TutorialStates.Add(InputOutputs);
 
         #region this is scrapped for now
@@ -170,18 +153,11 @@ partial class InitialTutorial : Node2D, ITutorialScenario
             "The [color=FFD700]Input Ports[/color] provide you with the photonic signal, think of them as power sources",
             () => true
             );
-
-        InputPorts.HighlightedNodes.Add(new HighlightedElement<Node2D>
-        {
-            HighlightedNode = PortContainer,
-            OffsetX = -portsWidth,
-            OffsetY = portContainerOffset,
-            customSizeX = portsWidth,
-            customSizeY = portHeight * 3
-        });
-
+        var inpuPortsHighlight = new HighlightedElement<Node2D>(PortContainer)
+            .SetOffsets(-portsWidth, portContainerOffset)
+            .SetSize(portsWidth, portHeight * 3);
+        InputPorts.HighlightedNodes.Add(inpuPortsHighlight);
         TutorialStates.Add(InputPorts);
-
 
         var OutputPorts = new TutorialState(
             WindowPlacement.TopRight,
@@ -190,16 +166,10 @@ partial class InitialTutorial : Node2D, ITutorialScenario
             "The [color=FFD700]Output Ports[/color] give you the ability to read signal strength and phase shift, think of them as power meters",
             () => true
             );
-
-        OutputPorts.HighlightedNodes.Add(new HighlightedElement<Node2D>
-        {
-            HighlightedNode = PortContainer,
-            OffsetX = -portsWidth,
-            OffsetY = portContainerOffset + portHeight * 3,
-            customSizeX = portsWidth,
-            customSizeY = portHeight * 5
-        });
-
+        var outputPortsHighlight = new HighlightedElement<Node2D>(PortContainer)
+            .SetOffsets(-portsWidth, portContainerOffset + portHeight * 3)
+            .SetSize(portsWidth, portHeight * 5);
+        OutputPorts.HighlightedNodes.Add(outputPortsHighlight);
         TutorialStates.Add(OutputPorts);
 
         #endregion
@@ -213,7 +183,6 @@ partial class InitialTutorial : Node2D, ITutorialScenario
             "Toolbox offers a wide range of components, you can left-click to select component, and left-click (or left-click and drag) to place it on the working grid",
             () => true
             );
-
         ToolBox.FunctionWhenLoading = () =>
         {
             ExclusionControl.SetCustomHighlight(
@@ -228,7 +197,6 @@ partial class InitialTutorial : Node2D, ITutorialScenario
                     }
                 );
         };
-
         TutorialStates.Add(ToolBox);
 
         #endregion
@@ -242,7 +210,6 @@ partial class InitialTutorial : Node2D, ITutorialScenario
             "From the menu bar you can export/import your circuit, turn on/off your circuit, export your circuit to NAZCA and undo/redo your actions, also updates will appear here if available",
             () => true
             );
-
         Menu.FunctionWhenLoading = () =>
         {
             ExclusionControl.SetCustomHighlight(
@@ -251,7 +218,6 @@ partial class InitialTutorial : Node2D, ITutorialScenario
                     () => new Vector2(Camera.Offset.X - 3, Camera.Offset.Y - 3)
                 );
         };
-
         TutorialStates.Add(Menu);
 
         #endregion
@@ -264,10 +230,7 @@ partial class InitialTutorial : Node2D, ITutorialScenario
             "[color=FFD700]to open cheat sheet for controls press \"?\" on menu bar[/color]",
             () => true
             );
-
         TutorialStates.Add(Finished);
-
-        //last function should releases clicking and scrolling
         Finished.FunctionWhenUnloading = () =>
         {
             Camera.autoCenterWhenResizing = false;
@@ -276,8 +239,7 @@ partial class InitialTutorial : Node2D, ITutorialScenario
 
         GoToNext();
     }
-
-    public void GoToNext()
+    public override void GoToNext()
     {
         if (TutorialStates.Count == 0)
             throw new Exception("Tutorial scenario not defined!");
@@ -300,7 +262,7 @@ partial class InitialTutorial : Node2D, ITutorialScenario
 
         SetupTutorialFrom(newTutorialState);
     }
-    public void QuitTutorial()
+    public override void QuitTutorial()
     {
         var currentState = TutorialStates[currentStateIndex];
         currentState.RunUnloadFunction();
@@ -309,15 +271,8 @@ partial class InitialTutorial : Node2D, ITutorialScenario
         Camera.noZoomingOrMoving = false;
 
         currentStateIndex = -1;
-
-        if (TutorialPopup.DoNotShowAgain)
-        {
-            DoNotShowAgain.Invoke(this, EventArgs.Empty);
-        }
-
-        this.Visible = false;
     }
-    public bool GoToNextIfNextConditionSatisfied()
+    public override bool GoToNextIfNextConditionSatisfied()
     {
         if (IsNextConditionSatisfied())
         {
@@ -327,15 +282,14 @@ partial class InitialTutorial : Node2D, ITutorialScenario
 
         return false;
     }
-    public bool IsNextConditionSatisfied()
+    public override bool IsNextConditionSatisfied()
     {
         var currentState = TutorialStates[currentStateIndex];
         return currentState.CompletionCondition.Invoke();
     }
-
-    public void ResetTutorial()
+    public override void ResetTutorial()
     {
-        currentStateIndex = 0;
+        currentStateIndex = -1;
         ExclusionControl.ClearExclusionZones();
     }
 
@@ -369,13 +323,11 @@ partial class InitialTutorial : Node2D, ITutorialScenario
         state.RunSetupFunction();
     }
 
-
     private void HighlightGrid()
     {
         var element = new HighlightedElement<Node2D>(PortContainer).SetMargins(0).SetSize(1500, 743);
         ExclusionControl.SetCustomHighlight(element);
     }
-
     private void HighlightLeftPorts()
     {
         var element = new HighlightedElement<Node2D>(PortContainer)
@@ -383,18 +335,24 @@ partial class InitialTutorial : Node2D, ITutorialScenario
             .SetSize(portsWidth, portHeight * 8);
         ExclusionControl.SetCustomHighlight(element);
     }
-
     private void HighlightMenu()
     {
-        var element = new HighlightedElement<Control>(MenuBar).SetMargins(3);
-        ExclusionControl.SetCustomHighlight(element);
+        ExclusionControl.SetCustomHighlight(
+            new Vector2(MenuBar.Size.X + 6, MenuBar.Size.Y + 6),
+            new Vector2(Camera.Position.X - 3, Camera.Position.Y - 3),
+            () => new Vector2(Camera.Position.X - 3, Camera.Position.Y - 3)
+            );
     }
-
     private void HighlightToolbox()
     {
         var element = new HighlightedElement<Control>(ToolBoxContainer);
-        ExclusionControl.SetCustomHighlight(element);
+
+        ExclusionControl.SetCustomHighlight(
+            new Vector2(ToolBoxContainer.Size.X, ToolBoxContainer.Size.Y),
+            new Vector2(GetViewport().GetVisibleRect().Size.X - ToolBoxContainer.Size.X, GetViewport().GetVisibleRect().Size.Y - ToolBoxContainer.Size.Y),
+            () => new Vector2(GetViewport().GetVisibleRect().Size.X - ToolBoxContainer.Size.X, GetViewport().GetVisibleRect().Size.Y - ToolBoxContainer.Size.Y)
+            );
     }
-    
+
 }
 

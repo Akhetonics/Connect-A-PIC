@@ -1,7 +1,7 @@
 using Godot;
 using System;
 
-public partial class TutorialPopupView : Control
+public partial class TutorialPopup : Control
 {
     [Export] RichTextLabel Title;
     [Export] RichTextLabel Body;
@@ -14,10 +14,10 @@ public partial class TutorialPopupView : Control
 
 
     //Godot signal for easier handling from gui
-    [Signal] public delegate void FinishPressedEventHandler();
+    [Signal] public delegate void FinishPressedEventHandler(bool doNotShowAgain);
     [Signal] public delegate void YesPressedEventHandler();
-    [Signal] public delegate void NoPressedEventHandler();
-    [Signal] public delegate void QuitPressedEventHandler();
+    [Signal] public delegate void NoPressedEventHandler(bool doNotShowAgain);
+    [Signal] public delegate void QuitPressedEventHandler(bool doNotShowAgain);
     [Signal] public delegate void SkipPressedEventHandler();
     [Signal] public delegate void NextPressedEventHandler();
 
@@ -27,16 +27,10 @@ public partial class TutorialPopupView : Control
         set => NoShowAgainBtn.ButtonPressed = value;
     }
 
-
-    private TutorialPopupViewModel viewModel = new();
-
-    // Called when the node enters the scene tree for the first time.
     public override void _Ready()
     {
         AssignExportedPropertiesThatAreNull();
-
     }
-
 
     public void SetTitleText(string text)
     {
@@ -118,10 +112,10 @@ public partial class TutorialPopupView : Control
         if (NextContainer == null) NoShowAgainBtn = GetNode<Button>("%SkipContainer");
     }
 
-    private void OnNoButtonPressed()     => EmitSignal(SignalName.NoPressed);
+    private void OnNoButtonPressed()     => EmitSignal(SignalName.NoPressed, DoNotShowAgain);
     private void OnYesButtonPressed()    => EmitSignal(SignalName.YesPressed); 
-    private void OnQuitButtonPressed()   => EmitSignal(SignalName.QuitPressed);
+    private void OnQuitButtonPressed()   => EmitSignal(SignalName.QuitPressed, DoNotShowAgain);
     private void OnSkipButtonPressed()   => EmitSignal(SignalName.SkipPressed);
     private void OnNextButtonPressed()   => EmitSignal(SignalName.NextPressed);
-    private void OnFinishButtonPressed() => EmitSignal(SignalName.FinishPressed);
+    private void OnFinishButtonPressed() => EmitSignal(SignalName.FinishPressed, DoNotShowAgain);
 }
