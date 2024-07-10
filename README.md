@@ -150,12 +150,5 @@ Your contributions are greatly appreciated and will help to further develop this
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-
-
-<div style="text-align: center;">
-    <img src="https://github.com/Akhetonics/Connect-A-PIC/assets/18228325/0c685acf-c5ff-4350-a6fb-e4e24d604e3c" alt="Cornerstone Logo Transparent" height="200" style="margin-bottom: 20px;"/>
- <br/>
-    <img src="https://github.com/Akhetonics/Connect-A-PIC/assets/18228325/db61e930-1fe6-4649-a3fe-71fe01eb83bb" alt="Cornerstone Logo Transparent" height="80"/>
-</div>
-
+![Akhetonics and Cornerstone Logo combined centered](https://github.com/Akhetonics/Connect-A-PIC/assets/18228325/2467e9f7-6c78-4fd5-974d-95a8f4ecd2d2)
 
