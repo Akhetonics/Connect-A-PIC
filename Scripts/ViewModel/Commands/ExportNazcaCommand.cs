@@ -26,13 +26,31 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
         
         internal async override Task ExecuteAsyncCmd(ExportNazcaParameters parameter)
         {
+            if (!CanExecute(parameter)) return;
+
             var nazcaParams = (ExportNazcaParameters)parameter;
             var pythonCode = compiler.Export(this.grid);
-            await this.dataAccessor.Write(nazcaParams.Path, pythonCode);
+
+            FileStream fileStream = new FileStream(nazcaParams.Path, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
+
+            Task pythonCodeTask = this.dataAccessor.Write(nazcaParams.Path, pythonCode);
+
             string directoryPath = Path.GetDirectoryName(nazcaParams.Path);
             string fullPDKPath = Path.Combine(directoryPath, Resources.PDKFileName);
-            await this.dataAccessor.Write(fullPDKPath, Resources.PDK);
-            if (!CanExecute(parameter)) return;
+            Task pdkTask = this.dataAccessor.Write(fullPDKPath, Resources.PDK);
+
+            try
+            {
+                await pdkTask;
+                await pythonCodeTask;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            if (!pythonCodeTask.IsCompletedSuccessfully || !pdkTask.IsCompletedSuccessfully)
+                throw new Exception("Writing failed");
         }
     }
 

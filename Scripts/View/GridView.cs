@@ -185,8 +185,13 @@ namespace ConnectAPIC.LayoutWindow.View
             {
                 try
                 {
-                    ViewModel.CommandFactory.CreateCommand(CommandType.ExportNazca).ExecuteAsync(new ExportNazcaParameters(path)).Wait();
-                    NotificationManager.Instance.Notify("Successfully saved file");
+                    Task taks = ViewModel.CommandFactory.CreateCommand(CommandType.ExportNazca).ExecuteAsync(new ExportNazcaParameters(path));
+                    taks.Wait();
+
+                    if (taks.IsCompletedSuccessfully)
+                        NotificationManager.Instance.Notify("Successfully saved file");
+                    else
+                        NotificationManager.Instance.Notify("Successfully failed saving");
                 }
                 catch (Exception ex)
                 {

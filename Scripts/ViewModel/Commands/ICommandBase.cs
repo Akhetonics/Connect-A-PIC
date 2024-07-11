@@ -47,9 +47,9 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
         {
             if (CanExecute(parameter) == false) return Task.CompletedTask;
             ExecutionParams = (T)parameter;
-            ExecuteAsyncCmd((T)parameter);
+            Task task = ExecuteAsyncCmd((T)parameter);
             Executed?.Invoke(this, new EventArgs());
-            return Task.CompletedTask;
+            return task;//Task.CompletedTask;
         }
 
         public virtual void MergeWith(ICommand other)
