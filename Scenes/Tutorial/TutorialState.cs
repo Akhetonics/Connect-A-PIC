@@ -67,7 +67,7 @@ public class TutorialState
     }
 
 
-    public bool AddHighlightedElemenet<T>(HighlightedElement<T> highlightedElement)
+    public bool AddHighlightedElement<T>(HighlightedElement<T> highlightedElement)
     {
         if (typeof(T) == typeof(Node2D) && highlightedElement as HighlightedElement<Node2D> != null )
         {

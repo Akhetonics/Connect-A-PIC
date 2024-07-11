@@ -83,7 +83,7 @@ partial class InitialTutorial : ITutorialScenario
             "This is your main workspace, where you can design and build your own photonic circuits",
             () => true
             );
-        workingArea.AddHighlightedElemenet(
+        workingArea.AddHighlightedElement(
             new HighlightedElement<Node2D>(PortContainer)
             .SetOffsets(gridOffset).SetSize(gridSize));
         workingArea.FunctionWhenLoading = () =>
@@ -158,10 +158,10 @@ partial class InitialTutorial : ITutorialScenario
             "The [color=FFD700]Input Ports[/color] provide you with the photonic signal, think of them as power sources",
             () => true
             );
-        var inpuPortsHighlight = new HighlightedElement<Node2D>(PortContainer)
+        var inputPortsHighlight = new HighlightedElement<Node2D>(PortContainer)
             .SetOffsets(-portsWidth, portContainerOffset)
             .SetSize(portsWidth, portHeight * 3);
-        InputPorts.HighlightedNodes.Add(inpuPortsHighlight);
+        InputPorts.HighlightedNodes.Add(inputPortsHighlight);
         TutorialStates.Add(InputPorts);
 
         var OutputPorts = new TutorialState(
