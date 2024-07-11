@@ -24,6 +24,9 @@ partial class InitialTutorial : ITutorialScenario
 
     private int currentStateIndex = 0;
 
+    private Vector2 gridSize = new Vector2(1485, 743);
+    private Vector2 gridOffset = new Vector2(2, 0);
+    private Vector2 menuBarMargins = new Vector2(6, 6);
     private int portContainerOffset = 124;
     private int portsWidth = 120;
     private int portHeight = 62;
@@ -82,7 +85,7 @@ partial class InitialTutorial : ITutorialScenario
             );
         workingArea.AddHighlightedElemenet(
             new HighlightedElement<Node2D>(PortContainer)
-            .SetOffsets(2, 0).SetSize(1485, 743)); //TODO: move magic numbers out
+            .SetOffsets(gridOffset).SetSize(gridSize));
         workingArea.FunctionWhenLoading = () =>
         {
             (ToolBoxContainer as ToolBoxCollapseControl)?.SetToolBoxToggleState(true);
@@ -103,10 +106,12 @@ partial class InitialTutorial : ITutorialScenario
             "\n[color=FFD700]You can left click ports to open control menu where you can change their properties[/color]",
             () => true
             );
-        InputOutputs.FunctionWhenLoading = () =>
-        {
-            HighlightLeftPorts();
-        };
+
+        var ioPortsHighlight = new HighlightedElement<Node2D>(PortContainer)
+            .SetOffsets(-portsWidth, portContainerOffset)
+            .SetSize(portsWidth, portHeight * 8);
+        InputOutputs.HighlightedNodes.Add(ioPortsHighlight);
+
         TutorialStates.Add(InputOutputs);
 
         #region this is scrapped for now
@@ -185,17 +190,8 @@ partial class InitialTutorial : ITutorialScenario
             );
         ToolBox.FunctionWhenLoading = () =>
         {
-            ExclusionControl.SetCustomHighlight(
-                    new Vector2(ToolBoxContainer.Size.X, ToolBoxContainer.Size.Y),
-                    new Vector2(
-                        GetViewport().GetVisibleRect().Size.X - ToolBoxContainer.Size.X,
-                        GetViewport().GetVisibleRect().Size.Y - ToolBoxContainer.Size.Y),
-                    () => {
-                        return new Vector2(
-                            GetViewport().GetVisibleRect().Size.X - ToolBoxContainer.Size.X,
-                            GetViewport().GetVisibleRect().Size.Y - ToolBoxContainer.Size.Y);
-                    }
-                );
+            HighlightToolbox();
+            
         };
         TutorialStates.Add(ToolBox);
 
@@ -212,11 +208,8 @@ partial class InitialTutorial : ITutorialScenario
             );
         Menu.FunctionWhenLoading = () =>
         {
-            ExclusionControl.SetCustomHighlight(
-                    new Vector2(MenuBar.Size.X + 6, MenuBar.Size.Y + 6),
-                    new Vector2(Camera.Offset.X - 3, Camera.Offset.Y - 3),
-                    () => new Vector2(Camera.Offset.X - 3, Camera.Offset.Y - 3)
-                );
+            HighlightMenu();
+           
         };
         TutorialStates.Add(Menu);
 
@@ -323,30 +316,16 @@ partial class InitialTutorial : ITutorialScenario
         state.RunSetupFunction();
     }
 
-    private void HighlightGrid()
-    {
-        var element = new HighlightedElement<Node2D>(PortContainer).SetMargins(0).SetSize(1500, 743);
-        ExclusionControl.SetCustomHighlight(element);
-    }
-    private void HighlightLeftPorts()
-    {
-        var element = new HighlightedElement<Node2D>(PortContainer)
-            .SetOffsets(-portsWidth, portContainerOffset)
-            .SetSize(portsWidth, portHeight * 8);
-        ExclusionControl.SetCustomHighlight(element);
-    }
     private void HighlightMenu()
     {
         ExclusionControl.SetCustomHighlight(
-            new Vector2(MenuBar.Size.X + 6, MenuBar.Size.Y + 6),
-            new Vector2(Camera.Position.X - 3, Camera.Position.Y - 3),
-            () => new Vector2(Camera.Position.X - 3, Camera.Position.Y - 3)
+            new Vector2(MenuBar.Size.X + menuBarMargins.X, MenuBar.Size.Y + menuBarMargins.Y),
+            new Vector2(Camera.Offset.X - menuBarMargins.X / 2, Camera.Offset.Y - menuBarMargins.Y / 2),
+            () => new Vector2(Camera.Offset.X - menuBarMargins.X / 2, Camera.Offset.Y - menuBarMargins.Y / 2)
             );
     }
     private void HighlightToolbox()
     {
-        var element = new HighlightedElement<Control>(ToolBoxContainer);
-
         ExclusionControl.SetCustomHighlight(
             new Vector2(ToolBoxContainer.Size.X, ToolBoxContainer.Size.Y),
             new Vector2(GetViewport().GetVisibleRect().Size.X - ToolBoxContainer.Size.X, GetViewport().GetVisibleRect().Size.Y - ToolBoxContainer.Size.Y),

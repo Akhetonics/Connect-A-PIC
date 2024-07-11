@@ -75,6 +75,7 @@ public partial class TutorialSystem : Node
 
         CurrentTutorial.QuitTutorial();
         HighlightControl.Hide();
+        TutorialPopup.Hide();
     }
 
     private bool DoNotShowMarkExists()

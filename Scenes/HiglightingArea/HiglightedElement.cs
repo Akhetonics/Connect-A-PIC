@@ -1,3 +1,4 @@
+using Godot;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -46,10 +47,19 @@ public class HighlightedElement<T>
         this.OffsetY = offsetY;
         return this;
     }
+    public HighlightedElement<T> SetOffsets(Vector2 offset)
+    {
+        return SetOffsets(offset.X, offset.Y);
+    }
     public HighlightedElement<T> SetSize(float sizeX, float sizeY)
     {
         this.customSizeX = sizeX;
         this.customSizeY = sizeY;
         return this;
     }
+    public HighlightedElement<T> SetSize(Vector2 size)
+    {
+        return SetSize(size.X, size.Y);
+    }
+
 }

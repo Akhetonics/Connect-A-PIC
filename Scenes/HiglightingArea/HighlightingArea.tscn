@@ -47,7 +47,7 @@ ExclusionSquare = NodePath("ExclusionZone/ExclusionSquare")
 
 [node name="DarkeningAreaOverlay" type="Node2D" parent="." node_paths=PackedStringArray("InteractionAreas")]
 script = ExtResource("1_68abn")
-InteractionAreas = [NodePath("")]
+InteractionAreas = [null]
 
 [node name="ExclusionAreaOverlay" type="Node2D" parent="." node_paths=PackedStringArray("InteractionAreas")]
 visible = false
