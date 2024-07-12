@@ -1,4 +1,3 @@
-using Antlr4.Runtime.Misc;
 using CAP_Contracts.Logger;
 using CAP_Core.Components;
 using CAP_Core.ExternalPorts;
@@ -6,18 +5,15 @@ using CAP_Core.LightCalculation;
 using ConnectAPIC.LayoutWindow.ViewModel;
 using ConnectAPIC.LayoutWindow.ViewModel.Commands;
 using ConnectAPIC.Scripts.Helpers;
-using ConnectAPIC.Scripts.View.ComponentViews;
 using ConnectAPIC.Scripts.ViewModel;
 using ConnectAPIC.Scripts.ViewModel.CommandFactory;
 using ConnectAPIC.Scripts.ViewModel.Commands;
 using Godot;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
-using YamlDotNet.Serialization;
 
 namespace ConnectAPIC.LayoutWindow.View
 {
@@ -55,7 +51,7 @@ namespace ConnectAPIC.LayoutWindow.View
         {
             this.ViewModel = viewModel;
             this.Logger = logger;
-            DragDropProxy.Initialize(this,viewModel, logger);
+            DragDropProxy.Initialize(this, viewModel, logger);
             viewModel.PropertyChanged += async (object sender, System.ComponentModel.PropertyChangedEventArgs e) =>
             {
                 switch (e.PropertyName)
@@ -78,7 +74,8 @@ namespace ConnectAPIC.LayoutWindow.View
                 CreateComponentView(cmpViewModel, gridX, gridY, component.Rotation90CounterClock, component.TypeNumber, component.GetAllSliders());
                 await RecalculateLightIfOn();
             };
-            viewModel.ComponentRemoved += async (Component component, int gridX, int gridY) => {
+            viewModel.ComponentRemoved += async (Component component, int gridX, int gridY) =>
+            {
                 ResetTilesAt(gridX, gridY, component.WidthInTiles, component.HeightInTiles);
                 await RecalculateLightIfOn();
             };
@@ -135,7 +132,7 @@ namespace ConnectAPIC.LayoutWindow.View
             }
         }
 
-        public ComponentView CreateComponentView(ComponentViewModel cmpViewModel , int gridX, int gridY, DiscreteRotation rotationCounterClockwise, int componentTypeNumber, List<Slider> slidersInUse)
+        public ComponentView CreateComponentView(ComponentViewModel cmpViewModel, int gridX, int gridY, DiscreteRotation rotationCounterClockwise, int componentTypeNumber, List<Slider> slidersInUse)
         {
             var ComponentView = ComponentViewFactory.CreateComponentView(componentTypeNumber, cmpViewModel);
 
@@ -174,7 +171,8 @@ namespace ConnectAPIC.LayoutWindow.View
             {
                 _on_btn_undo_pressed();
                 @event.Dispose(); // this event should not be propagated any further
-            } else if (@event.IsActionPressed("ui_redo"))
+            }
+            else if (@event.IsActionPressed("ui_redo"))
             {
                 _on_btn_redo_pressed();
                 @event.Dispose();
@@ -207,7 +205,7 @@ namespace ConnectAPIC.LayoutWindow.View
             });
         }
 
-        private void DisplayNotificationAccordingly(object sender, EventArgs arg, Node node)//, ExportNazcaCommand command)
+        private void DisplayNotificationAccordingly(object sender, EventArgs arg, Node node)
         {
             var args = arg as ExecutionResult;
             if (args.Errors.Count > 0)
@@ -245,7 +243,7 @@ namespace ConnectAPIC.LayoutWindow.View
                 LightOnButton.Icon = LightOffTexture;
             }
         }
-        
+
         private void _on_btn_save_pressed()
         {
             SaveFileDialog.Save(this, async path =>
@@ -280,8 +278,8 @@ namespace ConnectAPIC.LayoutWindow.View
 
             }, GridSaveFileExtensionPatterns);
         }
-        
-        
+
+
         public async Task ShowLightPropagation() =>
             await ViewModel.LightCalculator.ShowLightPropagationAsync();
 
