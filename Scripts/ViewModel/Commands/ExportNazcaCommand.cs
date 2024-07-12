@@ -5,6 +5,7 @@ using CAP_Core.Grid;
 using CAP_Core.Helpers;
 using ConnectAPIC.Scripts.ViewModel.Commands;
 using System;
+using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -23,7 +24,7 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             this.grid = grid;
             this.dataAccessor = dataAccessor;
         }
-        
+
         internal async override Task ExecuteAsyncCmd(ExportNazcaParameters parameter)
         {
             if (!CanExecute(parameter)) return;
@@ -31,26 +32,18 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             var nazcaParams = (ExportNazcaParameters)parameter;
             var pythonCode = compiler.Export(this.grid);
 
-            FileStream fileStream = new FileStream(nazcaParams.Path, FileMode.Open, FileAccess.ReadWrite, FileShare.None);
-
-            Task pythonCodeTask = this.dataAccessor.Write(nazcaParams.Path, pythonCode);
-
             string directoryPath = Path.GetDirectoryName(nazcaParams.Path);
             string fullPDKPath = Path.Combine(directoryPath, Resources.PDKFileName);
-            Task pdkTask = this.dataAccessor.Write(fullPDKPath, Resources.PDK);
 
             try
             {
-                await pdkTask;
-                await pythonCodeTask;
+                await this.dataAccessor.Write(nazcaParams.Path, pythonCode);
+                await this.dataAccessor.Write(fullPDKPath, Resources.PDK);
             }
             catch (Exception ex)
             {
-                throw ex;
+                Errors.Add(ex);
             }
-
-            if (!pythonCodeTask.IsCompletedSuccessfully || !pdkTask.IsCompletedSuccessfully)
-                throw new Exception("Writing failed");
         }
     }
 

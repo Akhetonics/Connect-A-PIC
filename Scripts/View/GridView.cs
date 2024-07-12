@@ -1,3 +1,4 @@
+using Antlr4.Runtime.Misc;
 using CAP_Contracts.Logger;
 using CAP_Core.Components;
 using CAP_Core.ExternalPorts;
@@ -16,6 +17,7 @@ using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
+using YamlDotNet.Serialization;
 
 namespace ConnectAPIC.LayoutWindow.View
 {
@@ -181,17 +183,21 @@ namespace ConnectAPIC.LayoutWindow.View
 
         private void _on_btn_export_nazca_pressed()
         {
-            SaveFileDialog.Save(this, path =>
+            OpenSaveDialog(this);
+        }
+        public void OpenSaveDialog(Node node)
+        {
+            SaveFileDialog.Save(node, path =>
             {
                 try
                 {
-                    Task taks = ViewModel.CommandFactory.CreateCommand(CommandType.ExportNazca).ExecuteAsync(new ExportNazcaParameters(path));
-                    taks.Wait();
-
-                    if (taks.IsCompletedSuccessfully)
-                        NotificationManager.Instance.Notify("Successfully saved file");
-                    else
-                        NotificationManager.Instance.Notify("Successfully failed saving");
+                    var command = ViewModel.CommandFactory.CreateCommand(CommandType.ExportNazca) as ExportNazcaCommand;
+                    command.Executed += (s, e) =>
+                    {
+                        DisplayNotificationAccordingly(s, e, node);
+                        command.ClearErrors();
+                    };
+                    command.ExecuteAsync(new ExportNazcaParameters(path));
                 }
                 catch (Exception ex)
                 {
@@ -199,6 +205,24 @@ namespace ConnectAPIC.LayoutWindow.View
                     Logger.PrintErr(ex.Message);
                 }
             });
+        }
+
+        private void DisplayNotificationAccordingly(object sender, EventArgs arg, Node node)//, ExportNazcaCommand command)
+        {
+            var args = arg as ExecutionResult;
+            if (args.Errors.Count > 0)
+            {
+                NotificationManager.Instance.Notify("Couldn't export pdk", true);
+                foreach (var error in args.Errors)
+                {
+                    Logger.PrintErr(error.Message);
+                }
+                OpenSaveDialog(node);
+            }
+            else
+            {
+                NotificationManager.Instance.Notify("Successfully saved file");
+            }
         }
 
         private void _on_btn_undo_pressed()
