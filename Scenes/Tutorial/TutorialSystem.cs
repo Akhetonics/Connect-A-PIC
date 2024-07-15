@@ -12,7 +12,7 @@ public partial class TutorialSystem : Node
 {
     [Export] TutorialPopup TutorialPopup { get; set; }
     [Export] HighlightingAreaController HighlightControl { get; set; }
-    [Export] ITutorialScenario CurrentTutorial { get; set; }
+    [Export] TutorialScenario CurrentTutorial { get; set; }
 
     /// <summary>
     /// Used to determine if tutorial needs to be shown on startup again
@@ -50,8 +50,8 @@ public partial class TutorialSystem : Node
         TutorialPopup.QuitPressed += HandleQuittingWithDoNotShowAgain;
         TutorialPopup.FinishPressed += HandleQuittingWithDoNotShowAgain;
 
-        // checks if tutorial should be run during testing (if DO_NOT_RUN_TUTORIAL evn variable exists we don't run tutorial)
-        string doNotRun = System.Environment.GetEnvironmentVariable("DO_NOT_RUN_TUTORIAL");
+        // checks if tutorial should be run during testing (if CONNECT_A_PIC_NO_TUTORIAL evn variable exists we don't run tutorial)
+        string doNotRun = System.Environment.GetEnvironmentVariable("CONNECT_A_PIC_NO_TUTORIAL");
         if (doNotRun != null) return;
 
         // if do not show mark is in user files we don't run tutorial

@@ -64,10 +64,10 @@ public partial class HighlightingAreaController : Control
 
         GetViewport().SizeChanged += () =>
         {
-            ReadjustPosition(exclusionZone, getPositionWithNoOffsets, marginTop, marginLeft, customXOffset, customYOffset);
+            RecalculatePosition(exclusionZone, getPositionWithNoOffsets, marginTop, marginLeft, customXOffset, customYOffset);
         };
 
-        ReadjustPosition(exclusionZone, getPositionWithNoOffsets, marginTop, marginLeft, customXOffset, customYOffset);
+        RecalculatePosition(exclusionZone, getPositionWithNoOffsets, marginTop, marginLeft, customXOffset, customYOffset);
 
         exclusionZone.Size = new Vector2(customXSize + marginLeft + marginRight, customYSize + marginTop + marginBottom);
         exclusionZone.Visible = true;
@@ -91,12 +91,12 @@ public partial class HighlightingAreaController : Control
 
         GetViewport().SizeChanged += () =>
         {
-            ReadjustPosition(exclusionZone,
+            RecalculatePosition(exclusionZone,
                 () => highlighted.HighlightedNode.Position - new Vector2(Camera.Position.X, Camera.Position.Y),
                 marginTop, marginLeft, customXOffset, customYOffset);
         };
 
-        ReadjustPosition(exclusionZone,
+        RecalculatePosition(exclusionZone,
             () => highlighted.HighlightedNode.Position - new Vector2(Camera.Position.X, Camera.Position.Y),
             marginTop, marginLeft, customXOffset, customYOffset);
 
@@ -129,12 +129,12 @@ public partial class HighlightingAreaController : Control
 
         GetViewport().SizeChanged += () =>
         {
-            ReadjustPosition(exclusionZone,
+            RecalculatePosition(exclusionZone,
                 () => highlighted.HighlightedNode.Position - new Vector2(Camera.Position.X, Camera.Position.Y),
                 marginTop, marginLeft, customXOffset, customYOffset);
         };
 
-        ReadjustPosition(exclusionZone,
+        RecalculatePosition(exclusionZone,
             () => highlighted.HighlightedNode.Position - new Vector2(Camera.Position.X, Camera.Position.Y),
             marginTop, marginLeft, customXOffset, customYOffset);
 
@@ -149,7 +149,7 @@ public partial class HighlightingAreaController : Control
         }
     }
 
-    private static void ReadjustPosition(TextureRect exclusionZone, Func<Vector2> getPositionWithNoOffsets, float marginTop, float marginLeft, float customXOffset, float customYOffset)
+    private static void RecalculatePosition(TextureRect exclusionZone, Func<Vector2> getPositionWithNoOffsets, float marginTop, float marginLeft, float customXOffset, float customYOffset)
     {
         Vector2 position = getPositionWithNoOffsets.Invoke();
         position.X += -marginLeft + customXOffset;

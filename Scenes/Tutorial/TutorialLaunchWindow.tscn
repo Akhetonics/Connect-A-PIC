@@ -5,7 +5,7 @@
 [ext_resource type="Theme" uid="uid://b2f4xgnx0xy5e" path="res://Scenes/Assets/Themes/MainTheme.tres" id="2_cvhwl"]
 [ext_resource type="StyleBox" uid="uid://2isxejv4i0gq" path="res://Scenes/Assets/Styles/RedButtonNormal.tres" id="3_devab"]
 [ext_resource type="StyleBox" uid="uid://drsxpwqtwkesm" path="res://Scenes/Assets/Styles/RedButtonPressed.tres" id="4_5yk18"]
-[ext_resource type="Theme" path="res://Scenes/Assets/Themes/TutorialTheme.tres" id="5_pw4ki"]
+[ext_resource type="Theme" uid="uid://wmwls4twubhj" path="res://Scenes/Assets/Themes/TutorialTheme.tres" id="5_pw4ki"]
 [ext_resource type="FontFile" uid="uid://d4esbv2uixhnb" path="res://Scenes/Assets/Fonts/easvhs.ttf" id="6_4uhsx"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_mdva6"]
@@ -63,7 +63,6 @@ anchor_bottom = 1.0
 offset_top = -92.0
 grow_horizontal = 2
 grow_vertical = 0
-metadata/_edit_group_ = true
 
 [node name="MarginContainer" type="MarginContainer" parent="HBoxContainer"]
 layout_mode = 2

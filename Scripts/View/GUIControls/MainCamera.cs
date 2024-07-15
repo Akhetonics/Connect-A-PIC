@@ -1,10 +1,17 @@
+using CAP_Contracts.Logger;
+using Chickensoft.AutoInject;
 using ConnectAPIC.Scenes.InteractionOverlay;
+using ConnectAPIC.Scripts.Helpers;
 using Godot;
 using JetBrains.Annotations;
+using SuperNodes.Types;
 using System;
 
+[SuperNode(typeof(Dependent))]
 public partial class MainCamera : Camera2D
 {
+    public override partial void _Notification(int what);
+    [Dependency] public ILogger Logger => DependOn<ILogger>();
     [Export] public Node2D CenteringPoint {  get; set; }
 
     [Export] public float InitialZoom { get; set; } = 1;
@@ -53,6 +60,11 @@ public partial class MainCamera : Camera2D
                 RecenterCamera();
             }
         };
+    }
+
+    public void OnResolved()
+    {
+        this.CheckForNull((c) => c.CenteringPoint, Logger);
     }
 
     public void RecenterCamera()

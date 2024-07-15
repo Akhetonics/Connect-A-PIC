@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-partial class InitialTutorial : ITutorialScenario
+partial class InitialTutorial : TutorialScenario
 {
     [Export] MainCamera Camera { get; set; }
     [Export] Control MenuBar { get; set; }
@@ -63,7 +63,6 @@ partial class InitialTutorial : ITutorialScenario
             Camera.autoCenterWhenResizing = true;
             Camera.noZoomingOrMoving = true;
             Camera.RecenterCamera();
-
         };
         TutorialStates.Add(welcome);
 
@@ -113,43 +112,6 @@ partial class InitialTutorial : ITutorialScenario
         InputOutputs.HighlightedNodes.Add(ioPortsHighlight);
 
         TutorialStates.Add(InputOutputs);
-
-        #region this is scrapped for now
-        //var ChangingPorts = new TutorialState(
-        //    WindowPlacement.TopRight,
-        //    ButtonsArrangement.QuitNext,
-        //    "Port Changing",
-        //    "You can customize ports to suit your needs by simply clicking on them and selecting the desired configuration\n" +
-        //    "[color=FFD700]Left click first port and change its type to output[/color]",
-        //    () => !PortContainer.GetChild<ExternalPortView>(0).ViewModel.IsInput
-        //    );
-
-        //ChangingPorts.HighlightedNodes.Add(new Highlighted<Node2D>
-        //{
-        //    HighlightedNode  = PortContainer,
-        //    XOffset       = -portsWidth,
-        //    YOffset       = portContainerOffset,
-        //    customXSize   = portsWidth,
-        //    customYSize   = portHeight
-        //});
-
-        //ChangingPorts.FunctionWhenLoading = () =>
-        //{
-        //    ExclusionZoneContainer.MouseFilter = MouseFilterEnum.Ignore;
-        //    DarkeningArea.MouseFilter = MouseFilterEnum.Stop;
-
-        //    ControlMenu = PortContainer.FindChild("ControlMenu", true, false) as ControlMenu;
-
-        //    ControlMenu.VisibilityChanged += () => {
-        //        if (ControlMenu.Visible)
-        //        {
-        //            HighlightControlNode(ControlMenu.GetChild(0) as Control, marginTop: 10, marginRight: 20, marginBottom: 20, marginLeft: 10);
-        //        }
-        //    };
-        //};
-
-        //TutorialScenario.Add(ChangingPorts);
-        #endregion
 
         var InputPorts = new TutorialState(
             WindowPlacement.TopRight,

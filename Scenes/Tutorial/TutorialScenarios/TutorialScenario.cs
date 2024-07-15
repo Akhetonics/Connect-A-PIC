@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 
-abstract partial class ITutorialScenario : Node
+abstract partial class TutorialScenario : Node
 {
     public abstract void SetupTutorial();
     public abstract void GoToNext();

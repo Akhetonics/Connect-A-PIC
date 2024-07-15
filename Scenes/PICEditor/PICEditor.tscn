@@ -253,8 +253,9 @@ anchor_right = 0.61
 offset_top = -0.231995
 offset_right = 0.279968
 
-[node name="HighlightingArea" parent="GUILayer" instance=ExtResource("32_26bfr")]
+[node name="HighlightingArea" parent="GUILayer" node_paths=PackedStringArray("Camera") instance=ExtResource("32_26bfr")]
 visible = false
+Camera = NodePath("../../MainCamera")
 
 [node name="TutorialPopup" parent="GUILayer" instance=ExtResource("34_wqnav")]
 visible = false
