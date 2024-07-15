@@ -86,11 +86,11 @@ namespace ConnectAPIC.Scenes.InGameConsole
                     visibilityChanged = false;
                 }
 
-				if (eventKey.IsReleased() && eventKey.Keycode == Key.F2)
-				{
-					Print("Version: " + GameManager.Version);
-				}
-			}
+                if (eventKey.IsReleased() && eventKey.Keycode == Key.F2)
+                {
+                    Print("Version: " + GameManager.Version);
+                }
+            }
         }
-	}
+    }
 }

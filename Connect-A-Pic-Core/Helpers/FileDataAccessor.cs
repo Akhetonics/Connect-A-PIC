@@ -1,4 +1,4 @@
-﻿using CAP_Contracts;
+using CAP_Contracts;
 
 namespace CAP_Core.Helpers
 {
@@ -13,8 +13,9 @@ namespace CAP_Core.Helpers
                 return false;
             }
 
-            await File.WriteAllTextAsync(filePath, componentJson);
-            return true;
+            Task task = File.WriteAllTextAsync(filePath, componentJson);
+            await task;
+            return task.IsCompletedSuccessfully;
         }
         private static bool IsValidFilePath(string filePath)
         {

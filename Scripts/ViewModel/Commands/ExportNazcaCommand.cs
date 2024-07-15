@@ -5,6 +5,7 @@ using CAP_Core.Grid;
 using CAP_Core.Helpers;
 using ConnectAPIC.Scripts.ViewModel.Commands;
 using System;
+using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -23,16 +24,26 @@ namespace ConnectAPIC.LayoutWindow.ViewModel.Commands
             this.grid = grid;
             this.dataAccessor = dataAccessor;
         }
-        
+
         internal async override Task ExecuteAsyncCmd(ExportNazcaParameters parameter)
         {
+            if (!CanExecute(parameter)) return;
+
             var nazcaParams = (ExportNazcaParameters)parameter;
             var pythonCode = compiler.Export(this.grid);
-            await this.dataAccessor.Write(nazcaParams.Path, pythonCode);
+
             string directoryPath = Path.GetDirectoryName(nazcaParams.Path);
             string fullPDKPath = Path.Combine(directoryPath, Resources.PDKFileName);
-            await this.dataAccessor.Write(fullPDKPath, Resources.PDK);
-            if (!CanExecute(parameter)) return;
+
+            try
+            {
+                await this.dataAccessor.Write(nazcaParams.Path, pythonCode);
+                await this.dataAccessor.Write(fullPDKPath, Resources.PDK);
+            }
+            catch (Exception ex)
+            {
+                Errors.Add(ex);
+            }
         }
     }
 

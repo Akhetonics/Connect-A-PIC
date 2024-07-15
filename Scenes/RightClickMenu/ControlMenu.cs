@@ -267,7 +267,7 @@ namespace ConnectAPIC.Scenes.RightClickMenu
         }
         private void SliderSection_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
             var SetInputPowerCmd = ViewModel.CommandFactory.CreateCommand(CommandType.InputPowerAdjust);
-            SetInputPowerCmd.ExecuteAsync(new SetInputPowerArgs(portViewModel.PortModel, sliderSection.Slider.Value)).Wait();
+            SetInputPowerCmd.ExecuteAsync(new SetInputPowerArgs(portViewModel.PortModel, sliderSection.Slider.Value));
         }
 
         private void OnMouseEntered() {
