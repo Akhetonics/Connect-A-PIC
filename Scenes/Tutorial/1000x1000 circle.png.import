@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://bskt8xmas4b1b"
-path="res://.godot/imported/Background.png-d2b4108a1dddaff98d33ab7eaeb35b51.ctex"
+uid="uid://opoxilg8nwju"
+path="res://.godot/imported/1000x1000 circle.png-b6d4029c49d5f76ad20bde59fca95efd.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Scenes/UpdateView/Background.png"
-dest_files=["res://.godot/imported/Background.png-d2b4108a1dddaff98d33ab7eaeb35b51.ctex"]
+source_file="res://Scenes/Tutorial/1000x1000 circle.png"
+dest_files=["res://.godot/imported/1000x1000 circle.png-b6d4029c49d5f76ad20bde59fca95efd.ctex"]
 
 [params]
 

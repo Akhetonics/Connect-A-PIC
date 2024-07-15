@@ -25,11 +25,11 @@ public partial class ToolBoxCollapseControl : Control
 
         _marginContainer.SetPosition(new Vector2(_marginContainer.Position.X, newY));
     }
-    
 
-    private void OnToggleButtonPressed(bool toggled_on)
+
+    public void SetToolBoxToggleState(bool collapsed)
     {
-        _isCollapsed = toggled_on;
+        _isCollapsed = collapsed;
 
         if (_isCollapsed)
         {
@@ -41,6 +41,12 @@ public partial class ToolBoxCollapseControl : Control
             _targetPosition = 0;
             MouseFilter = MouseFilterEnum.Stop;
         }
+    }
+
+
+    private void OnToggleButtonPressed(bool toggled_on)
+    {
+        SetToolBoxToggleState(toggled_on);
     }
 
 

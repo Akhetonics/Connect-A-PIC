@@ -1,0 +1,324 @@
+[gd_scene load_steps=12 format=3 uid="uid://ro67mc8ymwg"]
+
+[ext_resource type="Script" path="res://Scenes/Tutorial/TutorialPopup/TutorialPopup.cs" id="1_d0tp5"]
+[ext_resource type="Texture2D" uid="uid://bskt8xmas4b1b" path="res://Scenes/Assets/Sprites/Background.png" id="2_ae80b"]
+[ext_resource type="Theme" path="res://Scenes/Assets/Themes/TutorialTheme.tres" id="3_mhv0n"]
+[ext_resource type="FontFile" uid="uid://d4esbv2uixhnb" path="res://Scenes/Assets/Fonts/easvhs.ttf" id="4_awacn"]
+[ext_resource type="Theme" uid="uid://b2f4xgnx0xy5e" path="res://Scenes/Assets/Themes/MainTheme.tres" id="5_mahch"]
+[ext_resource type="StyleBox" uid="uid://2isxejv4i0gq" path="res://Scenes/Assets/Styles/RedButtonNormal.tres" id="6_jn4s7"]
+[ext_resource type="StyleBox" uid="uid://drsxpwqtwkesm" path="res://Scenes/Assets/Styles/RedButtonPressed.tres" id="7_pdqma"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_w2aj2"]
+bg_color = Color(0.792157, 0.196078, 0.270588, 1)
+border_width_bottom = 5
+border_color = Color(0.596078, 0.12549, 0.188235, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
+shadow_size = 3
+shadow_offset = Vector2(3, 4)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ccq3g"]
+bg_color = Color(0.839216, 0.698039, 0.235294, 1)
+border_width_bottom = 5
+border_color = Color(0.337255, 0.286275, 0.0823529, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
+shadow_size = 3
+shadow_offset = Vector2(3, 4)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ffmjl"]
+bg_color = Color(0.933333, 0.733333, 0.333333, 1)
+border_width_bottom = 5
+border_color = Color(0.458824, 0.392157, 0.12549, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+expand_margin_left = 2.0
+expand_margin_top = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
+shadow_size = 3
+shadow_offset = Vector2(3, 4)
+anti_aliasing = false
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_38dt3"]
+bg_color = Color(0.933333, 0.733333, 0.333333, 1)
+border_width_bottom = 3
+border_color = Color(0.458824, 0.392157, 0.12549, 1)
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+expand_margin_left = 2.0
+expand_margin_right = 2.0
+expand_margin_bottom = 2.0
+shadow_size = 1
+shadow_offset = Vector2(1, 2)
+anti_aliasing = false
+
+[node name="TutorialPopup" type="Control" node_paths=PackedStringArray("Title", "Body", "DoNotShowAgainCheckButton", "YesNoConfiguration", "QuitSkipNextConfig", "FinishConfig", "SkipContainer", "NextContainer")]
+texture_filter = 1
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -322.0
+offset_top = -156.0
+offset_right = 323.0
+offset_bottom = 157.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_force_pass_scroll_events = false
+script = ExtResource("1_d0tp5")
+Title = NodePath("MarginContainer/VBoxContainer/MarginContainer/Title")
+Body = NodePath("MarginContainer/VBoxContainer/ScrollContainer/MarginContainer2/Body")
+DoNotShowAgainCheckButton = NodePath("MarginContainer/VBoxContainer/MarginContainer3/HBoxContainer/NoShowAgain")
+YesNoConfiguration = NodePath("MarginContainer/VBoxContainer/YesNoConfiguration")
+QuitSkipNextConfig = NodePath("MarginContainer/VBoxContainer/QuitSkipNextConfiguration")
+FinishConfig = NodePath("MarginContainer/VBoxContainer/FinishConfiguration")
+SkipContainer = NodePath("MarginContainer/VBoxContainer/QuitSkipNextConfiguration/HBoxContainer/SkipContainer")
+NextContainer = NodePath("MarginContainer/VBoxContainer/QuitSkipNextConfiguration/HBoxContainer/NextContainer")
+
+[node name="NinePatchRect" type="NinePatchRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("2_ae80b")
+patch_margin_left = 27
+patch_margin_top = 44
+patch_margin_right = 27
+patch_margin_bottom = 48
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="Title" type="RichTextLabel" parent="MarginContainer/VBoxContainer/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("3_mhv0n")
+theme_override_colors/default_color = Color(0.933333, 0.733333, 0.333333, 1)
+bbcode_enabled = true
+text = "[center]Tutorial![/center]"
+fit_content = true
+scroll_active = false
+
+[node name="ScrollContainer" type="ScrollContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/VBoxContainer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 6
+
+[node name="Body" type="RichTextLabel" parent="MarginContainer/VBoxContainer/ScrollContainer/MarginContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("3_mhv0n")
+theme_override_fonts/normal_font = ExtResource("4_awacn")
+theme_override_font_sizes/normal_font_size = 25
+bbcode_enabled = true
+text = "[center]Want to go through the tutorial?[/center]"
+fit_content = true
+
+[node name="MarginContainer3" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/MarginContainer3"]
+layout_mode = 2
+
+[node name="NoShowAgain" type="CheckButton" parent="MarginContainer/VBoxContainer/MarginContainer3/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 0
+focus_mode = 0
+
+[node name="RichTextLabel" type="RichTextLabel" parent="MarginContainer/VBoxContainer/MarginContainer3/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_font_sizes/normal_font_size = 17
+text = "Don't show again"
+fit_content = true
+scroll_active = false
+text_direction = 1
+
+[node name="YesNoConfiguration" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/YesNoConfiguration"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/YesNoConfiguration/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/margin_left = 55
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 55
+theme_override_constants/margin_bottom = 0
+
+[node name="NoBtn" type="Button" parent="MarginContainer/VBoxContainer/YesNoConfiguration/HBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("5_mahch")
+theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = ExtResource("6_jn4s7")
+theme_override_styles/hover = SubResource("StyleBoxFlat_w2aj2")
+theme_override_styles/pressed = ExtResource("7_pdqma")
+text = "No"
+
+[node name="MarginContainer2" type="MarginContainer" parent="MarginContainer/VBoxContainer/YesNoConfiguration/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/margin_left = 55
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 55
+theme_override_constants/margin_bottom = 0
+
+[node name="YesBtn" type="Button" parent="MarginContainer/VBoxContainer/YesNoConfiguration/HBoxContainer/MarginContainer2"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("5_mahch")
+theme_override_font_sizes/font_size = 17
+text = "Yes!"
+
+[node name="QuitSkipNextConfiguration" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/QuitSkipNextConfiguration"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/QuitSkipNextConfiguration/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/margin_left = 30
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 90
+theme_override_constants/margin_bottom = 0
+
+[node name="QuitBtn" type="Button" parent="MarginContainer/VBoxContainer/QuitSkipNextConfiguration/HBoxContainer/MarginContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("5_mahch")
+theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = ExtResource("6_jn4s7")
+theme_override_styles/hover = SubResource("StyleBoxFlat_w2aj2")
+theme_override_styles/pressed = ExtResource("7_pdqma")
+text = "Quit"
+
+[node name="NextContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/QuitSkipNextConfiguration/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/margin_left = 90
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 0
+
+[node name="NextBtn" type="Button" parent="MarginContainer/VBoxContainer/QuitSkipNextConfiguration/HBoxContainer/NextContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("5_mahch")
+theme_override_font_sizes/font_size = 17
+text = "Next"
+
+[node name="SkipContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/QuitSkipNextConfiguration/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/margin_left = 90
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 30
+theme_override_constants/margin_bottom = 0
+
+[node name="SkipBtn" type="Button" parent="MarginContainer/VBoxContainer/QuitSkipNextConfiguration/HBoxContainer/SkipContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("5_mahch")
+theme_override_font_sizes/font_size = 17
+theme_override_styles/normal = SubResource("StyleBoxFlat_ccq3g")
+theme_override_styles/hover = SubResource("StyleBoxFlat_ffmjl")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_38dt3")
+text = "Skip"
+
+[node name="FinishConfiguration" type="MarginContainer" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer/FinishConfiguration"]
+layout_mode = 2
+
+[node name="NextContainer" type="MarginContainer" parent="MarginContainer/VBoxContainer/FinishConfiguration/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+theme_override_constants/margin_left = 220
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 220
+theme_override_constants/margin_bottom = 0
+
+[node name="FinishBtn" type="Button" parent="MarginContainer/VBoxContainer/FinishConfiguration/HBoxContainer/NextContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+focus_mode = 0
+theme = ExtResource("5_mahch")
+theme_override_font_sizes/font_size = 17
+text = "Finish"
+
+[connection signal="pressed" from="MarginContainer/VBoxContainer/YesNoConfiguration/HBoxContainer/MarginContainer/NoBtn" to="." method="OnNoButtonPressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/YesNoConfiguration/HBoxContainer/MarginContainer2/YesBtn" to="." method="OnYesButtonPressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/QuitSkipNextConfiguration/HBoxContainer/MarginContainer/QuitBtn" to="." method="OnQuitButtonPressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/QuitSkipNextConfiguration/HBoxContainer/NextContainer/NextBtn" to="." method="OnNextButtonPressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/QuitSkipNextConfiguration/HBoxContainer/SkipContainer/SkipBtn" to="." method="OnSkipButtonPressed"]
+[connection signal="pressed" from="MarginContainer/VBoxContainer/FinishConfiguration/HBoxContainer/NextContainer/FinishBtn" to="." method="OnFinishButtonPressed"]

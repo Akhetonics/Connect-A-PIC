@@ -10,7 +10,11 @@
       "commandName": "Executable",
       "executablePath": "%Godot%",
       "commandLineArgs": "--path . --run-tests --quit-on-finish --verbose",
-      "workingDirectory": "."
+      "workingDirectory": ".",
+      "environmentVariables": {
+        "DO_NOT_RUN_TUTORIAL": "0"
+      },
+      "nativeDebugging": false
     }
   }
 }

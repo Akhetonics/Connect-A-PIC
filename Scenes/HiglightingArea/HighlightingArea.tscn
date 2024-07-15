@@ -1,0 +1,109 @@
+[gd_scene load_steps=8 format=3 uid="uid://bk530a6v8i3jv"]
+
+[ext_resource type="Script" path="res://Scenes/InteractionOverlay/OverlayElement.cs" id="1_68abn"]
+[ext_resource type="Script" path="res://Scenes/HiglightingArea/HighlightingAreaController.cs" id="1_q5ths"]
+[ext_resource type="Material" uid="uid://wsj5y00jqprc" path="res://Scenes/Assets/Shaders/DarkeningShader.tres" id="2_vjp1v"]
+[ext_resource type="Texture2D" uid="uid://16n54w4t1lkl" path="res://Scenes/Tutorial/100x100 square.png" id="3_ucd4j"]
+[ext_resource type="Texture2D" uid="uid://opoxilg8nwju" path="res://Scenes/Tutorial/1000x1000 circle.png" id="4_yi5kc"]
+
+[sub_resource type="Shader" id="Shader_gcxy7"]
+code = "shader_type canvas_item;
+
+uniform sampler2D screen_texture : hint_screen_texture, repeat_disable, filter_nearest;
+
+uniform float brightness = 1.0;
+uniform float contrast = 1.0;
+uniform float saturation = 1.0;
+
+void fragment() {
+    vec3 c = texture(screen_texture, SCREEN_UV, 0.0).rgb;
+
+    c.rgb = mix(vec3(0.0), c.rgb, brightness);
+    c.rgb = mix(vec3(0.5), c.rgb, contrast);
+    c.rgb = mix(vec3(dot(vec3(1.0), c.rgb) * 0.33333), c.rgb, saturation);
+
+    COLOR.rgb = c;
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_dp28u"]
+shader = SubResource("Shader_gcxy7")
+shader_parameter/brightness = 1.0
+shader_parameter/contrast = 1.0
+shader_parameter/saturation = 1.0
+
+[node name="HighlightingArea" type="Control" node_paths=PackedStringArray("DarkeningArea", "ExclusionZoneContainer", "ExclusionCircle", "ExclusionSquare")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+script = ExtResource("1_q5ths")
+DarkeningArea = NodePath("DarkeningArea")
+ExclusionZoneContainer = NodePath("ExclusionZone")
+ExclusionCircle = NodePath("ExclusionZone/ExclusionCircle")
+ExclusionSquare = NodePath("ExclusionZone/ExclusionSquare")
+
+[node name="DarkeningAreaOverlay" type="Node2D" parent="." node_paths=PackedStringArray("InteractionAreas")]
+script = ExtResource("1_68abn")
+InteractionAreas = [null]
+
+[node name="ExclusionAreaOverlay" type="Node2D" parent="." node_paths=PackedStringArray("InteractionAreas")]
+visible = false
+script = ExtResource("1_68abn")
+Scrolling = true
+Clicking = true
+OverlayZIndex = 0
+InteractionAreas = [null]
+
+[node name="DarkeningArea" type="TextureRect" parent="."]
+material = ExtResource("2_vjp1v")
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+texture = ExtResource("3_ucd4j")
+
+[node name="ExclusionZone" type="Control" parent="."]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 0
+mouse_force_pass_scroll_events = false
+
+[node name="ExclusionSquare" type="TextureRect" parent="ExclusionZone"]
+material = SubResource("ShaderMaterial_dp28u")
+layout_mode = 1
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 137.0
+offset_top = 12.0
+offset_right = 237.0
+offset_bottom = 112.0
+grow_horizontal = 0
+grow_vertical = 0
+texture = ExtResource("3_ucd4j")
+expand_mode = 1
+
+[node name="ExclusionCircle" type="TextureRect" parent="ExclusionZone"]
+material = SubResource("ShaderMaterial_dp28u")
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = 10.0
+offset_top = 11.0
+offset_right = 1010.0
+offset_bottom = 1011.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("4_yi5kc")

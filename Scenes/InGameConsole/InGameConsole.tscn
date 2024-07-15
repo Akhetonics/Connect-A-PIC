@@ -23,15 +23,14 @@ shadow_color = Color(0.0588235, 0.0588235, 0.0588235, 0.733333)
 [sub_resource type="Theme" id="Theme_76st6"]
 
 [node name="InGameConsole" type="ScrollContainer" node_paths=PackedStringArray("LoggingParent", "InfoTextTemplate", "ErrorTextTemplate")]
-top_level = true
 texture_filter = 1
-anchors_preset = 12
-anchor_top = 1.0
+anchors_preset = -1
+anchor_top = 0.654
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = -261.0
+offset_top = -0.272034
 grow_horizontal = 2
-grow_vertical = 0
+grow_vertical = 2
 mouse_filter = 0
 mouse_force_pass_scroll_events = false
 theme_override_styles/panel = SubResource("StyleBoxFlat_jfvjg")

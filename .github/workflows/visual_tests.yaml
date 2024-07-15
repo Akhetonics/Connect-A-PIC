@@ -3,6 +3,9 @@ on:
   push:
   pull_request:
 
+env:
+  CONNECT_A_PIC_NO_TUTORIAL: 0
+
 jobs:
   visual_tests:
     name: 🖼 Visual Tests with ${{ matrix.render-driver }}

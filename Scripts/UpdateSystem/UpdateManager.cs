@@ -11,11 +11,8 @@ using ConnectAPic.LayoutWindow;
 
 public partial class UpdateManager : Node
 {
-    private static string RepoOwnerName = "Akhetonics";
-    private static string RepoName = "Connect-A-PIC";
-
     private static string InstallerPath =
-        Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData), RepoOwnerName, RepoName, "installers");
+        Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData), GameManager.RepoOwnerName, GameManager.RepoName, "installers");
 
     public static event EventHandler UpdateAvailable;
     public static event EventHandler DownloadStarted;
@@ -35,7 +32,7 @@ public partial class UpdateManager : Node
 
     public override void _Ready()
 	{
-        Client = new GitHubClient(new ProductHeaderValue(RepoName));
+        Client = new GitHubClient(new ProductHeaderValue(GameManager.RepoName));
         CurrentVersion = GameManager.Version;
 
         Directory.CreateDirectory(InstallerPath);
@@ -55,7 +52,7 @@ public partial class UpdateManager : Node
     }
 
     public async Task DownloadProcess(){
-        var release = ReleaseManager.Instance.GetLatest(RepoOwnerName, RepoName);
+        var release = ReleaseManager.Instance.GetLatest(GameManager.RepoOwnerName, GameManager.RepoName);
 
         if (release is null) return;
         AssetDownloader.Instance.DownloadAllAssets(release, InstallerPath, progressChanged: RunOnProgressChanged);
@@ -78,16 +75,16 @@ public partial class UpdateManager : Node
 
     private async Task CheckForUpdates()
     {
-        var releases = await Client.Repository.Release.GetAll(RepoOwnerName, RepoName);
+        var releases = await Client.Repository.Release.GetAll(GameManager.RepoOwnerName, GameManager.RepoName);
         var vers = releases[0].TagName.Replace("v", "");
         LatestVersion = new Version(vers);
 
         if (LatestVersion == null || CurrentVersion > LatestVersion) return; // Update not needed
 
         // if installer is downloaded then run installation
-        if (File.Exists(Path.Combine(InstallerPath, $"{RepoName}_{LatestVersion}.msi")))
+        if (File.Exists(Path.Combine(InstallerPath, $"{GameManager.RepoName}_{LatestVersion}.msi")))
         {
-            RunInstaller(Path.Combine(InstallerPath, $"{RepoName}_{LatestVersion}.msi"));
+            RunInstaller(Path.Combine(InstallerPath, $"{GameManager.RepoName}_{LatestVersion}.msi"));
             System.Environment.Exit(0);
         }
 
@@ -106,6 +103,8 @@ public partial class UpdateManager : Node
         if (string.IsNullOrEmpty(installerPath))
             installerPath = Path.Combine(InstallerPath, installerName);
 
+        ResetTutorial();
+
         Process p = new Process();
         p.StartInfo.FileName = "msiexec";
         p.StartInfo.Arguments = "/i " + Path.Combine(installerPath);
@@ -113,7 +112,7 @@ public partial class UpdateManager : Node
     }
 
     private static void RenameInstallerFile() {
-        var newInstallerName = $"{RepoName}_{LatestVersion}.msi";
+        var newInstallerName = $"{GameManager.RepoName}_{LatestVersion}.msi";
         if (installerName == newInstallerName)
         {
             InstallerReady?.Invoke(null, EventArgs.Empty);
@@ -125,5 +124,13 @@ public partial class UpdateManager : Node
         installerName = newInstallerName;
 
         InstallerReady?.Invoke(null, EventArgs.Empty);
+    }
+
+    private static void ResetTutorial()
+    {
+        var tutorialResetFile = Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.ApplicationData), GameManager.RepoOwnerName, GameManager.RepoName, "doNotShowTutorial");
+
+        if(File.Exists(tutorialResetFile))
+            File.Delete(tutorialResetFile);
     }
 }

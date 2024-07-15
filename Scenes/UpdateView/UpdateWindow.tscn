@@ -1,7 +1,7 @@
 [gd_scene load_steps=9 format=3 uid="uid://ckp2oek7mdfdr"]
 
 [ext_resource type="Script" path="res://Scenes/UpdateView/UpdateWindow.cs" id="1_6lc00"]
-[ext_resource type="Texture2D" uid="uid://bskt8xmas4b1b" path="res://Scenes/UpdateView/Background.png" id="1_10xxx"]
+[ext_resource type="Texture2D" uid="uid://bskt8xmas4b1b" path="res://Scenes/Assets/Sprites/Background.png" id="2_mj2g3"]
 [ext_resource type="Theme" uid="uid://b2f4xgnx0xy5e" path="res://Scenes/Assets/Themes/MainTheme.tres" id="2_xo7yr"]
 [ext_resource type="StyleBox" uid="uid://2isxejv4i0gq" path="res://Scenes/Assets/Styles/RedButtonNormal.tres" id="3_vdg8s"]
 [ext_resource type="StyleBox" uid="uid://drsxpwqtwkesm" path="res://Scenes/Assets/Styles/RedButtonPressed.tres" id="4_my1vj"]
@@ -39,7 +39,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 focus_mode = 2
-texture = ExtResource("1_10xxx")
+texture = ExtResource("2_mj2g3")
 region_rect = Rect2(0, 0, 566, 328)
 patch_margin_left = 27
 patch_margin_top = 44

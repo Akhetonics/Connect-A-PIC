@@ -1,7 +1,8 @@
-[gd_scene load_steps=32 format=3 uid="uid://cu6wqy6xwjfo1"]
+[gd_scene load_steps=36 format=3 uid="uid://cu6wqy6xwjfo1"]
 
 [ext_resource type="Script" path="res://Scripts/GameManager.cs" id="1_c0scx"]
 [ext_resource type="Script" path="res://Scripts/View/ComponentFactory/ComponentViewFactory.cs" id="2_7hjmy"]
+[ext_resource type="Script" path="res://Scenes/Tutorial/TutorialScenarios/InitialTutorial.cs" id="3_316de"]
 [ext_resource type="Script" path="res://Scripts/View/ComponentViews/ComponentView.cs" id="3_celc4"]
 [ext_resource type="TileSet" uid="uid://cbfkdk3hvsq1q" path="res://Scenes/PICEditor/TileSet_PICEditor.tres" id="4_mptgl"]
 [ext_resource type="Script" path="res://Scripts/View/GridView.cs" id="5_3575d"]
@@ -25,24 +26,44 @@
 [ext_resource type="Texture2D" uid="uid://bpf4xfrmslfao" path="res://Scripts/View/ToolBox/CollapseButtonToggledOn.png" id="20_8i2ba"]
 [ext_resource type="Texture2D" uid="uid://dj6fyqfvyhjtu" path="res://Scenes/UpdateView/updateMenu135.png" id="21_bc703"]
 [ext_resource type="PackedScene" uid="uid://dfrjm1onsjusf" path="res://Scripts/View/ToolBox/Tool_box.tscn" id="21_cjovy"]
-[ext_resource type="PackedScene" uid="uid://cpu4bmee8crlg" path="res://Scenes/PopUpWindow/PopUpWindow.tscn" id="21_u0shi"]
 [ext_resource type="PackedScene" uid="uid://cfnwmdequraf3" path="res://Scenes/ExternalPortContainer/PortsContainer.tscn" id="22_75h2p"]
 [ext_resource type="Texture2D" uid="uid://dnku8c3qddqif" path="res://Scenes/MenuBar/HelpIcon.png" id="23_oxlnq"]
 [ext_resource type="Script" path="res://Scripts/View/GUIControls/ToolBoxCollapseControl.cs" id="25_35kfa"]
 [ext_resource type="Script" path="res://Scripts/UpdateSystem/UpdateManager.cs" id="25_cr0be"]
 [ext_resource type="PackedScene" uid="uid://ckp2oek7mdfdr" path="res://Scenes/UpdateView/UpdateWindow.tscn" id="26_ihjn2"]
+[ext_resource type="PackedScene" uid="uid://b0rnvgo3f3djj" path="res://Scenes/Tutorial/TutorialLaunchWindow.tscn" id="27_1h30m"]
+[ext_resource type="PackedScene" uid="uid://62ttjwpc0g0a" path="res://Scenes/Tutorial/TutorialContainer.tscn" id="31_8yjdu"]
+[ext_resource type="PackedScene" uid="uid://bk530a6v8i3jv" path="res://Scenes/HiglightingArea/HighlightingArea.tscn" id="32_26bfr"]
+[ext_resource type="PackedScene" uid="uid://bio2rghlrx2nr" path="res://Scenes/Tutorial/TutorialPopup/TutorialPopup.tscn" id="34_wqnav"]
 
 [node name="GameManager" type="Node" node_paths=PackedStringArray("InGameConsole")]
 script = ExtResource("1_c0scx")
 GridViewPath = NodePath("GridView")
-ToolBoxPath = NodePath("GUILayer/ToolboxControl/MarginContainer/VBoxContainer/ToolBox")
+ToolBoxPath = NodePath("GUILayer/ToolboxContainer/MarginContainer/VBoxContainer/ToolBox")
 InGameConsole = NodePath("GUILayer/InGameConsole")
-metadata/_edit_vertical_guides_ = [512.0]
-metadata/_edit_horizontal_guides_ = [384.0]
+metadata/_edit_vertical_guides_ = [1650.0, 155.0, 512.0]
+metadata/_edit_horizontal_guides_ = [384.0, 42.0, 166.0, 228.0, 785.0]
 
 [node name="ComponentViewFactory" type="Node" parent="."]
 script = ExtResource("2_7hjmy")
 ComponentBaseScriptPath = ExtResource("3_celc4")
+
+[node name="UpdateManager" type="Node" parent="."]
+script = ExtResource("25_cr0be")
+
+[node name="TutorialController" parent="." node_paths=PackedStringArray("TutorialPopup", "HighlightControl", "CurrentTutorial") instance=ExtResource("31_8yjdu")]
+TutorialPopup = NodePath("../GUILayer/TutorialPopup")
+HighlightControl = NodePath("../GUILayer/HighlightingArea")
+CurrentTutorial = NodePath("InitialTutorialScenario")
+
+[node name="InitialTutorialScenario" type="Node" parent="TutorialController" node_paths=PackedStringArray("Camera", "MenuBar", "PortContainer", "ToolBoxContainer", "TutorialPopup", "ExclusionControl")]
+script = ExtResource("3_316de")
+Camera = NodePath("../../MainCamera")
+MenuBar = NodePath("../../GUILayer/MenuBar/HBoxContainer")
+PortContainer = NodePath("../../GridView/PortContainer")
+ToolBoxContainer = NodePath("../../GUILayer/ToolboxContainer")
+TutorialPopup = NodePath("../../GUILayer/TutorialPopup")
+ExclusionControl = NodePath("../../GUILayer/HighlightingArea")
 
 [node name="GridView" type="TileMap" parent="." node_paths=PackedStringArray("DragDropProxy", "ComponentViewFactory", "LightOnButton")]
 texture_filter = 1
@@ -67,29 +88,23 @@ script = ExtResource("8_h35r3")
 metadata/_edit_use_anchors_ = true
 
 [node name="PortContainer" parent="GridView" instance=ExtResource("22_75h2p")]
+unique_name_in_owner = true
 
-[node name="MainCamera" type="Camera2D" parent="."]
+[node name="MainCamera" type="Camera2D" parent="." node_paths=PackedStringArray("CenteringPoint")]
+unique_name_in_owner = true
 anchor_mode = 0
 drag_left_margin = 0.0
 drag_top_margin = 0.0
 drag_right_margin = 0.0
 drag_bottom_margin = 0.0
 script = ExtResource("19_tfkoi")
+CenteringPoint = NodePath("../CameraCenteringPoint")
 
 [node name="GUILayer" type="CanvasLayer" parent="."]
-
-[node name="InGameConsole" parent="GUILayer" instance=ExtResource("16_7rcst")]
-visible = false
-anchors_preset = -1
-anchor_top = 0.559
-anchor_right = 0.61
-offset_top = -0.231995
-offset_right = 0.279968
 
 [node name="MenuBar" type="MenuBar" parent="GUILayer"]
 pivot_offset = Vector2(2.655, 0)
 size_flags_horizontal = 2
-metadata/_edit_use_anchors_ = true
 
 [node name="HBoxContainer" type="HBoxContainer" parent="GUILayer/MenuBar"]
 layout_mode = 0
@@ -164,7 +179,7 @@ CompletedTexture = ExtResource("19_0hfky")
 AnimationFrames = Array[Texture2D]([ExtResource("17_mvbv8"), ExtResource("19_pc4y3"), ExtResource("19_w60kc"), ExtResource("21_bc703")])
 metadata/_edit_use_anchors_ = true
 
-[node name="ToolboxControl" type="Control" parent="GUILayer"]
+[node name="ToolboxContainer" type="Control" parent="GUILayer"]
 layout_mode = 3
 anchors_preset = 3
 anchor_left = 1.0
@@ -179,7 +194,7 @@ size_flags_horizontal = 8
 size_flags_vertical = 10
 script = ExtResource("25_35kfa")
 
-[node name="MarginContainer" type="MarginContainer" parent="GUILayer/ToolboxControl"]
+[node name="MarginContainer" type="MarginContainer" parent="GUILayer/ToolboxContainer"]
 layout_mode = 1
 anchors_preset = -1
 anchor_top = -0.036
@@ -190,11 +205,11 @@ offset_bottom = -15.84
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="GUILayer/ToolboxControl/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="GUILayer/ToolboxContainer/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 0
 
-[node name="HideToggle" type="TextureButton" parent="GUILayer/ToolboxControl/MarginContainer/VBoxContainer"]
+[node name="HideToggle" type="TextureButton" parent="GUILayer/ToolboxContainer/MarginContainer/VBoxContainer"]
 texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 8
@@ -203,39 +218,54 @@ toggle_mode = true
 texture_normal = ExtResource("19_wkq3d")
 texture_pressed = ExtResource("20_8i2ba")
 
-[node name="ToolBox" parent="GUILayer/ToolboxControl/MarginContainer/VBoxContainer" instance=ExtResource("21_cjovy")]
+[node name="ToolBox" parent="GUILayer/ToolboxContainer/MarginContainer/VBoxContainer" instance=ExtResource("21_cjovy")]
 texture_filter = 1
 layout_mode = 2
 size_flags_horizontal = 8
 size_flags_vertical = 2
 
-[node name="HelpWindow" parent="GUILayer" node_paths=PackedStringArray("ToggleButton") instance=ExtResource("21_u0shi")]
-anchors_preset = 8
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-offset_left = -284.0
-offset_top = -162.5
-offset_right = 284.0
-offset_bottom = 162.5
-size_flags_horizontal = 6
-size_flags_vertical = 6
+[node name="TutorialLaunchWindow" parent="GUILayer" node_paths=PackedStringArray("ToggleButton", "TutorialSystem") instance=ExtResource("27_1h30m")]
+visible = false
+offset_left = -397.0
+offset_top = -272.0
+offset_right = 133.0
+offset_bottom = 91.0
+scale = Vector2(1.5, 1.5)
 ToggleButton = NodePath("../MenuBar/HBoxContainer/btnHelp")
+TutorialSystem = NodePath("../../TutorialController")
 
 [node name="NotificationManager" type="Node" parent="GUILayer"]
 script = ExtResource("9_gj54m")
 NotificationBoxScene = ExtResource("10_06t00")
 
 [node name="UpdateWindow" parent="GUILayer" instance=ExtResource("26_ihjn2")]
+visible = false
 offset_left = -309.0
 offset_top = -133.0
 offset_right = 117.0
 offset_bottom = 51.0
 scale = Vector2(1.45, 1.45)
 
-[node name="UpdateManager" type="Node" parent="."]
-script = ExtResource("25_cr0be")
+[node name="InGameConsole" parent="GUILayer" instance=ExtResource("16_7rcst")]
+visible = false
+anchor_top = 0.559
+anchor_right = 0.61
+offset_top = -0.231995
+offset_right = 0.279968
+
+[node name="HighlightingArea" parent="GUILayer" node_paths=PackedStringArray("Camera") instance=ExtResource("32_26bfr")]
+visible = false
+Camera = NodePath("../../MainCamera")
+
+[node name="TutorialPopup" parent="GUILayer" instance=ExtResource("34_wqnav")]
+visible = false
+offset_left = -322.5
+offset_top = -156.5
+offset_right = 322.5
+offset_bottom = 156.5
+
+[node name="CameraCenteringPoint" type="Node2D" parent="."]
+position = Vector2(402, 414)
 
 [connection signal="pressed" from="GUILayer/MenuBar/HBoxContainer/btnSave" to="GridView" method="_on_btn_save_pressed"]
 [connection signal="pressed" from="GUILayer/MenuBar/HBoxContainer/btnLoad" to="GridView" method="_on_btn_load_pressed"]
@@ -244,7 +274,4 @@ script = ExtResource("25_cr0be")
 [connection signal="pressed" from="GUILayer/MenuBar/HBoxContainer/btnUndo" to="GridView" method="_on_btn_undo_pressed"]
 [connection signal="pressed" from="GUILayer/MenuBar/HBoxContainer/btnRedo" to="GridView" method="_on_btn_redo_pressed"]
 [connection signal="pressed" from="GUILayer/MenuBar/HBoxContainer/btnUpdate" to="GUILayer/UpdateWindow" method="OnUpdateButtonPressed"]
-[connection signal="toggled" from="GUILayer/ToolboxControl/MarginContainer/VBoxContainer/HideToggle" to="GUILayer/ToolboxControl" method="OnToggleButtonPressed"]
-[connection signal="WindowClosed" from="GUILayer/HelpWindow" to="MainCamera" method="OnMouseExitedTutorialWindow"]
-[connection signal="mouse_entered" from="GUILayer/HelpWindow" to="MainCamera" method="OnMouseEnteredTutorialWindow"]
-[connection signal="mouse_exited" from="GUILayer/HelpWindow" to="MainCamera" method="OnMouseExitedTutorialWindow"]
+[connection signal="toggled" from="GUILayer/ToolboxContainer/MarginContainer/VBoxContainer/HideToggle" to="GUILayer/ToolboxContainer" method="OnToggleButtonPressed"]

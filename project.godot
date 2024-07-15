@@ -19,6 +19,10 @@ boot_splash/fullsize=false
 config/icon="res://icon.svg"
 config/windows_native_icon="res://icon.ico"
 
+[autoload]
+
+OverlayController="*res://Scenes/InteractionOverlay/InteractionOverlayController.cs"
+
 [debug]
 
 file_logging/enable_file_logging=true
@@ -39,7 +43,7 @@ enabled=PackedStringArray()
 
 [gui]
 
-theme/custom_font="res://Scenes/Assets/Fonts/04B_11__.TTF"
+theme/custom_font="res://Scenes/Assets/Fonts/easvhs.ttf"
 
 [input]
 

@@ -91,6 +91,7 @@ namespace ConnectAPIC.test.src
                 await TestScene.GetTree().NextFrame(DefaultAwaitedFrames);
                 if (!result.Success)
                 {
+
                     results.Add($"Left Port {i}: {result.Message}");
                 }
             }

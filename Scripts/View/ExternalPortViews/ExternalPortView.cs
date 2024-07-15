@@ -1,4 +1,5 @@
 using CAP_Core.ExternalPorts;
+using ConnectAPIC.Scenes.InteractionOverlay;
 using ConnectAPIC.Scripts.ViewModel;
 using Godot;
 using System;
@@ -54,7 +55,8 @@ namespace ConnectAPIC.Scenes.ExternalPorts
             if (@event is InputEventMouseButton mouseButton
                 && mouseButton.Pressed
                 && mouseButton.ButtonIndex == MouseButton.Left
-                && mouseInClickArea)
+                && mouseInClickArea
+                && InteractionOverlayController.ClickingAllowed)
             {
                 ViewModel.InvokeClicked();
             }

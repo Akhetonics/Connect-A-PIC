@@ -22,8 +22,8 @@ public partial class UpdateWindow : Control
     private int dots = 0;
 
 
-	public override void _Ready()
-	{
+    public override void _Ready()
+    {
         title = GetNode<RichTextLabel>("%Title");
         body = GetNode<RichTextLabel>("%Body");
         btnUpdate = GetNode<Button>("%Update");
