@@ -1,4 +1,5 @@
 using CAP_Contracts.Logger;
+using CAP_Core.Grid;
 using CAP_Core.Helpers;
 using Chickensoft.AutoInject;
 using ConnectAPic.LayoutWindow;
@@ -61,6 +62,8 @@ namespace ConnectAPIC.Scripts.View.ToolBox
         protected static Vector2I GetGridPosition(Vector2 position)
         {
             var tileSize = (GameManager.TilePixelSize);
+            if (position.X < 0 || position.Y < 0)
+                return new Vector2I(-1, -1);
             return new Vector2I (((int)((position.X) / tileSize)), ((int)((position.Y) / tileSize)));
         }
         protected void HandleMiddleMouseDeleteDrawing(InputEvent @event)

@@ -9,7 +9,7 @@ namespace CAP_Core.Grid
         int Width { get; }
         int Height { get; }
         bool IsCoordinatesInGrid(int x, int y, int width = 1, int height = 1);
-      
+
         List<Component> GetAllComponents();
     }
 }

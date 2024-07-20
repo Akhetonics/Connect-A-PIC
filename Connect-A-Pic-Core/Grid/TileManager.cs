@@ -35,6 +35,7 @@ namespace CAP_Core.Grid
         {
             return x >= 0 && y >= 0 && x + width <= Width && y + height <= Height;
         }
+
         public List<Component> GetAllComponents()
         {
             List<Component> components = new();
