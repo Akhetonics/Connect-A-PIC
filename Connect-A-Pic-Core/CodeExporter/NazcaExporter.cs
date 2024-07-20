@@ -43,15 +43,14 @@ namespace CAP_Core.CodeExporter
         {
             foreach (ExternalPort port in grid.ExternalPortManager.ExternalPorts)
             {
-                if (port is not ExternalInput input) continue;
-                var x = input.IsLeftPort ? 0 : grid.TileManager.Width - 1;
-                var y = input.TilePositionY;
+                var x = port.IsLeftPort ? 0 : grid.TileManager.Width - 1;
+                var y = port.TilePositionY;
                 if (!grid.TileManager.IsCoordinatesInGrid(x, y, 1, 1)) continue;
                 var firstConnectedTile = grid.TileManager.Tiles[x, y];
                 if (firstConnectedTile.Component == null) continue;
-                if (firstConnectedTile.GetPinAt(input.IsLeftPort ? RectSide.Left : RectSide.Right)?.MatterType != MatterType.Light) continue;
+                if (firstConnectedTile.GetPinAt(port.IsLeftPort ? RectSide.Left : RectSide.Right)?.MatterType != MatterType.Light) continue;
                 if (AlreadyProcessedComponents.Contains(firstConnectedTile.Component)) continue;
-                StartConnectingAtInput(NazcaCode, input, firstConnectedTile);
+                StartConnectingAtPorts(NazcaCode, port, firstConnectedTile);
             }
         }
 
@@ -96,7 +95,7 @@ namespace CAP_Core.CodeExporter
             return neighbors.Where(n => !AlreadyProcessedComponents.Contains(n.Child.Component)).ToList();
         }
 
-        private void StartConnectingAtInput(StringBuilder NazcaCode, ExternalInput input, Tile firstConnectedTile)
+        private void StartConnectingAtPorts(StringBuilder NazcaCode, ExternalPort input, Tile firstConnectedTile)
         {
             NazcaCode.Append(firstConnectedTile
                 .ExportToNazcaExtended(new IntVector(input.IsLeftPort ? -1 : grid.TileManager.Width, input.TilePositionY), input.IsLeftPort ? Resources.NazcaStandardLeftInputCellName : Resources.NazcaStandardRightInputCellName, input.PinName));

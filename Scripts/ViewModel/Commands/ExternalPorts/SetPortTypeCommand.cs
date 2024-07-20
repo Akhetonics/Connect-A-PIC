@@ -7,7 +7,6 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -39,9 +38,13 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands.ExternalPorts
 
             ExternalPort newPort;
             if (args.IsSetToOutput)
+            {
                 newPort = new ExternalOutput(OldPort.PinName, OldPort.TilePositionY, OldPort.IsLeftPort);
+            }
             else
+            {
                 newPort = new ExternalInput(OldPort.PinName, LaserType.Red, OldPort.TilePositionY, 1, OldPort.IsLeftPort);
+            }
 
             args.PortViewModel.PortModel = newPort;
             Grid.ExternalPortManager.ExternalPorts[OldPortIndex] = newPort;
