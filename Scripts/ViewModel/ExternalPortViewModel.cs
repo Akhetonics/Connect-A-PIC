@@ -33,11 +33,15 @@ namespace ConnectAPIC.Scripts.ViewModel
                 _portModel.PropertyChanged += Model_PropertyChanged;
 
                 _portModel = value;
-                Power = Vector3.Zero;
                 if (value is ExternalInput input)
                 {
                     ResetInputPowerAndColorUsingLaserType(input.LaserType, input.InFlowPower.Real);
                 }
+                else
+                {
+                    Power = Vector3.Zero;
+                }
+
                 OnPropertyChanged();
             }
         }
