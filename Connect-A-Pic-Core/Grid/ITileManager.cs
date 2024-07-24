@@ -8,7 +8,7 @@ namespace CAP_Core.Grid
         Tile[,] Tiles { get; }
         int Width { get; }
         int Height { get; }
-        bool IsCoordinatesInGrid(int x, int y, int width = 1, int height = 1);
+        bool IsCoordinatesInGrid(float x, float y, int width = 1, int height = 1);
 
         List<Component> GetAllComponents();
     }

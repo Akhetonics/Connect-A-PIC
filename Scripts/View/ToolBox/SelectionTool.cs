@@ -97,11 +97,12 @@ namespace ConnectAPIC.Scripts.View.ToolBox
                     LeftMouseButtonPressed = mouseButtonEvent.Pressed; // release or press the button
                     // ignore drag when startPoint is on top of a component
                     Vector2I gridPosition = GetMouseGridPosition();
+                    Vector2 rawGridPosition = GetRawMouseGridPosition();
 
                     if (mouseButtonEvent.Pressed)
                     {
                         SelectionStartMousePos = GridView.GetLocalMousePosition();
-                        bool isInGrid = GridViewModel.Grid.TileManager.IsCoordinatesInGrid(gridPosition.X, gridPosition.Y);
+                        bool isInGrid = GridViewModel.Grid.TileManager.IsCoordinatesInGrid(rawGridPosition.X, rawGridPosition.Y);
                         bool isColliding = GridViewModel.Grid.ComponentMover.IsColliding(gridPosition.X, gridPosition.Y, 1, 1);
                         if (isInGrid && isColliding && SelectionTool.IsEditSelectionKeyPressed() == false)
                         {
@@ -117,11 +118,21 @@ namespace ConnectAPIC.Scripts.View.ToolBox
                         var gridStart = GetGridPosition(SelectionStartMousePos).ToIntVector();
                         var gridEnd   = GetGridPosition(SelectionEndMousePos).ToIntVector();
                         QueueRedraw();
+
+                        if (
+                            (SelectionStartMousePos.X < 0 || SelectionStartMousePos.Y < 0) &&
+                            (SelectionEndMousePos.X < 0 || SelectionEndMousePos.Y < 0) &&
+                            (SelectionEndMousePos.X < 0 || SelectionStartMousePos.Y < 0) &&
+                            (SelectionEndMousePos.Y < 0 || SelectionStartMousePos.X < 0)
+                            )
+                            return;
+
                         var AppendBehavior = AppendBehaviors.CreateNew;
                         if(Input.IsKeyPressed(Key.Shift) || Input.IsKeyPressed(Key.Ctrl))
                         {
                             AppendBehavior = AppendBehaviors.Append;
-                        } else if (Input.IsKeyPressed(Key.Alt))
+                        }
+                        else if (Input.IsKeyPressed(Key.Alt))
                         {
                             AppendBehavior = AppendBehaviors.Remove;
                         }

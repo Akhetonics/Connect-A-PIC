@@ -50,7 +50,8 @@ namespace ConnectAPIC.LayoutWindow.View
             // Check this component was added
             if (e.Action == NotifyCollectionChangedAction.Add || e.Action==NotifyCollectionChangedAction.Replace)
             {
-                if (e.NewItems.Contains(new IntVector(ViewModel.GridX, ViewModel.GridY)))
+                if (ViewModel.IsPlacedInGrid &&
+                    e.NewItems.Contains(new IntVector(ViewModel.GridX, ViewModel.GridY)))
                 {
                     Modulate = new Godot.Color(0, 1, 0);
                 }
@@ -58,14 +59,16 @@ namespace ConnectAPIC.LayoutWindow.View
             // Check if items were removed
             if (e.Action == NotifyCollectionChangedAction.Remove || e.Action == NotifyCollectionChangedAction.Replace)
             {
-                if (e.OldItems.Contains(new IntVector(ViewModel.GridX, ViewModel.GridY)))
+                if (ViewModel.IsPlacedInGrid &&
+                    e.OldItems.Contains(new IntVector(ViewModel.GridX, ViewModel.GridY)))
                 {
                     Modulate = new Godot.Color(1, 1, 1);
                 }
             }
             if(e.Action == NotifyCollectionChangedAction.Reset)
             {
-                if(GridViewModel.SelectionGroupManager.SelectedComponents.Contains(new IntVector(ViewModel.GridX, ViewModel.GridY)))
+                if (ViewModel.IsPlacedInGrid &&
+                    GridViewModel.SelectionGroupManager.SelectedComponents.Contains(new IntVector(ViewModel.GridX, ViewModel.GridY)))
                 {
                     Modulate = new Godot.Color(0, 1, 0);
                 }

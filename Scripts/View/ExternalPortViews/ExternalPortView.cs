@@ -98,8 +98,8 @@ namespace ConnectAPIC.Scenes.ExternalPorts
             currentTexture.Texture = InputTexture;
             pulseValue = (float)(new Random().NextDouble() * 10);
             InfoLabel.Visible = false;
-            SetLightColor(alpha);
             SetLight(ViewModel.IsLightOn);
+            SetLightColor(alpha);
             SetSide();
         }
 

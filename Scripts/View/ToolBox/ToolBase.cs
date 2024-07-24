@@ -58,14 +58,20 @@ namespace ConnectAPIC.Scripts.View.ToolBox
             return Guid.Parse(metaGuid);
         }
 
+        protected Vector2 GetRawMouseGridPosition() => GetRawGridPosition(GridView.GetLocalMousePosition());
+
         protected Vector2I GetMouseGridPosition() => GetGridPosition(GridView.GetLocalMousePosition());
         protected static Vector2I GetGridPosition(Vector2 position)
         {
             var tileSize = (GameManager.TilePixelSize);
-            if (position.X < 0 || position.Y < 0)
-                return new Vector2I(-1, -1);
             return new Vector2I (((int)((position.X) / tileSize)), ((int)((position.Y) / tileSize)));
         }
+        protected static Vector2 GetRawGridPosition(Vector2 position)
+        {
+            var tileSize = (GameManager.TilePixelSize);
+            return new Vector2(position.X / tileSize, position.Y / tileSize);
+        }
+
         protected void HandleMiddleMouseDeleteDrawing(InputEvent @event)
         {
             if (IsActive == false) return;
