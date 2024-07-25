@@ -98,8 +98,8 @@ namespace ConnectAPIC.Scenes.ExternalPorts
             currentTexture.Texture = InputTexture;
             pulseValue = (float)(new Random().NextDouble() * 10);
             InfoLabel.Visible = false;
-            SetLightColor(alpha);
             SetLight(ViewModel.IsLightOn);
+            SetLightColor(alpha);
             SetSide();
         }
 
@@ -135,9 +135,13 @@ namespace ConnectAPIC.Scenes.ExternalPorts
                 {
                     SetLight(ViewModel.IsLightOn);
                 }
-                else
+                else if (ViewModel.IsLightOn)
                 {
                     InfoLabel.Text = ViewModel.AllColorsPower();
+                }
+                else
+                {
+                    InfoLabel.Text = "";
                 }
             }
             else if (e.PropertyName == nameof(ExternalPortViewModel.Power)

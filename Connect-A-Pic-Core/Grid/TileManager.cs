@@ -31,10 +31,11 @@ namespace CAP_Core.Grid
             }
             OnGridCreated?.Invoke(tiles);
         }
-        public bool IsCoordinatesInGrid(int x, int y, int width = 1, int height = 1)
+        public bool IsCoordinatesInGrid(float x, float y, int width = 1, int height = 1)
         {
             return x >= 0 && y >= 0 && x + width <= Width && y + height <= Height;
         }
+
         public List<Component> GetAllComponents()
         {
             List<Component> components = new();

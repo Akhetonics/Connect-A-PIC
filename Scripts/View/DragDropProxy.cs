@@ -42,7 +42,7 @@ public partial class DragDropProxy : Control
         Logger = logger;
         Size = new Vector2(ViewModel.Width * GameManager.TilePixelSize, ViewModel.Height * GameManager.TilePixelSize);
     }
-    public override bool _CanDropData(Godot.Vector2 position, Variant data)
+    public override bool _CanDropData(Vector2 position, Variant data)
     {
         try
         {
@@ -69,7 +69,7 @@ public partial class DragDropProxy : Control
             return false;
         }
     }
-    public override void _DropData(Godot.Vector2 atPosition, Variant data)
+    public override void _DropData(Vector2 atPosition, Variant data)
     {
         var deltaGridXY = (GridView.LocalToMap(atPosition) - StartGridXY).ToIntVector();
         var args = ConvertGodotListToMoveComponentArgs(data, deltaGridXY);
@@ -98,7 +98,7 @@ public partial class DragDropProxy : Control
         return null;
     }
 
-    public void ShowComponentDragPreview(Godot.Vector2 position, Godot.Collections.Array transitions)
+    public void ShowComponentDragPreview(Vector2 position, Godot.Collections.Array transitions)
     {
         var deltaGridXY = (GridView.LocalToMap(position) - StartGridXY);
         foreach (Variant componentPositionVariant in transitions)
@@ -138,9 +138,9 @@ public partial class DragDropProxy : Control
         parentNode.MoveChild(childNode, newPosition);
     }
 
-    private Godot.Vector2 MapToLocalCorrected(Vector2I targetGridPosition)
+    private Vector2 MapToLocalCorrected(Vector2I targetGridPosition)
     {
-        var tileSize = new Godot.Vector2(GameManager.TilePixelSize, GameManager.TilePixelSize);
+        var tileSize = new Vector2(GameManager.TilePixelSize, GameManager.TilePixelSize);
         return GridView.MapToLocal(targetGridPosition) - 0.5f * tileSize;
     }
 
@@ -153,7 +153,7 @@ public partial class DragDropProxy : Control
         previewComponents.Clear();
     }
 
-    public override Variant _GetDragData(Godot.Vector2 position)
+    public override Variant _GetDragData(Vector2 position)
     {
         if (SelectionTool.IsEditSelectionKeyPressed()) return default;
         if (ToolViewModel.CurrentTool.GetType() != typeof(SelectionTool)) return default; // drag drop only works with the selection tool

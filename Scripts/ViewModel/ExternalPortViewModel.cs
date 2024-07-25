@@ -37,6 +37,11 @@ namespace ConnectAPIC.Scripts.ViewModel
                 {
                     ResetInputPowerAndColorUsingLaserType(input.LaserType, input.InFlowPower.Real);
                 }
+                else
+                {
+                    Power = Vector3.Zero;
+                }
+
                 OnPropertyChanged();
             }
         }
@@ -177,7 +182,7 @@ namespace ConnectAPIC.Scripts.ViewModel
         }
 
 
-        private void Model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
+        private void Model_PropertyChanged(object sender, PropertyChangedEventArgs e) {
             //only external inputs gives away meaningful property change signals
             ExternalInput inputPort = PortModel as ExternalInput;
             if (inputPort == null) return;

@@ -52,6 +52,7 @@ namespace CAP_Core.Components
                 s.Value = 0; 
                 s.Value = (s.MinValue + s.MaxValue) / 2;
             });
+            IsPlacedInGrid = false;
             NazcaFunctionName = nazcaFunctionName;
             var firstSlider = sliders.FirstOrDefault();
             NazcaFunctionParameters = InsertSliderValue(NazcaFunctionParameters ?? "");
