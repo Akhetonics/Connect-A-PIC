@@ -52,11 +52,11 @@ jobs:
           echo $version > ${{ github.workspace }}/Release/version.txt
 
       - name: 🧑‍🔬 Generate .NET Bindings
-        run: godot --build-solutions --quit || exit 0
+        run: godot --rendering-driver opengl3 --build-solutions --quit || exit 0
 
       - name: Build Windows EXE
         run: |
-          godot --export-release "win64"
+          godot --rendering-driver opengl3 --export-release "win64"
           if [ $? -ne 0 ]; then
             echo "Build failed with exit code $?"
             exit 1
