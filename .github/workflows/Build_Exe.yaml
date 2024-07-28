@@ -57,7 +57,7 @@ jobs:
         run: xvfb-run --auto-servernum --server-args="-screen 0 1024x768x24" godot --rendering-driver opengl3 --build-solutions --quit || exit 0
 
       - name: Build Windows EXE
-        run: xvfb-run --auto-servernum --server-args="-screen 0 1024x768x24" godot --rendering-driver opengl3 --export-release "Windows Desktop" ${{ github.workspace }}/Release/Connect-A-PIC.exe
+        run: xvfb-run --auto-servernum --server-args="-screen 0 1024x768x24" godot --rendering-driver opengl3 --export-release "win64" ${{ github.workspace }}/Release/Connect-A-PIC.exe
 
       - name: List files in Release directory
         run: ls -la ${{ github.workspace }}/Release
