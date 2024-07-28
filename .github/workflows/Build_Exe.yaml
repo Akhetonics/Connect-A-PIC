@@ -56,10 +56,10 @@ jobs:
           echo "version=$version" >> $GITHUB_ENV
 
       - name: 🧑‍🔬 Generate .NET Bindings
-        run: godot --headless --rendering-driver opengl3 --build-solutions --quit || exit 0
+        run: godot --rendering-driver opengl3 --build-solutions --quit || exit 0
 
       - name: Build Windows EXE
-        run: godot --headless --rendering-driver opengl3 --export-release "win64" ${{ github.workspace }}/Release/Connect-A-PIC.exe
+        run: godot --rendering-driver opengl3 --export-release "win64" ${{ github.workspace }}/Release/Connect-A-PIC.exe
 
       - name: List files in Release directory
         run: ls -la ${{ github.workspace }}/Release
