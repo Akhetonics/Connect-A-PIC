@@ -59,7 +59,7 @@ jobs:
         run: godot --headless --rendering-driver opengl3 --build-solutions --quit || exit 0
 
       - name: Build Windows EXE
-        run: godot --headless --rendering-driver opengl3 --export-release "Windows Desktop" ${{ github.workspace }}/Release/Connect-A-PIC.exe
+        run: godot --headless --rendering-driver opengl3 --export-release "win64" ${{ github.workspace }}/Release/Connect-A-PIC.exe
 
       - name: List files in Release directory
         run: ls -la ${{ github.workspace }}/Release
