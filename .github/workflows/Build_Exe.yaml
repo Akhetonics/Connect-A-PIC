@@ -52,7 +52,7 @@ jobs:
           echo $version > ${{ github.workspace }}/Release/version.txt
 
       - name: 🧑‍🔬 Generate .NET Bindings
-        run: godot --rendering-driver opengl3 --build-solutions --quit || exit 0
+        run: godot --headless --build-solutions --quit || exit 0
 
       - name: Build Windows EXE
         run: |
