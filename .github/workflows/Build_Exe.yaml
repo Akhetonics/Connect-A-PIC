@@ -29,6 +29,13 @@ jobs:
       - name: 📦 Restore Dependencies
         run: dotnet restore
 
+      - name: Setup display server
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb
+          Xvfb :99 -screen 0 1024x768x24 &
+          export DISPLAY=:99
+
       - name: 🤖 Setup Godot
         uses: chickensoft-games/setup-godot@v1
         with:
@@ -52,11 +59,11 @@ jobs:
           echo $version > ${{ github.workspace }}/Release/version.txt
 
       - name: 🧑‍🔬 Generate .NET Bindings
-        run: godot --headless --build-solutions --quit || exit 0
+        run: godot --build-solutions --quit || exit 0
 
       - name: Build Windows EXE
         run: |
-          godot --rendering-driver opengl3 --export-release "win64"
+          godot --export-release "win64"
           if [ $? -ne 0 ]; then
             echo "Build failed with exit code $?"
             exit 1
