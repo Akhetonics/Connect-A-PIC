@@ -29,17 +29,19 @@ jobs:
       - name: 📦 Restore Dependencies
         run: dotnet restore
 
+      - name: 🖵 Setup display server
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb
+
       - name: 🤖 Setup Godot
         uses: chickensoft-games/setup-godot@v1
         with:
           # In this case, we are using the version from global.json.
-          #
-          # This allows checks on renovatebot PR's to succeed whenever
-          # renovatebot updates the Godot SDK version.
           version: global.json
           # Use .NET-enabled version of Godot (the default is also true).
           use-dotnet: true
-          # Include the Godot Export Templtes (the default is false).
+          # Include the Godot Export Templates (the default is false).
           include-templates: true
 
       - name: Create Build Directory
@@ -52,27 +54,20 @@ jobs:
           echo $version > ${{ github.workspace }}/Release/version.txt
 
       - name: 🧑‍🔬 Generate .NET Bindings
-        run: godot --headless --build-solutions --quit || exit 0
+        run: xvfb-run --auto-servernum --server-args="-screen 0 1024x768x24" godot --rendering-driver opengl3 --build-solutions --quit || exit 0
 
       - name: Build Windows EXE
-        run: |
-          godot --headless --export-release "win64"
-          if [ $? -ne 0 ]; then
-            echo "Build failed with exit code $?"
-            exit 1
-          fi
-      # list files in release folder
+        run: xvfb-run --auto-servernum --server-args="-screen 0 1024x768x24" godot --rendering-driver opengl3 --export-release "win64" ${{ github.workspace }}/Release/Connect-A-PIC.exe
+
       - name: List files in Release directory
         run: ls -la ${{ github.workspace }}/Release
-        #/Release
 
       - name: Upload EXE as artifact
         uses: actions/upload-artifact@v4
         with:
           name: Connect-A-PIC-EXE
           path: ${{ github.workspace }}/Release/Connect-A-PIC.exe
-      
-      # also upload all the files BUT the exe for the zipping later on.
+
       - name: Upload Release directory as artifact
         uses: actions/upload-artifact@v4
         with:
