@@ -197,43 +197,50 @@ namespace ConnectAPIC.Scenes.RightClickMenu
         private async void HandlePortTypeSwitchingRadioButtonPressed(BaseButton button)
         {
             var index = (PortSwitchButtonIndex)portModeButtons.IndexOf(button);
-            await SetPortToInputOrOutputAsync(index);
-            if (portViewModel.IsInput)
+            var wasInputBefore = portViewModel.IsInput;
+            await SetPortToInputOutputAsync(index);
+            if (wasInputBefore && portViewModel.IsInput)
             {
-                SetInputPortColor(index);
+                await SetInputPortColor(index);
             }
         }
 
-        private async Task SetPortToInputOrOutputAsync(PortSwitchButtonIndex indexPressed)
+        private async Task SetPortToInputOutputAsync(PortSwitchButtonIndex indexPressed)
         {
-            var setPortTypeCommand = (CommandBase<SetPortTypeArgs>)ViewModel.CommandFactory.CreateCommand(CommandType.InputOutputChange);
             bool? isOutput = null;
-
+            LaserType laserType = ConvertButtonIndexToLaserType(indexPressed);
             if (indexPressed == PortSwitchButtonIndex.Output)
             {
                 isOutput = true;
             }
-            else if (!portViewModel.IsInput) // Simplified check: Change to input only if it's not already an input
+            else if (!portViewModel.IsInput)
             {
                 isOutput = false;
             }
 
             if (isOutput.HasValue)
             {
-                var setPortTypeArgs = new SetPortTypeArgs(portViewModel, isOutput.Value);
+                var setPortTypeArgs = new SetPortTypeArgs(portViewModel, isOutput.Value, laserType);
+                var setPortTypeCommand = ViewModel.CommandFactory.CreateCommand(CommandType.InputOutputChange);
                 await setPortTypeCommand.ExecuteAsync(setPortTypeArgs);
             }
         }
 
-        private void SetInputPortColor(PortSwitchButtonIndex indexPressed)
+        private static LaserType ConvertButtonIndexToLaserType(PortSwitchButtonIndex indexPressed)
         {
             LaserType laserType = LaserType.Red;
             if (indexPressed == PortSwitchButtonIndex.GreenInput)
                 laserType = LaserType.Green;
             else if (indexPressed == PortSwitchButtonIndex.BlueInput)
                 laserType = LaserType.Blue;
+            return laserType;
+        }
+
+        private async Task SetInputPortColor(PortSwitchButtonIndex indexPressed)
+        {
+            LaserType laserType = ConvertButtonIndexToLaserType(indexPressed);
             var InputColorChangeCommand = ViewModel.CommandFactory.CreateCommand(CommandType.InputColorChange);
-            InputColorChangeCommand.ExecuteAsync(new SetInputColorArgs(portViewModel.PortModel as ExternalInput, laserType)).Wait();
+            await InputColorChangeCommand.ExecuteAsync(new SetInputColorArgs(portViewModel.GetPortIndex(), laserType));
         }
 
         private void SetPortTypeSwitchingRadioButton(ExternalPortViewModel port) {

@@ -46,7 +46,7 @@ namespace UnitTests.ViewModels.Commands
             var externalPort = gridManager.ExternalPortManager.ExternalPorts.Last();
             var portViewModel = new ConnectAPIC.Scripts.ViewModel.ExternalPortViewModel(gridManager, externalPort, lightCalculationService);
 
-            var outputArgs = new SetInputColorArgs(portViewModel.PortModel as ExternalInput, LaserType.Blue);
+            var outputArgs = new SetInputColorArgs(portViewModel.GetPortIndex(), LaserType.Blue);
 
             // act
             var canExecuteOnOutput = command.CanExecute(outputArgs);
@@ -62,9 +62,9 @@ namespace UnitTests.ViewModels.Commands
             var externalPort = gridManager.ExternalPortManager.ExternalPorts.First();
             var portViewModel = new ConnectAPIC.Scripts.ViewModel.ExternalPortViewModel(gridManager, externalPort, lightCalculationService);
 
-            var setToBlueArgs = new SetInputColorArgs(portViewModel.PortModel as ExternalInput, LaserType.Blue);
-            var setToGreenArgs = new SetInputColorArgs(portViewModel.PortModel as ExternalInput, LaserType.Green);
-            var setToRedArgs = new SetInputColorArgs(portViewModel.PortModel as ExternalInput, LaserType.Red);
+            var setToBlueArgs = new SetInputColorArgs(portViewModel.GetPortIndex(), LaserType.Blue);
+            var setToGreenArgs = new SetInputColorArgs(portViewModel.GetPortIndex(), LaserType.Green);
+            var setToRedArgs = new SetInputColorArgs(portViewModel.GetPortIndex(), LaserType.Red);
 
             // act
             await command.ExecuteAsync(setToBlueArgs);

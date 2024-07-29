@@ -113,7 +113,10 @@ namespace ConnectAPIC.Scripts.ViewModel
             IsLeftPort = isLeftPort;
         }
 
-
+        public int GetPortIndex()
+        {
+            return Grid.ExternalPortManager.ExternalPorts.IndexOf(PortModel);
+        }
         public string AllColorsPower()
         {
             string allUsedPowers = "";

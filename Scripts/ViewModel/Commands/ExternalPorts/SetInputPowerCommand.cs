@@ -28,13 +28,21 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands.ExternalPorts
             ExternalInput input = args.Port as ExternalInput;
             OldInflowPower = input.InFlowPower;
             input.InFlowPower = args.PowerValue;
-            await LightCalculator.ShowLightPropagationAsync();
+            if (Grid.LightManager.IsLightOn == true)
+            {
+                await LightCalculator.ShowLightPropagationAsync();
+            }
+
             return;
         }
-        public override void Undo()
+
+        public async override void Undo()
         {
             ((ExternalInput)ExecutionParams.Port).InFlowPower = OldInflowPower;
-            LightCalculator.ShowLightPropagationAsync().Wait();
+            if (Grid.LightManager.IsLightOn == true)
+            {
+                await LightCalculator.ShowLightPropagationAsync();
+            }
         }
 
     }

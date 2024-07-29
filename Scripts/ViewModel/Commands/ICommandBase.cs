@@ -58,13 +58,13 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands
         {
         }
 
-        public virtual void Redo()
+        public async virtual void Redo()
         {
             if (ExecutionParams == null) return;
-            ExecuteAsync(ExecutionParams).Wait();
+            await ExecuteAsync(ExecutionParams);
         }
 
-        public virtual void Undo()
+        public async virtual void Undo()
         {
         }
 

@@ -43,7 +43,7 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands.ExternalPorts
             }
             else
             {
-                newPort = new ExternalInput(OldPort.PinName, LaserType.Red, OldPort.TilePositionY, 1, OldPort.IsLeftPort);
+                newPort = new ExternalInput(OldPort.PinName, args.NewLaserType, OldPort.TilePositionY, 1, OldPort.IsLeftPort);
             }
 
             args.PortViewModel.PortModel = newPort;
@@ -70,12 +70,14 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands.ExternalPorts
 
     public class SetPortTypeArgs
     {
-        public SetPortTypeArgs(ExternalPortViewModel portViewModel, bool isSetToOutput)
+        public SetPortTypeArgs(ExternalPortViewModel portViewModel, bool isSetToOutput, LaserType newLaserType)
         {
             PortViewModel = portViewModel;
             IsSetToOutput = isSetToOutput;
+            NewLaserType = newLaserType;
         }
         public ExternalPortViewModel PortViewModel { get; }
+        public LaserType NewLaserType { get; }
         public bool IsSetToOutput { get; }
     }
 }
