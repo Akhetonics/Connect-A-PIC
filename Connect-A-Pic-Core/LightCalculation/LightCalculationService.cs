@@ -100,14 +100,14 @@ namespace CAP_Core.LightCalculation
         }
         public async Task CancelLightCalculation()
         {
+            if (!CancelTokenLightCalc.IsCancellationRequested)
+            {
+                CancelTokenLightCalc.Cancel();
+            }
+
             await Semaphore.WaitAsync();
             try
             {
-                if (!CancelTokenLightCalc.IsCancellationRequested)
-                {
-                    CancelTokenLightCalc.Cancel();
-                }
-
                 if (LightCalculationTask != null)
                 {
                     try
