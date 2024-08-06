@@ -43,8 +43,8 @@ namespace UnitTests.ViewModels.Commands
             // arrange
             var externalPort = gridManager.ExternalPortManager.ExternalPorts.First();
             var portViewModel = new ConnectAPIC.Scripts.ViewModel.ExternalPortViewModel(gridManager, externalPort, lightCalculationService);
-            var setToOutputParams = new SetPortTypeArgs(portViewModel,true);
-            var setToInputParams = new SetPortTypeArgs(portViewModel,false);
+            var setToOutputParams = new SetPortTypeArgs(portViewModel,true, LaserType.Red);
+            var setToInputParams = new SetPortTypeArgs(portViewModel,false, LaserType.Red);
 
             // act
             await command.ExecuteAsync(setToOutputParams);

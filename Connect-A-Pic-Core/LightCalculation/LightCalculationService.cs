@@ -18,7 +18,7 @@ namespace CAP_Core.LightCalculation
     {
         public event EventHandler<LightCalculationUpdated>? LightCalculationUpdated; // is only called when new data is available - not when the calculation got cancelled
         public event EventHandler CalculationCanceled;
-        public Task ShowLightPropagationAsync();
+        public Task ShowLightPropagationAsync();  
         public Task CancelLightCalculation();
     }
     public class LightCalculationService : ILightCalculationService
@@ -51,7 +51,9 @@ namespace CAP_Core.LightCalculation
 
         public async Task ShowLightPropagationAsync()
         {
-            await CancelLightCalculation();
+            if (LightCalculationTask != null)
+                await CancelLightCalculation();
+
             await Semaphore.WaitAsync();
             try
             {
@@ -59,6 +61,7 @@ namespace CAP_Core.LightCalculation
                 foreach (var port in LightInputs)
                 {
                     CancelTokenLightCalc.Token.ThrowIfCancellationRequested();
+
                     Dictionary<Guid, Complex> resultLightVector = new();
                     // What has to become thread safe:
                     // GridSMatrixAnalyzer
@@ -68,7 +71,9 @@ namespace CAP_Core.LightCalculation
                         resultLightVector = await GridSMatrixAnalyzer.CalculateFieldPropagationAsync(CancelTokenLightCalc, port.LaserType.WaveLengthInNm);
                     }, CancelTokenLightCalc.Token);
                     await LightCalculationTask.ConfigureAwait(false);
+
                     CancelTokenLightCalc.Token.ThrowIfCancellationRequested();
+
                     // the results must run in the main thread so that the UI can be updated properly
                     ExecuteOnMainThread(()=>{
                         LightCalculationUpdated?.Invoke(this, new(resultLightVector, port.LaserType));
@@ -100,14 +105,14 @@ namespace CAP_Core.LightCalculation
         }
         public async Task CancelLightCalculation()
         {
+            if (!CancelTokenLightCalc.IsCancellationRequested)
+            {
+                CancelTokenLightCalc.Cancel();
+            }
+
             await Semaphore.WaitAsync();
             try
             {
-                if (!CancelTokenLightCalc.IsCancellationRequested)
-                {
-                    CancelTokenLightCalc.Cancel();
-                }
-
                 if (LightCalculationTask != null)
                 {
                     try

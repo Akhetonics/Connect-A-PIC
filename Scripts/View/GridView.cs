@@ -54,18 +54,16 @@ namespace ConnectAPIC.LayoutWindow.View
             DragDropProxy.Initialize(this, viewModel, logger);
             viewModel.PropertyChanged += async (object sender, System.ComponentModel.PropertyChangedEventArgs e) =>
             {
-                switch (e.PropertyName)
+                if (e.PropertyName != nameof(GridViewModel.IsLightOn))
+                    return;
+               
+                if (ViewModel.IsLightOn == true)
                 {
-                    case nameof(GridViewModel.IsLightOn):
-                        if (ViewModel.IsLightOn == true)
-                        {
-                            await ShowLightPropagation();
-                        }
-                        else
-                        {
-                            await HideLightPropagation();
-                        }
-                        break;
+                    await ShowLightPropagation();
+                }
+                else
+                {
+                    await HideLightPropagation();
                 }
             };
             viewModel.ComponentCreated += async (Component component, int gridX, int gridY) =>
