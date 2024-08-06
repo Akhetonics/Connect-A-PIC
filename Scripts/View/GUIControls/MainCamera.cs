@@ -69,19 +69,25 @@ public partial class MainCamera : Camera2D
 
     public void RecenterCamera()
     {
+        ResetCameraZoom();
         var X = GetViewport().GetVisibleRect().Size.X;
         var Y = GetViewport().GetVisibleRect().Size.Y;
-        Position = CenteringPoint.Position - new Vector2(X / 2, Y / 2);
+        Position = CenteringPoint.GlobalPosition - new Vector2(X / 2, Y / 2);
+    }
+
+    private void ResetCameraZoom()
+    {
+        Zoom = new Vector2(InitialZoom, InitialZoom);
     }
 
     public void ZoomCamera(int direction){
-        //if (noZoomingOrMoving) return;
+        if (noZoomingOrMoving) return;
         Vector2 previousMousePosition = GetLocalMousePosition();
         
         Zoom += Zoom * ZoomSpeed * direction;
         Zoom = Zoom.Clamp(new Vector2(MinZoomIn, MinZoomIn), new Vector2(MaxZoomIn, MaxZoomIn));
             
-        Offset += previousMousePosition - GetLocalMousePosition();
+        Position += previousMousePosition - GetLocalMousePosition();
     }
 
     private void OnMouseEnteredTutorialWindow() {
