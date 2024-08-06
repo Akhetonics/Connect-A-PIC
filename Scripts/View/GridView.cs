@@ -65,6 +65,8 @@ namespace ConnectAPIC.LayoutWindow.View
                 {
                     await HideLightPropagation();
                 }
+
+                SetLightButtonOn(ViewModel.IsLightOn);
             };
             viewModel.ComponentCreated += async (Component component, int gridX, int gridY) =>
             {
@@ -160,7 +162,9 @@ namespace ConnectAPIC.LayoutWindow.View
 
         public void SetLightButtonOn(bool isLightButtonOn)
         {
-            LightOnButton.ButtonPressed = isLightButtonOn;
+            LightOnButton.SetPressedNoSignal(isLightButtonOn);
+            SetLightButtonIcon(isLightButtonOn);
+            Logger.Print(LightOnButton.ButtonPressed.ToString());
         }
 
         public override void _Input(InputEvent @event)
@@ -232,15 +236,9 @@ namespace ConnectAPIC.LayoutWindow.View
         private void _on_btn_show_light_propagation_toggled(bool button_pressed)
         {
             ViewModel.CommandFactory.CreateCommand(CommandType.SwitchOnLight).ExecuteAsync(button_pressed).Wait();
-            if (button_pressed)
-            {
-                LightOnButton.Icon = LightOnTexture;
-            }
-            else
-            {
-                LightOnButton.Icon = LightOffTexture;
-            }
+            SetLightButtonIcon(button_pressed);
         }
+
 
         private void _on_btn_save_pressed()
         {
@@ -300,5 +298,18 @@ namespace ConnectAPIC.LayoutWindow.View
                 await ShowLightPropagation();
             }
         }
+
+        private void SetLightButtonIcon(bool isLightOn)
+        {
+            if (isLightOn)
+            {
+                LightOnButton.Icon = LightOnTexture;
+            }
+            else
+            {
+                LightOnButton.Icon = LightOffTexture;
+            }
+        }
+
     }
 }
