@@ -1,15 +1,5 @@
-using Antlr4.Runtime.Misc;
 using CAP_Core.ExternalPorts;
 using CAP_Core.Grid;
-using CAP_Core.LightCalculation;
-using ConnectAPIC.LayoutWindow.ViewModel;
-using Godot;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Numerics;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ConnectAPIC.Scripts.ViewModel.Commands.ExternalPorts
@@ -35,7 +25,7 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands.ExternalPorts
 
         internal override Task ExecuteAsyncCmd(SetInputColorArgs args)
         {
-            if (Grid.ExternalPortManager.ExternalPorts[args.PortIndex] is not ExternalInput port ) return Task.CompletedTask;
+            if (Grid.ExternalPortManager.ExternalPorts[args.PortIndex] is not ExternalInput port) return Task.CompletedTask;
             OldLaserType = port.LaserType;
             port.LaserType = args.LaserType;
             RestartLight();
@@ -64,7 +54,7 @@ namespace ConnectAPIC.Scripts.ViewModel.Commands.ExternalPorts
 
     public class SetInputColorArgs
     {
-        public SetInputColorArgs(int portIndex , LaserType laserType)
+        public SetInputColorArgs(int portIndex, LaserType laserType)
         {
             LaserType = laserType;
             PortIndex = portIndex;

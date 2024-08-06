@@ -113,10 +113,6 @@ namespace CAP_Core.LightCalculation
             await Semaphore.WaitAsync();
             try
             {
-                // if cancelation isn't requested anymore (meaning cancellation already happened) no need to cancel it again
-                if (!CancelTokenLightCalc.IsCancellationRequested)
-                    return;
-
                 if (LightCalculationTask != null)
                 {
                     try
